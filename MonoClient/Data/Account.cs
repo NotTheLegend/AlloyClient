@@ -26,7 +26,6 @@ public static class Account {
     private static readonly Logger Log = new(typeof(Account));
 
     public static AccountModel Model;
-    public static bool IsWhiteListed;
     public static bool LoggedIn;
 
     public static int SelectedCharacterId;
@@ -37,12 +36,6 @@ public static class Account {
     public static string Password = string.Empty;
 
     public static async Task LoadAsync() {
-        IsWhiteListed = await IsWhitelistedCheckAsync();
-
-        if (!IsWhiteListed) {
-            return;
-        }
-
         if (TryLoadLocalDetails()) {
             var response = await LoginAsync(Email, Password);
             if (response.Success) {
@@ -111,17 +104,6 @@ public static class Account {
         }
     }
 
-    private static async Task<bool> IsWhitelistedCheckAsync() {
-        var response = await AppEngineClient.SendVerifyRequest("/whitelist/checkWhitelist", retries: 3);
-        if (response == null) {
-            DialogManager.Enqueue(new Dialog("Error", "Failed to contact server.", new DialogOption("Ok")));
-            return false;
-        }
-
-        IsWhiteListed = response.Contains("Success");
-        return IsWhiteListed;
-    }
-
     public static async Task<LoginResponse> LoginAsync(string email, string password) {
         var response = await AppEngineClient.SendRequest("/account/verify", new Dictionary<string, string> {
             { "guid", email },
@@ -151,72 +133,20 @@ public static class Account {
         return new LoginResponse { Success = true };
     }
 
-    public static async Task<LoginResponse> VerifyLogin(string email, string password) {
-        var response = await AppEngineClient.SendVerifyRequest("/account/verify", new Dictionary<string, string> {
-            { "guid", email },
-            { "password", password }
-        }, retries: 3);
-        if (response == null) {
-            return new LoginResponse { Success = false, Message = "Failed to contact server." };
-        }
-
-        if (response.Contains("<AuthNumber>")) {
-            var authCode = response.Split('>')[1].Split('<')[0];
-            var request2 = AppEngineClient.SendVerifyRequest("/account/verify", new Dictionary<string, string> {
-                { "guid", Email },
-                { "password", Password },
-                { "authCode", authCode }
-            }, retries: 3);
-            request2.Wait();
-
-            var response2 = request2.Result;
-            if (response2 == null) {
-                return new LoginResponse { Success = false, Message = "Failed authCode check." };
-            }
-
-            response = response2;
-        }
-
-        if (response.Contains("Bad Login")) {
-            return new LoginResponse { Success = false, Message = "Bad login." };
-        }
-
-        if (response.Contains("Whitelisted")) {
-            IsWhiteListed = true;
-        }
-
-        Model = XmlSerializer<AccountModel>.Deserialize(response);
-
-        Username = Model.Name;
-
-        Log.Trace($"Logged in as {Username}.");
-
-        Email = email;
-        Password = password;
-
-        LoggedIn = true;
-
-        SaveAccountDetails();
-
-        return new LoginResponse { Success = true };
-    }
-
-    public static LoginResponse Register(string usernameTextValue, string emailTextValue, string passwordTextValue) {
-        var request = AppEngineClient.SendVerifyRequest("/account/register", new Dictionary<string, string> {
+    public static async Task<LoginResponse> Register(string usernameTextValue, string emailTextValue, string passwordTextValue) {
+        var request = await AppEngineClient.SendRequest("/account/register", new Dictionary<string, string> {
             { "guid", new Guid().ToString() },
             { "username", usernameTextValue },
             { "newGUID", emailTextValue },
             { "newPassword", passwordTextValue },
             { "accessCode", Settings.RegisterCode }
         }, retries: 3);
-        request.Wait();
-
-        var response = request.Result;
-        if (response == null) {
+        
+        if (request == null) {
             return new LoginResponse { Success = false, Message = "Failed to contact server." };
         }
 
-        var xElement = XElement.Parse(response);
+        var xElement = XElement.Parse(request);
         var error = xElement.Value;
 
         if (error == "") {

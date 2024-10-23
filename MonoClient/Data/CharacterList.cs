@@ -24,10 +24,7 @@ public static class CharacterList {
             { "guid", Account.Email },
             { "password", Account.Password }
         };
-        var response = Account.IsWhiteListed switch {
-            true => await AppEngineClient.SendRequest("/char/list", data, retries: 3),
-            false => await AppEngineClient.SendVerifyRequest("/char/list", data, retries: 3)
-        };
+        var response = await AppEngineClient.SendRequest("/char/list", data, retries: 3);
         if (response == null) {
             return new CharListResponse {
                 Success = false,

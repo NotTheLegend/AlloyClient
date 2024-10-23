@@ -6,10 +6,6 @@ namespace MonoClient.Data;
 
 public static class AppInit {
     public static async Task LoadAsync() {
-        if (!Account.IsWhiteListed) {
-            return;
-        }
-        
         var response = await AppEngineClient.SendRequest("/app/init", new Dictionary<string, string> {
             { "guid", Account.Email },
             { "password", Account.Password }

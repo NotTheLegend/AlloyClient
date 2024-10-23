@@ -15,23 +15,20 @@ public static class Settings {
 
     public const string SettingsPath = "settings.json"; // Relative to application directory
 
-    public const string BuildVersion = "2.8.7";
-    public const string BuildLabel = $"DoM v{BuildVersion}";
+    public const string BuildVersion = "7.0";
+    public const string BuildLabel = $"Mono v{BuildVersion}";
 
-    public const string AppEngineAddress = "127.0.0.1";
+    public const string AppEngineAddress = "127.0.0.1";//162.248.102.164
     public const string AssetUrl = "https://domain-of-magica.github.io";
 
-    public const string AppEnginePort = "2051";
+    public const string AppEnginePort = "8080";
     public const string AppEngineUrl = $"http://{AppEngineAddress}:{AppEnginePort}";
-
-    public const string AppEngineVerifyPort = "2052";
-    public const string AppEngineVerifyUrl = $"http://{AppEngineAddress}:{AppEngineVerifyPort}";
 
     public const int AppEngineTimeout = 10000;
 
     public const string RegisterCode = "Love_DoM";
 
-    public const string GameServerAddress = "127.0.0.1";
+    public const string GameServerAddress = "127.0.0.1"; //162.248.102.164
     public const ushort GameServerPort = 2050;
 
     public static float XScaleUp {

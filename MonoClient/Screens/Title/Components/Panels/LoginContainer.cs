@@ -56,11 +56,7 @@ public class LoginContainer : Panel {
     }
 
     private void OnLogin() {
-        var task = Account.IsWhiteListed switch {
-            true => Account.LoginAsync(_emailInput.Text, _passwordInput.Text),
-            false => Account.VerifyLogin(_emailInput.Text, _passwordInput.Text),
-        };
-        AddEventListener(TaskEvent.Completed, task, OnLoginResponse);
+        AddEventListener(TaskEvent.Completed, Account.LoginAsync(_emailInput.Text, _passwordInput.Text), OnLoginResponse);
     }
     
     private void OnLoginResponse(LoginResponse response) {

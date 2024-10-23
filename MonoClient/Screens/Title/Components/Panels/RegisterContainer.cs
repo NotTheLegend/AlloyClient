@@ -1,13 +1,22 @@
-﻿using MonoClient.Display;
+﻿using MonoClient.Data;
+using MonoClient.Display;
 using MonoClient.State;
+using MonoClient.Ui.Components.Dialogs;
 using MonoClient.Ui.Components.Panels;
+using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
+using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Screens.Title.Components.Panels;
 
 public class RegisterContainer : Panel {
+    
+    private readonly TextInput _nameInput;
+    private readonly TextInput _emailInput;
+    private readonly TextInput _passwordInput;
+    
     public RegisterContainer() {
         X = Settings.DefaultScreenWidth / 2;
         Y = Settings.DefaultScreenHeight / 2;
@@ -22,6 +31,18 @@ public class RegisterContainer : Panel {
         var title = new SimpleText(new TextConfig { Text = "Register", FontSize = 22, Bold = true, X = Width / 2, Y = titleBackground.Height / 2, Color = 0xFFFFFF, Anchor = UiAnchor.Middle });
         AddChild(title);
         
+        var nameConfig = new InputConfig { X = Width / 2, Y = 100, FontSize = 24, Bold = true, Color = 0xFFFFFF, Width = 350, DefaultText = "Name", Anchor = UiAnchor.Middle };
+        _nameInput = new TextInput(nameConfig);
+        AddChild(_nameInput);
+        
+        var emailConfig = new InputConfig { X = Width / 2, Y = 160, FontSize = 24, Bold = true, Color = 0xFFFFFF, Width = 350, DefaultText = "Email", Anchor = UiAnchor.Middle };
+        _emailInput = new TextInput(emailConfig);
+        AddChild(_emailInput);
+
+        var passwordConfig = new InputConfig { X = Width / 2, Y = 220, FontSize = 24, Bold = true, Color = 0xFFFFFF, Width = 350, DefaultText = "Password", Password = true, Anchor = UiAnchor.Middle };
+        _passwordInput = new TextInput(passwordConfig);
+        AddChild(_passwordInput);
+        
         //todo register fields
         
         var loginConfig = new TextButtonConfig { Text = "Create", FontSize = 28, OnClicked = OnRegister, Bold = false, X = 475 - 25, Y = Height - 25, Anchor = UiAnchor.RightBottom };
@@ -32,10 +53,20 @@ public class RegisterContainer : Panel {
         var cancelButton = new TextButton(cancelConfig);
         AddChild(cancelButton);
     }
-
+    
     private void OnRegister() {
-        PanelManager.Enqueue(new ForgotContainer());
-        State = PanelState.Closed;
+        AddEventListener(TaskEvent.Completed, Account.Register(_nameInput.Text, _emailInput.Text, _passwordInput.Text), OnLoginResponse);
     }
     
+    private void OnLoginResponse(LoginResponse response) {
+        if (!response.Success) {
+            var dialog = new Dialog("Register Error", response.Message, new DialogOption("Ok"));
+            DialogManager.Enqueue(dialog);
+            return;
+        }
+        
+        
+        State = PanelState.Closed;
+        ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 500, 0x0);
+    }
 }
