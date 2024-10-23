@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <RollForward>Major</RollForward>
+        <PublishReadyToRun>false</PublishReadyToRun>
+        <TieredCompilation>false</TieredCompilation>
+        <LangVersion>default</LangVersion>
+
+        <EnablePreviewFeatures>true</EnablePreviewFeatures>
+
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <ApplicationIcon>Icon.ico</ApplicationIcon>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <EmbeddedResource Include="Icon.bmp">
+            <LogicalName>Icon.bmp</LogicalName>
+        </EmbeddedResource>
+        <EmbeddedResource Include="Icon.ico">
+            <LogicalName>Icon.ico</LogicalName>
+        </EmbeddedResource>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <None Remove="app.manifest" />
+        <None Remove="MonoClient.csproj.DotSettings" />
+        <None Update="Content\Fonts\MyriadPro\MyriadPro.otf">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="Content\Fonts\MyriadPro\MyriadProBold.otf">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
+        <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
+        <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
+        <PackageReference Include="NativeFileDialogSharp" Version="0.6.0-alpha" />
+        <PackageReference Include="NAudio" Version="2.2.1" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\Common\Common.csproj" />
+      <ProjectReference Include="..\MonoClient.UiLib\MonoClient.UiLib.csproj" />
+    </ItemGroup>
+    
+    <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
+        <Message Text="Restoring dotnet tools" Importance="High" />
+        <Exec Command="dotnet tool restore" />
+    </Target>
+</Project>

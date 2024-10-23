@@ -1,0 +1,26 @@
+<Upgrades>
+    <Upgrade id="0" name="Elixir Duper">
+        <Description>X% chance for stat potions to give double stats. (+Z% every purchase)</Description>
+    </Upgrade>
+    <Upgrade id="1" name="Defined Fortuity">
+        <Description>After maxing, every 100 stat potions consumed on character grants +1% Loot Boost for that character. (+20% cap, only Greater or normal Stat Potions count)</Description>
+    </Upgrade>
+    <Upgrade id="2" name="Flask's Restoration">
+        <Description>When entering a dungeon for the first time, your Life and Mana flasks have at least +X charges. (++Z every purchase)</Description>
+    </Upgrade>
+    <Upgrade id="3" name="Gilded Elixir">
+        <Description>Consuming stat potions when storage is full will give you +4 Fame or +8 for Life/Mana.</Description>
+    </Upgrade>
+    <Upgrade id="4" name="Prosperous Legacy">
+        <Description>Characters who consumed over 250 stat potions after maxing get a +10% death Fame Bonus.</Description>
+    </Upgrade>
+    <Upgrade id="5" name="United Fortuity">
+        <Description>For every alive 8/8 character, you get X% loot boost. (+Z% every purchase) (+40% cap)</Description>
+    </Upgrade>
+    <Upgrade id="6" name="Flask Collector">
+        <Description>Your Life and Mana flasks have ++X Max Charges. (++Z every purchase)</Description>
+    </Upgrade>
+    <Upgrade id="7" name="Enhanced Pottery">
+        <Description>Increases heal amount of Life and Mana flasks by +X. (++Z every purchase)</Description>
+    </Upgrade>
+</Upgrades>

@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Settings>
+  <FontPath>Fonts\MyriadPro\MyriadPro.otf</FontPath>
+  <MaxOutlineSize>16</MaxOutlineSize>
+  <CharRange start="0x20" end="0xFF" />
+  <CharRange start="0x2190" end="0x2199" />
+  <CharRange start="0x2000" end="0x200F" />
+</Settings>

@@ -1,0 +1,41 @@
+﻿namespace MonoClient.Networking.Packets.Incoming;
+
+public class Text : IncomingPacket<Text> {
+    public string Name;
+    public int ObjectId;
+    public int NumStars;
+    public byte BubbleTime;
+    public string Recipient;
+    public string Txt;
+    public int NameColor;
+
+    public override PacketId PacketId => PacketId.Text;
+
+    public override void Reset() {
+        Name = null;
+        ObjectId = 0;
+        NumStars = 0;
+        BubbleTime = 0;
+        Recipient = null;
+        Txt = null;
+        NameColor = 0;
+    }
+
+    public override void Read(NetworkReader reader) {
+        Name = reader.ReadUtf();
+        ObjectId = reader.ReadInt32();
+        NumStars = reader.ReadInt32();
+        BubbleTime = reader.ReadByte();
+        Recipient = reader.ReadUtf();
+        Txt = reader.ReadUtf();
+        NameColor = reader.ReadInt32();
+    }
+
+    public override void Handle() {
+    }
+
+    public override string ToString() {
+        return
+            $"Name: {Name}, ObjectId: {ObjectId}, NumStars: {NumStars}, BubbleTime: {BubbleTime}, Recipient: {Recipient}, Txt: {Txt}, NameColor: {NameColor}";
+    }
+}

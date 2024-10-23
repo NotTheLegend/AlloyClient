@@ -1,0 +1,47 @@
+﻿using Microsoft.Xna.Framework;
+using MonoClient.Objects;
+using MonoClient.Rendering.VertexData;
+using MonoClient.Utils;
+
+namespace MonoClient.Rendering.Types.SubTypes;
+
+public class TypeHpBar : SubRenderBase {
+    public override float Height {
+        get => 0.06f * 2;
+    }
+
+    private Color _bgColor = ColorUtils.ColorHex(0x111111);
+    private Vector4 _bgScale = new(0.36f, 0.06f, 0, 0);
+
+    private static readonly Color HighFill = ColorUtils.ColorHex(0x10FF00);
+    private static readonly Color MedFill = ColorUtils.ColorHex(0xFF8010);
+    private static readonly Color LowFill = ColorUtils.ColorHex(0xE01010);
+
+    public TypeHpBar(RenderBase parent, Entity entity) {
+        Parent = parent;
+        Entity = entity;
+
+        UV = new Vector4();
+        Scale = new Vector4(0.34f, 0.04f, 0, 0);
+        Rotation = new Vector4(0, 1, 1, -1);
+        Extra = new ExtraData(RenderConfig.TypeBar, RenderConfig.NoShade);
+    }
+
+    public void SetFill(float percent) {
+        if (percent < 0f) {
+            return;
+        }
+        
+        Color = percent < 0.5f ? percent >= 0.2f ? MedFill : LowFill : HighFill;
+        
+        Scale.Z = 0.34f * percent - 0.34f;
+        Scale.X = 0.34f * percent;
+    }
+    
+    public override void Draw(float yOffset) {
+        _bgScale.W = yOffset;
+        Scale.W = yOffset;
+        Render.DrawEntity(new VertexObject(Parent.Position, UV, _bgScale, Rotation, Extra.Data, _bgColor));
+        Render.DrawEntity(new VertexObject(Parent.Position, UV, Scale, Rotation, Extra.Data, Color));
+    }
+}
