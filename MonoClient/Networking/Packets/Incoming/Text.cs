@@ -7,7 +7,6 @@ public class Text : IncomingPacket<Text> {
     public byte BubbleTime;
     public string Recipient;
     public string Txt;
-    public int NameColor;
 
     public override PacketId PacketId => PacketId.Text;
 
@@ -18,7 +17,6 @@ public class Text : IncomingPacket<Text> {
         BubbleTime = 0;
         Recipient = null;
         Txt = null;
-        NameColor = 0;
     }
 
     public override void Read(NetworkReader reader) {
@@ -28,14 +26,12 @@ public class Text : IncomingPacket<Text> {
         BubbleTime = reader.ReadByte();
         Recipient = reader.ReadUtf();
         Txt = reader.ReadUtf();
-        NameColor = reader.ReadInt32();
     }
 
     public override void Handle() {
     }
 
     public override string ToString() {
-        return
-            $"Name: {Name}, ObjectId: {ObjectId}, NumStars: {NumStars}, BubbleTime: {BubbleTime}, Recipient: {Recipient}, Txt: {Txt}, NameColor: {NameColor}";
+        return $"Name: {Name}, ObjectId: {ObjectId}, NumStars: {NumStars}, BubbleTime: {BubbleTime}, Recipient: {Recipient}, Txt: {Txt}";
     }
 }

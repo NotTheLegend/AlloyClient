@@ -8,15 +8,7 @@ public class ShowEffect : IncomingPacket<ShowEffect> {
     public int TargetObjectId;
     public Position Pos1;
     public Position Pos2;
-    public BGRA Color;
-    public int ThrowDuration;
-    public float Radius;
-    public bool Rotate;
-    public int Size;
-    public int Cycles;
-    public float Period;
-    public bool UsePos1;
-    public int TimeMS;
+    public ARGB Color;
 
     public override PacketId PacketId => PacketId.ShowEffect;
 
@@ -26,14 +18,6 @@ public class ShowEffect : IncomingPacket<ShowEffect> {
         Pos1.Reset();
         Pos2.Reset();
         Color.Reset();
-        ThrowDuration = 0;
-        Radius = 0;
-        Rotate = false;
-        Size = 0;
-        Cycles = 0;
-        Period = 0;
-        UsePos1 = false;
-        TimeMS = 0;
     }
 
     public override void Read(NetworkReader reader) {
@@ -56,14 +40,11 @@ public class ShowEffect : IncomingPacket<ShowEffect> {
                 TargetObjectId = reader.ReadInt32();
                 Pos1.Read(reader);
                 Color.Read(reader);
-                ThrowDuration = reader.ReadInt32();
                 break;
             case EffectType.Nova:
                 TargetObjectId = reader.ReadInt32();
-                Radius = reader.ReadSingle();
                 Color.Read(reader);
                 Pos1.Read(reader);
-                UsePos1 = reader.ReadBoolean();
                 break;
             case EffectType.Poison:
                 TargetObjectId = reader.ReadInt32();
@@ -87,14 +68,12 @@ public class ShowEffect : IncomingPacket<ShowEffect> {
                 break;
             case EffectType.Trap:
                 TargetObjectId = reader.ReadInt32();
-                Radius = reader.ReadSingle();
                 Color.Read(reader);
                 break;
             case EffectType.Lightning:
                 TargetObjectId = reader.ReadInt32();
                 Pos1.Read(reader);
                 Color.Read(reader);
-                Size = reader.ReadInt32();
                 break;
             case EffectType.Collapse:
                 TargetObjectId = reader.ReadInt32();
@@ -105,7 +84,6 @@ public class ShowEffect : IncomingPacket<ShowEffect> {
             case EffectType.ConeBlast:
                 TargetObjectId = reader.ReadInt32();
                 Pos1.Read(reader);
-                Radius = reader.ReadSingle();
                 Color.Read(reader);
                 break;
             case EffectType.Earthquake:
@@ -114,23 +92,17 @@ public class ShowEffect : IncomingPacket<ShowEffect> {
             case EffectType.Flashing:
                 TargetObjectId = reader.ReadInt32();
                 Color.Read(reader);
-                Cycles = reader.ReadInt32();
-                Period = reader.ReadSingle();
                 break;
             case EffectType.ObjectToss:
                 TargetObjectId = reader.ReadInt32();
                 Pos1.Read(reader);
                 Pos2.Read(reader);
-                ThrowDuration = reader.ReadInt32();
-                Rotate = reader.ReadBoolean();
                 break;
             case EffectType.Vortex:
                 TargetObjectId = reader.ReadInt32();
-                Radius = reader.ReadSingle();
                 Color.Read(reader);
                 break;
             case EffectType.FadeToBlack:
-                TimeMS = reader.ReadInt32();
                 break;
             default:
                 return;
@@ -141,7 +113,6 @@ public class ShowEffect : IncomingPacket<ShowEffect> {
     }
 
     public override string ToString() {
-        return
-            $"EffectType: {EffectType}, TargetObjectId: {TargetObjectId}, Pos1: {Pos1}, Pos2: {Pos2}, Color: {Color}, ThrowDuration: {ThrowDuration}, Radius: {Radius}, Rotate: {Rotate}, Size: {Size}, Cycles: {Cycles}, Period: {Period}, UsePos1: {UsePos1}, TimeMS: {TimeMS}";
+        return $"EffectType: {EffectType}, TargetObjectId: {TargetObjectId}, Pos1: {Pos1}, Pos2: {Pos2}, Color: {Color}";
     }
 }

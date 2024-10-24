@@ -8,6 +8,7 @@ public class Reconnect : IncomingPacket<Reconnect> {
     public string Host;
     public int Port;
     public int GameId;
+    public int KeyTime;
     public byte[] Key;
 
     public override PacketId PacketId => PacketId.Reconnect;
@@ -17,6 +18,7 @@ public class Reconnect : IncomingPacket<Reconnect> {
         Host = null;
         Port = 0;
         GameId = 0;
+        KeyTime = 0;
         Key = null;
     }
 
@@ -25,6 +27,7 @@ public class Reconnect : IncomingPacket<Reconnect> {
         Host = reader.ReadUtf();
         Port = reader.ReadInt32();
         GameId = reader.ReadInt32();
+        KeyTime = reader.ReadInt32();
         Key = reader.ReadBytes(reader.ReadInt16());
     }
 

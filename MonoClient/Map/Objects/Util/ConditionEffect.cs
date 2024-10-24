@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MonoClient.Objects.Util;
 
@@ -385,7 +386,6 @@ public static class ConditionEffectUtil {
             ConditionEffectIndex.Dazed => true,
             ConditionEffectIndex.Stunned => true,
             ConditionEffectIndex.Blind => true,
-            ConditionEffectIndex.Darkness => true,
             ConditionEffectIndex.Hallucinating => true,
             ConditionEffectIndex.Drunk => true,
             ConditionEffectIndex.Confused => true,
@@ -394,13 +394,6 @@ public static class ConditionEffectUtil {
             ConditionEffectIndex.Stasis => true,
             ConditionEffectIndex.ArmorBroken => true,
             ConditionEffectIndex.Hexed => true,
-            ConditionEffectIndex.Curse => true,
-            ConditionEffectIndex.Unstable => true,
-            ConditionEffectIndex.Silenced => true,
-            ConditionEffectIndex.PowerfulBleeding => true,
-            ConditionEffectIndex.EvenMorePowerfulBleeding => true,
-            ConditionEffectIndex.KingsMadness => true,
-            ConditionEffectIndex.Drain => true,
             _ => false
         };
     }
@@ -409,18 +402,13 @@ public static class ConditionEffectUtil {
         return effect switch {
             ConditionEffectIndex.StasisImmune => ConditionEffectIndex.Stasis,
             ConditionEffectIndex.StunImmune => ConditionEffectIndex.Stunned,
-            ConditionEffectIndex.ParalyzeImmune => ConditionEffectIndex.Paralyzed,
-            ConditionEffectIndex.DazedImmune => ConditionEffectIndex.Dazed,
-            ConditionEffectIndex.MadnessImmune => ConditionEffectIndex.KingsMadness,
-            ConditionEffectIndex.ArmoredImmune => ConditionEffectIndex.ArmorBroken,
-            ConditionEffectIndex.SickImmune => ConditionEffectIndex.Sick,
-            ConditionEffectIndex.SlowedImmune => ConditionEffectIndex.Slowed,
             _ => ConditionEffectIndex.None
         };
     }
 }
 
-public enum ConditionEffectIndex : byte {
+public enum ConditionEffectIndex
+{
     None = 0,
     Quiet = 1,
     Weak = 2,
@@ -437,7 +425,7 @@ public enum ConditionEffectIndex : byte {
     Paralyzed = 13,
     Speedy = 14,
     Bleeding = 15,
-    Hidden = 16,
+    NotUsed = 16,
     Healing = 17,
     Damaging = 18,
     Berserk = 19,
@@ -450,56 +438,38 @@ public enum ConditionEffectIndex : byte {
     ArmorBroken = 26,
     Hexed = 27,
     NinjaSpeedy = 28,
-    Rage = 29,
-    Curse = 30,
-    Unstable = 31,
-    Darkness = 32,
-    ParalyzeImmune = 33,
-    DazedImmune = 34,
-    SlowedImmune = 35,
-    Warging = 36,
-    PiercingImmune = 37,
-    ArmoredImmune = 38,
-    SickImmune = 39,
-    DeathMark = 40,
-    Feral = 41,
-    Silenced = 42,
-    HpBoost = 43,
-    MpBoost = 44,
-    AttBoost = 45,
-    DefBoost = 46,
-    SpdBoost = 47,
-    DexBoost = 48,
-    VitBoost = 49,
-    WisBoost = 50,
-    NegativeHpBoost = 51,
-    NegativeMpBoost = 52,
-    NegativeAttBoost = 53,
-    NegativeDefBoost = 54,
-    NegativeSpdBoost = 55,
-    NegativeDexBoost = 56,
-    NegativeVitBoost = 57,
-    NegativeWisBoost = 58,
-    PowerfulBleeding = 59,
-    EvenMorePowerfulBleeding = 60,
-    KingsMadness = 61,
-    MidasTouch = 62,
-    Scorched = 63,
-    Drain = 64,
-    Ruin = 65,
-    Crippled = 66,
-    MadnessImmune = 67,
-    BunnyDamaging = 68,
-    BunnyManaRegen = 69,
-    BunnyHealing = 70,
-    BunnySpeedy = 71,
-    BunnyWeak = 72,
-    BunnyCurse = 73,
-    IncinerationBleed = 74,
-    MonkeyCurse = 75,
-    DrakenguardScorched = 76,
-    PitchBlack = 77,
-    PerfectDark = 78,
-    ManaRestoration = 79,
-    Glooped = 80
+}
+
+[Flags]
+public enum ConditionEffects : ulong
+{
+    Dead = 1 << 0,
+    Quiet = 1 << 1,
+    Weak = 1 << 2,
+    Slowed = 1 << 3,
+    Sick = 1 << 4,
+    Dazed = 1 << 5,
+    Stunned = 1 << 6,
+    Blind = 1 << 7,
+    Hallucinating = 1 << 8,
+    Drunk = 1 << 9,
+    Confused = 1 << 10,
+    StunImmune = 1 << 11,
+    Invisible = 1 << 12,
+    Paralyzed = 1 << 13,
+    Speedy = 1 << 14,
+    Bleeding = 1 << 15,
+    NotUsed = 1 << 16,
+    Healing = 1 << 17,
+    Damaging = 1 << 18,
+    Berserk = 1 << 19,
+    Paused = 1 << 20,
+    Stasis = 1 << 21,
+    StasisImmune = 1 << 22,
+    Invincible = 1 << 23,
+    Invulnerable = 1 << 24,
+    Armored = 1 << 25,
+    ArmorBroken = 1 << 26,
+    Hexed = 1 << 27,
+    NinjaSpeedy = 1 << 28
 }

@@ -9,7 +9,7 @@ public class Aoe : IncomingPacket<Aoe> {
     public ushort Damage;
     public ConditionEffectIndex Effect;
     public float Duration;
-    public int OwnerId;
+    public ushort OrigType;
 
     public override PacketId PacketId => PacketId.Aoe;
 
@@ -19,7 +19,7 @@ public class Aoe : IncomingPacket<Aoe> {
         Damage = 0;
         Effect = 0;
         Duration = 0;
-        OwnerId = 0;
+        OrigType= 0;
     }
 
     public override void Read(NetworkReader reader) {
@@ -28,7 +28,7 @@ public class Aoe : IncomingPacket<Aoe> {
         Damage = reader.ReadUInt16();
         Effect = (ConditionEffectIndex)reader.ReadByte();
         Duration = reader.ReadSingle();
-        OwnerId = reader.ReadInt32();
+        OrigType = reader.ReadUInt16();
     }
 
     public override void Handle() {
@@ -36,6 +36,6 @@ public class Aoe : IncomingPacket<Aoe> {
 
     public override string ToString() {
         return
-            $"Pos: {Pos}, Radius: {Radius}, Damage: {Damage}, Effect: {Effect}, Duration: {Duration}, OwnerId: {OwnerId}";
+            $"Pos: {Pos}, Radius: {Radius}, Damage: {Damage}, Effect: {Effect}, Duration: {Duration}, OwnerId: {OrigType}";
     }
 }

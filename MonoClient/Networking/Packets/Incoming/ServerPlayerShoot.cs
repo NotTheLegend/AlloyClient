@@ -9,8 +9,6 @@ public class ServerPlayerShoot : IncomingPacket<ServerPlayerShoot> {
     public Position StartingPos;
     public float Angle;
     public short Damage;
-    public int SlotId;
-    public string ProjDesc;
 
     public override PacketId PacketId => PacketId.ServerPlayerShoot;
 
@@ -21,8 +19,6 @@ public class ServerPlayerShoot : IncomingPacket<ServerPlayerShoot> {
         StartingPos.Reset();
         Angle = 0;
         Damage = 0;
-        SlotId = 0;
-        ProjDesc = null;
     }
 
     public override void Read(NetworkReader reader) {
@@ -32,15 +28,12 @@ public class ServerPlayerShoot : IncomingPacket<ServerPlayerShoot> {
         StartingPos.Read(reader);
         Angle = reader.ReadSingle();
         Damage = reader.ReadInt16();
-        SlotId = reader.ReadInt32();
-        ProjDesc = reader.ReadUtf();
     }
 
     public override void Handle() {
     }
 
     public override string ToString() {
-        return
-            $"BulletId: {BulletId}, OwnerId: {OwnerId}, ContainerType: {ContainerType}, StartingPos: {StartingPos}, Angle: {Angle}, Damage: {Damage}, SlotId: {SlotId}, ProjDesc: {ProjDesc}";
+        return $"BulletId: {BulletId}, OwnerId: {OwnerId}, ContainerType: {ContainerType}, StartingPos: {StartingPos}, Angle: {Angle}, Damage: {Damage}";
     }
 }

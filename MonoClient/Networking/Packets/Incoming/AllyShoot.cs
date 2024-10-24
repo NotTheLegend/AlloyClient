@@ -1,30 +1,26 @@
 ﻿namespace MonoClient.Networking.Packets.Incoming;
 
 public class AllyShoot : IncomingPacket<AllyShoot> {
+
+    public byte BulletId;
     public int OwnerId;
-    public bool IsAbility;
-    public int BulletType;
-    public float[] Angles;
+    public ushort ContainerType;
+    public float Angle;
 
     public override PacketId PacketId => PacketId.AllyShoot;
 
     public override void Reset() {
+        BulletId = 0;
         OwnerId = 0;
-        IsAbility = false;
-        BulletType = 0;
-        Angles = null;
+        ContainerType = 0;
+        Angle = 0;
     }
 
     public override void Read(NetworkReader reader) {
+        BulletId = reader.ReadByte();
         OwnerId = reader.ReadInt32();
-        IsAbility = reader.ReadBoolean();
-        BulletType = reader.ReadInt32();
-
-        Angles = new float[reader.ReadInt16()];
-
-        for (var i = 0; i < Angles.Length; i++) {
-            Angles[i] = reader.ReadSingle();
-        }
+        ContainerType = reader.ReadUInt16();
+        Angle = reader.ReadSingle();
     }
 
     public override void Handle() {
@@ -32,6 +28,6 @@ public class AllyShoot : IncomingPacket<AllyShoot> {
 
     public override string ToString() {
         return
-            $"OwnerId: {OwnerId}, IsAbility: {IsAbility}, BulletType: {BulletType}, Angles: {string.Join(", ", Angles)}";
+            $"OwnerId: {OwnerId}, BulletId: {BulletId}, ContainerType: {ContainerType}, Angle: {Angle}";
     }
 }

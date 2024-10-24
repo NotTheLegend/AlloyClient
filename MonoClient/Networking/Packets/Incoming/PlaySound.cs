@@ -2,7 +2,7 @@
 
 public class PlaySound : IncomingPacket<PlaySound> {
     public int OwnerId;
-    public byte SoundId;
+    public int SoundId;
 
     public override PacketId PacketId => PacketId.PlaySound;
 
@@ -13,7 +13,7 @@ public class PlaySound : IncomingPacket<PlaySound> {
 
     public override void Read(NetworkReader reader) {
         OwnerId = reader.ReadInt32();
-        SoundId = reader.ReadByte();
+        SoundId = reader.ReadInt32();
     }
 
     public override void Handle() {

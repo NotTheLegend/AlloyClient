@@ -1,6 +1,6 @@
 ﻿namespace MonoClient.Networking.Structs.DataObjects;
 
-public struct BGRA(uint bgra) : IDataObject {
+public struct ARGB(uint bgra) : IDataObject {
     public byte B = (byte)(bgra & 0xFF);
     public byte G = (byte)(bgra >> 8 & 0xFF);
     public byte R = (byte)(bgra >> 16 & 0xFF);
@@ -14,17 +14,17 @@ public struct BGRA(uint bgra) : IDataObject {
     }
 
     public void Read(NetworkReader reader) {
-        B = reader.ReadByte();
-        G = reader.ReadByte();
-        R = reader.ReadByte();
         A = reader.ReadByte();
+        R = reader.ReadByte();
+        G = reader.ReadByte();
+        B = reader.ReadByte();
     }
 
     public void Write(NetworkWriter writer) {
-        writer.Write(B);
-        writer.Write(G);
-        writer.Write(R);
         writer.Write(A);
+        writer.Write(R);
+        writer.Write(G);
+        writer.Write(B);
     }
 
     public override string ToString() {
