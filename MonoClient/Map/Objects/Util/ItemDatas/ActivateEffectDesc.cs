@@ -62,7 +62,7 @@ public class ActivateEffectDesc : ItemData {
     public bool Percent;
 
     public ActivateEffectDesc(XElement xml) {
-        EffectName = xml.GetValue<string>("");
+        EffectName = xml.Value;
         EffectId = xml.GetValue<int>("Effect");
         ConditionEffect = xml.GetAttribute<string>("effect");
         if (string.IsNullOrWhiteSpace(ConditionEffect)) {
