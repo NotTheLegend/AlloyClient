@@ -141,7 +141,7 @@ public class ActivateEffectDesc : ItemData {
             ActivationType.REMOVE_NEG_COND => "range",
             ActivationType.SPELL_GRENADE => "amount",
             ActivationType.POISON_GRENADE => "radius duration condDuration",
-            _ => throw new ArgumentOutOfRangeException()
+            _ => null
         };
     }
     

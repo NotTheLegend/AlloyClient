@@ -277,7 +277,7 @@ public class ItemDesc : ItemData {
         CraftingRarity = xml.GetValue<int>("CraftingRarity");
         TabletSlots = xml.GetValue<int>("TabletSlots");
         MaxTabletSlots = xml.GetValue<int>("MaxTabletSlots");
-        Projectile = new ProjectileDesc(xml.Element("Projectile"), null, EssenceUpgrades);
+        Projectile = xml.HasElement("Projectile") ? new ProjectileDesc(xml.Element("Projectile"), null, EssenceUpgrades) : null;
         ItemEffect = xml.Elements("ItemEffect").Select(i => int.Parse(i.Value)).ToArray();
         UseCharges = xml.GetValue<int>("UseCharges");
         MaxCharges = xml.GetValue<int>("MaxCharges");
