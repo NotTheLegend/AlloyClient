@@ -25,7 +25,6 @@ public enum CharacterRectType {
 
 public sealed class CharacterRect : Container {
     private const int NumberStatsMaxed = 8;
-    private const int MaxSkillLevel = 72;
     private const int NumberStars = 5;
 
     private const int NumberCharacters = 15;
@@ -33,7 +32,6 @@ public sealed class CharacterRect : Container {
     private readonly CharacterListScreen _characterListScreen;
 
     private int _statsMaxed;
-    private int _skillLevel;
     private int _baseFame;
 
     public CharacterRect(CharacterListScreen characterListScreen) : base(new ContainerConfig { Width = 200, Height = 200, EnableClip = true }) {
@@ -118,22 +116,6 @@ public sealed class CharacterRect : Container {
                     break;
             }
 
-            _skillLevel = character.SkillLevel;
-            var skillPointsText = new SimpleText(new TextConfig {
-                Text = $"{_skillLevel}/{MaxSkillLevel}",
-                FontSize = 16,
-                Bold = true,
-                Color = 0x3BC8C0,
-                Anchor = UiAnchor.Middle,
-            });
-            skillPointsText.X = Width / 2;
-            skillPointsText.Y = statsMaxedText.Y + skillPointsText.Height / 2 + 12;
-            AddChild(skillPointsText);
-            
-            if (_skillLevel == MaxSkillLevel) {
-                skillPointsText.SetColor(0x4CFFF3);
-            }
-
             var texture = props.AnimatedTexture;
             var atlasAnimationData = UiRender.GameAtlas.GetAnimationAtlasData(texture.File, texture.Index);
             var atlasData = atlasAnimationData.FaceDown[0];
@@ -146,7 +128,7 @@ public sealed class CharacterRect : Container {
                 
             });
             charPortrait.X = Width / 2;
-            charPortrait.Y = skillPointsText.Y + charPortrait.Height / 2 + 14;
+            charPortrait.Y = statsMaxedText.Y + charPortrait.Height / 2 + 14;
             AddChild(charPortrait);
             
             _baseFame = character.CurrentFame;
@@ -227,7 +209,7 @@ public sealed class CharacterRect : Container {
     }
 
     public int ComputeSortValue() {
-        return _skillLevel * 10000 + _statsMaxed * 1000 + _baseFame;
+        return _statsMaxed * 1000 + _baseFame;
     }
 
     private static int GetStatsMaxed(CharacterModel characterModel) {

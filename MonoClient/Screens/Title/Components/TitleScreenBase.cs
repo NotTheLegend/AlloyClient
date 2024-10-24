@@ -10,9 +10,6 @@ namespace MonoClient.Screens.Title.Components;
 public abstract class TitleScreenBase : Screen {
     protected TitleScreenBase(bool title = false) {
         Main.GameInstance.SetTitleGraphics();
-        if (Data.CharacterList.Model != null) {
-            Music.PlayMusic(Data.CharacterList.Model.Account.MenuMusic, 0);
-        }
         
         var background = new ScreenGraphic(new ScreenGraphicConfig { Width = Settings.DefaultScreenWidth, Height = Settings.DefaultScreenHeight, TitleScreen = title });
         AddChild(background);

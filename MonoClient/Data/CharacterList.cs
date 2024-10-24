@@ -39,30 +39,10 @@ public static class CharacterList {
             };
         }
         
-        var doc = new XmlDocument();
-        doc.LoadXml(response);
+        //var doc = new XmlDocument();
+        //.LoadXml(response);
         
-        var charList = doc.SelectSingleNode("/List/Chars");
-        if (charList == null) {
-            Log.Error("Character List not found.");
-            return new CharListResponse {
-                Success = false,
-                Message = "Character List not found."
-            };
-        }
-        
-        Model = XmlSerializer<CharacterListModel>.Deserialize(charList.OuterXml);
-        
-        var brewingData = doc.SelectSingleNode("/List/BrewingData");
-        if (brewingData == null) {
-            Log.Error("Brewing Data not found.");
-            return new CharListResponse {
-                Success = false,
-                Message = "Brewing Data not found."
-            };
-        }
-        
-        BrewingData = XmlSerializer<BrewingDataModel>.Deserialize(brewingData.OuterXml);
+        Model = XmlSerializer<CharacterListModel>.Deserialize(response);
 
         Log.Info("Character List Loaded.");
         

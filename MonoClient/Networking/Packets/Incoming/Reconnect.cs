@@ -39,9 +39,6 @@ public class Reconnect : IncomingPacket<Reconnect> {
         hello.Password = Rsa.EncryptPublic(Data.Account.Password);
         hello.Key = Key ?? [];
         hello.MapJSON = "";
-        hello.Signature = "b5f1afad50dda949c1f4e88b7afb84fb";
-        hello.ClientSize = 14569539;
-        hello.Platform = "web";
         Client.QueuePacket(hello);
     }
 

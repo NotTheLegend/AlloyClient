@@ -1,6 +1,8 @@
-﻿using MonoClient.Data;
+﻿using System;
+using MonoClient.Data;
 using MonoClient.Networking.Packets.Outgoing;
 using MonoClient.State.Input;
+using MonoClient.Utils;
 
 namespace MonoClient.Networking.Packets.Incoming;
 
@@ -14,8 +16,6 @@ public class MapInfo : IncomingPacket<MapInfo> {
     public int Background;
     public bool AllowPlayerTeleport;
     public bool ShowDisplays;
-    public string Music;
-    public float Darkness;
 
     public override PacketId PacketId => PacketId.MapInfo;
 
@@ -29,8 +29,6 @@ public class MapInfo : IncomingPacket<MapInfo> {
         Background = 0;
         AllowPlayerTeleport = false;
         ShowDisplays = false;
-        Music = null;
-        Darkness = 0f;
     }
 
     public override void Read(NetworkReader reader) {
@@ -43,19 +41,16 @@ public class MapInfo : IncomingPacket<MapInfo> {
         Background = reader.ReadInt32();
         AllowPlayerTeleport = reader.ReadBoolean();
         ShowDisplays = reader.ReadBoolean();
-        Music = reader.ReadUtf();
-        Darkness = reader.ReadSingle();
     }
 
     public override void Handle() {
         Map.Reset();
 
         Map.InitMap(Width, Height, Name, DisplayName, Difficulty, Seed, Background,
-            AllowPlayerTeleport, ShowDisplays, Music, Darkness);
+            AllowPlayerTeleport, ShowDisplays);
 
         LoadOrCreate();
-
-        Sound.Music.PlayMusic(Music);
+        
         InputHandler.Reconnecting = false;
     }
 
@@ -76,6 +71,6 @@ public class MapInfo : IncomingPacket<MapInfo> {
 
     public override string ToString() {
         return
-            $"Width: {Width}, Height: {Height}, Name: {Name}, DisplayName: {DisplayName}, Difficulty: {Difficulty}, Seed: {Seed}, Background: {Background}, AllowPlayerTeleport: {AllowPlayerTeleport}, ShowDisplays: {ShowDisplays}, Music: {Music}, Darkness: {Darkness}";
+            $"Width: {Width}, Height: {Height}, Name: {Name}, DisplayName: {DisplayName}, Difficulty: {Difficulty}, Seed: {Seed}, Background: {Background}, AllowPlayerTeleport: {AllowPlayerTeleport}, ShowDisplays: {ShowDisplays}";
     }
 }

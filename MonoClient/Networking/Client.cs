@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using MonoClient.Networking.Packets;
@@ -91,7 +92,7 @@ public static class Client {
             }
 
             if (PacketBuffer.Index == LengthPrefix) {
-                PacketBuffer.Resize(BitConverter.ToInt32(PacketBuffer.Bytes, 0));
+                PacketBuffer.Resize(IPAddress.NetworkToHostOrder(BitConverter.ToInt32(PacketBuffer.Bytes, 0)));
                 BeginRead(PacketBuffer.Index, PacketBuffer.BytesRemaining());
             }
             else if (PacketBuffer.BytesRemaining() > 0) {
@@ -183,9 +184,6 @@ public static class Client {
         hello.Password = Rsa.EncryptPublic(Data.Account.Password);
         hello.Key = [];
         hello.MapJSON = "";
-        hello.Signature = "";
-        hello.ClientSize = 420;
-        hello.Platform = "mono";
         QueuePacket(hello);
     }
 }

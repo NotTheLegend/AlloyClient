@@ -14,7 +14,7 @@ public class CharacterModel {
 
     [XmlElement("CurrentFame")] public int CurrentFame;
 
-    [XmlElement("ItemDatas")] public string ItemDatas;
+    [XmlElement("Equipment")] public string Equipment;
 
     [XmlElement("MaxHitPoints")] public int MaxHitPoints;
 
@@ -49,12 +49,6 @@ public class CharacterModel {
     [XmlElement("Dead")] public bool Dead;
 
     [XmlElement("HasBackpack")] public bool HasBackpack;
-
-    [XmlElement("Birthsign")] public string BirthSign;
-    
-    [XmlElement("SkillLevel")] public int SkillLevel;
-
-    [XmlElement("ReviveUsed")] public bool ReviveUsed;
 
     [XmlElement("PcStats")] public PcStatsItem PcStats;
     

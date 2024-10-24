@@ -9,12 +9,14 @@ public class AccountModel {
     [XmlElement("Name")] public string Name;
     
     [XmlElement("Credits")] public int Credits;
+    
+    [XmlElement("NameChosen", IsNullable = true)] private string _nameChosen;
 
-    [XmlElement("Souls")] public int Souls;
-
-    [XmlElement("MenuMusic")] public string MenuMusic;
-
-    [XmlElement("DeadMusic")] public string DeadMusic;
+    public bool NameChosen => _nameChosen != null;
+    
+    [XmlElement("Admin", IsNullable = true)] private string _admin;
+    
+    public bool Admin => _admin != null;
 
     [XmlElement("NextCharSlotPrice")] public int NextCharSlotPrice;
 

@@ -53,6 +53,11 @@ public class TextButton : Sprite {
         Activate();
     }
 
+    public void SetState(bool state) {
+        if (state) Activate();
+        else Deactivate();
+    }
+
     public void Activate() {
         _text.SetColor(_activeColor);
         AddEventListener(MouseEventId.MouseOver, OnMouseOver);

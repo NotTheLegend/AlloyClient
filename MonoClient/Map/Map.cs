@@ -32,8 +32,6 @@ public static class Map {
     public static int Background;
     public static bool AllowPlayerTeleport;
     public static bool ShowDisplays;
-    public static string Music;
-    public static float Darkness;
 
     private static MapTile[,] _tiles;
     public static readonly RenderStorage EntityStorage = new();
@@ -54,7 +52,7 @@ public static class Map {
     private static readonly VertexParticle[] Particles = new VertexParticle[30000];
 
     public static void InitMap(int width, int height, string name, string display, int diff, uint seed, int background,
-        bool allowTp, bool showDisplays, string music, float darkness) {
+        bool allowTp, bool showDisplays) {
         Width = width;
         Height = height;
         Name = name;
@@ -64,8 +62,6 @@ public static class Map {
         Background = background;
         AllowPlayerTeleport = allowTp;
         ShowDisplays = showDisplays;
-        Music = music;
-        Darkness = darkness;
 
         _tiles = new MapTile[width + 1, height + 1];
         
@@ -282,8 +278,6 @@ public static class Map {
         Background = 0;
         AllowPlayerTeleport = false;
         ShowDisplays = false;
-        Music = null;
-        Darkness = 0f;
 
         Entities.Clear();
         EntityStorage.Clear();

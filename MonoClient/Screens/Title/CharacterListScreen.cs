@@ -4,6 +4,7 @@ using MonoClient.Display;
 using MonoClient.Screens.Game;
 using MonoClient.Screens.Title.Components;
 using MonoClient.Screens.Title.Components.CharacterList;
+using MonoClient.Screens.Title.Components.Panels;
 using MonoClient.State;
 using MonoClient.Ui.Components.Buttons;
 using MonoClient.Ui.Components.Scrollbars;
@@ -87,42 +88,23 @@ public class CharacterListScreen : TitleScreenBase {
         
         #region Name and Currency
         
-        var nameText = new SimpleText(new TextConfig {
+        var nameText = new TextButton(new TextButtonConfig() {
             Text = Account.Username,
             FontSize = 32,
             Bold = true,
             X = Settings.DefaultScreenWidth / 2,
             Y = 50,
-            Color = 0xB3B3B3,
+            OnClicked = () => PanelManager.Enqueue(new NameContainer()),
+            ActiveColor = 0xB3B3B3,
+            InactiveColor = 0xB3B3B3,
             Anchor = UiAnchor.Middle,
         });
+        nameText.SetState(!CharacterList.Model.Account.NameChosen);
         AddChild(nameText);
-        
-        // 0, 0, 24, 24, "lofiCharBig", 0x10
-        var soulsIcon = new ObjectRect(new ObjectRectConfig {
-            Texture = TextureInfo.FromGameAtlas("lofiCharBig", 0x10),
-            X = Settings.DefaultScreenWidth - 15,
-            Y = 92,
-            Width = 24,
-            Height = 24,
-            Anchor = UiAnchor.RightBottom,
-        });
-        AddChild(soulsIcon);
-        
-        var soulsText = new SimpleText(new TextConfig {
-            Text = CharacterList.Model.Account.Souls.ToString(),
-            FontSize = 24,
-            Bold = false,
-            X = soulsIcon.X - soulsIcon.Width - 3,
-            Y = 93,
-            Color = 0xFFFFFF,
-            Anchor = UiAnchor.RightBottom,
-        });
-        AddChild(soulsText);
         
         var goldIcon = new ObjectRect(new ObjectRectConfig {
             Texture = TextureInfo.FromGameAtlas("lofiObj3", 0xE1),
-            X = soulsText.X - soulsText.Width - 10,
+            X = Settings.DefaultScreenWidth - 15,
             Y = 88,
             Width = 16,
             Height = 16,
@@ -310,6 +292,8 @@ public class CharacterListScreen : TitleScreenBase {
     }
 
     public void ShowCharacterCreate() {
+        //todo char select
+        
     }
     
     public void HideCharacterCreate() {

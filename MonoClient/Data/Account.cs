@@ -133,13 +133,11 @@ public static class Account {
         return new LoginResponse { Success = true };
     }
 
-    public static async Task<LoginResponse> Register(string usernameTextValue, string emailTextValue, string passwordTextValue) {
+    public static async Task<LoginResponse> Register(string emailTextValue, string passwordTextValue) {
         var request = await AppEngineClient.SendRequest("/account/register", new Dictionary<string, string> {
             { "guid", new Guid().ToString() },
-            { "username", usernameTextValue },
             { "newGUID", emailTextValue },
-            { "newPassword", passwordTextValue },
-            { "accessCode", Settings.RegisterCode }
+            { "newPassword", passwordTextValue }
         }, retries: 3);
         
         if (request == null) {
@@ -153,6 +151,28 @@ public static class Account {
             return new LoginResponse { Success = true };
         }
 
+        return new LoginResponse { Success = false, Message = error };
+    }
+
+    public static async Task<LoginResponse> SetName(string name) {
+        var request = await AppEngineClient.SendRequest("/account/setName", new Dictionary<string, string>() {
+            { "guid", Email },
+            { "password", Password },
+            { "name", name }
+        });
+        
+        if (request == null) {
+            return new LoginResponse { Success = false, Message = "Failed to contact server." };
+        }
+        
+        var xElement = XElement.Parse(request);
+        var error = xElement.Value;
+        
+        if (error == "") {
+            Username = name;
+            return new LoginResponse { Success = true };
+        }
+        
         return new LoginResponse { Success = false, Message = error };
     }
 

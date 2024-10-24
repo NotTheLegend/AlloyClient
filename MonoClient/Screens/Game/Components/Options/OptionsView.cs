@@ -146,7 +146,7 @@ public sealed class OptionsView : Panel {
 
     private void OnHome() {
         ClosePanel();
-        Client.QueuePacket(CloseGame.CreatePacket());
+        Client.Disconnect();
         ScreenManager.FadeToScreen(new CharacterListScreen(), Easing.SineInOut, 500, 0, () => Client.Disconnect());
     }
 
