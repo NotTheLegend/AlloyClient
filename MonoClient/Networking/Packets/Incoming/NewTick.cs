@@ -1,5 +1,6 @@
 ﻿using MonoClient.Networking.Packets.Outgoing;
 using MonoClient.Networking.Structs.DataObjects;
+using MonoClient.Utils;
 
 namespace MonoClient.Networking.Packets.Incoming;
 
@@ -54,7 +55,10 @@ public class NewTick : IncomingPacket<NewTick> {
     }
 
     private void ProcessObjectStats(ObjectStats stats, bool isPlayer) {
-        var en = Map.Entities[stats.Id];
+        if (!Map.Entities.TryGetValue(stats.Id, out var en)) {
+            Logger.Warn($"[NewTick] Unable to lookup id: {stats.Id}");
+            return;
+        }
         en.UpdateStats(stats.Stats);
 
         if (TickTime != 0) {
