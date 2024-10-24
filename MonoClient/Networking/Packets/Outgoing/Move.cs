@@ -3,25 +3,33 @@
 namespace MonoClient.Networking.Packets.Outgoing;
 
 public class Move : OutgoingPacket<Move> {
-    public Position NewPosition;
-    public Position MousePosition;
+
+    public int TickId;
     public int Time;
+    public Position NewPosition;
+    public TimedPosition[] Records;
 
     public override PacketId PacketId => PacketId.Move;
 
     public override void Reset() {
-        NewPosition.Reset();
-        MousePosition.Reset();
+        TickId = 0;
         Time = 0;
+        NewPosition.Reset();
+        Records = [];
     }
 
     public override void Write(NetworkWriter writer) {
-        NewPosition.Write(writer);
-        MousePosition.Write(writer);
+        writer.Write(TickId);
         writer.Write(Time);
+        NewPosition.Write(writer);
+       
+        writer.Write((short)Records.Length);
+        for (var i = 0; i < Records.Length; i++) {
+            Records[i].Write(writer);
+        }
     }
 
     public override string ToString() {
-        return $"NewPosition: {NewPosition}, MousePosition: {MousePosition}, Time: {Time}";
+        return $"NewPosition: {NewPosition}, Time: {Time}";
     }
 }

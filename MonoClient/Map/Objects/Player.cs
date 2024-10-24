@@ -277,30 +277,6 @@ public class Player : Entity {
                 case StatsType.WisdomBonus:
                     WisdomBoost = stat.Value;
                     break;
-                case StatsType.DamageReduction:
-                    DamageReduction = stat.Value;
-                    break;
-                case StatsType.DamageIncrease:
-                    DamageIncrease = stat.Value;
-                    break;
-                case StatsType.AttackSpeedIncrease:
-                    AttackSpeedIncrease = stat.Value;
-                    break;
-                case StatsType.CriticalChance:
-                    CriticalChance = stat.Value;
-                    break;
-                case StatsType.CriticalMultiplier:
-                    CriticalMultiplier = stat.Value;
-                    break;
-                case StatsType.DodgeChance:
-                    DodgeChance = stat.Value;
-                    break;
-                case StatsType.ManaRegenBoost:
-                    ManaRegenBoost = stat.Value;
-                    break;
-                case StatsType.ShieldRechargeTime:
-                    ShieldRechargeTime = stat.Value;
-                    break;
                 case StatsType.AccountId:
                     AccountId = stat.Value;
                     break;
@@ -321,9 +297,6 @@ public class Player : Entity {
                     break;
                 case StatsType.FameGoal:
                     FameGoal = stat.Value;
-                    break;
-                case StatsType.Souls:
-                    Souls = stat.Value;
                     break;
                 case StatsType.NameChosen:
                     NameChosen = stat.Value != 0;
@@ -347,88 +320,9 @@ public class Player : Entity {
                     Skin = stat.Value;
                     SetPlayerSkinTemplate(Skin);
                     break;
-                case StatsType.Rage:
-                    Rage = stat.Value;
-                    break;
-                case StatsType.PartyId:
-                    PartyId = stat.Value;
-                    break;
-                case StatsType.LdBoosted:
-                    LdBoosted = stat.Value;
-                    break;
-                case StatsType.LdBoostAmount:
-                    LdBoostAmount = stat.Value;
-                    break;
-                case StatsType.XpBoosted:
-                    XpBoostTime = stat.Value;
-                    break;
-                case StatsType.SkillXpBoostTime:
-                    SkillXpBoostTime = stat.Value;
-                    break;
-                case StatsType.SkillXpBoostAmount:
-                    SkillXpBoostAmount = stat.Value;
-                    break;
-                case StatsType.DeathBoostTime:
-                    DeathBoostTime = stat.Value;
-                    break;
-                case StatsType.DeathBoost:
-                    DeathBoost = stat.Value;
-                    break;
-                case StatsType.SkillPoints:
-                    SkillPoints = stat.Value;
-                    break;
-                case StatsType.WargEntity:
-                    break;
-                case StatsType.SkillExp:
-                    SkillExp = stat.Value;
-                    break;
-                case StatsType.SkillExpGoal:
-                    SkillExpGoal = stat.Value;
-                    break;
-                case StatsType.SkillLevel:
-                    SkillLevel = stat.Value;
-                    break;
-                case StatsType.MpCostMult:
-                    MpCostMult = stat.Value;
-                    break;
-                case StatsType.PotionShards:
-                    PotionShards = stat.Value;
-                    break;
-                case StatsType.ShieldPoints:
-                    ShieldPoints = stat.Value;
-                    break;
-                case StatsType.MaxShieldPoints:
-                    MaxShieldPoints = stat.Value;
-                    break;
-                case StatsType.MadnessBuildup:
-                    MadnessBuildup = stat.Value;
-                    break;
-                case StatsType.LootBoostStat:
-                    LootBoost = stat.Value;
-                    break;
                 case StatsType.HasBackpack:
                     HasBackPack = stat.Value != 0;
                     // add backpack signal
-                    break;
-                case StatsType.HasMaterialSatchel:
-                    HasSatchel = stat.Value != 0;
-                    // add satchel signal
-                    break;
-                case StatsType.MaterialSatchel:
-                    SatchelData = (SatchelData) stat.DataObject;
-                    break;
-                case StatsType.AliveMinions:
-                    AliveMinionsData = (AliveMinionsData) stat.DataObject;
-                    break;
-                case StatsType.TrackerId:
-                    TrackerId = stat.Value;
-                    break;
-                case StatsType.TrackerDmg:
-                    TrackerDmg = stat.Value;
-                    break;
-                case StatsType.DashAmount:
-                    DashAmount = stat.Value;
-                    DashTime = 0; // dash time current time
                     break;
             }
         }

@@ -11,7 +11,6 @@ public class Load : OutgoingPacket<Load> {
 
     public override void Write(NetworkWriter writer) {
         writer.Write(CharId);
-        writer.WriteUtf("air0");
     }
 
     public override string ToString() {

@@ -6,20 +6,6 @@ namespace MonoClient.Objects.Util;
 public static class StatsUtil {
 
     public static float Convert(StatsType statId, float amount) {
-        switch (statId) {
-            case StatsType.DamageReduction:
-                return EquipmentToolTip.Round(amount / 10.0f, 1);
-            case StatsType.CriticalChance:
-                return EquipmentToolTip.Round(amount / 10.0f, 1);
-            case StatsType.CriticalMultiplier:
-                return EquipmentToolTip.Round(amount / 10.0f, 1);
-            case StatsType.DodgeChance:
-                return EquipmentToolTip.Round(amount / 10.0f, 1);
-            case StatsType.ShieldRechargeTime:
-                return EquipmentToolTip.Round(amount / 1000.0f, 2);
-            case StatsType.MovementSpeed:
-                return EquipmentToolTip.Round(amount, 1);
-        }
         return amount;
     }
 
