@@ -81,8 +81,8 @@ unsafe class UiAtlasProcessor : ContentProcessor<string, UiAtlasResult> {
         AddImage("ScrollBar/ScrollBarBackground", "ScrollBar/ScrollBarBackground.png");
         AddImage("ScrollBar/ScrollBarHandle", "ScrollBar/ScrollBarHandle.png");
         
-        var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-        WriteAtlasToFile(Atlas, desktopPath + "/UiAtlas.png");
+        // var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        // WriteAtlasToFile(Atlas, desktopPath + "/UiAtlas.png");
 
         _stbContext.Dispose();
         _result.MainAtlas = Atlas;

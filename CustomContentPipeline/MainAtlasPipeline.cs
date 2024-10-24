@@ -215,8 +215,8 @@ unsafe class MainAtlasProcessor : ContentProcessor<string, MainAtlasResult> {
         //AddAnimatedImage("gPlusPlayer64", "gPlusPlayer64.png", 64, 64, Grouping.Full);//index out of bounds
 
 
-        var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-        WriteAtlasToFile(Atlas, desktopPath + "/NewAtlas.png");
+        // var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        // WriteAtlasToFile(Atlas, desktopPath + "/NewAtlas.png");
 
         _stbContext.Dispose();
         _result.MainAtlas = Atlas;
