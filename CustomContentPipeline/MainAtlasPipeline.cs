@@ -146,6 +146,7 @@ unsafe class MainAtlasProcessor : ContentProcessor<string, MainAtlasResult> {
         AddAnimatedImage("chars8x8rLow2", "chars8x8rlow2.png", 8, 8);
         AddAnimatedImage("chars8x8rMid", "chars8x8rmid.png", 8, 8);
         AddAnimatedImage("chars8x8rMid2", "chars8x8rmid2.png", 8, 8);
+        AddAnimatedImage("chars8x8rPets1", "chars8x8rpets1.png", 8, 8);
         AddAnimatedImage("chars8x8rHigh", "chars8x8rhigh.png", 8, 8);
         AddAnimatedImage("chars8x8rHero1", "chars8x8rhero1.png", 8, 8);
         AddAnimatedImage("chars8x8rHero2", "chars8x8rhero2.png", 8, 8);
@@ -155,12 +156,13 @@ unsafe class MainAtlasProcessor : ContentProcessor<string, MainAtlasResult> {
         AddAnimatedImage("chars8x8dEncounters", "chars8x8dencounters.png", 8, 8);
         AddAnimatedImage("chars8x8rEncounters", "chars8x8rencounters.png", 8, 8);
         AddAnimatedImage("chars16x8dEncounters", "chars16x8dencounters.png", 16, 8);
+        AddAnimatedImage("chars16x8rEncounters", "chars16x8rencounters.png", 16, 8);
         AddAnimatedImage("chars16x16dEncounters", "chars16x16dencounters.png", 16, 16);
         AddAnimatedImage("chars16x16dEncounters2", "chars16x16dencounters2.png", 16, 16);
         AddAnimatedImage("chars16x16rEncounters", "chars16x16rencounters.png", 16, 16);
 
         AddAnimatedImage("players", "players.png", 8, 8, Grouping.Full);
-        AddAnimatedImage("playerskins", "PlayerSkins.png", 8, 8, Grouping.Full);
+        AddAnimatedImage("playerskins", "PlayersSkins.png", 8, 8, Grouping.Full);
 
         // var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         // WriteAtlasToFile(Atlas, desktopPath + "/NewAtlas.png");
