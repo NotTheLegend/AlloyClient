@@ -139,30 +139,6 @@ unsafe class MainAtlasProcessor : ContentProcessor<string, MainAtlasResult> {
         AddImage("lofiProjs", "lofiprojs.png", 8, 8);
         AddImage("lofiProjsBig", "lofiprojsbig.png", 16, 16);
         AddImage("lofiParts", "lofiparts.png", 8, 8);
-        AddImage("customObjects8x8", "customobjects8x8.png", 8, 8);
-        AddImage("customObjects16x16", "customobjects16x16.png", 16, 16);
-        AddImage("customObjects24x24", "customobjects24x24.png", 24, 24);
-        AddImage("customObjects32x32", "customobjects32x32.png", 32, 32);
-        AddImage("customObjects64x64", "customobjects64x64.png", 64, 64);
-        AddImage("customObjects128x128", "customobjects128x128.png", 128, 128);
-        AddImage("customObjects92x78", "customobjects92x78.png", 92, 78);
-        AddImage("customObjects92x32", "customobjects92x32.png", 92, 32);
-        AddImage("lofiObj7", "lofiobj7.png", 8, 8);
-        AddImage("lostHallsObjects8x8", "losthallsobjects8x8.png", 8, 8);
-        AddImage("lostHallsObjects16x16", "losthallsobjects16x16.png", 16, 16);
-        AddImage("d3LofiObj", "d3lofiobj.png", 8, 8);
-        AddImage("romanNumbers8x8", "romannumbers8x8.png", 8, 8);
-        AddImage("shmittySheet", "shmittysheet.png", 8, 8);
-        AddImage("shmittySheet16", "shmittysheet16.png", 16, 16);
-        AddImage("shmittySheet32", "shmittysheet32.png", 32, 32);
-        AddImage("darkRoomStars", "darkroomstars.png", 8, 8);
-        AddImage("darkRoomStars2", "darkroomstars.png", 8, 8);
-        AddImage("gPlusSheet", "gplussheet.png", 8, 8);
-        AddImage("gPlusSheet16", "gplussheet16x16.png", 16, 16);
-        AddImage("gPlusSheet32", "gplussheet32x32.png", 32, 32);
-        AddImage("gPlusSheet64", "gplussheet64x64.png", 64, 64);
-        AddImage("d1lofiObjBig", "d1lofiobjbig.png", 16, 16);
-        AddImage("dungeonModifierIcons", "dungeonmodifiericons.png", 8, 8);
 
         AddAnimatedImage("chars8x8rBeach", "chars8x8rbeach.png", 8, 8);
         AddAnimatedImage("chars8x8dBeach", "chars8x8dbeach.png", 8, 8);
@@ -185,35 +161,6 @@ unsafe class MainAtlasProcessor : ContentProcessor<string, MainAtlasResult> {
 
         AddAnimatedImage("players", "players.png", 8, 8, Grouping.Full);
         AddAnimatedImage("playerskins", "PlayerSkins.png", 8, 8, Grouping.Full);
-        AddAnimatedImage("playerskins16", "PlayerSkins16.png", 16, 16, Grouping.Full);
-
-        AddAnimatedImage("chars8x8rPets1", "chars8x8rpets1.png", 8, 8);
-        AddAnimatedImage("customChars8x8", "customchars8x8.png", 8, 8);
-        AddAnimatedImage("lostHallsChars8x8", "losthallschars8x8.png", 8, 8);
-        AddAnimatedImage("lostHallsChars16x16", "losthallschars16x16.png", 16, 16);
-        AddAnimatedImage("customChars16x16", "customchars16x16.png", 16, 16);
-        AddAnimatedImage("customChars24x24", "customchars24x24.png", 24, 24);
-        AddAnimatedImage("customChars32x32", "customchars32x32.png", 32, 32);
-        AddAnimatedImage("d1Chars16x16r", "d1chars16x16r.png", 16, 16);
-        AddAnimatedImage("d3Chars16x16r", "d3chars16x16r.png", 16, 16);
-        AddAnimatedImage("d1Chars32x32r", "d1chars32x32r.png", 32, 32);
-        AddAnimatedImage("d3Chars8x8r", "d3chars8x8r.png", 8, 8);
-        AddAnimatedImage("d1Chars64x64r", "d1chars64x64r.png", 64, 64);
-        AddAnimatedImage("customChars128x128", "customchars128x128.png", 128, 128);
-        AddAnimatedImage("customChars102x64", "customchars102x64.png", 102, 64);
-        AddAnimatedImage("customChars86x50", "customchars86x50.png", 86, 50);
-        AddAnimatedImage("petsDivine", "petsdivine.png", 16, 16);
-        
-        // todo fix g sheets lmao
-        //AddAnimatedImage("gPlusEntities8", "gPlusEntities8.png", 8, 8); // sheet height wrong
-        //AddAnimatedImage("gPlusEntities16", "gPlusEntities16.png", 16, 16);// sheet height wrong
-        AddAnimatedImage("gPlusEntities32", "gPlusEntities32.png", 32, 32);
-        AddAnimatedImage("gPlusEntities64", "gPlusEntities64.png", 64, 64);
-        //AddAnimatedImage("gPlusPlayer8", "gPlusPlayer8.png", 8, 8, Grouping.Full);// sheet height wrong
-        //AddAnimatedImage("gPlusPlayer16", "gPlusPlayer16.png", 16, 16, Grouping.Full);// sheet height wrong
-        //AddAnimatedImage("gPlusPlayer32", "gPlusPlayer32.png", 32, 32, Grouping.Full);//index out of bounds
-        //AddAnimatedImage("gPlusPlayer64", "gPlusPlayer64.png", 64, 64, Grouping.Full);//index out of bounds
-
 
         // var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         // WriteAtlasToFile(Atlas, desktopPath + "/NewAtlas.png");

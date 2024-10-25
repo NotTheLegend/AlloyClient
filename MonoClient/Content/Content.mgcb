@@ -926,15 +926,6 @@
 #begin Xmls/CaveOfAThousandTreasures.xml
 /copy:Xmls/CaveOfAThousandTreasures.xml
 
-#begin Xmls/CrawlingDepths.xml
-/copy:Xmls/CrawlingDepths.xml
-
-#begin Xmls/CustomEquip.xml
-/copy:Xmls/CustomEquip.xml
-
-#begin Xmls/DeadwaterDocks.xml
-/copy:Xmls/DeadwaterDocks.xml
-
 #begin Xmls/Dyes.xml
 /copy:Xmls/Dyes.xml
 
@@ -944,14 +935,8 @@
 #begin Xmls/Equip.xml
 /copy:Xmls/Equip.xml
 
-#begin Xmls/EquipSkins.xml
-/copy:Xmls/EquipSkins.xml
-
 #begin Xmls/ForbiddenJungle.xml
 /copy:Xmls/ForbiddenJungle.xml
-
-#begin Xmls/ForestMaze.xml
-/copy:Xmls/ForestMaze.xml
 
 #begin Xmls/GhostShip.xml
 /copy:Xmls/GhostShip.xml
@@ -964,9 +949,6 @@
 
 #begin Xmls/High.xml
 /copy:Xmls/High.xml
-
-#begin Xmls/IceCave.xml
-/copy:Xmls/IceCave.xml
 
 #begin Xmls/Low.xml
 /copy:Xmls/Low.xml
@@ -1001,9 +983,6 @@
 #begin Xmls/OryxWineCellar.xml
 /copy:Xmls/OryxWineCellar.xml
 
-#begin Xmls/Particles.xml
-/copy:Xmls/Particles.xml
-
 #begin Xmls/Permapets.xml
 /copy:Xmls/Permapets.xml
 
@@ -1016,20 +995,11 @@
 #begin Xmls/Players.xml
 /copy:Xmls/Players.xml
 
-#begin Xmls/PotionStorageUpgradeItems.xml
-/copy:Xmls/PotionStorageUpgradeItems.xml
-
 #begin Xmls/Projectiles.xml
 /copy:Xmls/Projectiles.xml
 
-#begin Xmls/PuppetMaster.xml
-/copy:Xmls/PuppetMaster.xml
-
 #begin Xmls/Regions.xml
 /copy:Xmls/Regions.xml
-
-#begin Xmls/Shatters.xml
-/copy:Xmls/Shatters.xml
 
 #begin Xmls/Shore.xml
 /copy:Xmls/Shore.xml
@@ -1066,7 +1036,4 @@
 
 #begin Xmls/UndeadLair.xml
 /copy:Xmls/UndeadLair.xml
-
-#begin Xmls/WoodlandLabyrinth.xml
-/copy:Xmls/WoodlandLabyrinth.xml
 
