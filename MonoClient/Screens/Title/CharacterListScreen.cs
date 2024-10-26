@@ -41,8 +41,6 @@ public class CharacterListScreen : TitleScreenBase {
     private int _selectedCharacterId = -1;
 
     public CharacterListScreen() {
-        _ = CharacterList.LoadAsync();
-
         #region Title Buttons
 
         var playButton = new MenuBarButton("play", PlayFontSize, () => {
