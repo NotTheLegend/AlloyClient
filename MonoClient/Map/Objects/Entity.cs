@@ -421,7 +421,6 @@ public class Entity {
             return;
         }
 
-
         var dx = TickPosition.X - Position.X;
         var dy = TickPosition.Y - Position.Y;
 
@@ -445,7 +444,7 @@ public class Entity {
                 }
 
                 var distSqr = dx * dx + dy * dy;
-                var duration = 200 - distSqr * 10;
+                var duration = 200; // - distSqr * 10;
 
                 if (AnimationTimer.ElapsedMilliseconds > duration) {
                     CurrentFrameIndex = CurrentFrameIndex == 1 ? 2 : 1;
