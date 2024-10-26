@@ -76,8 +76,6 @@ public class Main : Game {
         //Ui needs to be loaded first
         UiRender.ConfigureAndLoad(this, ContentManager, GraphicsDevice, Atlas, UiAtlas, MapTexture, new IntVector2(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight));
         Render.FirstTimeInit();
-
-        NineSliceLibrary.Load();
         
         
         SliceConfig.LoadSliceData();

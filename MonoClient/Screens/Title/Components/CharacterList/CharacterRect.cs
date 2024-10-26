@@ -116,9 +116,9 @@ public sealed class CharacterRect : Container {
                     break;
             }
 
-            var texture = props.AnimatedTexture;
-            var atlasAnimationData = UiRender.GameAtlas.GetAnimationAtlasData(texture.File, texture.Index);
-            var atlasData = atlasAnimationData.FaceDown[0];
+            var textureData = ObjectLibrary.TypeToTextureData[character.ObjectType];
+            var atlasData = textureData.AnimatedTextures.FaceDown[0];
+            
             atlasData.RemovePadding();
             var charPortrait = new ObjectRect(new ObjectRectConfig {
                 Texture = new TextureInfo(atlasData, TextureType.GameAtlas),

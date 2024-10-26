@@ -14,7 +14,6 @@ public class ObjectProperties {
     public readonly string DisplayId;
     public readonly string DisplayName;
     
-    public readonly AnimatedTexture AnimatedTexture;
     public readonly List<ProjectileProperties> Projectiles;
     
     public readonly PlayerProperties PlayerProperties;
@@ -51,8 +50,6 @@ public class ObjectProperties {
         
         DisplayId = e.GetValue<string>("DisplayId");
         DisplayName = string.IsNullOrWhiteSpace(DisplayId) ? ObjectId : DisplayId;
-        
-        AnimatedTexture = e.HasElement("AnimatedTexture") ? new AnimatedTexture(e.Element("AnimatedTexture")) : null;
         
         Projectiles = [];
         foreach (var proj in e.Elements("Projectile")) {
