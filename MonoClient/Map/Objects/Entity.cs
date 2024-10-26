@@ -354,14 +354,16 @@ public class Entity {
                 case StatsType.BackPack5:
                 case StatsType.BackPack6:
                 case StatsType.BackPack7:
-                case StatsType.HasBackpack:
-                    index = stat.Type - StatsType.BackPack0;
+                    index = 12 + stat.Type - StatsType.BackPack0;
                     if (stat.Value == -1) {
                         Equipment[index] = null;
                     }
                     else if (Equipment[index] == null || (Equipment[index] != null && stat.Value != ((ItemDesc) Equipment[index]).ObjectType)) {
                         Equipment[index] = ObjectLibrary.CreateItem((ushort)stat.Value);
                     }
+                    break;
+                case StatsType.HasBackpack:
+                    //todo
                     break;
             }
         }
