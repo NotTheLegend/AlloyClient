@@ -196,7 +196,7 @@ public static class Client {
             var packetId = (PacketId)_reader.ReadByte();
             var pkt = PacketUtils.CreateIncomingPacket(packetId);
             try {
-                Log.Debug($"RECEIVING {packetId} ({_bytesRead} bytes)");
+                // Log.Debug($"RECEIVING {packetId} ({_bytesRead} bytes)");
                 pkt.Read(_reader);
                 IncomingQueue.Enqueue(pkt);
             } catch (Exception e) {
@@ -298,7 +298,7 @@ public static class Client {
             var begin = SendState.PacketBegin();
             pkt.Write(SendState.Writer);
             SendState.PacketEnd(begin, pkt.PacketId);
-            Log.Debug($"SENDING {pkt.PacketId}");
+            // Log.Debug($"SENDING {pkt.PacketId}");
         }
     }
 
