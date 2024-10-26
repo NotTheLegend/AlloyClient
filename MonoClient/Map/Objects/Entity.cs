@@ -85,17 +85,9 @@ public class Entity {
 
     public bool AllDebuffsImmune;
 
-    public ThresholdData ThresholdData;
-
     public int DamagersCount;
 
     public int CustomTexture;
-
-    public StackEffectData StackEffectData;
-
-    public ConditionDurationData ConditionDurationData;
-
-    public DungeonModifiersStat DungeonModifiersStats;
 
     #endregion
 

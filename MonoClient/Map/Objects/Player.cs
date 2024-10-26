@@ -132,10 +132,6 @@ public class Player : Entity {
     public int DashTime;
 
     public bool HasBackPack;
-    public bool HasSatchel;
-    public SatchelData SatchelData;
-
-    public AliveMinionsData AliveMinionsData;
 
     #endregion
 
