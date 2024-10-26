@@ -89,7 +89,7 @@ public class Player : Entity {
     public int HealthStackCount;
     public int MagicStackCount;
 
-    public int Skin;
+    public ushort Skin;
 
     public int Rage;
 
@@ -132,10 +132,6 @@ public class Player : Entity {
     public int DashTime;
 
     public bool HasBackPack;
-    public bool HasSatchel;
-    public SatchelData SatchelData;
-
-    public AliveMinionsData AliveMinionsData;
 
     #endregion
 
@@ -210,9 +206,8 @@ public class Player : Entity {
                 AnimationType = AnimationType.Attack;
             }
 
-            if (Properties.AnimatedTexture != null && this == Map.LocalPlayer) {
+            if (TextureData.HasAnimationData && this == Map.LocalPlayer) {
                 AnimateCharacter();
-                RenderBaseType.SetTexture(Texture, CurrentFrameIndex == 5);
             }
 
             WalkTo((float) (Position.X + dt * MovementVector.X), (float) (Position.Y + dt * MovementVector.Y));
@@ -317,7 +312,7 @@ public class Player : Entity {
                     MagicStackCount = stat.Value;
                     break;
                 case StatsType.Skin:
-                    Skin = stat.Value;
+                    Skin = (ushort)stat.Value;
                     SetPlayerSkinTemplate(Skin);
                     break;
                 case StatsType.HasBackpack:
@@ -331,13 +326,12 @@ public class Player : Entity {
 
     }
 
-    private void SetPlayerSkinTemplate(int skin) {
-        if (skin != 0) {
-            var props = ObjectLibrary.TypeToObjectProps[(ushort) skin];
-            var texture = props.AnimatedTexture;
-            Frames = Main.Atlas.AtlasMapAnimation[texture.File][texture.Index];
-            Texture = Frames.FaceRight[0];
-        }
+    private void SetPlayerSkinTemplate(ushort skin) {
+        if (skin == 0) return;
+
+        TextureData = ObjectLibrary.TypeToTextureData[skin];
+        Texture = TextureData.HasAnimationData ? TextureData.AnimatedTextures.FaceRight[0] : TextureData.GetTexture();
+        RenderBaseType.SetTexture(Texture, CurrentFrameIndex == 5);
     }
 
     private void WalkTo(float x, float y) {

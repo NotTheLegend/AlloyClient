@@ -85,17 +85,9 @@ public class Entity {
 
     public bool AllDebuffsImmune;
 
-    public ThresholdData ThresholdData;
-
     public int DamagersCount;
 
     public int CustomTexture;
-
-    public StackEffectData StackEffectData;
-
-    public ConditionDurationData ConditionDurationData;
-
-    public DungeonModifiersStat DungeonModifiersStats;
 
     #endregion
 
@@ -103,7 +95,7 @@ public class Entity {
 
     public RenderBase RenderBaseType;
 
-    public AnimationAtlasData Frames;
+    public TextureData TextureData;
 
     public AtlasData Texture;
 
@@ -117,9 +109,6 @@ public class Entity {
     
     public float Jitter;
 
-    // facing right/down no idea what to call the var
-    public bool PlayerTexture;
-
     public ParticleEffect Effect;
 
     public void SetObjectId(int id) {
@@ -130,6 +119,8 @@ public class Entity {
 
     public void SetType(ushort type) {
         Type = type;
+        TextureData = ObjectLibrary.TypeToTextureData[type];
+        Texture = TextureData.HasAnimationData ? TextureData.AnimatedTextures.FaceRight[0] : TextureData.GetTexture();
         RenderBaseType = GetRenderType(type);
     }
 
@@ -221,9 +212,8 @@ public class Entity {
         }
 
         // add wall support here at some point
-        if (Properties.AnimatedTexture != null) {
+        if (TextureData.HasAnimationData) {
             AnimateCharacter();
-            RenderBaseType.SetTexture(Texture, CurrentFrameIndex == 5);
         }
         
         Effect?.Update(time, dt);
@@ -364,14 +354,16 @@ public class Entity {
                 case StatsType.BackPack5:
                 case StatsType.BackPack6:
                 case StatsType.BackPack7:
-                case StatsType.HasBackpack:
-                    index = stat.Type - StatsType.BackPack0;
+                    index = 12 + stat.Type - StatsType.BackPack0;
                     if (stat.Value == -1) {
                         Equipment[index] = null;
                     }
                     else if (Equipment[index] == null || (Equipment[index] != null && stat.Value != ((ItemDesc) Equipment[index]).ObjectType)) {
                         Equipment[index] = ObjectLibrary.CreateItem((ushort)stat.Value);
                     }
+                    break;
+                case StatsType.HasBackpack:
+                    //todo
                     break;
             }
         }
@@ -395,20 +387,7 @@ public class Entity {
     }
 
     public AtlasData GetTexture() {
-        AtlasData[] list;
-        //todo change animated texture fetching
-        if (Properties.AnimatedTexture != null) {
-            var texture = Properties.AnimatedTexture;
-            Frames = Main.Atlas.AtlasMapAnimation[texture.File][texture.Index];
-            if (this is Player) {
-                PlayerTexture = true;
-            }
-
-            Texture = Frames.FaceRight[0];
-            return Texture;
-        }
-        
-        return ObjectLibrary.TypeToTextureData[Properties.ObjectType].GetTexture();
+        return Texture;
     }
 
     public void SetAttack(int containerType, float angleInc) {
@@ -417,10 +396,6 @@ public class Entity {
 
     // we should move this shit somewhere else too
     public void AnimateCharacter() {
-        if (Frames.FaceRight == null) {
-            return;
-        }
-
         var dx = TickPosition.X - Position.X;
         var dy = TickPosition.Y - Position.Y;
 
@@ -428,10 +403,10 @@ public class Entity {
         var movementAngle = localPlayer ? MathF.Atan2(MovementVector.Y, MovementVector.X) : MathF.Atan2(dy, dx);
         var camFlipped = Math.Abs(Settings.CameraAngle - MathHelper.Pi) < MathHelper.PiOver2;
         var moveFlipped = Math.Abs(movementAngle) > MathHelper.PiOver2;
+        var isPlayer = this is Player;// facing right/down no idea what to call the var
 
-        Flipped = (!camFlipped && moveFlipped || (camFlipped && !moveFlipped)) && !PlayerTexture;
-        var directionalIndex =
-            PlayerTexture ? GetCharacterFrameIndex(movementAngle, Settings.CameraAngle, localPlayer) : 0;
+        Flipped = (!camFlipped && moveFlipped || (camFlipped && !moveFlipped)) && !isPlayer;
+        var directionalIndex = isPlayer ? GetCharacterFrameIndex(movementAngle, Settings.CameraAngle, localPlayer) : 0;
 
         switch (AnimationType) {
             case AnimationType.Stand:
@@ -485,14 +460,16 @@ public class Entity {
 
                 break;
         }
+        
+        RenderBaseType.SetTexture(Texture, CurrentFrameIndex == 5);
     }
 
     public AtlasData GetFrameData(int direction, int frame) {
         return direction switch {
-            0 => Frames.FaceRight[frame], // Right/Left
-            1 => Frames.FaceDown[frame], // Down
-            2 => Frames.FaceUp[frame], // Up
-            _ => Frames.FaceRight[0]
+            0 => TextureData.AnimatedTextures.FaceRight[frame], // Right/Left
+            1 => TextureData.AnimatedTextures.FaceDown[frame], // Down
+            2 => TextureData.AnimatedTextures.FaceUp[frame], // Up
+            _ => TextureData.AnimatedTextures.FaceRight[0]
         };
     }
 
@@ -516,8 +493,7 @@ public class Entity {
         }
 
         switch ((int)rotationAngle) {
-            case >= 315:
-            case < 45:
+            case < 45 or >= 315:
                 if (localPlayer)
                     LocalFaceDirection = FaceDirection.Right;
 

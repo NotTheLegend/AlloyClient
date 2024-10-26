@@ -60,6 +60,8 @@ public static class AssetParser {
 
 public sealed class TextureData {
     private static readonly Logger Log = new(typeof(TextureData));
+
+    public bool HasAnimationData = false;
     
     public AtlasData Texture;
     public TextureData TopTexture;
@@ -81,6 +83,7 @@ public sealed class TextureData {
 
         if (xml.GetElement("AnimatedTexture", out elem)) {
             AnimatedTextures = Main.Atlas.GetAnimationAtlasData(elem.GetValue<string>("File"), elem.GetValue<int>("Index"));
+            HasAnimationData = true;
         }
 
         if (xml.GetElements("RandomTexture", out var elems)) {
@@ -96,10 +99,9 @@ public sealed class TextureData {
                 var id = e.GetAttribute("id", 0);
                 if (AltTextures.ContainsKey(id)) {
                     Log.Warn($"[Dupe AltTextureId] object: {xml.GetAttribute("id", "")} has dupe id: {id}");
-                    continue;
                 }
 
-                AltTextures.Add(id, new TextureData(e));
+                AltTextures[id] = new TextureData(e);
             }
         }
 

@@ -31,6 +31,6 @@ public sealed class CharacterDetails : Sprite {
 
     private void OnPlayerUpdate(Player player) {
         _name.SetText(player.Name);
-        _skin.ChangeTexture(new TextureInfo(player.Frames.FaceRight[0], TextureType.GameAtlas));
+        _skin.ChangeTexture(new TextureInfo(player.TextureData.AnimatedTextures.FaceRight[0], TextureType.GameAtlas));
     }
 }

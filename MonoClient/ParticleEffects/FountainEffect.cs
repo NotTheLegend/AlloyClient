@@ -32,7 +32,7 @@ public class FountainEffect : ParticleEffect {
         var start = (int)(_lastUpdate / 50);
 
         for (var i = start; i < count; i++) {
-            if (_count == Buffer) continue;
+            if (_count == Buffer) break;
             
             _data[_count] = new FountainParticle(time);
             _particles[_count] = new VertexParticle(SetStartPosition(_data[_count], time), _color);
