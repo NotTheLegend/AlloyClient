@@ -26,6 +26,9 @@ public class CustomToolTipData : ItemData {
     }
 
     private static string ColorToString(string color) {
+        if (string.IsNullOrEmpty(color))
+            return "";
+        
         if (color.Contains("0x")) {
             color = "#" + color.Replace("0x", "");
         }
@@ -34,6 +37,6 @@ public class CustomToolTipData : ItemData {
     }
 
     private static uint ColorToUint(string color) {
-        return uint.Parse(color.Replace("#", "0x"));
+        return string.IsNullOrEmpty(color) ? 0 : uint.Parse(color.Replace("#", "0x"));
     }
 }
