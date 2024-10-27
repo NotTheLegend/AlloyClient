@@ -189,6 +189,8 @@ public static class Settings {
     public static ValueSetting<float> MScale = 1;
 
     public static ValueSetting<bool> CenterPlayer = true;
+
+    public static ValueSetting<ushort> SelectedGameServerPort = GameServerPort;
     
     // ReSharper restore FieldCanBeMadeReadOnly.Global
 
@@ -315,6 +317,8 @@ public static class Settings {
         MScale.SetValue(1f);
 
         CenterPlayer.SetValue(true);
+        
+        SelectedGameServerPort.SetValue(GameServerPort);
     }
 
     public static void LoadSettings() {

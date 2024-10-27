@@ -3,6 +3,8 @@ using MonoClient.Display;
 using MonoClient.Screens.MapEditor;
 using MonoClient.Screens.Title.Components;
 using MonoClient.Screens.Title.Components.Panels;
+using MonoClient.Screens.Title.ServerListScreen;
+using MonoClient.Screens.Title.ServersListScreen;
 using MonoClient.State;
 using MonoClient.Ui.Components.Buttons;
 using MonoClient.UiLib;
@@ -13,8 +15,8 @@ namespace MonoClient.Screens.Title;
 
 public class TitleScreen : TitleScreenBase {
     
-    private const int PlayFontSize = 57;
-    private const int FontSize = 35;
+    public const int PlayFontSize = 57;
+    public const int FontSize = 35;
     
     public TitleScreen() : base(true) {
         var playButton = new MenuBarButton("play", PlayFontSize, () => {
@@ -36,7 +38,7 @@ public class TitleScreen : TitleScreenBase {
         AddChild(playButton);
 
         var serversButton = new MenuBarButton("servers", FontSize, () => {
-            // TODO: Implement a popup for server selection
+            ScreenManager.FadeToScreen(new ServersTitleScreen(), Easing.SineInOut, 1000, 0x0);
         });
         serversButton.X = playButton.X - playButton.Width / 2 - serversButton.Width - 50;
         serversButton.Y = Settings.DefaultScreenHeight - 50 - serversButton.Height / 2;

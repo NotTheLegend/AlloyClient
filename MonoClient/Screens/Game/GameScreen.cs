@@ -20,7 +20,7 @@ public sealed class GameScreen : Screen {
     public GameScreen() {
         SetBaseDimensions(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight);
         Main.GameInstance.SetInGameGraphics();
-        Client.Connect(Settings.GameServerAddress, Settings.GameServerPort);
+        Client.Connect(Settings.GameServerAddress, Settings.SelectedGameServerPort);
         GameSprite = new GameSprite();
         AddChild(GameSprite);
     }
