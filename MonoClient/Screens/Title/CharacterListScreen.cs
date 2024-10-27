@@ -44,6 +44,12 @@ public class CharacterListScreen : TitleScreenBase {
         #region Title Buttons
 
         var playButton = new MenuBarButton("play", PlayFontSize, () => {
+            var charList = CharacterList.Model.Characters;
+            if (charList.Length <= 0) {
+                ShowCharacterCreate();
+                return;
+            }
+            
             Account.SelectedCharacterId = _selectedCharacterId;
             ScreenManager.FadeToScreen(new GameScreen(), Easing.SineInOut, 1000, 0x0);
         }, true);
