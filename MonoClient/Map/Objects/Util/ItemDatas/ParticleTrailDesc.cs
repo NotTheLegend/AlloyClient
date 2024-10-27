@@ -10,7 +10,7 @@ public class ParticleTrailDesc : ItemData {
     public int Size;
     
     public ParticleTrailDesc(XElement xml) {
-        Color = uint.Parse(xml.Value);
+        Color = string.IsNullOrEmpty(xml.Value) ? 0 : uint.Parse(xml.Value);
         LifetimeMS = xml.GetAttribute<int>("lifetimeMS");
         Size = xml.GetAttribute<int>("size");
     }
