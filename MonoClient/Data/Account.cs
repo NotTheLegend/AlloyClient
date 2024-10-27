@@ -29,6 +29,7 @@ public static class Account {
     public static bool LoggedIn;
 
     public static int SelectedCharacterId;
+    public static ushort CharacterType;
 
     public static string Username = string.Empty;
 
@@ -174,6 +175,39 @@ public static class Account {
         }
         
         return new LoginResponse { Success = false, Message = error };
+    }
+    
+    public static async Task<LoginResponse> PurchaseCharSlot() {
+        var response = await AppEngineClient.SendRequest("/account/purchaseCharSlot", new Dictionary<string, string> {
+            { "guid", Email },
+            { "password", Password }
+        }, retries: 3);
+        
+        if (response == null) {
+            return new LoginResponse { Success = false, Message = "Failed to contact server." };
+        }
+
+        var xElement = XElement.Parse(response);
+        var error = xElement.Value;
+        
+        return error == "" ? new LoginResponse { Success = true } : new LoginResponse { Success = false, Message = error };
+    }
+    
+    public static async Task<LoginResponse> PurchaseClassUnlock(ushort classType) {
+        var response = await AppEngineClient.SendRequest("/char/purchaseClassUnlock", new Dictionary<string, string> {
+            { "guid", Email },
+            { "password", Password },
+            { "classType", classType.ToString() }
+        }, retries: 3);
+        
+        if (response == null) {
+            return new LoginResponse { Success = false, Message = "Failed to contact server." };
+        }
+
+        var xElement = XElement.Parse(response);
+        var error = xElement.Value;
+        
+        return error == "" ? new LoginResponse { Success = true } : new LoginResponse { Success = false, Message = error };
     }
 
     public static void LogOut() {

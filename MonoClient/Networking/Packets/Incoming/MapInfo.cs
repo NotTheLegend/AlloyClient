@@ -55,18 +55,19 @@ public class MapInfo : IncomingPacket<MapInfo> {
     }
 
     private static void LoadOrCreate() {
-        var charList = CharacterList.Model.Characters;
-        if (charList is { Length: > 0 }) {
-            var load = Load.CreatePacket();
-            load.CharId = Account.SelectedCharacterId;
-            Client.QueuePacket(load);
-        }
-        else {
+        if (Account.CharacterType > 0) {
             var create = Create.CreatePacket();
-            create.ClassType = 0x030e;
+            create.ClassType = Account.CharacterType;
             create.SkinType = 0;
             Client.QueuePacket(create);
+
+            Account.CharacterType = 0;
+            return;
         }
+        
+        var load = Load.CreatePacket();
+        load.CharId = Account.SelectedCharacterId;
+        Client.QueuePacket(load);
     }
 
     public override string ToString() {

@@ -290,8 +290,7 @@ public class CharacterListScreen : TitleScreenBase {
     }
 
     public void ShowCharacterCreate() {
-        //todo char select
-        
+        PanelManager.Enqueue(new ClassContainer());
     }
     
     public void HideCharacterCreate() {
