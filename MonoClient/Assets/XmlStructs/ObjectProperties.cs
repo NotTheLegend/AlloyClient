@@ -15,6 +15,7 @@ public class ObjectProperties {
     public readonly string DisplayName;
     
     public readonly List<ProjectileProperties> Projectiles;
+    public readonly Dictionary<int, ProjectileProperties> ProjectilesDict;
     
     public readonly PlayerProperties PlayerProperties;
 
@@ -52,8 +53,11 @@ public class ObjectProperties {
         DisplayName = string.IsNullOrWhiteSpace(DisplayId) ? ObjectId : DisplayId;
         
         Projectiles = [];
+        ProjectilesDict = [];
         foreach (var proj in e.Elements("Projectile")) {
-            Projectiles.Add(new ProjectileProperties(proj));
+            var props = new ProjectileProperties(proj);
+            Projectiles.Add(props);
+            ProjectilesDict.TryAdd(props.BulletType, props);
         }
 
         Class = e.GetValue<string>("Class");
