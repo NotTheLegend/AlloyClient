@@ -22,15 +22,14 @@ public class Projectile : Entity {
     public override bool Update(double time, double dt) {
         var elapsed = (float)time - StartTime;
         
-        // speed needs consistency
-        var dist = ProjDesc.Speed / 2;
+        // Speed * dt looks correct but maybe need tweaking
+        var dist = ProjDesc.Speed * (float)dt;
         
         if (Properties.Rotation != 0) {
             Rotation = (float)Map.LastGameTime.TotalGameTime.TotalMilliseconds / Properties.Rotation; 
         }
         else {
-            // currently incorrect
-            Rotation = Angle - Camera.CameraAngle + AngleCorrection;
+            Rotation = Angle + Camera.CameraAngle + AngleCorrection;
         }
         
         Position.X += dist * MathF.Cos(Angle);
