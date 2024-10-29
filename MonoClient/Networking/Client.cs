@@ -88,6 +88,8 @@ public static class Client {
 
     private static void Reset() {
         _bytesRead = 0;
+        _pendingSend = false;
+        _reader.BaseStream.Seek(0, SeekOrigin.Begin);
         SendState.Reset();
     }
 
