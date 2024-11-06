@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MonoClient.State;
 using MonoClient.Ui.Components.Panels;
 using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
-using MonoClient.UiLib.Core.Events.Types;
+using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Display;
 
-public static class PanelManager {
+public class PanelManager : Sprite {
 
-    private static DimOverlay _overlay = new();
+    private static readonly DimOverlay Overlay = new();
     
     private static Queue<Panel> _panels = [];
     private static Panel _current = null;
@@ -21,54 +20,42 @@ public static class PanelManager {
         _panels.Enqueue(panel);
     }
 
-    public static void Update(GameTime gameTime, ref DisplayState state) {
+    protected override void OnUpdate(GameTime gameTime) {
         if (_current == null && !TryStart(true)) return;
-        
         if (_current!.State == PanelState.Closed) OnClosed();
-        
-        _overlay.Update(gameTime);
-        _current!.Update(gameTime);
-        
-        
-        //Console.WriteLine($"{_current.Width}, {_current.X}");
-        
-        state = DisplayState.Panel;
-    }
-    
-    public static void HandleMouseEvents(ref MouseEventId consumed) {
-        _current?.HandleMouseEvents(ref consumed);
     }
 
-    public static void Draw(GameTime gameTime) {
-        if (_current == null) return;
-        
-        _overlay.Draw(gameTime);
-        _current.Draw(gameTime);
-    }
-
-    private static bool TryStart(bool overlayTween) {
+    private bool TryStart(bool overlayTween) {
         if (!_panels.TryDequeue(out var panel)) return false;
 
         _current = panel;
 
         if (overlayTween) {
-            _overlay.Alpha = 0f;
-            GTween.Add(Tween.New(_overlay, Easing.SineInOut, 250, 1f, EaseType.Alpha));
+            Overlay.Alpha = 0f;
+            AddChild(Overlay);
+            GTween.Add(Tween.New(Overlay, Easing.SineInOut, 250, 1f, EaseType.Alpha));
         }
         
         _current.Alpha = 0f;
+        AddChild(_current);
         GTween.Add(Tween.New(_current, Easing.SineInOut, 250, 1f, EaseType.Alpha));
         return true;
     }
 
-    private static void OnClosed() {
+    private void OnClosed() {
         _current.State = PanelState.Finished;
 
         if (_panels.TryPeek(out _)) {
-            GTween.Add(Tween.New(_current, Easing.SineInOut, 250, 0f, EaseType.Alpha, onFinish: () => TryStart(false)));
+            GTween.Add(Tween.New(_current, Easing.SineInOut, 250, 0f, EaseType.Alpha, onFinish: () => {
+                RemoveChild(_current);
+                TryStart(false);
+            }));
         } else {
-            GTween.Add(Tween.New(_overlay, Easing.SineInOut, 250, 0f, EaseType.Alpha));
-            GTween.Add(Tween.New(_current, Easing.SineInOut, 250, 0f, EaseType.Alpha, onFinish: () => _current = null));
+            GTween.Add(Tween.New(Overlay, Easing.SineInOut, 250, 0f, EaseType.Alpha));
+            GTween.Add(Tween.New(_current, Easing.SineInOut, 250, 0f, EaseType.Alpha, onFinish: () => {
+                RemoveChild(_current);
+                _current = null;
+            }));
         }
     }
     

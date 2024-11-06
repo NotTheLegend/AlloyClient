@@ -167,6 +167,7 @@ float4 RenderText(VertexOutput input, sampler2D sample, float2 dim, float pRange
 {
     float2 msdfUnit = pRange / dim;
     float3 samp = tex2D(sample, input.UVCoords).rgb;
+    float4 outColor = pRange == 0.0 ? input.Color : input.Override;
 
     float sigDist = median(samp.r, samp.g, samp.b) - 0.5f;
     sigDist = sigDist * dot(msdfUnit, 0.5f / fwidth(input.UVCoords));
@@ -177,7 +178,7 @@ float4 RenderText(VertexOutput input, sampler2D sample, float2 dim, float pRange
 
     float opacity = clamp(sigDist + 0.5f, 0.0f, 1.0f);
     float strokeOpacity = clamp(strokeDist + 0.5f, 0.0f, 1.0f);
-    return lerp(input.Override, input.Color, opacity) * max(opacity, strokeOpacity);
+    return lerp(outColor, input.Color, opacity) * max(opacity, strokeOpacity);
 }
 
 float4 RenderOutline(VertexOutput input, sampler2D sample) : COLOR {

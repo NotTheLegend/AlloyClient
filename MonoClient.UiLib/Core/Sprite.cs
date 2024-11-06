@@ -5,10 +5,15 @@ using MonoClient.UiLib.Input;
 using Common.Vector;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoClient.UiLib.BuiltIn;
+using MonoClient.UiLib.BuiltIn.Buttons;
+using MonoClient.UiLib.Core.Events.Types;
 
 namespace MonoClient.UiLib.Core;
 
 public abstract partial class Sprite {
+
+    public static Sprite HighestSprite;
 
     public int X {
         get => _x;
@@ -88,7 +93,7 @@ public abstract partial class Sprite {
     
     #region VertexData
     
-    protected TextureType TextureId = TextureType.None;
+    public TextureType TextureId = TextureType.None;
     
     public Color Color = Color.Transparent;
     
@@ -342,7 +347,7 @@ public abstract partial class Sprite {
         _info = new Vector2((float) TextureId, ta);
     }
 
-    internal void Update(GameTime gameTime) {
+    private void Update(GameTime gameTime) {
         OnUpdate(gameTime);
         
         InternalUpdate();
@@ -353,11 +358,23 @@ public abstract partial class Sprite {
         
         _children.RemoveAll(s => s._pendingRemoval);
         
-        HandleEvents();
+        HandleGlobalEvents();
 
         foreach (var child in _children) {
             child.Update(gameTime);
         }
+    }
+
+    internal void InternalUpdateLoop(GameTime gameTime) {
+        Update(gameTime);
+        
+        HandleEvents();
+        
+        HighestSprite?._mouseEventHandler.HandleCallbacks(HighestSprite);
+        HighestSprite = null;
+
+        if(MouseInput.HandleEvent(MouseEventId.LeftClick) && TextInput.UnFocusOnClick)
+            TextInput.ActiveInput?.UnFocus();
     }
 
     private void DrawInternal() {

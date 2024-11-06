@@ -20,6 +20,6 @@ public enum MouseEventId : int {
     Scroll = 1 << 13,
 }
 
-internal record MouseEventData(MouseEventId EventId, Delegate Callback, bool Consume, bool Global);
+internal record MouseEventData(MouseEventId EventId, Delegate Callback, bool IgnoreBounds);
 
 public record MouseEventArgs(Sprite Sprite, IntVector2 Coords = new(), float Delta = 0f);

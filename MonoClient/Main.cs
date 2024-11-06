@@ -80,8 +80,7 @@ public class Main : Game {
         
         SliceConfig.LoadSliceData();
         
-        //ScreenManager.FadeToScreen(new TestScreen(), Easing.SineInOut, 500, 0x0);
-        ScreenManager.FadeToScreen(new LoadingScreen(), Easing.SineInOut, 500, 0x0);
+        DisplayManager.Init();
     }
 
     protected override void Update(GameTime gameTime) {

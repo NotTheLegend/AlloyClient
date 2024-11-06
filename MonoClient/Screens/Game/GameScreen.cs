@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MonoClient.Display;
 using MonoClient.Networking;
 using MonoClient.Rendering;
 using MonoClient.Screens.Game.Components;
@@ -43,13 +44,12 @@ public sealed class GameScreen : Screen {
             _frames = 0;
         }
         
-        base.Update(gameTime);
+        //base.Update(gameTime);
     }
 
     public override void Draw(GameTime gameTime) {
         _frames++;
         Map.Draw(gameTime);
         Minimap.Instance.PreDrawUpdate();
-        base.Draw(gameTime);
     }
 }

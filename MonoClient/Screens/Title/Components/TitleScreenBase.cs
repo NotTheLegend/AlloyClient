@@ -1,9 +1,9 @@
-﻿using MonoClient.Sound;
+﻿using MonoClient.Display;
 using MonoClient.State;
 using MonoClient.Ui.Components.Buttons;
 using MonoClient.Ui.Components.Graphics;
 using MonoClient.UiLib.BuiltIn;
-using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Screens.Title.Components;
 
@@ -25,6 +25,9 @@ public abstract class TitleScreenBase : Screen {
         // Todo account login/out/guild/stars
 
         var accOverlay = new AccountOverlay(title);
+        accOverlay.X = Settings.DefaultScreenWidth - 10;
+        accOverlay.Y = 10;
+        accOverlay.SetAnchor(UiAnchor.RightTop);
         AddChild(accOverlay);
     }
 }

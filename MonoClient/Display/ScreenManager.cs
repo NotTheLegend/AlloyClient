@@ -7,64 +7,67 @@ using MonoClient.State;
 using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
-using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Input;
 
 namespace MonoClient.Display;
 
-public static class ScreenManager {
-    private static readonly FadeScreen FadeScreen = new();
+public class ScreenManager : Sprite {
+    public static ScreenManager Instance;
+    public static readonly FadeScreen FadeScreen = new(0);
 
     private static Screen _prevScreen;
     private static Screen _currScreen = FadeScreen;
 
-    private static bool _fadeActive;
+    public ScreenManager() {
+        Instance = this;
+        FadeScreen.Visible = false;
+        SetScreen(new FadeScreen(0));
+    }
+
+    /// <summary>
+    /// Calls the current screens virtual update call, used for drawing the actual game
+    /// </summary>
+    public static void Update(GameTime gameTime) => _currScreen.Update(gameTime);
+    /// <summary>
+    /// Calls the current screens virtual draw call, used for drawing the actual game
+    /// </summary>
+    public static void Draw(GameTime gameTime) => _currScreen.Draw(gameTime);
 
     public static void SetScreen(Screen screen) {
-        _prevScreen = _currScreen;
+        RemovePrevious();
         _currScreen = screen;
+        Instance.AddChild(_currScreen);
+    }
+
+    public static void SetPrevious() {
+        SetScreen(_prevScreen);
     }
 
     public static void FadeToScreen(Screen screen, Easing ease, int durationMs, uint color, Action onFinish = null) {
         if (screen is GameScreen) {
             Main.GameInstance.SetInGameGraphics();
-        }
-        else {
+        } else {
             Main.GameInstance.SetTitleGraphics();
         }
         
-        _fadeActive = true;
+        FadeScreen.Visible = true;
         FadeScreen.SetFadeColor(color);
         screen.Alpha = 0f;
         GTween.Add(Tween.New(_currScreen, ease, durationMs / 2, 0f, EaseType.Alpha, 0, () => { onFinish?.Invoke(); SetScreen(screen); }));
-        GTween.Add(Tween.New(screen, ease, durationMs / 2, 1f, EaseType.Alpha, durationMs / 2, () => { _fadeActive = false; }));
+        GTween.Add(Tween.New(screen, ease, durationMs / 2, 1f, EaseType.Alpha, durationMs / 2, () => { FadeScreen.Visible = false; }));
     }
 
     public static void FadeToPrevious(Easing ease, int durationMs, uint color) {
         FadeToScreen(_prevScreen, ease, durationMs, color);
     }
 
-    public static void Update(GameTime gameTime, ref DisplayState state) {
+    private static void RemovePrevious() {
+        _prevScreen = _currScreen;
+        Instance.RemoveChild(_currScreen);
+    }
+
+    protected override void OnUpdate(GameTime gameTime) {
         HandleGlobalCommands();
-        
-        if (_fadeActive) {
-            FadeScreen.Update(gameTime);
-        }
-
-        _currScreen.Update(gameTime);
-        state = DisplayState.Screen;
-    }
-
-    public static void HandleMouseEvents(ref MouseEventId consumed) {
-        _currScreen.HandleMouseEvents(ref consumed);
-    }
-
-    public static void Draw(GameTime gameTime) {
-        if (_fadeActive) {
-            FadeScreen.Draw(gameTime);
-        }
-        
-        _currScreen.Draw(gameTime);
     }
 
     private static void HandleGlobalCommands() {
@@ -95,12 +98,17 @@ public static class ScreenManager {
     }
 }
 
+public abstract class Screen : Sprite {
+    public virtual void Update(GameTime gameTime) { }
+    public virtual void Draw(GameTime gameTime) { }
+}
+
 public class FadeScreen : Screen {
     
     private readonly ColorRect _rect;
 
-    public FadeScreen() {
-        var config = new ColorRectConfig { X = 0, Y = 0, Width = Settings.DefaultScreenWidth, Height = Settings.DefaultScreenHeight, Color = 0x0};
+    public FadeScreen(uint color) {
+        var config = new ColorRectConfig { X = 0, Y = 0, Width = Settings.DefaultScreenWidth, Height = Settings.DefaultScreenHeight, Color = color};
         _rect = new ColorRect(config);
         AddChild(_rect);
     }

@@ -17,8 +17,6 @@ public class AccountOverlay : Sprite {
     private Container _newAccount;
 
     public AccountOverlay(bool title) {
-        SetBaseDimensions(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight);
-        
         _isTitle = title;
         
         CreateAccountInfo();
@@ -27,7 +25,7 @@ public class AccountOverlay : Sprite {
     }
 
     private void CreateAccountInfo() {
-        _currentAccount = new Container(new ContainerConfig { X = Settings.DefaultScreenWidth - 10, Y = 10, Anchor = UiAnchor.RightTop });
+        _currentAccount = new Container();
 
         var nameConfig = new TextConfig { Text = $"logged in as {Account.Username} - ", FontSize = 24 };
         var nameText = new SimpleText(nameConfig);
@@ -37,7 +35,7 @@ public class AccountOverlay : Sprite {
         var logoutButton = new TextButton(logoutConfig);
         _currentAccount.AddChild(logoutButton);
 
-        _newAccount = new Container(new ContainerConfig { X = Settings.DefaultScreenWidth - 10, Y = 10, Anchor = UiAnchor.RightTop });
+        _newAccount = new Container();
 
         var newConfig = new TextConfig { Text = "new account - ", FontSize = 24, Bold = false, Color = 0xB3B3B3 };
         var newText = new SimpleText(newConfig);

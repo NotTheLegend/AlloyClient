@@ -2,60 +2,66 @@
 using System.Collections.Generic;
 using Common.Vector;
 using MonoClient.UiLib.BuiltIn;
+using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Input;
 
 namespace MonoClient.UiLib.Core.Events;
 
 internal class MouseEventHandler {
-    private readonly Queue<(MouseEventData, bool)> _pending = new();
+    private readonly Queue<EventData> _pending = new();
+
+    private readonly List<MouseEventData> _mouseOut = [];
     private readonly List<MouseEventData> _callbacks = [];
+    private readonly List<MouseEventData> _globalCallbacks = [];
     
     private bool _prevMouseInBounds;
     private IntVector2 _prevMousePosition;
+    private IntVector2 _prevMousePositionGlobal;
 
-    internal void Handle(Sprite sprite, ref MouseEventId consumed) {
+    internal void UpdateQueue() {
         while (_pending.TryDequeue(out var pending)) {
-            if (pending.Item2) {
-                _callbacks.Add(pending.Item1);
+            var list = pending.Data.EventId == MouseEventId.MouseOut ? _mouseOut : pending.Global ? _globalCallbacks : _callbacks;
+
+            if (pending.Add) {
+                list.Add(pending.Data);
             } else {
-                _callbacks.Remove(pending.Item1);
+                list.Remove(pending.Data);
             }
         }
-        
+    }
+
+    internal void HandleGlobal(Sprite sprite) {
         var pos = MouseInput.GetMousePosition();
         var delta = Math.Max(Math.Min(MouseInput.GetScrollDelta(), 1), -1);
         var inBounds = sprite.IsInBounds(pos);
-        var flags = (MouseEventId) 0;
-        foreach (var data in _callbacks) {
-            var clear = !data.Consume || (consumed & data.EventId) == 0;
-            var bounds = data.Global || inBounds;
+
+        if (Sprite.HighestSprite == null && inBounds) {
+            Sprite.HighestSprite = sprite;
+        }
+        
+        var forceOut = Sprite.HighestSprite == null || Sprite.HighestSprite != sprite;
+
+        if (forceOut && _prevMouseInBounds) {
+            foreach (var data in _mouseOut) {
+                _prevMouseInBounds = false;
+                DoCallback(data.Callback, sprite);
+            }
+        }
+        
+        foreach (var data in _globalCallbacks) {
+            var bounds = data.IgnoreBounds || inBounds;
             switch (data.EventId) {
-                case MouseEventId.MouseMove when pos != _prevMousePosition:
-                    _prevMousePosition = pos;
+                case MouseEventId.MouseMove when pos != _prevMousePositionGlobal:
+                    _prevMousePositionGlobal = pos;
                     DoCallback(data.Callback, sprite);
                     break;
-                case MouseEventId.MouseOver when clear && bounds && !_prevMouseInBounds:
-                    _prevMouseInBounds = true;
-                    DoCallback(data.Callback, sprite);
-                    if (data.Consume) {
-                        flags |= data.EventId;
-                    }
-                    break;
-                case MouseEventId.MouseOut when !bounds && _prevMouseInBounds:
-                case MouseEventId.MouseOut when (consumed & MouseEventId.MouseOver) != 0 && _prevMouseInBounds:
-                    _prevMouseInBounds = false;
-                    DoCallback(data.Callback, sprite);
-                    break;
-                case MouseEventId.Scroll when clear && bounds:
+                case MouseEventId.Scroll when bounds:
                     if (delta == 0f) {
                         break;
                     }
                     
                     DoCallback(data.Callback, sprite);
-                    if (data.Consume) {
-                        flags |= data.EventId;
-                    }
                     break;
                 case MouseEventId.LeftClick:
                 case MouseEventId.MiddleClick:
@@ -66,20 +72,52 @@ internal class MouseEventHandler {
                 case MouseEventId.LeftUp:
                 case MouseEventId.MiddleUp:
                 case MouseEventId.RightUp:
-                    if (clear && bounds && MouseInput.HandleEvent(data.EventId)) {
+                    if (bounds && MouseInput.HandleEvent(data.EventId)) {
                         DoCallback(data.Callback, sprite);
-                        if (data.Consume) {
-                            flags |= data.EventId;
-                        }
                     }
                     break;
             }
         }
-        
-        if(MouseInput.HandleEvent(MouseEventId.LeftClick) && TextInput.UnFocusOnClick)
-            TextInput.ActiveInput?.UnFocus();
+    }
 
-        consumed |= flags;
+    internal void HandleCallbacks(Sprite sprite) {
+        var pos = MouseInput.GetMousePosition();
+        var delta = Math.Max(Math.Min(MouseInput.GetScrollDelta(), 1), -1);
+        var inBounds = sprite.IsInBounds(pos);
+        
+        foreach (var data in _callbacks) {
+            var bounds = data.IgnoreBounds || inBounds;
+            switch (data.EventId) {
+                case MouseEventId.MouseMove when pos != _prevMousePosition:
+                    _prevMousePosition = pos;
+                    DoCallback(data.Callback, sprite);
+                    break;
+                case MouseEventId.MouseOver when bounds && !_prevMouseInBounds:
+                    _prevMouseInBounds = true;
+                    DoCallback(data.Callback, sprite);
+                    break;
+                case MouseEventId.Scroll when bounds:
+                    if (delta == 0f) {
+                        break;
+                    }
+                    
+                    DoCallback(data.Callback, sprite);
+                    break;
+                case MouseEventId.LeftClick:
+                case MouseEventId.MiddleClick:
+                case MouseEventId.RightClick:
+                case MouseEventId.LeftDown:
+                case MouseEventId.MiddleDown:
+                case MouseEventId.RightDown:
+                case MouseEventId.LeftUp:
+                case MouseEventId.MiddleUp:
+                case MouseEventId.RightUp:
+                    if (bounds && MouseInput.HandleEvent(data.EventId)) {
+                        DoCallback(data.Callback, sprite);
+                    }
+                    break;
+            }
+        }
     }
 
     private static void DoCallback(Delegate action, Sprite sprite) {
@@ -95,11 +133,16 @@ internal class MouseEventHandler {
         }
     }
     
-    internal void AddEvent(MouseEventData eventData) {
+    internal void AddEvent(MouseEventData eventData, bool global) {
+        if (eventData.EventId is MouseEventId.MouseOver or MouseEventId.MouseOut && (global || eventData.IgnoreBounds)) {
+            Console.WriteLine("MouseOver/MouseOut not supported for overriding default global/ignoreBounds values");
+            return;
+        }
+        
         switch (eventData.Callback) {
             case Action:
             case Action<MouseEventArgs>:
-                _pending.Enqueue((eventData, true));
+                _pending.Enqueue(new EventData(eventData, global, true));
                 break;
             default:
                 Console.WriteLine("Unable to add callback, invalid signature, must be 'Callback()' or 'Callback(MouseEventArgs)'");
@@ -108,11 +151,16 @@ internal class MouseEventHandler {
         }
     }
     
-    internal void RemoveEvent(MouseEventData eventData) {
+    internal void RemoveEvent(MouseEventData eventData, bool global) {
+        if (eventData.EventId is MouseEventId.MouseOver or MouseEventId.MouseOut && (global || eventData.IgnoreBounds)) {
+            Console.WriteLine("MouseOver/MouseOut not supported for overriding default global/ignoreBounds values");
+            return;
+        }
+        
         switch (eventData.Callback) {
             case Action:
             case Action<MouseEventArgs>:
-                _pending.Enqueue((eventData, false));
+                _pending.Enqueue(new EventData(eventData, global, false));
                 break;
             default:
                 Console.WriteLine("Unable to remove callback, invalid signature, must be 'Callback()' or 'Callback(MouseEventArgs)'");
@@ -120,4 +168,6 @@ internal class MouseEventHandler {
                     
         }
     }
+
+    private record EventData(MouseEventData Data, bool Global, bool Add);
 }

@@ -1,52 +1,37 @@
 ﻿using Microsoft.Xna.Framework;
+using MonoClient.Screens;
 using MonoClient.UiLib;
-using MonoClient.UiLib.Core.Events.Types;
+using MonoClient.UiLib.BuiltIn;
 
 namespace MonoClient.Display;
 
 public static class DisplayManager {
+
+    private static readonly DisplayContainer Screen = new();
+
+    static DisplayManager() {
+        Screen.AddChild(ScreenManager.FadeScreen);
+        Screen.AddChild(new ScreenManager());
+        Screen.AddChild(new PanelManager());
+        Screen.AddChild(new DialogManager());
+        Screen.AddChild(new TooltipManager());
+    }
+
+    public static void Init() {
+        //ScreenManager.FadeToScreen(new TestScreen(), Easing.SineInOut, 500, 0x0);
+        ScreenManager.FadeToScreen(new LoadingScreen(), Easing.SineInOut, 1000, 0x0);
+    }
     
     public static void Update(GameTime gameTime) {
-        // Tick tweens before ui update cycle
         GTween.Update(gameTime);
-        
-        // Update Layers (Lowest to Highest)
-        // DisplayState is used to track which layers need  mouse events
-        var state = DisplayState.None;
-        ScreenManager.Update(gameTime, ref state);
-        PanelManager.Update(gameTime, ref state);
-        DialogManager.Update(gameTime, ref state);
-        TooltipManager.Update(gameTime);
-        
-        // Handle Mouse Events (Highest to Lowest)
-        var consumed = (MouseEventId) 0;
-        switch (state) {
-            case DisplayState.Dialog:
-                DialogManager.HandleMouseEvents(ref consumed);
-                break;
-            case DisplayState.Panel:
-                PanelManager.HandleMouseEvents(ref consumed);
-                break;
-            case DisplayState.Screen:
-                ScreenManager.HandleMouseEvents(ref consumed);
-                break;
-        }
+        ScreenManager.Update(gameTime);
+        Screen.Update(gameTime);
     }
 
     public static void Draw(GameTime gameTime) {
         UiRender.LastRenderCount = 0;
-        // Draw layers (Lowest to Highest)
         ScreenManager.Draw(gameTime);
-        PanelManager.Draw(gameTime);
-        DialogManager.Draw(gameTime);
-        TooltipManager.Draw(gameTime);
+        Screen.Draw(gameTime);
     }
     
-}
-
-public enum DisplayState {
-    None,
-    Screen,
-    Panel,
-    Dialog
 }

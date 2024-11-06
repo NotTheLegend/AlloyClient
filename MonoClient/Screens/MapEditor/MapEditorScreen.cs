@@ -4,12 +4,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoClient.Assets;
+using MonoClient.Display;
 using MonoClient.Objects;
 using MonoClient.Rendering;
 using MonoClient.Screens.MapEditor.Components;
 using MonoClient.State;
 using MonoClient.State.Input;
-using MonoClient.UiLib.Core;
 using MonoClient.Utils;
 
 namespace MonoClient.Screens.MapEditor;
@@ -226,8 +226,6 @@ public partial class MapEditorScreen : Screen {
         if (TileHovered != null) {
             _editorObjectDetailsPanel.UpdateDetails(TileHovered);
         }
-
-        base.Update(gameTime);
     }
 
     public override void Draw(GameTime gameTime) {
@@ -339,8 +337,6 @@ public partial class MapEditorScreen : Screen {
             
             #endregion
         }
-        
-        base.Draw(gameTime);
     }
     
     public MapTile GetTile(int x, int y) {

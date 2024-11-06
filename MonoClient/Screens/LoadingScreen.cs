@@ -7,7 +7,6 @@ using MonoClient.State;
 using MonoClient.Ui.Components.Graphics;
 using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
-using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Screens;
@@ -35,7 +34,8 @@ public class LoadingScreen : Screen {
             Account.LoadAsync(),
             //Task.Run(SoundManager.PreLoadSounds),
             //Task.Run(Music.PreLoadSongs),
-            AssetParser.ParseAssetsAsync()
+            AssetParser.ParseAssetsAsync(),
+            Task.Delay(2000) // Loading screen too fast lmao
         ), () => { ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 1000, 0x0); });
     }
 }
