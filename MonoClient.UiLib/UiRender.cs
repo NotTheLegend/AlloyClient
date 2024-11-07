@@ -33,7 +33,7 @@ public static class UiRender {
 
     public static BitmapFont MyriadProBold { get; private set; }
 
-    private static Matrix _viewMatrix;
+    public static Matrix ViewMatrix;
 
     internal static Effect UiShader;
 
@@ -75,8 +75,8 @@ public static class UiRender {
     public static void UpdateViewMatrix(int width, int height) {
         Screen = new IntVector2(width, height);
         ScreenScale = new Vector2((float)Screen.X / DefaultScreen.X, (float)Screen.Y / DefaultScreen.Y);
-        _viewMatrix = Matrix.CreateOrthographicOffCenter(0, Screen.X, Screen.Y, 0, -1, 1);
-        UiShader.Parameters["ViewMatrix"].SetValue(_viewMatrix);
+        ViewMatrix = Matrix.CreateOrthographicOffCenter(0, Screen.X, Screen.Y, 0, -1, 1);
+        UiShader.Parameters["ViewMatrix"].SetValue(ViewMatrix);
 
     }
 

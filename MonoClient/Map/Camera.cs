@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoClient.State;
+using MonoClient.UiLib;
 
 namespace MonoClient;
 
@@ -11,6 +12,7 @@ public static class Camera {
     public static Matrix ProjectionMatrix;
     public static Matrix ZoomMatrix;
     public static Matrix BillboardMatrix;
+    public static Matrix SpeechMatrix;
 
     public static float CameraAngle;
 
@@ -68,6 +70,8 @@ public static class Camera {
         BillboardMatrix[1] = -s;
         BillboardMatrix[4] = s;
         BillboardMatrix[5] = c;
+        
+        SpeechMatrix = WorldMatrix * ViewMatrix * ProjectionMatrix * Matrix.Invert(UiRender.ViewMatrix);
     }
 
     // Only tested on MapEditor

@@ -101,6 +101,11 @@ public sealed class TypePlayer : RenderBase {
         
         //Extra.Alpha = 0.5f;
         
+        var pos1 = Vector3.Transform(Position, Camera.SpeechMatrix);
+        var pos2 = Vector3.Transform(new Vector3(Position.X, Position.Y - 1 * Scale.Y * k + Scale.W * k, Position.Z), Camera.SpeechMatrix);
+        
+        Entity.SpeechOffset = Vector3.Distance(pos1, pos2);
+        
         Render.DrawEntity(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color));
         var y = 0.1f;
         if (_player != Map.LocalPlayer) {

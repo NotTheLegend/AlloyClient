@@ -3,6 +3,7 @@ using MonoClient.Networking.Packets.Outgoing;
 using MonoClient.Screens.Game.Components.Hud;
 using MonoClient.State;
 using MonoClient.State.Input;
+using MonoClient.Ui.Chat;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
@@ -15,6 +16,9 @@ public sealed class GameSprite : Sprite {
     private readonly TextInput _chatBox;
 
     public GameSprite() {
+        AddChild(new ChatLayer());
+        
+        
         _hud = new HudView();
         _hud.X = Settings.DefaultScreenWidth;
         _hud.SetAnchor(UiAnchor.RightTop);
@@ -38,6 +42,8 @@ public sealed class GameSprite : Sprite {
             var text = PlayerText.CreatePacket();
             text.Text = _chatBox.Text;
             Client.QueuePacket(text);
+            
+            ChatLayer.QueueSpeech(new SpeechData { Owner = Map.LocalPlayer, Text = _chatBox.Text});
             
             _chatBox.Clear();
             _chatBox.Visible = false;

@@ -29,6 +29,7 @@ public class Entity {
     public int ObjectId;
     public ushort Type;
 
+    public float SpeechOffset;
     public Vector2 Position;
     public float Rotation;
     public float Z;
