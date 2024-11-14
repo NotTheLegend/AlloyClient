@@ -7,6 +7,7 @@ using MonoClient.Objects;
 using MonoClient.Objects.Enums;
 using MonoClient.Objects.Util;
 using MonoClient.Screens.Game.Components.Hud;
+using MonoClient.Screens.Game.Components.Hud.Chat;
 using MonoClient.Screens.Game.Components.Options;
 using MonoClient.UiLib.Signals;
 using MonoClient.Utils;
@@ -25,6 +26,9 @@ public static class InputHandler {
     public static bool InOptionPanel = false;
 
     public static readonly Signal<bool> OnChatKey = new();
+    public static readonly Signal OnTellKey = new();
+    public static readonly Signal OnGuildChatKey = new();
+    public static readonly Signal OnPartyChatKey = new();
 
     public static void SetPlayerInput(bool active) => _enableInput = active;
     
@@ -154,6 +158,21 @@ public static class InputHandler {
             if (state.IsToggled(Settings.Chat, ref _prevInputState)) {
                 _enableInput = !_enableInput;
                 OnChatKey.Dispatch(!_enableInput);
+            }
+
+            if (state.IsToggled(Settings.TellKey, ref _prevInputState) && !ChatView.IsTyping) {
+                _enableInput = false;
+                OnTellKey.Dispatch();
+            }
+            
+            if (state.IsToggled(Settings.GuildChat, ref _prevInputState) && !ChatView.IsTyping) {
+                _enableInput = false;
+                OnGuildChatKey.Dispatch();
+            }
+            
+            if (state.IsToggled(Settings.PartyChat, ref _prevInputState) && !ChatView.IsTyping) {
+                _enableInput = false;
+                OnPartyChatKey.Dispatch();
             }
             
             if (state.KeyboardState.IsKeyDown(Keys.LeftShift)) {

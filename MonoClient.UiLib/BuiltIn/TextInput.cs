@@ -310,6 +310,25 @@ public sealed class TextInput : Sprite {
         
         FillData();
     }
+    
+    public void AddText(string text) {
+        foreach (char input in text) {
+            if (_caretIndex == -1) {
+                _inputText.Append(input);
+            }
+            else {
+                _inputText.Insert(_caretIndex, input);
+                _caretIndex++;
+            }
+        }
+        FillData();
+    }
+
+    public void ClearText() {
+        _inputText.Clear();
+        _caretIndex = -1;
+        FillData();
+    }
 
     public void Clear() {
         ActiveInput = null;

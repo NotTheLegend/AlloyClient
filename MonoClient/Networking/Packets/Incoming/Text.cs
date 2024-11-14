@@ -1,4 +1,7 @@
-﻿namespace MonoClient.Networking.Packets.Incoming;
+﻿using MonoClient.Screens.Game.Components.Hud.Chat;
+using MonoClient.UiLib.Signals;
+
+namespace MonoClient.Networking.Packets.Incoming;
 
 public class Text : IncomingPacket<Text> {
     public string Name;
@@ -29,6 +32,13 @@ public class Text : IncomingPacket<Text> {
     }
 
     public override void Handle() {
+        ChatView.QueueChatLine(new ChatLineData {
+            Name = Name,
+            ObjectId = ObjectId,
+            NumStars = NumStars,
+            Recipient = Recipient,
+            Txt = Txt
+        });
     }
 
     public override string ToString() {
