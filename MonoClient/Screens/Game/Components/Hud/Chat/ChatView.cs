@@ -15,6 +15,8 @@ namespace MonoClient.Screens.Game.Components.Hud.Chat;
 // Scroll up/down chat history
 
 public class ChatView : Sprite {
+    public static int MaxWidth { get; private set; } = Settings.DefaultScreenWidth / 2;
+
     public static bool IsTyping = false;
     
     private static readonly Queue<ChatLineData> ChatLineQueue = new();
@@ -29,7 +31,7 @@ public class ChatView : Sprite {
     private string _recentTeller = string.Empty;
     
     public ChatView() {
-        Width = Settings.DefaultScreenWidth - 256;
+        Width = MaxWidth;
         Height = Settings.DefaultScreenHeight;
             
         _chatBox = new TextInput(new InputConfig {

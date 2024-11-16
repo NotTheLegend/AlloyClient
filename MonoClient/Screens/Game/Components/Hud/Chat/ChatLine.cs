@@ -1,5 +1,4 @@
 ﻿using MonoClient.Data;
-using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
@@ -30,6 +29,8 @@ public class ChatLine {
     private string _text;
     private bool _toMe;
 
+    public Sprite Sprite { get; private set; }
+
     public ChatLine(int time, ChatLineData data) {
         _time = time;
         _numStars = data.NumStars;
@@ -37,18 +38,17 @@ public class ChatLine {
         _senderObjectId = data.ObjectId;
         _recipient = data.Recipient;
         _text = data.Txt;
-        _toMe = _sender == Account.Username;
+        _toMe = _recipient == Account.Username;
+
+        Sprite = CreateSprite();
     }
 
-    private Sprite _lineSprite = null;
-    public Sprite GetSprite() {
-        if (_lineSprite is not null) 
-            return _lineSprite;
-        
+    private Sprite CreateSprite() {
         var lineSprite = new Container(new ContainerConfig {
             Anchor = UiAnchor.LeftBottom,
+            Width = ChatView.MaxWidth,
         });
-        
+
         string name = _sender;
         int xOffset = 0;
         
@@ -88,31 +88,33 @@ public class ChatLine {
         }
         
         if (_numStars >= 0) {
-            var starSprite = FameUtils.StarsToIcon(_numStars);
-            lineSprite.AddChild(starSprite);
+            var starIcon = FameUtils.StarsToIcon(_numStars);
+            lineSprite.AddChild(starIcon);
             
-            xOffset += starSprite.Width;
+            xOffset += starIcon.Width;
         }
 
         if (!string.IsNullOrEmpty(name)) {
             nameFormat.Bold = true;
             
-            var nameSprite = new SimpleText(nameFormat);
-            nameSprite.SetText($"{prefix}<{name}> ");
+            var nameText = new SimpleText(nameFormat);
+            nameText.SetText($"{prefix}<{name}> ");
             
-            nameSprite.X = xOffset;
-            lineSprite.AddChild(nameSprite);
+            nameText.X = xOffset;
+            lineSprite.AddChild(nameText);
 
-            xOffset += nameSprite.Width;
+            nameText.MouseEnabled = true;
+            xOffset += nameText.Width;
         }
-        
-        var textSprite = new SimpleText(textFormat);
-        textSprite.SetText(_text);
-        
-        textSprite.X = xOffset;
-        lineSprite.AddChild(textSprite);
 
-        _lineSprite = lineSprite;
+        textFormat.MaxWidth = lineSprite.Width;
+        
+        var messageText = new SimpleText(textFormat);
+        messageText.OffsetFirstLineBy(xOffset);
+        messageText.SetText(_text);
+        
+        lineSprite.AddChild(messageText);
+        
         return lineSprite;
     }
 }

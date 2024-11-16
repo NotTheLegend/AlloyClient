@@ -56,7 +56,7 @@ public class ChatContainer : Container {
     public void AddChatLine(int time, ChatLineData data) {
         var line = new ChatLine(time, data);
         _chatLines.AddFirst(line);
-        AddChild(line.GetSprite());
+        AddChild(line.Sprite);
         
         // Prevent chat moving if we're not at the bottom of the chat
         if (_chatLineIndex > 0)
@@ -71,7 +71,7 @@ public class ChatContainer : Container {
 
         var index = 0;
         foreach (var line in _chatLines) {
-            var sprite = line.GetSprite();
+            var sprite = line.Sprite;
             
             // Ensure only lines on the "page" get shown
             if (index < _chatLineIndex || index >= _chatLineIndex + MaxChatShown) {
@@ -93,7 +93,7 @@ public class ChatContainer : Container {
         if (line is null) 
             return;
         
-        RemoveChild(line.GetSprite());
+        RemoveChild(line.Sprite);
         _chatLines.RemoveLast();
     }
 
