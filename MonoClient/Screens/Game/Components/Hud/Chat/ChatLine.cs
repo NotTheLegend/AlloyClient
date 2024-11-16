@@ -1,4 +1,5 @@
 ﻿using MonoClient.Data;
+using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
@@ -86,8 +87,11 @@ public class ChatLine {
             }
         }
         
-        if (_numStars > 0) {
-            // TODO: Add stars icon
+        if (_numStars >= 0) {
+            var starSprite = FameUtils.StarsToIcon(_numStars);
+            lineSprite.AddChild(starSprite);
+            
+            xOffset += starSprite.Width;
         }
 
         if (!string.IsNullOrEmpty(name)) {
@@ -95,15 +99,16 @@ public class ChatLine {
             
             var nameSprite = new SimpleText(nameFormat);
             nameSprite.SetText($"{prefix}<{name}> ");
+            
             nameSprite.X = xOffset;
             lineSprite.AddChild(nameSprite);
-            
+
             xOffset += nameSprite.Width;
         }
         
-        // TODO: Add text
         var textSprite = new SimpleText(textFormat);
         textSprite.SetText(_text);
+        
         textSprite.X = xOffset;
         lineSprite.AddChild(textSprite);
 

@@ -50,6 +50,10 @@ public static class AssetParser {
 
                 ObjectLibrary.IdToObjectType[props.ObjectId] = props.ObjectType;
 
+                if (props.Class == "Player") {
+                    ObjectLibrary.TypeToClassProps[props.ObjectType] = props.PlayerProperties;
+                }
+
                 if (gameObject.HasElement("Item")) {
                     ObjectLibrary.ItemXmls[props.ObjectType] = gameObject;
                 }

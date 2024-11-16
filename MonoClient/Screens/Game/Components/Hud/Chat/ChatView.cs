@@ -29,7 +29,6 @@ public class ChatView : Sprite {
     private string _recentTeller = string.Empty;
     
     public ChatView() {
-        SetAnchor(UiAnchor.LeftBottom);
         Width = Settings.DefaultScreenWidth - 256;
         Height = Settings.DefaultScreenHeight;
             
@@ -40,6 +39,7 @@ public class ChatView : Sprite {
             ClickToActivate = false,
             Width = Width,
         });
+        AddChild(_chatBox);
         
         _chatContainer = new ChatContainer(new ContainerConfig() {
             EnableClip = true,
@@ -49,15 +49,14 @@ public class ChatView : Sprite {
         AddChild(_chatContainer);
         
         _chatBox.Y = _chatContainer.Height;
-        AddChild(_chatBox);
-        
-        
         _chatBox.Visible = false;
         
         InputHandler.OnChatKey.Add(OnChatKey);
         InputHandler.OnTellKey.Add(OnTellKey);
         InputHandler.OnGuildChatKey.Add(OnGuildKey);
         InputHandler.OnPartyChatKey.Add(OnPartyKey);
+        InputHandler.OnChatHistoryUp.Add(_chatContainer.PageUp);
+        InputHandler.OnChatHistoryDown.Add(_chatContainer.PageDown);
     }
 
     protected override void OnUpdate(GameTime gameTime) {
@@ -88,7 +87,10 @@ public class ChatView : Sprite {
     }
 
     private void OnTellKey() {
-        OpenTextInput($"/tell {_recentTeller} ");
+        OpenTextInput(!string.IsNullOrEmpty(_recentTeller) 
+            ? $"/tell {_recentTeller} " 
+            : $"/tell "
+        );
     }
 
     private void OnGuildKey() {

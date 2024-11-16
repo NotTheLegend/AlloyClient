@@ -24,7 +24,6 @@ public sealed class GameSprite : Sprite {
         AddChild(_hud);
 
         _chat = new ChatView();
-        _chat.Y = Settings.DefaultScreenHeight;
         AddChild(_chat);
     }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
 using MonoClient.Data;
 using MonoClient.Networking;
 using MonoClient.Networking.Packets.Incoming;
@@ -15,43 +16,72 @@ namespace MonoClient.Screens.Game.Components.Hud.Chat;
 // Chat scrolling
 
 public class ChatContainer : Container {
-    private const int MaxChatHistory = 4;
-    private const int MaxChatShown = 7;
-
+    private const int MaxChatHistory = 40;
+    private const int MaxChatShown = 10;
+    
     private readonly LinkedList<ChatLine> _chatLines = [];
+    
+    private int _chatLineIndex = 0;
+    private int MaxChatLineIndex => Math.Min(MaxChatHistory, _chatLines.Count) - MaxChatShown;
 
-    public ChatContainer(ContainerConfig config) : base(config) {
+    public ChatContainer(ContainerConfig config) : base(config) { }
+
+    public void PageUp() {
+        if (_chatLineIndex >= MaxChatLineIndex)
+            return;
         
+        _chatLineIndex = Math.Min(_chatLineIndex + MaxChatShown, MaxChatLineIndex);
+        RefreshChatOrder();
     }
 
-    public void ScrollUp() {
-        // TODO
+    public void PageDown() {
+        if (_chatLineIndex == 0)
+            return;
+        
+        _chatLineIndex = Math.Max(_chatLineIndex - MaxChatShown, 0);
+        RefreshChatOrder();
     }
-
-    public void ScrollDown() {
-        // TODO
+    
+    public void ResetScroll() {
+        _chatLineIndex = 0;
+        RefreshChatOrder();
     }
     
     public void Clear() {
         RemoveAllChildren();
         _chatLines.Clear();
+        _chatLineIndex = 0;
     }
 
     public void AddChatLine(int time, ChatLineData data) {
-        _chatLines.AddFirst(new ChatLine(time, data));
+        var line = new ChatLine(time, data);
+        _chatLines.AddFirst(line);
+        AddChild(line.GetSprite());
+        
+        // Prevent chat moving if we're not at the bottom of the chat
+        if (_chatLineIndex > 0)
+            _chatLineIndex++; 
+        
         UpdateChatHistory();
         RefreshChatOrder();
     }
 
     private void RefreshChatOrder() {
         var yOffset = 0;
-        
+
+        var index = 0;
         foreach (var line in _chatLines) {
             var sprite = line.GetSprite();
-            sprite.Y = Height - yOffset;
-            AddChild(sprite);
             
-            yOffset += sprite.Height;
+            // Ensure only lines on the "page" get shown
+            if (index < _chatLineIndex || index >= _chatLineIndex + MaxChatShown) {
+                sprite.Visible = false;
+            } else {
+                sprite.Y = Height - yOffset;
+                yOffset += sprite.Height;
+                sprite.Visible = true;
+            }
+            index++;
         }
     }
 

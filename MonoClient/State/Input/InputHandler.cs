@@ -29,6 +29,8 @@ public static class InputHandler {
     public static readonly Signal OnTellKey = new();
     public static readonly Signal OnGuildChatKey = new();
     public static readonly Signal OnPartyChatKey = new();
+    public static readonly Signal OnChatHistoryUp = new();
+    public static readonly Signal OnChatHistoryDown = new();
 
     public static void SetPlayerInput(bool active) => _enableInput = active;
     
@@ -173,6 +175,14 @@ public static class InputHandler {
             if (state.IsToggled(Settings.PartyChat, ref _prevInputState) && !ChatView.IsTyping) {
                 _enableInput = false;
                 OnPartyChatKey.Dispatch();
+            }
+            
+            if (state.IsToggled(Settings.ChatHistoryUp, ref _prevInputState)) {
+                OnChatHistoryUp.Dispatch();
+            }
+            
+            if (state.IsToggled(Settings.ChatHistoryDown, ref _prevInputState)) {
+                OnChatHistoryDown.Dispatch();
             }
             
             if (state.KeyboardState.IsKeyDown(Keys.LeftShift)) {
