@@ -118,8 +118,12 @@ public sealed class SimpleText : Sprite {
             //todo add param for wordwrap
             // Max width hit, start new line
             if (_maxWidth > -1 && zero.X >= _maxWidth) {
-                idx -= i - lastSpaceIndex;
-                i = lastSpaceIndex; // Skip space when starting new line
+                // Prevent word being cut by the new line if there was
+                if (lastSpaceIndex > 0) {
+                    idx -= i - lastSpaceIndex;
+                    i = lastSpaceIndex;
+                    lastSpaceIndex = 0;
+                }
                 
                 if (zero.X > boundWidth) {
                     boundWidth = zero.X;
