@@ -240,6 +240,10 @@ public class Entity {
         if (tile == null) {
             return false;
         }
+        
+        if (tile.OccupiedObject != null && tile.OccupiedObject.Properties.OccupySquare) {
+            return false;
+        }
 
         Position.X = x;
         Position.Y = y;
