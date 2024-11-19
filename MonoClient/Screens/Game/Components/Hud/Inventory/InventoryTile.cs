@@ -24,14 +24,18 @@ public class InventoryTile : Sprite {
     public ItemDesc ItemDesc;
     
     public bool Dragging;
+    public bool Draggable;
+    
     public byte Slot;
     public Entity Owner;
 
     private Vector2 _lastMousePos;
 
-    public InventoryTile(ItemDesc item) {
+    public InventoryTile(ItemDesc item, bool draggable = true) {
         ItemType = item?.ObjectType ?? 0;
         ItemDesc = item;
+
+        Draggable = draggable;
         
         var background = new ColorRect(new ColorRectConfig {
             Alpha = 1f,
@@ -108,8 +112,11 @@ public class InventoryTile : Sprite {
     
     private void CreateListeners() {
         ItemSprite.MouseEnabled = true;
-        ItemSprite.AddEventListener(MouseEventId.LeftDown, onDragItem);
-        ItemSprite.AddEventListener(MouseEventId.LeftClick, onReleaseItem);
+
+        if (Draggable) {
+            ItemSprite.AddEventListener(MouseEventId.LeftDown, onDragItem);
+            ItemSprite.AddEventListener(MouseEventId.LeftClick, onReleaseItem);
+        }
     }
     
     private void onDragItem() {
