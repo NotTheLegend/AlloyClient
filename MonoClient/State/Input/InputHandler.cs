@@ -25,12 +25,12 @@ public static class InputHandler {
     public static bool Moving;
     public static bool InOptionPanel = false;
 
-    public static readonly Signal<bool> OnChatKey = new();
-    public static readonly Signal OnTellKey = new();
-    public static readonly Signal OnGuildChatKey = new();
-    public static readonly Signal OnPartyChatKey = new();
-    public static readonly Signal OnChatHistoryUp = new();
-    public static readonly Signal OnChatHistoryDown = new();
+    public static readonly SingleSignal<bool> OnChatKey = new();
+    public static readonly SingleSignal OnTellKey = new();
+    public static readonly SingleSignal OnGuildChatKey = new();
+    public static readonly SingleSignal OnPartyChatKey = new();
+    public static readonly SingleSignal OnChatHistoryUp = new();
+    public static readonly SingleSignal OnChatHistoryDown = new();
 
     public static void SetPlayerInput(bool active) => _enableInput = active;
     
