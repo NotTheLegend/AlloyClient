@@ -54,6 +54,10 @@ public static class AssetParser {
                     ObjectLibrary.TypeToClassProps[props.ObjectType] = props.PlayerProperties;
                 }
 
+                if (props.Skin) {
+                    ObjectLibrary.TypeToSkins.Add(new Tuple<ushort, ushort>(props.PlayerClassType, props.ObjectType));
+                }
+
                 if (gameObject.HasElement("Item")) {
                     ObjectLibrary.ItemXmls[props.ObjectType] = gameObject;
                 }

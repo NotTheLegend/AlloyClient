@@ -42,6 +42,9 @@ public class ObjectProperties {
     
     public readonly string Description;
     
+    public readonly ushort PlayerClassType;
+    public readonly bool Skin;
+    
     public readonly List<int> SlotTypes;
     public readonly List<ushort?> Equipment;
 
@@ -86,6 +89,9 @@ public class ObjectProperties {
         SizeStep = e.GetValue("SizeStep", 5);
         
         Description = e.GetValue<string>("Description");
+        
+        PlayerClassType = e.GetValue<ushort>("PlayerClassType");
+        Skin = e.GetValue<bool>("Skin");
 
         SlotTypes = [];
         var slotTypes = e.GetValue<string>("SlotTypes");

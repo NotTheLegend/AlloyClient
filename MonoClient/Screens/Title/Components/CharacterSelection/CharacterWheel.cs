@@ -29,7 +29,8 @@ public class CharacterWheel : Container {
     
     // parse from player xml later
     public readonly ushort[] Classes = [0x0300, 0x0307, 0x030e, 0x0310, 0x031d, 0x031e, 0x031f, 0x0320, 0x0321, 0x0322, 0x0323, 0x0324, 0x0325, 0x0326];
-    public int CurrentCharacterIndex; 
+    public int CurrentCharacterIndex;
+    public ClassRect SelectedClass;
 
     public CharacterWheel() {
         for (var i = 0; i < Classes.Length; i++) {
@@ -82,7 +83,8 @@ public class CharacterWheel : Container {
             if (i == CurrentCharacterIndex) {
                 character.Alpha = 1f;
             }
-            
+
+            SelectedClass = _classRects[CurrentCharacterIndex];
         }
     }
 
