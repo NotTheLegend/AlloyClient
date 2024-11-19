@@ -53,12 +53,12 @@ public class ChatView : Sprite {
         _chatBox.Y = _chatContainer.Height;
         _chatBox.Visible = false;
         
-        InputHandler.OnChatKey.Add(OnChatKey);
-        InputHandler.OnTellKey.Add(OnTellKey);
-        InputHandler.OnGuildChatKey.Add(OnGuildKey);
-        InputHandler.OnPartyChatKey.Add(OnPartyKey);
-        InputHandler.OnChatHistoryUp.Add(_chatContainer.PageUp);
-        InputHandler.OnChatHistoryDown.Add(_chatContainer.PageDown);
+        InputHandler.OnChatKey.Set(OnChatKey);
+        InputHandler.OnTellKey.Set(OnTellKey);
+        InputHandler.OnGuildChatKey.Set(OnGuildKey);
+        InputHandler.OnPartyChatKey.Set(OnPartyKey);
+        InputHandler.OnChatHistoryUp.Set(_chatContainer.PageUp);
+        InputHandler.OnChatHistoryDown.Set(_chatContainer.PageDown);
     }
 
     protected override void OnUpdate(GameTime gameTime) {
