@@ -117,10 +117,7 @@ public class Entity {
     public void SetObjectId(int id) {
         ObjectId = id;
         Jitter = Random.Shared.NextSingle() * 0.00002f - 0.00001f;
-
-        if (Properties.ObjectId == "White Fountain") {
-            Effect = new HitEffect(this, 0xff0000);
-        }
+        // Effect = new FountainEffect(this);
     }
 
     public void SetType(ushort type) {
