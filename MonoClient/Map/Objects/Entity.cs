@@ -6,7 +6,9 @@ using Microsoft.Xna.Framework;
 using MonoClient.Assets;
 using MonoClient.Assets.Libraries;
 using MonoClient.Assets.XmlStructs;
+using MonoClient.Networking;
 using MonoClient.Networking.Enums;
+using MonoClient.Networking.Packets.Outgoing;
 using MonoClient.Networking.Structs.DataObjects;
 using MonoClient.Rendering;
 using MonoClient.Rendering.Types;
@@ -115,7 +117,10 @@ public class Entity {
     public void SetObjectId(int id) {
         ObjectId = id;
         Jitter = Random.Shared.NextSingle() * 0.00002f - 0.00001f;
-        //Effect = new FountainEffect(this);
+
+        if (Properties.ObjectId == "White Fountain") {
+            Effect = new HitEffect(this, 0xff0000);
+        }
     }
 
     public void SetType(ushort type) {
@@ -259,6 +264,22 @@ public class Entity {
         Tile = tile;
 
         return true;
+    }
+
+    public bool HitTest(Projectile proj) {
+        var target = EntityUtils.FindClosestPlayerInRadius(proj, Map.Entities.Values, 0.5f);
+        if (target != null) {
+            target.Effect = new HitEffect(target, 0xff0000);
+
+            var hit = PlayerHit.CreatePacket();
+            hit.BulletId = (byte)proj.ObjectId;
+            hit.ObjectId = proj.Owner.ObjectId;
+            
+            Client.QueuePacket(hit);
+            return true;
+        }
+        
+        return false;
     }
 
     public void OnTickPosition(float x, float y, double tickTime, int tickId, bool isPlayer) {

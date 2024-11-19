@@ -8,7 +8,9 @@ using MonoClient.Utils;
 namespace MonoClient.Objects;
 
 public class Projectile : Entity {
+    
     public ProjectileProperties ProjDesc;
+    public Entity Owner;
     
     public float Angle;
     public float AngleCorrection;
@@ -39,7 +41,7 @@ public class Projectile : Entity {
         
         _previousPosition = Position;
         
-        if (elapsed > ProjDesc.LifetimeMs || !MoveTo(Position.X, Position.Y)) {
+        if (elapsed > ProjDesc.LifetimeMs || !MoveTo(Position.X, Position.Y) || HitTest(this)) {
             PendingRemoval = true;
             Map.EntityStorage.Remove(this);
         }

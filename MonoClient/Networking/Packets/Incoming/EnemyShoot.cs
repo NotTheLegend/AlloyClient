@@ -4,6 +4,7 @@ using MonoClient.Assets.XmlStructs;
 using MonoClient.Networking.Structs.DataObjects;
 using MonoClient.Objects;
 using MonoClient.Objects.Enums;
+using MonoClient.ParticleEffects;
 using MonoClient.State;
 using MonoClient.Utils;
 
@@ -84,6 +85,8 @@ public class EnemyShoot : IncomingPacket<EnemyShoot> {
                 StartPosition = en.Position,
                 StartTime = en.Timer
             };
+            proj.Owner = en;
+            
             proj.SetObjectId(BulletId);
             proj.SetType(type);
             proj.SetPos(en.Position.X, en.Position.Y);
