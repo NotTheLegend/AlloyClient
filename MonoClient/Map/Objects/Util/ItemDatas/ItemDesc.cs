@@ -186,7 +186,7 @@ public class ItemDesc : ItemData {
         Usable = xml.GetValue<bool>("Usable");
         Reusable = xml.GetValue<bool>("Reusable");
         Resurrects = xml.GetValue<bool>("Resurrects");
-        Tier = xml.GetValue<int>("Tier");
+        Tier = xml.GetValue<int>("Tier", -1);
         BagType = xml.GetValue<int>("BagType");
         FameBonus = xml.GetValue<int>("FameBonus");
         NumProjectiles = xml.GetValue<int>("NumProjectiles");
