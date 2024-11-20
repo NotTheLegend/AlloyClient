@@ -158,13 +158,18 @@ public class InventoryTile : Sprite {
             inBounds = true;
             
             var swap = InvSwap.CreatePacket();
+            swap.Time = (int)Map.LastGameTime.TotalGameTime.TotalSeconds;
+            swap.Position = new Position { X = Map.LocalPlayer.Position.X, Y = Map.LocalPlayer.Position.Y };
+            
             swap.SlotObj1 = new ObjectSlot {
                 ObjectId = Owner.ObjectId,
-                SlotId = Slot
+                SlotId = Slot,
+                ObjectType = ItemType
             };
             swap.SlotObj2 = new ObjectSlot {    
                 ObjectId = tile.Owner.ObjectId,
-                SlotId = tile.Slot
+                SlotId = tile.Slot,
+                ObjectType = tile.ItemType
             };
             Client.QueuePacket(swap);
             
