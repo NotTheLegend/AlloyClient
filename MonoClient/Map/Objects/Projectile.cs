@@ -55,7 +55,6 @@ public class Projectile : Entity {
         
         // Projectiles cannot have multiple pattern effects at the same time
         // I'll keep it behaving like flash client
-        
         if (ProjDesc.Wavy) {
             return ApplyWavyEffect(finalPosition, elapsed);
         }
@@ -66,6 +65,10 @@ public class Projectile : Entity {
 
         if (ProjDesc.Boomerang) {
             return ApplyBoomerangEffect(finalPosition, elapsed);
+        }
+
+        if (ProjDesc.Amplitude != 0) {
+            return ApplyAmplitude(finalPosition, elapsed);
         }
         
         // Straight projectile
@@ -122,6 +125,23 @@ public class Projectile : Entity {
             origin.Y += deflection * MathF.Sin(Angle + MathF.PI / 2);
         }
         
+        return origin;
+    }
+    
+    private Vector2 ApplyAmplitude(Vector2 origin, float elapsed) {
+        float distance = elapsed * ProjDesc.Speed;
+        
+        origin.X += distance * MathF.Cos(Angle);
+        origin.Y += distance * MathF.Sin(Angle);
+        
+        if (ProjDesc.Amplitude != 0) {
+            float phase = ObjectId % 2 * MathF.PI;
+            float deflection = ProjDesc.Amplitude *
+                               MathF.Sin(phase + elapsed / ProjDesc.LifetimeMs * ProjDesc.Frequency * 2 * MathF.PI);
+            origin.X += deflection * MathF.Cos(Angle + MathF.PI / 2);
+            origin.Y += deflection * MathF.Sin(Angle + MathF.PI / 2);
+        }
+
         return origin;
     }
 

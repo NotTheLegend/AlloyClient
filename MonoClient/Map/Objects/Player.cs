@@ -37,6 +37,8 @@ public class Player : Entity {
 
     public int Timer;
 
+    public int BulletId;
+
     #region StatData
 
     public int MaxMp;
@@ -391,23 +393,26 @@ public class Player : Entity {
         
         var projType = ObjectLibrary.IdToObjectType[props.Projectiles[0].ObjectId];
         var projProps =  ObjectLibrary.TypeToObjectProps[projType];
+
+        for (int i = 0; i < props.NumProjectiles; i++) {
+            var proj = new Projectile {
+                Properties = projProps,
+                ProjDesc = props.Projectiles[0],
+                Angle = AttackAngle + MathHelper.ToRadians(props.ArcGap) * i,
+                StartPosition = Position,
+                StartTime = Timer
+            };
         
-        var proj = new Projectile {
-            Properties = projProps,
-            ProjDesc = props.Projectiles[0],
-            Angle = AttackAngle,
-            StartPosition = Position,
-            StartTime = Timer
-        };
+            proj.Owner = this;
         
-        proj.Owner = this;
-        
-        proj.SetObjectId(9999);
-        proj.SetType(ObjectLibrary.IdToObjectType[props.Projectiles[0].ObjectId]);
-        proj.SetPos(Position.X, Position.Y);
-        proj.SetRotation();
-            
-        Map.AddProjectile(proj);
+            proj.SetObjectId(BulletId);
+            proj.SetType(ObjectLibrary.IdToObjectType[props.Projectiles[0].ObjectId]);
+            proj.SetPos(Position.X, Position.Y);
+            proj.SetRotation();
+
+            BulletId++;
+            Map.AddProjectile(proj);
+        }
     }
 
     private Vector2 ModifyMove(float x, float y) {
