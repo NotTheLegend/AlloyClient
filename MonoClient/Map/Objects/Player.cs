@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using MonoClient.Assets.Libraries;
+using MonoClient.Assets.XmlStructs;
 using MonoClient.Networking.Enums;
 using MonoClient.Networking.Structs.DataObjects;
 using MonoClient.Objects.Enums;
+using MonoClient.Objects.Util.ItemDatas;
 using MonoClient.Rendering;
 using MonoClient.Rendering.Types;
 using MonoClient.State;
+using MonoClient.State.Input;
 using MonoClient.Utils;
 
 namespace MonoClient.Objects;
@@ -381,7 +385,29 @@ public class Player : Entity {
         //this.attackAngle_ = attackAngle;
         AttackStart = Timer;
         IsShooting = true;
-        //this.map_.gs_.gsc_.playerShoot(this.doShoot(this.attackStart_, this.attackAngle_, true, itemData, ProjectileType.SHOOT), 0, ExplodeType.NONE, false, itemData.ObjectType);
+
+        var itemType = Equipment[0].ObjectType;
+        var props = ObjectLibrary.TypeToObjectProps[itemType];
+        
+        var projType = ObjectLibrary.IdToObjectType[props.Projectiles[0].ObjectId];
+        var projProps =  ObjectLibrary.TypeToObjectProps[projType];
+        
+        var proj = new Projectile {
+            Properties = projProps,
+            ProjDesc = props.Projectiles[0],
+            Angle = AttackAngle,
+            StartPosition = Position,
+            StartTime = Timer
+        };
+        
+        proj.Owner = this;
+        
+        proj.SetObjectId(9999);
+        proj.SetType(ObjectLibrary.IdToObjectType[props.Projectiles[0].ObjectId]);
+        proj.SetPos(Position.X, Position.Y);
+        proj.SetRotation();
+            
+        Map.AddProjectile(proj);
     }
 
     private Vector2 ModifyMove(float x, float y) {

@@ -245,10 +245,10 @@ public static class Map {
     }
 
     public static void RemoveEntity(int id) {
-        var en = Entities[id];
-        Entities.Remove(id);
-        EntityStorage.Remove(en);
+        if (!Entities.Remove(id, out var en)) 
+            return;
 
+        EntityStorage.Remove(en);
         en.OnRemovedFromMap();
     }
 

@@ -264,18 +264,34 @@ public class Entity {
     }
 
     public bool HitTest(Projectile proj) {
-        var target = EntityUtils.FindClosestPlayerInRadius(proj, Map.Entities.Values, 0.5f);
-        if (target != null) {
-            target.Effect = new HitEffect(target, 0xff0000);
+        if (proj.Owner is Player) {
+            var enemyTarget = EntityUtils.FindClosestEnemyInRadius(proj, Map.Entities.Values, 0.5f);
+            if (enemyTarget != null) {
+                enemyTarget.Effect = new HitEffect(enemyTarget, 0xff0000);
 
-            var hit = PlayerHit.CreatePacket();
-            hit.BulletId = (byte)proj.ObjectId;
-            hit.ObjectId = proj.Owner.ObjectId;
+                var hit = EnemyHit.CreatePacket();
+                hit.Time = (int)Map.LastGameTime.TotalGameTime.TotalSeconds;
+                hit.BulletId = (byte)proj.ObjectId;
+                hit.TargetId = enemyTarget.ObjectId;
+                hit.Killed = enemyTarget.Hp <= proj.ProjDesc.MaxDamage;
+
+                Client.QueuePacket(hit);
+                return true;
+            }
+        } 
+        else {
+            var target = EntityUtils.FindClosestPlayerInRadius(proj, Map.Entities.Values, 0.5f);
+            if (target != null) {
+                target.Effect = new HitEffect(target, 0xff0000);
+
+                var hit = PlayerHit.CreatePacket();
+                hit.BulletId = (byte)proj.ObjectId;
+                hit.ObjectId = proj.Owner.ObjectId;
             
-            Client.QueuePacket(hit);
-            return true;
+                Client.QueuePacket(hit);
+                return true;
+            }
         }
-        
         return false;
     }
 

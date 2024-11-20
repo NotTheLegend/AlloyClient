@@ -81,6 +81,25 @@ public static class EntityUtils {
         
         return closestEntity;
     }
+    
+    public static Entity FindClosestEnemyInRadius(Entity enemy, IEnumerable<Entity> entities, float radius) {
+        Entity closestEntity = null;
+        var closestDistance = float.MaxValue;
+
+        foreach (var entity in entities) {
+            var distance = CalculateDistance(enemy.Position, entity.Position);
+            
+            if (!entity.Properties.IsEnemy)
+                continue;
+            
+            if (distance <= radius && distance < closestDistance) {
+                closestDistance = distance;
+                closestEntity = entity;  
+            }
+        }
+        
+        return closestEntity;
+    }
 
     public static bool IsCharacter(Entity entity) => entity.Properties.IsEnemy || entity.Properties.IsAlly || entity.Properties.IsPlayer || entity.Properties.Class == "Character";
 }

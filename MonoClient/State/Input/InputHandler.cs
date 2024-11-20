@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoClient.Display;
 using MonoClient.Networking;
@@ -66,7 +67,14 @@ public static class InputHandler {
 
                 if (_autoFire || state.IsPressed(Settings.Shoot)) {
                     Map.LocalPlayer.IsShooting = true;
-                    Map.LocalPlayer.AttackAngle = MathF.Atan2(state.MouseState.Y, state.MouseState.X);
+                    
+                    var mousePosition = new Vector2(state.MouseState.X, state.MouseState.Y);
+                    var pos = Camera.ScreenToWorld(mousePosition, Main.GameInstance.GraphicsDevice.Viewport);
+                    
+                    float dX = pos.X - Map.LocalPlayer.Position.X;
+                    float dY = pos.Y - Map.LocalPlayer.Position.Y;
+                    
+                    Map.LocalPlayer.AttackAngle = MathF.Atan2(dY, dX);
                     Map.LocalPlayer.Shoot(0f);
                 }
 
