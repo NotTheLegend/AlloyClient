@@ -517,6 +517,10 @@ public class Entity {
         var correctedFacingAngle = MathHelper.WrapAngle(movementAngle - cameraAngle);
         var rotationAngle = (MathHelper.ToDegrees(correctedFacingAngle) + 360) % 360;
 
+        if (IsShooting) {
+            return GetDirectionFromAttackAngle(AttackAngle);
+        }
+        
         if (LocalFaceDirection != FaceDirection.None && !InputHandler.Moving) {
             switch (LocalFaceDirection) {
                 case FaceDirection.Right:
@@ -556,10 +560,21 @@ public class Entity {
                     LocalFaceDirection = FaceDirection.Up;
 
                 return 2; // up
-
-            default:
-                return 0;
         }
+    }
+
+    private int GetDirectionFromAttackAngle(float attackAngle) {
+        if (attackAngle >= -MathF.PI / 4 && attackAngle < MathF.PI / 4) {
+            return 0;
+        }
+        if (attackAngle >= MathF.PI / 4 && attackAngle < 3 * MathF.PI / 4) {
+            return 1;
+        }
+        if (attackAngle >= -3 * MathF.PI / 4 && attackAngle < -MathF.PI / 4) {
+            return 2;
+        }
+        Flipped = true;
+        return 0;
     }
 
     private void SetAltTexture(int index) {
