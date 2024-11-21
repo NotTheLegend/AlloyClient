@@ -37,7 +37,7 @@ public class Player : Entity {
 
     public int Timer;
 
-    public int BulletId;
+    public byte NextBulletId = 1;
 
     #region StatData
 
@@ -405,12 +405,11 @@ public class Player : Entity {
         
             proj.Owner = this;
         
-            proj.SetObjectId(BulletId);
+            proj.SetObjectId(GetBulletId());
             proj.SetType(ObjectLibrary.IdToObjectType[props.Projectiles[0].ObjectId]);
             proj.SetPos(Position.X, Position.Y);
             proj.SetRotation();
-
-            BulletId++;
+            
             Map.AddProjectile(proj);
         }
     }
@@ -619,6 +618,12 @@ public class Player : Entity {
         }
 
         return moveSpeed * MovementMultiplier;
+    }
+
+    public byte GetBulletId() {
+        var ret = NextBulletId;
+        NextBulletId = (byte)((NextBulletId + 1) % 128);
+        return ret;
     }
 
     private static bool IsFullOccupy(float x, float y) {

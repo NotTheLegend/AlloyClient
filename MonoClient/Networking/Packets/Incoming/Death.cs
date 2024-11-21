@@ -1,4 +1,9 @@
-﻿namespace MonoClient.Networking.Packets.Incoming;
+﻿using MonoClient.Display;
+using MonoClient.Screens;
+using MonoClient.Screens.Title;
+using MonoClient.UiLib;
+
+namespace MonoClient.Networking.Packets.Incoming;
 
 public class Death : IncomingPacket<Death> {
     public int AccountId;
@@ -20,6 +25,7 @@ public class Death : IncomingPacket<Death> {
     }
 
     public override void Handle() {
+        ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 1000, 0x0);
     }
 
     public override string ToString() {
