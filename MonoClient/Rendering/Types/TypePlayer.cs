@@ -23,7 +23,7 @@ public sealed class TypePlayer : RenderBase {
     
     private AtlasData _texture;
     
-    private TypeName _name;
+    private TypeName _typeName;
     private readonly TypeHpBar _hpBar;
     private readonly TypeBar _mpBar;
 
@@ -34,7 +34,7 @@ public sealed class TypePlayer : RenderBase {
         SetTexture(player.GetTexture());
         Extra = new ExtraData(RenderConfig.TypeGameObject, RenderConfig.Shade);
         
-        _name = new TypeName(this, player);
+        _typeName = new TypeName(this, player);
         _hpBar = new TypeHpBar(this, player);
         _mpBar = new TypeBar(this, player, ColorUtils.ColorHex(0x6084E0));
     }
@@ -78,16 +78,21 @@ public sealed class TypePlayer : RenderBase {
 
     public override void SetDepth(float depth) {
         Extra.SortId = depth;
-        _name.SetDepth(depth);
+        _typeName.SetDepth(depth);
         _hpBar.SetDepth(depth);
         _mpBar.SetDepth(depth);
     }
     
     public override void SetAlpha(float alpha) {
         Extra.Alpha = alpha;
-        _name.SetAlpha(alpha);
+        _typeName.SetAlpha(alpha);
         _hpBar.SetAlpha(alpha);
         _mpBar.SetAlpha(alpha);
+    }
+
+    public override void SetName(string name) {
+        _typeName.Name = name;
+        _typeName.SetTextures();
     }
 
     private float _t = 1f;
@@ -109,8 +114,8 @@ public sealed class TypePlayer : RenderBase {
         Render.DrawEntity(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color));
         var y = 0.1f;
         if (_player != Map.LocalPlayer) {
-            _name.Draw(y);
-            y += _name.Height;
+            _typeName.Draw(y);
+            y += _typeName.Height;
         }
         
         _hpBar.SetFill(_t -= 0.00001f);

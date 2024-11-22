@@ -268,7 +268,7 @@ public class Entity {
             var enemyTarget = EntityUtils.FindClosestEnemyInRadius(proj, Map.Entities.Values, 0.5f);
             if (enemyTarget != null) {
                 enemyTarget.Effect = new HitEffect(enemyTarget, 0xff0000);
-
+                
                 var hit = EnemyHit.CreatePacket();
                 hit.Time = (int)Map.LastGameTime.TotalGameTime.TotalSeconds;
                 hit.BulletId = (byte)proj.ObjectId;
@@ -355,11 +355,8 @@ public class Entity {
                     ConditionEffectBatches[ConditionEffectUtil.FirstBatch] = (uint)stat.Value;
                     break;
                 case StatsType.Name:
-                    if (Name != stat.Text) {
-                        Name = stat.Text;
-                        // NameBitmapData = null;
-                    }
-
+                    Name = stat.Text;
+                    RenderBaseType.SetName(stat.Text);
                     break;
                 case StatsType.Texture1:
                     if (stat.Value == Texture1Id) {

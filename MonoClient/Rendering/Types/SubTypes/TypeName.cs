@@ -12,7 +12,7 @@ public class TypeName : SubRenderBase {
         get => _height * 1.75f;
     }
 
-    private string _name;
+    public string Name;
 
     private GlyphData[] _glyphs;
 
@@ -20,30 +20,30 @@ public class TypeName : SubRenderBase {
         Parent = parent;
         Entity = entity;
         if (entity is Player player) {
-            _name = player.Name;
+            Name = player.Name;
         } else {
-            _name = entity.Properties.DisplayName;
+            Name = entity.Properties.DisplayName;
         }
 
-        if (string.IsNullOrEmpty(_name))
-            _name = "Default";
+        if (string.IsNullOrEmpty(Name))
+            Name = "Default";
         
         SetTextures();
         Extra = new ExtraData(RenderConfig.TypeText, RenderConfig.NoBold);
     }
 
-    private void SetTextures() {
+    public void SetTextures() {
         const float size = 0.5f * 0.5f;
         
         var font = UiRender.MyriadPro;
-        _glyphs = new GlyphData[_name.Length];
+        _glyphs = new GlyphData[Name.Length];
 
         _height = font.Ascender * size;
         var zero = new Vector2(0f, _height);
 
-        var len = _name.Length;
+        var len = Name.Length;
         for (var i = 0; i < len; i++) {
-            var c = _name[i];
+            var c = Name[i];
             if (!font.Glyphs.TryGetValue(c, out var glyph)) {
                 continue;
             }
@@ -56,7 +56,7 @@ public class TypeName : SubRenderBase {
             _glyphs[i] = new GlyphData(uv.ToVector4(), w, h, zero.X, zero.Y - pos.Y0 * size);
 
             if (i < len - 1) {
-                font.Kernings.TryGetValue((c, _name[i + 1]), out var kern);
+                font.Kernings.TryGetValue((c, Name[i + 1]), out var kern);
                 zero.X += kern * size * 2f;
             }
 

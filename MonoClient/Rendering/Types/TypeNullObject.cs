@@ -22,5 +22,7 @@ public sealed class TypeNullObject : RenderBase {
     
     public override void SetAlpha(float _) { }
     
+    public override void SetName(string name) { }
+    
     public override void Draw() { }
 }

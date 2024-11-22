@@ -32,7 +32,7 @@ public abstract class RenderBase : IComparable<RenderBase> {
     public abstract void SetVisibility(bool visible);
 
     public abstract void SetDepth(float depth);
-
+    public abstract void SetName(string name);
     public abstract void SetAlpha(float alpha);
 
     public abstract void Draw();

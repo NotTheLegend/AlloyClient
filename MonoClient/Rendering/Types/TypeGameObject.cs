@@ -79,6 +79,8 @@ public sealed class TypeGameObject : RenderBase {
         _name.SetAlpha(alpha);
     }
 
+    public override void SetName(string name) { }
+
     private float _t = 1f;
 
     public override void Draw() {

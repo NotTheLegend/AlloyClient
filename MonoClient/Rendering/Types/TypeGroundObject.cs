@@ -41,6 +41,8 @@ public sealed class TypeGroundObject : RenderBase {
     public override void SetAlpha(float alpha) {
         Extra.Alpha = alpha;
     }
+    
+    public override void SetName(string name) { }
 
     public override void Draw() {
         Render.DrawEntity(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color));

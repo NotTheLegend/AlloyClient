@@ -60,6 +60,8 @@ public sealed class TypeWall : RenderBase {
         Top.SetAlpha(alpha);
     }
 
+    public override void SetName(string name) { }
+
     public override void SetTexture(AtlasData texture, bool attackFrame) {
         UV = texture.ToVector4(true);
     }
