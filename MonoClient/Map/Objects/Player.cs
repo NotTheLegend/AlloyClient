@@ -388,6 +388,9 @@ public class Player : Entity {
         AttackStart = Timer;
         IsShooting = true;
 
+        // i cant drag items without it trying to get me to shoot. 
+        if (Equipment[0] == null)
+            return;
         var itemType = Equipment[0].ObjectType;
         var props = ObjectLibrary.TypeToObjectProps[itemType];
         

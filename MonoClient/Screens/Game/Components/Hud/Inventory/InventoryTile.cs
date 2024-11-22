@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using MonoClient.Assets.Libraries;
+using MonoClient.Display;
 using MonoClient.Networking;
 using MonoClient.Networking.Packets.Outgoing;
 using MonoClient.Networking.Structs.DataObjects;
@@ -8,20 +10,24 @@ using MonoClient.Objects;
 using MonoClient.Objects.Util;
 using MonoClient.Objects.Util.ItemDatas;
 using MonoClient.State;
+using MonoClient.Ui.Components.Tooltips;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Core.Events.Types;
+using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Input;
 using MonoClient.Utils;
 
 namespace MonoClient.Screens.Game.Components.Hud.Inventory;
 
 public class InventoryTile : Sprite {
+
     public ColorRect ItemBox;
     public ObjectRect ItemSprite;
-    public SimpleText TierText;
     public ushort ItemType;
     public ItemDesc ItemDesc;
+    public TierText TierTag;
+    public EquipmentToolTip Tooltip;
     
     public bool Dragging;
     public bool Draggable;
@@ -69,58 +75,56 @@ public class InventoryTile : Sprite {
             Height = 50
         });
         AddChild(ItemBox);
-        
-        TierText = new SimpleText(new TextConfig {
-            X = 27,
-            Y = 34,
-            Text = "UT",
-            Bold = true,
-            FontSize = 18,
-            Color = 0xFFFFFF,
-            OutlineThickness = 4,
-            OutlineColor = 0
-        });
-        CreateTierText();
+
+        if (ItemDesc != null)
+        {
+            TierTag = new TierText(ItemDesc);
+            TierTag.X = 27;
+            TierTag.Y = 34;
+            AddChild(TierTag);
+        }
+
         CreateListeners();
-    }
-
-    private void CreateTierText() {
-        if (TierText != null)
-            RemoveChild(TierText);
-        
-        if (ItemDesc == null)
-            return;
-        
-        if (ItemDesc.Legendary) {
-            TierText.SetText("LG");
-            TierText.Color = Color.Gold;
-        }
-        else if (ItemDesc.Demonic) {
-            TierText.SetText("DC");
-            TierText.Color = Color.Crimson;
-        }
-        else if (ItemDesc.Tier >= 0) {
-            TierText.SetText($"T{ItemDesc.Tier}");
-        }
-        else {
-            TierText.SetText("UT");
-            TierText.Color = Color.Purple;
-        }
-
-        AddChild(TierText);
     }
     
     private void CreateListeners() {
         ItemSprite.MouseEnabled = true;
-
         if (Draggable) {
             ItemSprite.AddEventListener(MouseEventId.LeftDown, onDragItem);
             ItemSprite.AddEventListener(MouseEventId.LeftClick, onReleaseItem);
         }
+		
+        ItemSprite.AddEventListener(MouseEventId.MouseOver, onHover);
     }
     
+    private void onHover()
+    {
+        if (ItemDesc == null)
+            return;
+        if (Tooltip == null)
+            Tooltip = new EquipmentToolTip(ItemDesc);
+        if (Dragging)
+            return;
+        ItemSprite.RemoveEventListener(MouseEventId.MouseOver, onHover);
+        ItemSprite.AddEventListener(MouseEventId.MouseOut, onOut);
+        TooltipManager.AddTooltip(Tooltip);
+    }
+
+    private void onOut()
+    {
+        if (ItemDesc == null)
+            return;
+        if (Tooltip == null)
+            Tooltip = new EquipmentToolTip(ItemDesc);
+        if (Dragging)
+            return;
+        ItemSprite.AddEventListener(MouseEventId.MouseOver, onHover);
+        ItemSprite.RemoveEventListener(MouseEventId.MouseOut, onOut);
+        TooltipManager.RemoveTooltip(Tooltip);
+    }
+
     private void onDragItem() {
-        TierText.Visible = false;
+        TierTag.Visible = false;
         Dragging = true;
 
         _lastMousePos = new Vector2(-1);
@@ -137,7 +141,7 @@ public class InventoryTile : Sprite {
         var pos = MouseInput.GetMousePosition();
         
         if (ItemBox.IsInBounds(pos)) {
-            TierText.Visible = true;
+            TierTag.Visible = true;
             ItemBox.Visible = false;
             
             ItemSprite.Scale = Vector2.One;
@@ -196,7 +200,7 @@ public class InventoryTile : Sprite {
             RebuildItemSprite();
         }
         
-        TierText.Visible = true;
+        TierTag.Visible = true;
         ItemBox.Visible = false;
             
         ItemSprite.Scale = Vector2.One;
@@ -206,17 +210,24 @@ public class InventoryTile : Sprite {
 
     public void RebuildItemSprite() {
         RemoveChild(ItemSprite);
-        
-        ItemSprite = new ObjectRect(new ObjectRectConfig {
+        ItemSprite = new ObjectRect(new ObjectRectConfig
+        {
             Texture = AssetUtils.GetTextureInfo(ItemType <= 0 ? (ushort)0x0096 : ItemType),
             Width = 50,
             Height = 50
         });
-        
         AddChild(ItemSprite);
-        
+
+        if (TierTag != null)
+        {
+            RemoveChild(TierTag);
+            TierTag = new TierText(ItemDesc);
+            TierTag.X = 27;
+            TierTag.Y = 34;
+            AddChild(TierTag);
+        }
+
         CreateListeners();
-        CreateTierText();
     }
 
     public void Update() {
