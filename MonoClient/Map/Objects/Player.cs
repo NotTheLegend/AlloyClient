@@ -4,12 +4,15 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoClient.Assets.Libraries;
 using MonoClient.Assets.XmlStructs;
+using MonoClient.Networking;
 using MonoClient.Networking.Enums;
+using MonoClient.Networking.Packets.Outgoing;
 using MonoClient.Networking.Structs.DataObjects;
 using MonoClient.Objects.Enums;
 using MonoClient.Objects.Util.ItemDatas;
 using MonoClient.Rendering;
 using MonoClient.Rendering.Types;
+using MonoClient.Rendering.Types.SubTypes;
 using MonoClient.State;
 using MonoClient.State.Input;
 using MonoClient.Utils;
@@ -391,6 +394,7 @@ public class Player : Entity {
         // i cant drag items without it trying to get me to shoot. 
         if (Equipment[0] == null)
             return;
+        
         var itemType = Equipment[0].ObjectType;
         var props = ObjectLibrary.TypeToObjectProps[itemType];
         
@@ -398,10 +402,11 @@ public class Player : Entity {
         var projProps =  ObjectLibrary.TypeToObjectProps[projType];
 
         for (int i = 0; i < props.NumProjectiles; i++) {
+            var angle = AttackAngle + MathHelper.ToRadians(props.ArcGap) * i;
             var proj = new Projectile {
                 Properties = projProps,
                 ProjDesc = props.Projectiles[0],
-                Angle = AttackAngle + MathHelper.ToRadians(props.ArcGap) * i,
+                Angle = angle,
                 StartPosition = Position,
                 StartTime = Timer
             };
@@ -414,6 +419,16 @@ public class Player : Entity {
             proj.SetRotation();
             
             Map.AddProjectile(proj);
+            
+            var shoot = PlayerShoot.CreatePacket();
+            shoot.ContainerType = itemType;
+            shoot.BulletId = (byte)proj.ObjectId;
+            shoot.Angle = angle;
+            shoot.Time = (int)Map.LastGameTime.TotalGameTime.TotalSeconds;
+            shoot.StartingPos = new Position { X = proj.Position.X, Y = proj.Position.Y };
+            
+            
+            Client.QueuePacket(shoot);
         }
     }
 

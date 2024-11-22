@@ -46,6 +46,7 @@ public class Projectile : Entity {
             Map.EntityStorage.Remove(this);
         }
 
+        Effect?.Update(time, dt);
         RenderBaseType.SetPosition(Position.X, Position.Y, Z);
         return true;
     }

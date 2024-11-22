@@ -24,7 +24,7 @@ public class ObjectProperties {
     public readonly float Rotation;
     public readonly float AngleCorrection;
     public readonly int NumProjectiles;
-    public readonly int ArcGap;
+    public readonly float ArcGap;
 
     public readonly bool IsPlayer;
     public readonly bool IsEnemy;
@@ -64,8 +64,8 @@ public class ObjectProperties {
             Projectiles.Add(props);
             ProjectilesDict.TryAdd(props.BulletType, props);
         }
-        NumProjectiles = e.GetValue<int>("NumProjectiles");
-        ArcGap = e.GetValue<int>("ArcGap");
+        NumProjectiles = e.GetValue("NumProjectiles", 1);
+        ArcGap = e.GetValue("ArcGap", 11.25f);
 
         Class = e.GetValue<string>("Class");
         Model = e.GetValue<string>("Model");
