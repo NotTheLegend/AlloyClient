@@ -20,7 +20,6 @@ public sealed class GameScreen : Screen {
 
     public GameScreen() {
         SetBaseDimensions(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight);
-        Main.GameInstance.SetInGameGraphics();
         Client.Connect(Settings.GameServerAddress, Settings.SelectedGameServerPort);
         GameSprite = new GameSprite();
         AddChild(GameSprite);
@@ -50,6 +49,6 @@ public sealed class GameScreen : Screen {
     public override void Draw(GameTime gameTime) {
         _frames++;
         Map.Draw(gameTime);
-        Minimap.Instance.PreDrawUpdate();
+        MinimapData.PreDrawUpdate();
     }
 }

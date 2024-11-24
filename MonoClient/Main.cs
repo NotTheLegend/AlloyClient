@@ -16,6 +16,7 @@ using MonoClient.State;
 using MonoClient.Ui;
 using MonoClient.UiLib;
 using MonoClient.UiLib.Input;
+using MonoClient.UiLib.Signals;
 using MonoClient.Utils;
 using Easing = MonoClient.UiLib.Easing;
 using KeyboardInput = MonoClient.UiLib.Input.KeyboardInput;
@@ -30,10 +31,11 @@ public class Main : Game {
 
     public static GraphicsDeviceManager Graphics;
 
+    public static readonly SingleSignal<GraphicsOptions> GraphicsMode = new();
+
     public static Main GameInstance;
     public static MainAtlas Atlas;
     public static UiAtlas UiAtlas;
-    public static Texture2D MapTexture;
 
     public static Action ScreenResized;
     private static int _lastScreenWidth;
@@ -47,6 +49,7 @@ public class Main : Game {
         IsMouseVisible = true;
 
         GameInstance = this;
+        GraphicsMode.Set(SetGraphicOptions);
     }
 
     protected override void Initialize() {
@@ -68,15 +71,13 @@ public class Main : Game {
     protected override void LoadContent() {
         Atlas = ContentManager.Load<MainAtlas>("atlas");
         UiAtlas = ContentManager.Load<UiAtlas>("AtlasUi");
-        MapTexture = Minimap.Init(GraphicsDevice);
+        MinimapData.Init(GraphicsDevice, out var mapTexture);
         
         ModelData.Load();
         
-        
-        //Ui needs to be loaded first
-        UiRender.ConfigureAndLoad(this, ContentManager, GraphicsDevice, Atlas, UiAtlas, MapTexture, new IntVector2(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight));
+        //UiRender needs to be loaded first so Render can pull font data from it
+        UiRender.ConfigureAndLoad(this, ContentManager, GraphicsDevice, Atlas, UiAtlas, mapTexture, new IntVector2(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight));
         Render.FirstTimeInit();
-        
         
         SliceConfig.LoadSliceData();
         
@@ -107,28 +108,30 @@ public class Main : Game {
         DisplayManager.Draw(gameTime);
     }
 
-    public void SetInGameGraphics() {
-        if (Settings.VSync) {
-            Graphics.SynchronizeWithVerticalRetrace = true;
+    private void SetGraphicOptions(GraphicsOptions mode) {
+        switch (mode) {
+            case GraphicsOptions.TitleScreen:
+                IsFixedTimeStep = true;
+                TargetElapsedTime = TimeSpan.FromMilliseconds(1000f / 60);
+                InactiveSleepTime = TimeSpan.FromMilliseconds(1000f / 60);
+                Graphics.SynchronizeWithVerticalRetrace = true;
+                break;
+            case GraphicsOptions.InGame when Settings.VSync:
+                Graphics.SynchronizeWithVerticalRetrace = true;
+                break;
+            case GraphicsOptions.InGame when Settings.FpsCap > 0:
+                IsFixedTimeStep = true;
+                TargetElapsedTime = TimeSpan.FromMilliseconds(1000f / Settings.FpsCap.Value);
+                Graphics.SynchronizeWithVerticalRetrace = false;
+                break;
+            case GraphicsOptions.InGame:
+                IsFixedTimeStep = false;
+                Graphics.SynchronizeWithVerticalRetrace = false;
+                break;
+            default:
+                throw new Exception();
+            
         }
-        else if (Settings.FpsCap > 0) {
-            IsFixedTimeStep = true;
-            TargetElapsedTime = TimeSpan.FromMilliseconds(1000f / Settings.FpsCap.Value);
-            Graphics.SynchronizeWithVerticalRetrace = false;
-        }
-        else {
-            IsFixedTimeStep = false;
-            Graphics.SynchronizeWithVerticalRetrace = false;
-        }
-
-        Graphics.ApplyChanges();
-    }
-
-    public void SetTitleGraphics() {
-        IsFixedTimeStep = true;
-        TargetElapsedTime = TimeSpan.FromMilliseconds(1000f / 60);
-        InactiveSleepTime = TimeSpan.FromMilliseconds(1000f / 60);
-        Graphics.SynchronizeWithVerticalRetrace = true;
         Graphics.ApplyChanges();
     }
 }

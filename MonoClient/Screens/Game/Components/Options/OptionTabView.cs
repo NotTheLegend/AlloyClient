@@ -229,7 +229,7 @@ public class OptionTabView : Container {
     }
 
     private void OnVSyncToggle() {
-        Main.GameInstance.SetInGameGraphics();
+        Main.GraphicsMode.Dispatch(GraphicsOptions.InGame);
         var option = GetOption(Settings.FpsCap);
         option.SetDisabled(Settings.VSync);
     }
@@ -239,7 +239,7 @@ public class OptionTabView : Container {
     }
 
     private void OnFPSChange() {
-        Main.GameInstance.SetInGameGraphics();
+        Main.GraphicsMode.Dispatch(GraphicsOptions.InGame);
     }
 
     private void OnMScaleChange() {

@@ -81,7 +81,6 @@ public partial class MapEditorScreen : Screen {
         Instance = this;
         
         SetBaseDimensions(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight);
-        Main.GameInstance.SetInGameGraphics();
 
         #region Setup Map
         

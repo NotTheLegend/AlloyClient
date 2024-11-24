@@ -9,8 +9,6 @@ namespace MonoClient.Screens.Title.Components;
 
 public abstract class TitleScreenBase : Screen {
     protected TitleScreenBase(bool title = false) {
-        Main.GameInstance.SetTitleGraphics();
-        
         var background = new ScreenGraphic(new ScreenGraphicConfig { Width = Settings.DefaultScreenWidth, Height = Settings.DefaultScreenHeight, TitleScreen = title });
         AddChild(background);
         

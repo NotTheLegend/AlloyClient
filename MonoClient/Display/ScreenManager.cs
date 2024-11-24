@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoClient.Screens.Game;
+using MonoClient.Screens.MapEditor;
 using MonoClient.State;
 using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
@@ -12,14 +13,14 @@ using MonoClient.UiLib.Input;
 namespace MonoClient.Display;
 
 public class ScreenManager : Sprite {
-    public static ScreenManager Instance;
+    private static ScreenManager _instance;
     public static readonly FadeScreen FadeScreen = new(0);
 
     private static Screen _prevScreen;
     private static Screen _currScreen = FadeScreen;
 
     public ScreenManager() {
-        Instance = this;
+        _instance = this;
         FadeScreen.Visible = false;
         SetScreen(new FadeScreen(0));
     }
@@ -36,7 +37,7 @@ public class ScreenManager : Sprite {
     public static void SetScreen(Screen screen) {
         RemovePrevious();
         _currScreen = screen;
-        Instance.AddChild(_currScreen);
+        _instance.AddChild(_currScreen);
     }
 
     public static void SetPrevious() {
@@ -44,12 +45,8 @@ public class ScreenManager : Sprite {
     }
 
     public static void FadeToScreen(Screen screen, Easing ease, int durationMs, uint color, Action onFinish = null) {
-        if (screen is GameScreen) {
-            Main.GameInstance.SetInGameGraphics();
-        } else {
-            Main.GameInstance.SetTitleGraphics();
-        }
-        
+        Main.GraphicsMode.Dispatch(screen is GameScreen or MapEditorScreen ? GraphicsOptions.InGame : GraphicsOptions.TitleScreen);
+
         FadeScreen.Visible = true;
         FadeScreen.SetFadeColor(color);
         screen.Alpha = 0f;
@@ -63,7 +60,7 @@ public class ScreenManager : Sprite {
 
     private static void RemovePrevious() {
         _prevScreen = _currScreen;
-        Instance.RemoveChild(_currScreen);
+        _instance.RemoveChild(_currScreen);
     }
 
     protected override void OnUpdate(GameTime gameTime) {

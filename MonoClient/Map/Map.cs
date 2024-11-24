@@ -65,7 +65,7 @@ public static class Map {
 
         _tiles = new MapTile[width + 1, height + 1];
         
-        Minimap.Instance.OnMapEnter(width, height);
+        Minimap.OnNewMap.Dispatch(width, height);
     }
 
     public static void Update(double time, double dt) {

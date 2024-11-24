@@ -221,7 +221,7 @@ public static class InputHandler {
                 var scrollDelta = state.MouseState.ScrollWheelValue - _prevInputState.MouseState.ScrollWheelValue;
 
                 if (scrollDelta != 0) {
-                    Minimap.Instance.ZoomHandle(scrollDelta > 0 ? 1 : -1);
+                    Minimap.OnZoom.Dispatch(scrollDelta > 0 ? 1 : -1);
                 }
             }
         }

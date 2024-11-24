@@ -9,7 +9,7 @@ namespace MonoClient.Screens.Game.Components.Hud;
 
 public sealed class HudView : Sprite {
 
-    private readonly Minimap _minimap = Minimap.Instance;
+    private Minimap _minimap;
     private CharacterDetails _details;
     private CharacterBars _bars;
     
@@ -24,7 +24,8 @@ public sealed class HudView : Sprite {
     private void Create() {
         var bg = new ColorRect(new ColorRectConfig { Width = 256, Height = Settings.DefaultScreenHeight, Color = 0x363636 });
         AddChild(bg);
-        
+
+        _minimap = new Minimap();
         _minimap.X = 5;
         _minimap.Y = 5;
         AddChild(_minimap);

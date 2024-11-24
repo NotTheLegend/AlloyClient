@@ -20,9 +20,16 @@ public class MapTile(int x, int y, bool isMapEditor = false) {
     public ushort Type = 0xFF;
     public GroundProperties GroundProperties = GroundLibrary.TypeToGroundProps[0xFF];
     public TextureData TextureData = GroundLibrary.TypeToTextureData[0xFF];
-    public Entity OccupiedObject; // Objects placed onto this tile
+
+    private Entity _occupiedObject;
+
+    public Entity OccupiedObject {
+        get => _occupiedObject;
+        set => SetMinimapColor(_occupiedObject = value);
+    }
 
     private AtlasData _texture;
+    private Color _color;
     private Vector2 _blendUV;
 
     // Shader data
@@ -33,6 +40,11 @@ public class MapTile(int x, int y, bool isMapEditor = false) {
     private Vector4 _blendLeftRight = new(-1f);
     private Vector4 _cornerBottom = new(-1);
     private Vector4 _cornerTop = new(-1);
+
+    private void SetMinimapColor(Entity entity) {
+        if (entity == null) MinimapData.UncoverTile(X, Y, _color);
+        else MinimapData.UncoverTile(X, Y, entity.GetDominateColor());
+    }
 
     public void DrawTile() {
         Render.DrawTile(new VertexTile(_positionOffset, _uv, _animate, _blendLeftRight, _blendTopBottom, _cornerBottom, _cornerTop));
@@ -47,13 +59,13 @@ public class MapTile(int x, int y, bool isMapEditor = false) {
         GroundProperties = GroundLibrary.TypeToGroundProps[type];
         TextureData = GroundLibrary.TypeToTextureData[type];
 
-        _texture = TextureData.GetTexture(out var color);
+        _texture = TextureData.GetTexture(out _color);
         _texture.RemovePadding();
         _uv = _texture.ToVector4();
         _blendUV = new Vector2(_uv.X, _uv.Y);
 
         if (!isMapEditor) {
-            Minimap.Instance.UncoverTile(X, Y, color);
+            SetMinimapColor(_occupiedObject);
         }
 
         var offx = GroundProperties.RandomOffset ? Random.Shared.NextSingle() : GroundProperties.XOffset;

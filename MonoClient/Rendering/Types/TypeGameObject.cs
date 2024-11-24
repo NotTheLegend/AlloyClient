@@ -81,8 +81,6 @@ public sealed class TypeGameObject : RenderBase {
 
     public override void SetName(string name) { }
 
-    private float _t = 1f;
-
     public override void Draw() {
         var s = MathF.Sin(-Entity.Rotation);
         var c = MathF.Cos(-Entity.Rotation);
@@ -105,7 +103,7 @@ public sealed class TypeGameObject : RenderBase {
         var y = 0.1f;
 
         if (Entity.MaxHp != 0) {
-            _hpBar.SetFill(_t -= 0.00001f);
+            _hpBar.SetFill(1f * Entity.Hp / Entity.MaxHp);
             _hpBar.Draw(y);
         }
         

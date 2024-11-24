@@ -34,6 +34,6 @@ public class KeyMapperOption : Option {
             inputSetting.Key = Keys.None;
         }
         
-        OptionsView.Instance.Refresh();
+        OptionsView.RefreshOptions.Dispatch();
     }
 }

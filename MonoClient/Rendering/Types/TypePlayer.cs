@@ -95,8 +95,6 @@ public sealed class TypePlayer : RenderBase {
         _typeName.SetTextures();
     }
 
-    private float _t = 1f;
-
     public override void Draw() {
         var s = MathF.Sin(-Entity.Rotation);
         var c = MathF.Cos(-Entity.Rotation);
@@ -118,7 +116,7 @@ public sealed class TypePlayer : RenderBase {
             y += _typeName.Height;
         }
         
-        _hpBar.SetFill(_t -= 0.00001f);
+        _hpBar.SetFill(1f * _player.Hp / _player.MaxHp);
         _hpBar.Draw(y);
         y += _hpBar.Height;
         _mpBar.Draw(y);

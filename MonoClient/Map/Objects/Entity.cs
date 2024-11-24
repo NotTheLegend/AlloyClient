@@ -127,6 +127,11 @@ public class Entity {
         RenderBaseType = GetRenderType(type);
     }
 
+    public Color GetDominateColor() {
+        if (RenderBaseType is TypeWall) return TextureData.TopTexture.DominantColor;
+        return TextureData.DominantColor;
+    }
+
     protected virtual RenderBase GetRenderType(ushort type) {
         ObjectLibrary.TypeToObjectProps.TryGetValue(type, out var props);
 

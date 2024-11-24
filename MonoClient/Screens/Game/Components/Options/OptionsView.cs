@@ -12,6 +12,7 @@ using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
+using MonoClient.UiLib.Signals;
 
 namespace MonoClient.Screens.Game.Components.Options;
 
@@ -26,13 +27,13 @@ public sealed class OptionsView : Panel {
     private static readonly string[] Tabs = [ControlsTab, HotkeysTab, ChatTab, GraphicsTab, SoundTab, ExtraTab];
     
     private readonly Dictionary<string, OptionTabView> _tabViews = [];
-    
-    public static OptionsView Instance;
+
+    public static readonly SingleSignal RefreshOptions = new ();
 
     private TextButton _selectedTab;
 
     public OptionsView() {
-        Instance = this;
+        RefreshOptions.Set(Refresh);
         
         SetBaseDimensions(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight);
 
