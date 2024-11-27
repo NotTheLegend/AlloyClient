@@ -424,7 +424,7 @@ public class Player : Entity {
             shoot.ContainerType = itemType;
             shoot.BulletId = (byte)proj.ObjectId;
             shoot.Angle = angle;
-            shoot.Time = (int)Map.LastGameTime.TotalGameTime.TotalSeconds;
+            shoot.Time = (int)Map.LastGameTime.TotalGameTime.TotalMilliseconds;
             shoot.StartingPos = new Position { X = proj.Position.X, Y = proj.Position.Y };
             
             
