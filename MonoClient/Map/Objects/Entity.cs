@@ -275,7 +275,7 @@ public class Entity {
                 enemyTarget.Effect = new HitEffect(enemyTarget, 0xff0000);
                 
                 var hit = EnemyHit.CreatePacket();
-                hit.Time = (int)Map.LastGameTime.TotalGameTime.TotalSeconds;
+                hit.Time = (int)Map.LastGameTime.TotalGameTime.TotalMilliseconds;
                 hit.BulletId = (byte)proj.ObjectId;
                 hit.TargetId = enemyTarget.ObjectId;
                 hit.Killed = enemyTarget.Hp <= proj.ProjDesc.MaxDamage;
@@ -520,7 +520,7 @@ public class Entity {
         var rotationAngle = (MathHelper.ToDegrees(correctedFacingAngle) + 360) % 360;
 
         if (IsShooting) {
-            return GetDirectionFromAttackAngle(AttackAngle);
+            return GetDirectionFromAttackAngle(AttackAngle, Settings.CameraAngle.Value);
         }
         
         if (LocalFaceDirection != FaceDirection.None && !InputHandler.Moving) {
@@ -565,18 +565,21 @@ public class Entity {
         }
     }
 
-    private int GetDirectionFromAttackAngle(float attackAngle) {
-        if (attackAngle >= -MathF.PI / 4 && attackAngle < MathF.PI / 4) {
-            return 0;
+    private int GetDirectionFromAttackAngle(float attackAngle, float cameraAngle) {
+        float relativeAttackAngle = attackAngle - cameraAngle;
+        relativeAttackAngle = MathUtils.NormalizeAngle(relativeAttackAngle);
+
+        switch (relativeAttackAngle) {
+            case >= -MathF.PI / 4 and < MathF.PI / 4:
+                return 0;
+            case >= MathF.PI / 4 and < 3 * MathF.PI / 4:
+                return 1;
+            case >= -3 * MathF.PI / 4 and < -MathF.PI / 4:
+                return 2; 
+            default:
+                Flipped = true;
+                return 0;
         }
-        if (attackAngle >= MathF.PI / 4 && attackAngle < 3 * MathF.PI / 4) {
-            return 1;
-        }
-        if (attackAngle >= -3 * MathF.PI / 4 && attackAngle < -MathF.PI / 4) {
-            return 2;
-        }
-        Flipped = true;
-        return 0;
     }
 
     private void SetAltTexture(int index) {

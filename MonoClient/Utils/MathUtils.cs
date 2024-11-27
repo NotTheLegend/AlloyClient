@@ -15,6 +15,13 @@ public class MathUtils {
 
         return new Vector2(x, y);
     }
+    
+    // Normalizes an angle for the range -PI to PI
+    public static float NormalizeAngle(float angle) {
+        while (angle > MathF.PI) angle -= 2 * MathF.PI;
+        while (angle < -MathF.PI) angle += 2 * MathF.PI;
+        return angle;
+    }
 
     public static int RandomInt(int max) => Random.Next(max);
 

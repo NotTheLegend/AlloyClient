@@ -157,7 +157,7 @@ public class InventoryTile : Sprite {
         // the easiest way would be add an invisible inventory tile that covers the gamescreen area for a valid drop target or something
         
         var swap = InvSwap.CreatePacket();
-        swap.Time = (int)Map.LastGameTime.TotalGameTime.TotalSeconds;
+        swap.Time = (int)Map.LastGameTime.TotalGameTime.TotalMilliseconds;
         swap.Position = new Position { X = Map.LocalPlayer.Position.X, Y = Map.LocalPlayer.Position.Y };
             
         swap.SlotObj1 = new ObjectSlot {
