@@ -272,6 +272,7 @@ public class Entity {
         if (proj.Owner is Player) {
             var enemyTarget = EntityUtils.FindClosestEnemyInRadius(proj, Map.Entities.Values, 0.5f);
             if (enemyTarget != null) {
+                enemyTarget.Hp -= proj.Damage;
                 enemyTarget.Effect = new HitEffect(enemyTarget, 0xff0000);
                 
                 var hit = EnemyHit.CreatePacket();

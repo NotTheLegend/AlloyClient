@@ -19,6 +19,8 @@ public class Projectile : Entity {
     
     public float StartTime;
 
+    public int Damage;
+
     public bool PendingRemoval = false;
     
     // Used for smart projectile rotation

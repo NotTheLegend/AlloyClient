@@ -412,12 +412,12 @@ public class Player : Entity {
             };
         
             proj.Owner = this;
+            proj.Damage = MathUtils.RandomInt(proj.ProjDesc.MinDamage, proj.ProjDesc.MaxDamage);
         
             proj.SetObjectId(GetBulletId());
             proj.SetType(ObjectLibrary.IdToObjectType[props.Projectiles[0].ObjectId]);
             proj.SetPos(Position.X, Position.Y);
             proj.SetRotation();
-            
             Map.AddProjectile(proj);
             
             var shoot = PlayerShoot.CreatePacket();
