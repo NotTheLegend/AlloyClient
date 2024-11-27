@@ -143,7 +143,7 @@ public abstract partial class Sprite {
     
     private readonly Queue<Sprite> _childQueue = new();
     
-    private bool _pendingRemoval = false;
+    private readonly Queue<Sprite> _childRemovalQueue = new();
 
     #endregion
 
@@ -281,6 +281,8 @@ public abstract partial class Sprite {
         var ta = _alpha;
         var ts = Scale;
         var tt = ColorTransformation;
+        var test = false;
+        
 
         if (FollowMouse) {
             var pos = MouseInput.GetMousePosition();
@@ -288,24 +290,28 @@ public abstract partial class Sprite {
         } else if (TooltipMode) {
             (tx, ty) = MouseInput.GetMousePosition().ToPair();
             (_anchorX, _anchorY) = Utils.GetAnchorOffset(tx < UiRender.Screen.X / 2 ? UiAnchor.LeftBottom : UiAnchor.RightBottom, _width, _height);
-            tx += _anchorX;
-            ty += _anchorY;
+            tx += (int) (_anchorX * _parent._trueScale.X);
+            ty += (int) (_anchorY * _parent._trueScale.Y);
         } else if (_isDragging) {
             var pos = MouseInput.GetMousePosition();
             (tx, ty) = pos.ToPair();
-            tx -= _dragOffset.X;
-            ty -= _dragOffset.Y;
+            tx -= (int)(_dragOffset.X * _parent._trueScale.X);
+            ty -= (int)(_dragOffset.Y * _parent._trueScale.Y);
         } else {
             tx += X + _anchorX;
             ty += Y + _anchorY;
+            test = true;
         }
-
+        
         var parentInteract = true;
         if (_parent != null) {
-            tx = (int)(tx * _parent._trueScale.X);
-            ty = (int)(ty * _parent._trueScale.Y);
-            tx += _parent._trueX;
-            ty += _parent._trueY;
+            if (test) {
+                tx = (int) (tx * _parent._trueScale.X);
+                ty = (int) (ty * _parent._trueScale.Y);
+                tx += _parent._trueX;
+                ty += _parent._trueY;
+            }
+
             ta *= _parent._trueAlpha;
             ts *= _parent._trueScale;
             tt *= _parent._trueTransform;
@@ -316,6 +322,7 @@ public abstract partial class Sprite {
                 ClipChildren = true;
             }
         }
+        
         
         _canInteract = parentInteract && Visible && !TweenActive;
 
@@ -331,7 +338,7 @@ public abstract partial class Sprite {
         }
 
         if (EnableClipRect) {
-            var scissor = new Vector4(tx, ty, tx + Width, ty + Height);
+            var scissor = new Vector4(tx, ty, tx + Width * _trueScale.X, ty + Height * _trueScale.Y);
             if (ClipChildren) {
                 _scissor.X = Math.Max(_scissor.X, scissor.X);
                 _scissor.Y = Math.Max(_scissor.Y, scissor.Y);
@@ -355,8 +362,10 @@ public abstract partial class Sprite {
         while (_childQueue.TryDequeue(out var child)) {
             _children.Add(child);
         }
-        
-        _children.RemoveAll(s => s._pendingRemoval);
+
+        while (_childRemovalQueue.TryDequeue(out var child)) {
+            _children.Remove(child);
+        }
         
         HandleGlobalEvents();
 
@@ -443,7 +452,6 @@ public abstract partial class Sprite {
         
         _childCount++;
         child._parent = this;
-        child._pendingRemoval = false;
         _childQueue.Enqueue(child);
 
         _childbounds.MinX = Math.Min(_childbounds.MinX, child._bounds.MinX);
@@ -457,14 +465,15 @@ public abstract partial class Sprite {
     public void RemoveChild(Sprite child) {
         if (child == null || !_children.Contains(child)) return;
         _childCount--;
-        child._pendingRemoval = true;
+        _childRemovalQueue.Enqueue(child);
+
         child._parent = null;
 
         var bounds = new Bounds();
 
         for (var i = 0; i < _children.Count; i++) {
             var c = _children[i];
-            if (c._pendingRemoval) continue;
+            if (_childRemovalQueue.Contains(c)) continue;
             
             bounds.MinX = Math.Min(bounds.MinX, c._bounds.MinX);
             bounds.MaxX = Math.Max(bounds.MaxX, c._bounds.MaxX);
@@ -479,7 +488,7 @@ public abstract partial class Sprite {
     public void RemoveAllChildren() {
         _childbounds = new Bounds();
         foreach (var child in _children) {
-            child._pendingRemoval = true;
+            _childRemovalQueue.Enqueue(child);
         }
     }
     

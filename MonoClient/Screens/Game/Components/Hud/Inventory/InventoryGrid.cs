@@ -65,8 +65,7 @@ public class InventoryGrid : Sprite {
         if (InventoryTiles == null)
             return;
         
-        foreach (var tile in InventoryTiles) {
-            tile.Update();
+        /*foreach (var tile in InventoryTiles) {
 
             if (tile.Dragging) {
                 Dragging = true;
@@ -76,7 +75,7 @@ public class InventoryGrid : Sprite {
             }
 
             Dragging = false;
-        }
+        }*/
     }
     
     public void RefreshTiles() {

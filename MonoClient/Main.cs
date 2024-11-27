@@ -60,6 +60,8 @@ public class Main : Game {
         Graphics.PreferredBackBufferWidth = Settings.ScreenWidth;
         Graphics.PreferredBackBufferHeight = Settings.ScreenHeight;
         Graphics.ApplyChanges();
+        
+        
 
         Map.GraphicsDevice = Graphics.GraphicsDevice;
 
@@ -77,6 +79,7 @@ public class Main : Game {
         
         //UiRender needs to be loaded first so Render can pull font data from it
         UiRender.ConfigureAndLoad(this, ContentManager, GraphicsDevice, Atlas, UiAtlas, mapTexture, new IntVector2(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight));
+        UiRender.UpdateViewMatrix(Settings.ScreenWidth, Settings.ScreenHeight);
         Render.FirstTimeInit();
         
         SliceConfig.LoadSliceData();

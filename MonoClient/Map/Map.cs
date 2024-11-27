@@ -9,6 +9,7 @@ using MonoClient.Rendering.Types;
 using MonoClient.Objects;
 using MonoClient.ParticleEffects;
 using MonoClient.Rendering.VertexData;
+using MonoClient.Screens.Game.Components;
 using MonoClient.Screens.Game.Components.Hud;
 using MonoClient.UiLib.Signals;
 using MonoClient.Utils;
@@ -22,6 +23,8 @@ public static class Map {
     public static GraphicsDevice GraphicsDevice;
 
     public static GameTime LastGameTime;
+
+    public static GameSprite GameSprite;
 
     public static int Width;
     public static int Height;

@@ -27,7 +27,7 @@ public partial class Sprite {
         pos.X -= _trueX;
         pos.Y -= _trueY;
 
-        _dragOffset = new IntVector2(pos.X, pos.Y);
+        _dragOffset = new IntVector2((int)(pos.X / _trueScale.X), (int)(pos.Y / _trueScale.Y));
         
         _dragSprite = this;
         _isDragging = true;

@@ -25,6 +25,8 @@ public sealed class GameSprite : Sprite {
 
         _chat = new ChatView();
         AddChild(_chat);
+
+        Map.GameSprite = this;
     }
 
     public void Update() {
