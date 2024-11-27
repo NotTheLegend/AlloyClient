@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MonoClient.Objects;
 
 namespace MonoClient.ParticleEffects;
 
@@ -13,8 +14,11 @@ public abstract class ParticleEffect {
         return new Vector4(r / 255f, g / 255f, b / 255f, -1);
     }
 
-    public static ParticleEffect FromProperties() {
-        return new FountainEffect(null);
+    public static ParticleEffect FromProperties(string effectName, Entity entity) {
+        return effectName switch {
+            "Fountain" => new FountainEffect(entity),
+            _ => null
+        };
     }
 
 }

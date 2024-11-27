@@ -21,6 +21,7 @@ public class ObjectProperties {
 
     public readonly string Class;
     public readonly string Model;
+    public readonly string Effect;
     public readonly float Rotation;
     public readonly float AngleCorrection;
     public readonly int NumProjectiles;
@@ -69,6 +70,7 @@ public class ObjectProperties {
 
         Class = e.GetValue<string>("Class");
         Model = e.GetValue<string>("Model");
+        Effect = e.GetValue<string>("Effect");
         Rotation = e.GetValue<float>("Rotation");
         AngleCorrection = e.GetValue<float>("AngleCorrection");
 
