@@ -279,7 +279,7 @@ public class Entity {
                 hit.Time = (int)Map.LastGameTime.TotalGameTime.TotalMilliseconds;
                 hit.BulletId = (byte)proj.ObjectId;
                 hit.TargetId = enemyTarget.ObjectId;
-                hit.Killed = enemyTarget.Hp <= proj.ProjDesc.MaxDamage;
+                hit.Killed = enemyTarget.Hp <= proj.Damage;
 
                 Client.QueuePacket(hit);
                 return true;
