@@ -28,10 +28,33 @@ public sealed class SpeechBubble : Sprite {
         _parent = parent;
 
         const int cut = 10;
+        var outlineSize = 4;
         
-        var txt = new SimpleText(new TextConfig { Text = data.Text, FontSize = 15, X = cut, Y = cut, Color = 0, MaxWidth = 120 });
+        uint txtColor = _owner.Properties switch
+        {
+            { IsEnemy: true } => 0xCDFFBF,
+            { IsPlayer: true } => 0
+        };
+        var txt = new SimpleText(new TextConfig { Text = data.Text, FontSize = 15, X = cut, Y = cut, Color = txtColor, MaxWidth = 120 });
 
-        var rect = new CutEdgeRect(new CutEdgeConfig { Width = cut * 2 + txt.Width, Height = cut * 2 + txt.Height, CutX = cut, CutY = cut, Color = 0xFFFFFF });
+        uint outlineColor = _owner.Properties switch
+        {
+            { IsEnemy: true } => 0xDA8F6C,
+            { IsPlayer: true } => 0xFFFFFF
+        };
+        var outlineRect = new CutEdgeRect(new CutEdgeConfig { Width = cut * 2 + txt.Width + outlineSize, Height = cut * 2 + txt.Height + outlineSize, CutX = cut, CutY = cut, Color = outlineColor })
+            {
+                X = -outlineSize / 2,
+                Y = -outlineSize / 2
+            };
+        AddChild(outlineRect);
+        
+        uint rectColor = _owner.Properties switch
+        {
+            { IsEnemy: true } => 0x53201B,
+            { IsPlayer: true } => 0xE1DFDC
+        };
+        var rect = new CutEdgeRect(new CutEdgeConfig { Width = cut * 2 + txt.Width, Height = cut * 2 + txt.Height, CutX = cut, CutY = cut, Color = rectColor });
         AddChild(rect);
 
         

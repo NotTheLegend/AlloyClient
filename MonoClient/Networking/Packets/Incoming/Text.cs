@@ -1,4 +1,5 @@
 ﻿using MonoClient.Screens.Game.Components.Hud.Chat;
+using MonoClient.Ui.Chat;
 using MonoClient.UiLib.Signals;
 
 namespace MonoClient.Networking.Packets.Incoming;
@@ -39,6 +40,10 @@ public class Text : IncomingPacket<Text> {
             Recipient = Recipient,
             Txt = Txt
         });
+
+        if (Map.Entities.TryGetValue(ObjectId, out var en)) {
+            ChatLayer.QueueSpeech(new SpeechData { Owner = en, Text = Txt });
+        }
     }
 
     public override string ToString() {
