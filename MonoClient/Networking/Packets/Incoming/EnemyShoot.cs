@@ -86,6 +86,7 @@ public class EnemyShoot : IncomingPacket<EnemyShoot> {
                 StartTime = en.Timer
             };
             proj.Owner = en;
+            proj.Damage = Damage;
             
             proj.SetObjectId(BulletId);
             proj.SetType(type);

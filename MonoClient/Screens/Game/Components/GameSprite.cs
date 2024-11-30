@@ -4,6 +4,7 @@ using MonoClient.Screens.Game.Components.Hud;
 using MonoClient.Screens.Game.Components.Hud.Chat;
 using MonoClient.State;
 using MonoClient.State.Input;
+using MonoClient.Ui.Character;
 using MonoClient.Ui.Chat;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
@@ -18,6 +19,7 @@ public sealed class GameSprite : Sprite {
 
     public GameSprite() {
         AddChild(new ChatLayer());
+        AddChild(new NotificationLayer());
         
         _hud = new HudView();
         _hud.X = Settings.DefaultScreenWidth;

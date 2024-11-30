@@ -18,6 +18,7 @@ using MonoClient.Objects.Util.ItemDatas;
 using MonoClient.ParticleEffects;
 using MonoClient.State;
 using MonoClient.State.Input;
+using MonoClient.Ui.Character;
 using MonoClient.Utils;
 using Newtonsoft.Json;
 
@@ -273,7 +274,9 @@ public class Entity {
             var enemyTarget = EntityUtils.FindClosestEnemyInRadius(proj, Map.Entities.Values, 0.5f);
             if (enemyTarget != null) {
                 enemyTarget.Hp -= proj.Damage;
+                
                 enemyTarget.Effect = new HitEffect(enemyTarget, 0xff0000);
+                NotificationLayer.AddStatusText(enemyTarget, $"-{proj.Damage}", 0xFF0000, 1000, 0);
                 
                 var hit = EnemyHit.CreatePacket();
                 hit.Time = (int)Map.LastGameTime.TotalGameTime.TotalMilliseconds;
@@ -289,6 +292,7 @@ public class Entity {
             var target = EntityUtils.FindClosestPlayerInRadius(proj, Map.Entities.Values, 0.5f);
             if (target != null) {
                 target.Effect = new HitEffect(target, 0xff0000);
+                NotificationLayer.AddStatusText(target, $"-{proj.Damage}", 0xFF0000, 1000, 0);
 
                 var hit = PlayerHit.CreatePacket();
                 hit.BulletId = (byte)proj.ObjectId;
