@@ -30,17 +30,21 @@ public sealed class SpeechBubble : Sprite {
         const int cut = 10;
         var outlineSize = 4;
         
+        // todo add tell/guild bubble colors
+        
         uint txtColor = _owner.Properties switch
         {
             { IsEnemy: true } => 0xCDFFBF,
-            { IsPlayer: true } => 0
+            { IsPlayer: true } => 0,
+            _ => 0
         };
         var txt = new SimpleText(new TextConfig { Text = data.Text, FontSize = 15, X = cut, Y = cut, Color = txtColor, MaxWidth = 120 });
 
         uint outlineColor = _owner.Properties switch
         {
             { IsEnemy: true } => 0xDA8F6C,
-            { IsPlayer: true } => 0xFFFFFF
+            { IsPlayer: true } => 0xFFFFFF,
+            _ => 0xFFFFFF
         };
         var outlineRect = new CutEdgeRect(new CutEdgeConfig { Width = cut * 2 + txt.Width + outlineSize, Height = cut * 2 + txt.Height + outlineSize, CutX = cut, CutY = cut, Color = outlineColor })
             {
@@ -52,7 +56,8 @@ public sealed class SpeechBubble : Sprite {
         uint rectColor = _owner.Properties switch
         {
             { IsEnemy: true } => 0x53201B,
-            { IsPlayer: true } => 0xE1DFDC
+            { IsPlayer: true } => 0xE1DFDC,
+            _ => 0xE1DFDC
         };
         var rect = new CutEdgeRect(new CutEdgeConfig { Width = cut * 2 + txt.Width, Height = cut * 2 + txt.Height, CutX = cut, CutY = cut, Color = rectColor });
         AddChild(rect);
