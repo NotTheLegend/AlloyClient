@@ -149,4 +149,34 @@
     <PlayerClassType>0x0310</PlayerClassType>
     <UnlockLevel>10</UnlockLevel>
   </Object>
+  <Object type="0x0352" id="Santa">
+    <Skin/>
+    <Class>Skin</Class>
+    <AnimatedTexture>
+      <File>playerskins</File>
+      <Index>16</Index>
+    </AnimatedTexture>
+    <PlayerClassType>0x030e</PlayerClassType>
+    <UnlockLevel>20</UnlockLevel>
+  </Object>
+  <Object type="0x0353" id="Little Helper">
+    <Skin/>
+    <Class>Skin</Class>
+    <AnimatedTexture>
+      <File>playerskins</File>
+      <Index>17</Index>
+    </AnimatedTexture>
+    <PlayerClassType>0x0307</PlayerClassType>
+    <UnlockLevel>20</UnlockLevel>
+  </Object>
+  <Object type="0x0354" id="Father Time">
+    <Skin/>
+    <Class>Skin</Class>
+    <AnimatedTexture>
+      <File>playerskins</File>
+      <Index>18</Index>
+    </AnimatedTexture>
+    <PlayerClassType>0x0310</PlayerClassType>
+    <UnlockLevel>20</UnlockLevel>
+  </Object>
 </Objects>
