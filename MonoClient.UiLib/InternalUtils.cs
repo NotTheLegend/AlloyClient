@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MonoClient.UiLib;
 
-public static class Utils {
+internal static class InternalUtils {
     
     internal static bool AreKeysDown(this KeyboardState keyState, params Keys[] keys) {
         foreach (var key in keys) {
@@ -44,11 +44,11 @@ public static class Utils {
         return false;
     }
     
-    public static Vector2 Transform(this Vector2 pos, Vector2 scale, float tx, float ty) {
+    internal static Vector2 Transform(this Vector2 pos, Vector2 scale, float tx, float ty) {
         return new Vector2(pos.X * scale.X + tx, pos.Y * scale.Y + ty);
     }
 
-    public static void Hex(ref this Color color, uint rgb, float alpha = 1.0f) {
+    internal static void Hex(ref this Color color, uint rgb, float alpha = 1.0f) {
         var r = (byte)(rgb >> 16);
         var g = (byte)(rgb >> 8);
         var b = (byte)rgb;
@@ -56,7 +56,7 @@ public static class Utils {
         color.PackedValue = (uint)(a << 24 | b << 16 | g << 8 | r);
     }
     
-    public static (int, int) GetAnchorOffset(UiAnchor type, int w, int h) {
+    internal static (int, int) GetAnchorOffset(UiAnchor type, int w, int h) {
         return type switch {
             UiAnchor.LeftTop => (0, 0),
             UiAnchor.MiddleTop => (-w / 2, 0),

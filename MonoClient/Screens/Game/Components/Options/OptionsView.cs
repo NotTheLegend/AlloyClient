@@ -12,7 +12,7 @@ using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
-using MonoClient.UiLib.Signals;
+using MonoClient.UiLib.Utils.Signals;
 
 namespace MonoClient.Screens.Game.Components.Options;
 

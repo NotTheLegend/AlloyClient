@@ -11,7 +11,6 @@ public class CharacterStatusText : Sprite {
     private const int MaxDrift = 20;
     
     private Entity _owner;
-    private Sprite _parent;
 
     private string _text;
     private uint _color;
@@ -21,9 +20,8 @@ public class CharacterStatusText : Sprite {
     private double _startTime;
     
 
-    public CharacterStatusText(Entity en, Sprite parent, string text, uint color, int lifetime, int offsetTime) {
+    public CharacterStatusText(Entity en, string text, uint color, int lifetime, int offsetTime) {
         _owner = en;
-        _parent = parent;
 
         _text = text;
         _color = color;
@@ -56,7 +54,7 @@ public class CharacterStatusText : Sprite {
         
         var elapsedTime = currentTime - _startTime;
         if (elapsedTime >= _lifetime) {
-            _parent.RemoveChild(this);
+            Parent.RemoveChild(this);
             return;
         }
         

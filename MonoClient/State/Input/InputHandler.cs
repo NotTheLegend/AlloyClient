@@ -10,7 +10,7 @@ using MonoClient.Objects.Util;
 using MonoClient.Screens.Game.Components.Hud;
 using MonoClient.Screens.Game.Components.Hud.Chat;
 using MonoClient.Screens.Game.Components.Options;
-using MonoClient.UiLib.Signals;
+using MonoClient.UiLib.Utils.Signals;
 using MonoClient.Utils;
 
 namespace MonoClient.State.Input;

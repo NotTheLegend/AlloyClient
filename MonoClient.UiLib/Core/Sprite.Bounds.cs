@@ -5,7 +5,7 @@ using Common.Vector;
 
 namespace MonoClient.UiLib.Core;
 
-public abstract partial class Sprite {
+public partial class Sprite {
 
     public bool IsInBounds(IntVector2 pos) {
         if (pos.X < _scissor.X || pos.X > _scissor.Z || pos.Y < _scissor.Y || pos.Y > _scissor.W)

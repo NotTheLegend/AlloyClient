@@ -2,6 +2,7 @@
 using MonoClient.Screens;
 using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
+using MonoClient.UiLib.Utils;
 
 namespace MonoClient.Display;
 
@@ -24,6 +25,7 @@ public static class DisplayManager {
     
     public static void Update(GameTime gameTime) {
         GTween.Update(gameTime);
+        Timer.Update(gameTime);
         ScreenManager.Update(gameTime);
         Screen.Update(gameTime);
     }

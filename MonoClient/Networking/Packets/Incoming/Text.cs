@@ -1,6 +1,5 @@
 ﻿using MonoClient.Screens.Game.Components.Hud.Chat;
 using MonoClient.Ui.Chat;
-using MonoClient.UiLib.Signals;
 
 namespace MonoClient.Networking.Packets.Incoming;
 

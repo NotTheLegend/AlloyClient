@@ -21,11 +21,9 @@ public sealed class SpeechBubble : Sprite {
     private double _lifetime = 5000;
     
     private Entity _owner;
-    private Sprite _parent;
 
-    public SpeechBubble(SpeechData data, Sprite parent) {
+    public SpeechBubble(SpeechData data) {
         _owner = data.Owner;
-        _parent = parent;
 
         const int cut = 10;
         var outlineSize = 4;
@@ -69,7 +67,7 @@ public sealed class SpeechBubble : Sprite {
 
     protected override void OnUpdate(GameTime gameTime) {
         if (_owner == null) return;
-        if ((_lifetime -= gameTime.ElapsedGameTime.TotalMilliseconds) <= 0) _parent.RemoveChild(this);
+        if ((_lifetime -= gameTime.ElapsedGameTime.TotalMilliseconds) <= 0) Parent.RemoveChild(this);
 
         Scale = new Vector2(Settings.CameraZoom / 96f);
         
