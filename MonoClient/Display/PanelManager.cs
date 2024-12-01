@@ -15,10 +15,21 @@ public class PanelManager : Sprite {
     
     private static Queue<Panel> _panels = [];
     private static Panel _current = null;
-
+    public static bool IsPanelBlockingInput => _current != null && _current.BlocksInput;
     public static void Enqueue(Panel panel) {
         _panels.Enqueue(panel);
     }
+
+    public static void ClosePanel()
+    {
+        if (_current != null)
+        {
+            _current.ClosePanel();
+        }
+    }
+
+    public static bool CurrentPanelIs(Panel panel)
+        => _current != null && _current == panel;
 
     protected override void OnUpdate(GameTime gameTime) {
         if (_current == null && !TryStart(true)) return;

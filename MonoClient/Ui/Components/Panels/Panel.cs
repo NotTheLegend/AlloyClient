@@ -9,9 +9,8 @@ public enum PanelState {
 }
 
 public class Panel : DisplayContainer {
-
     public PanelState State = PanelState.Active;
-
+    public bool BlocksInput { get; protected set; }
     public virtual void ClosePanel() => State = PanelState.Closed;
 
 }

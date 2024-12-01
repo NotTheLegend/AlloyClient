@@ -38,8 +38,9 @@ public class ChatView : Sprite {
             FontSize = 18, 
             Bold = true, 
             OutlineThickness = 3, 
-            ClickToActivate = false,
+            ClickToActivate = true,
             Width = Width,
+            OnFocus = OnChatFocus
         });
         AddChild(_chatBox);
         
@@ -59,6 +60,7 @@ public class ChatView : Sprite {
         InputHandler.OnPartyChatKey.Set(OnPartyKey);
         InputHandler.OnChatHistoryUp.Set(_chatContainer.PageUp);
         InputHandler.OnChatHistoryDown.Set(_chatContainer.PageDown);
+        InputHandler.OnUIUnblock.Set(OnUIUnblock);
     }
 
     protected override void OnUpdate(GameTime gameTime) {
@@ -72,10 +74,24 @@ public class ChatView : Sprite {
         }
     }
 
+    private void OnChatFocus()
+    {
+        InputHandler.SetUIBlockingInput(true);
+        IsTyping = true;
+    }
+
+    private void OnUIUnblock()
+    {
+        _chatBox.UnFocus();
+        IsTyping = false;
+    }
+
     private void OnChatKey(bool active) {
         if (active) {
-            OpenTextInput(string.Empty);
-        } else {
+            OpenTextInput(_chatBox.Text);
+        }
+        else
+        {
             var text = PlayerText.CreatePacket();
             text.Text = _chatBox.Text;
             Client.QueuePacket(text);
@@ -94,15 +110,12 @@ public class ChatView : Sprite {
             : $"/tell "
         );
     }
-
     private void OnGuildKey() {
         OpenTextInput("/g ");
     }
-    
     private void OnPartyKey() {
         OpenTextInput("/p ");
     }
-
     private void OpenTextInput(string defaultText) {
         _chatBox.SetActive();
         _chatBox.Visible = true;
@@ -113,5 +126,4 @@ public class ChatView : Sprite {
             _chatBox.AddText(defaultText);
         }
     }
-    
 }

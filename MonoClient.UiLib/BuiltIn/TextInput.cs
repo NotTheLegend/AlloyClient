@@ -23,6 +23,8 @@ public struct InputConfig {
     public byte MaxCharacters = byte.MaxValue;
     public bool Password = false;
     public bool ClickToActivate = true;
+    public Action OnFocus = null;
+    public Action OnUnfocus = null;
     public UiAnchor Anchor = UiAnchor.LeftTop;
     
     public Action OnChange = null;
@@ -50,6 +52,8 @@ public sealed class TextInput : Sprite {
     private readonly byte _maxCharacters;
     private readonly bool _password;
     private readonly bool _clickActivate;
+    private readonly Action _onFocus;
+    private readonly Action _onUnfocus;
 
     private readonly NineSliceRect _textBox;
     private readonly SimpleText _caret;
@@ -73,6 +77,8 @@ public sealed class TextInput : Sprite {
         _maxCharacters = config.MaxCharacters;
         _password = config.Password;
         _clickActivate = config.ClickToActivate;
+        _onFocus = config.OnFocus;
+        _onUnfocus = config.OnUnfocus;
         SetAnchor(config.Anchor);
 
         MouseEnabled = true;
@@ -288,6 +294,7 @@ public sealed class TextInput : Sprite {
         _isCaretActive = true;
         _caret.Visible = true;
         _caretIndex = -1;
+        _onFocus?.Invoke();
 
         if (_isDefaultText) {
             _inputText.Clear();
@@ -302,6 +309,7 @@ public sealed class TextInput : Sprite {
         _isCaretActive = false;
         _caretIndex = -1;
         _caret.Visible = false;
+        _onUnfocus?.Invoke();
         
         if (_inputText.Length == 0) {
             _isDefaultText = true;
