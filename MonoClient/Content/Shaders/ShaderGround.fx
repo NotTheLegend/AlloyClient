@@ -48,10 +48,11 @@ struct VertexOutput {
     float2 CoreUV : TEXCOORD7;
 };
 
-static const float atlasPad = 1.0 / 6.0 / 4096;
+static const float atlasPad = 1.0 / 16.0 / 4096;
 
 float map(float value, float newMin, float newMax) {
-    return abs((value + 1) % 1.0) * (newMax - newMin - atlasPad * 2) + newMin + atlasPad;
+    float val = abs((value + 1) % 1.0) * (newMax - newMin) + newMin;
+    return clamp(val, newMin + atlasPad, newMax - atlasPad);
 }
 
 float2 map(float2 values, float2 newMins, float2 newMaxs) {

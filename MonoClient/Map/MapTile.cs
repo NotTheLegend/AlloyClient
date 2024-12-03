@@ -1,4 +1,5 @@
 using System;
+using Common;
 using Common.Atlas;
 using Microsoft.Xna.Framework;
 using MonoClient.Assets;
@@ -59,7 +60,7 @@ public class MapTile(int x, int y, bool isMapEditor = false) {
         GroundProperties = GroundLibrary.TypeToGroundProps[type];
         TextureData = GroundLibrary.TypeToTextureData[type];
 
-        _texture = TextureData.GetTexture(out _color);
+        _texture = TextureData.GetTexture(out _color, true);
         _texture.RemovePadding();
         _uv = _texture.ToVector4();
         _blendUV = new Vector2(_uv.X, _uv.Y);
@@ -68,8 +69,14 @@ public class MapTile(int x, int y, bool isMapEditor = false) {
             SetMinimapColor(_occupiedObject);
         }
 
-        var offx = GroundProperties.RandomOffset ? Random.Shared.NextSingle() : GroundProperties.XOffset;
-        var offy = GroundProperties.RandomOffset ? Random.Shared.NextSingle() : GroundProperties.YOffset;
+        var offx = GroundProperties.XOffset;
+        var offy = GroundProperties.YOffset;
+
+        if (GroundProperties.RandomOffset) {
+            offx = (int)(Random.Shared.NextSingle() * _texture.RawW()) / (float)_texture.RawW();
+            offy = (int)(Random.Shared.NextSingle() * _texture.RawH()) / (float)_texture.RawH();
+        }
+        
         _positionOffset = new Vector4(X, Y, offx, offy);
         
         var animate = GroundProperties.Animate;
