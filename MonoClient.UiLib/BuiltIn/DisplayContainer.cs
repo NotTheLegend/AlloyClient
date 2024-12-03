@@ -4,6 +4,9 @@ using MonoClient.UiLib.Core.Events.Types;
 
 namespace MonoClient.UiLib.BuiltIn;
 
+/// <summary>
+/// This is the layer zero sprite that provides access to sprites internal Update/Draw functions, this should only be used once
+/// </summary>
 public class DisplayContainer : Sprite {
     public virtual void Update(GameTime gameTime) {
         Scale = UiRender.ScreenScale;

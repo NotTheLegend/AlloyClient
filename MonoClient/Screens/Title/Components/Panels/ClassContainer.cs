@@ -27,7 +27,7 @@ public class ClassContainer : Panel {
         AddChild(ClassInfo);
         AddChild(CharacterWheel);
         
-        var cancelConfig = new TextButtonConfig { Text = "Cancel", FontSize = 50, OnClicked = () => State = PanelState.Closed, Bold = false, X = 75, Y = 650 };
+        var cancelConfig = new TextButtonConfig { Text = "Cancel", FontSize = 50, OnClicked = ClosePanel, Bold = false, X = 75, Y = 650 };
         var cancelButton = new TextButton(cancelConfig);
         AddChild(cancelButton);
         

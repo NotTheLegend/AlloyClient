@@ -1,4 +1,5 @@
 ﻿using System;
+using MonoClient.UiLib;
 using MonoClient.UiLib.Core;
 
 namespace MonoClient.Utils;
@@ -19,5 +20,10 @@ public static class Utils {
         }
         
         return null;
+    }
+
+    public static void AddAlphaTween(this Sprite sprite, float start, float end, int duration, Easing easing = Easing.SineInOut, int delay = 0) {
+        sprite.Alpha = start;
+        GTween.Add(Tween.New(sprite, easing, duration, end, EaseType.Alpha, delay));
     }
 }

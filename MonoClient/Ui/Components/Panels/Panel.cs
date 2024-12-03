@@ -1,16 +1,11 @@
-﻿using MonoClient.UiLib.BuiltIn;
+﻿using MonoClient.Display;
+using MonoClient.UiLib.Core;
 
 namespace MonoClient.Ui.Components.Panels;
 
-public enum PanelState {
-    Active = 0,
-    Closed = 1,
-    Finished = 2
-}
+public class Panel : Sprite {
 
-public class Panel : DisplayContainer {
-    public PanelState State = PanelState.Active;
-    public bool BlocksInput { get; protected set; }
-    public virtual void ClosePanel() => State = PanelState.Closed;
+    public virtual bool InputBlocker => true;
 
+    public virtual void ClosePanel() => PanelManager.ClosePanel(this);
 }

@@ -16,10 +16,11 @@ using MonoClient.Utils;
 
 namespace MonoClient.State.Input;
 
-public static class InputHandler
-{
+public static class InputHandler {
     private static bool _autoFire;
     private static bool _uiBlockingInput = false;
+
+    private static InputBlockers _inputBlockers = InputBlockers.None;
 
     private static StateContainer _prevInputState;
     private static StateContainer _currInputState;
@@ -27,20 +28,23 @@ public static class InputHandler
     public static bool Reconnecting;
     public static bool Moving;
 
-    public static readonly SingleSignal<bool> OnChatKey = new();
-    public static readonly SingleSignal OnTellKey = new();
-    public static readonly SingleSignal OnGuildChatKey = new();
-    public static readonly SingleSignal OnPartyChatKey = new();
+    public static readonly SingleSignal OnChatKey = new();
+    public static readonly SingleSignal<string> OnChatOpen = new();
+
+    //todo: add keyboard events to sprite and swap these to that system
     public static readonly SingleSignal OnChatHistoryUp = new();
     public static readonly SingleSignal OnChatHistoryDown = new();
-    public static readonly SingleSignal OnUIUnblock = new();
 
-    public static void SetUIBlockingInput(bool active) => _uiBlockingInput = active;
+    public static void AddInputBlocker(InputBlockers blocker) {
+        _inputBlockers |= blocker;
+    }
 
-    public static void Update(double time, double dt)
-    {
-        var state = new StateContainer
-        {
+    public static void RemoveInputBlocker(InputBlockers blocker) {
+        _inputBlockers &= ~blocker;
+    }
+
+    public static void Update(double time, double dt) {
+        var state = new StateContainer {
             KeyboardState = Keyboard.GetState(),
             MouseState = Mouse.GetState()
         };
@@ -48,37 +52,20 @@ public static class InputHandler
         _prevInputState = _currInputState;
         _currInputState = state;
 
-        if (Map.LocalPlayer != null)
-        {
-            HandleUIUnblockers(state);
-            HandleBlockedByEverythingInputs(state);
-            HandleBlockedByPanelInputs(state);
-            HandleBlockedByVisibleUIInputs(state);
-            HandleUnblockedInputs(state);
-        }
-    }
+        if (Map.LocalPlayer == null) return;
 
-    /// <summary>
-    /// Handle any inputs that will unblock the current UI input block.
-    /// </summary>
-    /// <param name="state">Mouse and Keyboard state.</param>
-    private static void HandleUIUnblockers(StateContainer state)
-    {
-        if (state.IsPressed(Settings.Shoot))
-        {
-            _uiBlockingInput = false;
-            OnUIUnblock.Dispatch();
-        }
+        HandleBlockedByEverythingInputs(state);
+        HandleBlockedByPanelInputs(state);
+        HandleBlockedByVisibleUIInputs(state);
+        HandleUnblockedInputs(state);
     }
 
     /// <summary>
     /// Handle any inputs that are blocked by either a UI input block, or a panel being visible.
     /// </summary>
     /// <param name="state">Mouse and Keyboard state.</param>
-    private static void HandleBlockedByEverythingInputs(StateContainer state)
-    {
-        if (_uiBlockingInput || PanelManager.IsPanelBlockingInput)
-        {
+    private static void HandleBlockedByEverythingInputs(StateContainer state) {
+        if (_inputBlockers != InputBlockers.None) {
             Map.LocalPlayer.SetRelativeMovement(0, 0, 0);
             Map.LocalPlayer.AnimationType = AnimationType.Stand;
             return;
@@ -99,13 +86,11 @@ public static class InputHandler
         Moving = moveUp || moveDown || moveLeft || moveRight;
         Map.LocalPlayer.AnimationType = Moving ? AnimationType.Walk : AnimationType.Stand;
 
-        if (state.IsToggled(Settings.AutoFire, ref _prevInputState))
-        {
+        if (state.IsToggled(Settings.AutoFire, ref _prevInputState)) {
             _autoFire = !_autoFire;
         }
 
-        if (_autoFire || state.IsPressed(Settings.Shoot))
-        {
+        if (_autoFire || state.IsPressed(Settings.Shoot)) {
             Map.LocalPlayer.IsShooting = true;
 
             var mousePosition = new Vector2(state.MouseState.X, state.MouseState.Y);
@@ -118,44 +103,35 @@ public static class InputHandler
             Map.LocalPlayer.Shoot(0f);
         }
 
-        if (state.IsPressed(Settings.Special))
-        {
+        if (state.IsPressed(Settings.Special)) {
         }
 
-        if (state.IsToggled(Settings.MenuButton, ref _prevInputState))
-        {
+        if (state.IsToggled(Settings.MenuButton, ref _prevInputState)) {
             //Client.Disconnect();
             return;
         }
 
-        if (state.IsToggled(Settings.Escape, ref _prevInputState))
-        {
-            if (Map.Name == "Nexus")
-            {
+        if (state.IsToggled(Settings.Escape, ref _prevInputState)) {
+            if (Map.Name == "Nexus") {
                 return;
             }
 
-            if (!Reconnecting)
-            {
+            if (!Reconnecting) {
                 Client.QueuePacket(Escape.CreatePacket());
                 Reconnecting = true;
                 return;
             }
         }
 
-        if (state.IsToggled(Settings.Interact, ref _prevInputState))
-        {
-            if (Reconnecting)
-            {
+        if (state.IsToggled(Settings.Interact, ref _prevInputState)) {
+            if (Reconnecting) {
                 return;
             }
 
             var entities = EntityUtils.FindEntitiesInRadius(Map.LocalPlayer, Map.Entities.Values, 2f);
 
-            foreach (Entity en in entities)
-            {
-                if (en.Properties.Class == "Portal")
-                {
+            foreach (Entity en in entities) {
+                if (en.Properties.Class == "Portal") {
                     Reconnecting = true;
 
                     var portal = UsePortal.CreatePacket();
@@ -165,52 +141,40 @@ public static class InputHandler
             }
         }
 
-        if (state.IsPressed(Settings.Walk))
-        {
+        if (state.IsPressed(Settings.Walk)) {
         }
 
-        if (state.IsPressed(Settings.HealthPotion))
-        {
+        if (state.IsPressed(Settings.HealthPotion)) {
         }
 
-        if (state.IsPressed(Settings.MagicPotion))
-        {
+        if (state.IsPressed(Settings.MagicPotion)) {
         }
 
-        if (state.IsPressed(Settings.InvOne))
-        {
+        if (state.IsPressed(Settings.InvOne)) {
         }
 
-        if (state.IsPressed(Settings.InvTwo))
-        {
+        if (state.IsPressed(Settings.InvTwo)) {
         }
 
-        if (state.IsPressed(Settings.InvThree))
-        {
+        if (state.IsPressed(Settings.InvThree)) {
         }
 
-        if (state.IsPressed(Settings.InvFour))
-        {
+        if (state.IsPressed(Settings.InvFour)) {
         }
 
-        if (state.IsPressed(Settings.InvFive))
-        {
+        if (state.IsPressed(Settings.InvFive)) {
         }
 
-        if (state.IsPressed(Settings.InvSix))
-        {
+        if (state.IsPressed(Settings.InvSix)) {
         }
 
-        if (state.IsPressed(Settings.InvSeven))
-        {
+        if (state.IsPressed(Settings.InvSeven)) {
         }
 
-        if (state.IsPressed(Settings.InvEight))
-        {
+        if (state.IsPressed(Settings.InvEight)) {
         }
 
-        if (state.IsPressed(Settings.ResetCameraAngle))
-        {
+        if (state.IsPressed(Settings.ResetCameraAngle)) {
             Settings.CameraAngle = 0;
         }
 
@@ -221,44 +185,30 @@ public static class InputHandler
     /// Handle any inputs that are only blocked by a panel being visible.
     /// </summary>
     /// <param name="state">Mouse and Keyboard state.</param>
-    private static void HandleBlockedByPanelInputs(StateContainer state)
-    {
-        if (PanelManager.IsPanelBlockingInput)
-        {
-            return;
+    private static void HandleBlockedByPanelInputs(StateContainer state) {
+        if ((_inputBlockers & InputBlockers.Panel) != 0) return;
+
+        if (state.IsToggled(Settings.Chat, ref _prevInputState)) {
+            OnChatKey.Dispatch();
         }
 
-        if (state.IsToggled(Settings.Chat, ref _prevInputState))
-        {
-            _uiBlockingInput = !_uiBlockingInput;
-            OnChatKey.Dispatch(_uiBlockingInput);
+        if (state.IsToggled(Settings.TellKey, ref _prevInputState)) {
+            OnChatOpen.Dispatch("/tell ");
         }
 
-        if (state.IsToggled(Settings.TellKey, ref _prevInputState) && !ChatView.IsTyping)
-        {
-            _uiBlockingInput = true;
-            OnTellKey.Dispatch();
+        if (state.IsToggled(Settings.GuildChat, ref _prevInputState)) {
+            OnChatOpen.Dispatch("/g ");
         }
 
-        if (state.IsToggled(Settings.GuildChat, ref _prevInputState) && !ChatView.IsTyping)
-        {
-            _uiBlockingInput = true;
-            OnGuildChatKey.Dispatch();
+        if (state.IsToggled(Settings.PartyChat, ref _prevInputState)) {
+            OnChatOpen.Dispatch("/p ");
         }
 
-        if (state.IsToggled(Settings.PartyChat, ref _prevInputState) && !ChatView.IsTyping)
-        {
-            _uiBlockingInput = true;
-            OnPartyChatKey.Dispatch();
-        }
-
-        if (state.IsToggled(Settings.ChatHistoryUp, ref _prevInputState))
-        {
+        if (state.IsToggled(Settings.ChatHistoryUp, ref _prevInputState)) {
             OnChatHistoryUp.Dispatch();
         }
 
-        if (state.IsToggled(Settings.ChatHistoryDown, ref _prevInputState))
-        {
+        if (state.IsToggled(Settings.ChatHistoryDown, ref _prevInputState)) {
             OnChatHistoryDown.Dispatch();
         }
     }
@@ -267,21 +217,13 @@ public static class InputHandler
     /// Handle any keys that are only blocked by non-panel UI being visible.
     /// </summary>
     /// <param name="state">Mouse and Keyboard state.</param>
-    private static void HandleBlockedByVisibleUIInputs(StateContainer state)
-    {
-        if (_uiBlockingInput)
-        {
-            return;
-        }
+    private static void HandleBlockedByVisibleUIInputs(StateContainer state) {
+        if ((_inputBlockers & (InputBlockers.Chat | InputBlockers.Dialog)) != 0) return;
 
-        if (state.IsToggled(Settings.Options, ref _prevInputState))
-        {
-            if (PanelManager.CurrentPanelIs(OptionsView.Panel))
-            {
+        if (state.IsToggled(Settings.Options, ref _prevInputState)) {
+            if (PanelManager.CurrentPanelIs(OptionsView.Panel)) {
                 PanelManager.ClosePanel();
-            }
-            else
-            {
+            } else {
                 PanelManager.Enqueue(OptionsView.Panel);
             }
         }
@@ -291,44 +233,26 @@ public static class InputHandler
     /// Handle any inputs that aren't blocked by anything.
     /// </summary>
     /// <param name="state">Mouse and Keyboard state.</param>
-    private static void HandleUnblockedInputs(StateContainer state)
-    {
-        if (state.KeyboardState.IsKeyDown(Keys.LeftShift))
-        {
-            var scrollDelta = state.MouseState.ScrollWheelValue - _prevInputState.MouseState.ScrollWheelValue;
-
-            switch (scrollDelta)
-            {
-                case < 0:
-                    Settings.CameraZoom -= Settings.ScaleFactor;
-                    if (Settings.CameraZoom < Settings.MinCameraZoom)
-                    {
-                        Settings.CameraZoom = Settings.MinCameraZoom;
-                    }
-
-                    Logger.Info($"Camera zoom: {Settings.CameraZoom.Value}");
-                    Camera.SetZoom(Settings.CameraZoom);
-                    break;
-                case > 0:
-                    Settings.CameraZoom += Settings.ScaleFactor;
-                    if (Settings.CameraZoom > Settings.MaxCameraZoom)
-                    {
-                        Settings.CameraZoom = Settings.MaxCameraZoom;
-                    }
-
-                    Logger.Info($"Camera zoom: {Settings.CameraZoom.Value}");
-                    Camera.SetZoom(Settings.CameraZoom);
-                    break;
-            }
+    private static void HandleUnblockedInputs(StateContainer state) {
+        if (state.KeyboardState.IsKeyUp(Keys.LeftShift) && HasScrollChanged(state, out var zoomDelta)) {
+            Minimap.OnZoom.Dispatch(zoomDelta);
         }
-        else
-        {
-            var scrollDelta = state.MouseState.ScrollWheelValue - _prevInputState.MouseState.ScrollWheelValue;
 
-            if (scrollDelta != 0)
-            {
-                Minimap.OnZoom.Dispatch(scrollDelta > 0 ? 1 : -1);
-            }
+        if (state.KeyboardState.IsKeyDown(Keys.LeftShift) && HasScrollChanged(state, out var delta)) {
+            Settings.CameraZoom = Math.Clamp(Settings.CameraZoom += Settings.ScaleFactor * delta, Settings.MinCameraZoom, Settings.MaxCameraZoom);
+            Logger.Info($"Camera zoom: {Settings.CameraZoom.Value}");
+            Camera.SetZoom(Settings.CameraZoom);
         }
+    }
+
+    private static bool HasScrollChanged(StateContainer state, out int delta) {
+        var val = state.MouseState.ScrollWheelValue - _prevInputState.MouseState.ScrollWheelValue;
+        delta = val switch {
+            < 0 => -1,
+            > 0 => 1,
+            _ => 0
+        };
+
+        return delta != 0;
     }
 }

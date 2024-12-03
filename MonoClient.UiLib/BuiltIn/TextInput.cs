@@ -279,18 +279,13 @@ public sealed class TextInput : Sprite {
         
         FillData();
     }
-
-    public void SetActive() {
-        if (ActiveInput != this) {
-            ActiveInput?.UnFocus();
-            Focus();
-        }
-        
-        SetCaretIndex();
-    }
     
     public void Focus() {
-        ActiveInput = this;
+        if (ActiveInput != this) {
+            ActiveInput?.UnFocus();
+            ActiveInput = this;
+        }
+        
         _isCaretActive = true;
         _caret.Visible = true;
         _caretIndex = -1;
@@ -304,12 +299,15 @@ public sealed class TextInput : Sprite {
         FillData();
     }
 
-    public void UnFocus() {
+    public void UnFocus(bool clearText = false) {
         ActiveInput = null;
         _isCaretActive = false;
         _caretIndex = -1;
         _caret.Visible = false;
         _onUnfocus?.Invoke();
+
+        if (clearText)
+            _inputText.Clear();
         
         if (_inputText.Length == 0) {
             _isDefaultText = true;
@@ -319,31 +317,14 @@ public sealed class TextInput : Sprite {
         FillData();
     }
     
-    public void AddText(string text) {
-        foreach (char input in text) {
-            if (_caretIndex == -1) {
-                _inputText.Append(input);
-            }
-            else {
-                _inputText.Insert(_caretIndex, input);
-                _caretIndex++;
-            }
+    public void InsertText(string text) {
+        if (_caretIndex == -1) {
+            _inputText.Append(text);
+        } else {
+            _inputText.Insert(_caretIndex, text);
+            _caretIndex += text.Length;
         }
-        FillData();
-    }
-
-    public void ClearText() {
-        _inputText.Clear();
-        _caretIndex = -1;
-        FillData();
-    }
-
-    public void Clear() {
-        ActiveInput = null;
-        _isCaretActive = false;
-        _caretIndex = -1;
-        _caret.Visible = false;
-        _inputText.Clear();
+        
         FillData();
     }
 }

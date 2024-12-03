@@ -12,7 +12,7 @@ using MonoClient.UiLib.Input;
 
 namespace MonoClient.Display;
 
-public class ScreenManager : Sprite {
+public sealed class ScreenManager : Sprite {
     private static ScreenManager _instance;
     public static readonly FadeScreen FadeScreen = new(0);
 

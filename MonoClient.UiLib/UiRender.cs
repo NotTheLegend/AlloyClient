@@ -34,6 +34,8 @@ public static class UiRender {
     public static BitmapFont MyriadProBold { get; private set; }
 
     public static Matrix ViewMatrix;
+    
+    public static readonly Matrix DefaultViewMatrix = Matrix.CreateOrthographicOffCenter(0, 1280, 720, 0, -1, 1);
 
     internal static Effect UiShader;
 

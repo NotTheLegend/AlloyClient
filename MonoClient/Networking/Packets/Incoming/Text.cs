@@ -41,7 +41,7 @@ public class Text : IncomingPacket<Text> {
         });
 
         if (Map.Entities.TryGetValue(ObjectId, out var en)) {
-            ChatLayer.QueueSpeech(new SpeechData { Owner = en, Text = Txt });
+            ChatLayer.QueueSpeech(new SpeechData(en, Txt, Recipient));
         }
     }
 

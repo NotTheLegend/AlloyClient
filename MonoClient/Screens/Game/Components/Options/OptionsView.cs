@@ -44,7 +44,6 @@ public sealed class OptionsView : Panel {
     private TextButton _selectedTab;
 
     public OptionsView() {
-        BlocksInput = true;
         RefreshOptions.Set(Refresh);
         
         SetBaseDimensions(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight);
