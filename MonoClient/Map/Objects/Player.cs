@@ -484,7 +484,7 @@ public class Player : Entity {
         float nextYBorder = 0;
 
         if (xCross) {
-            nextXBorder = x > Position.X ? (int) (x * 2) / 2 : (int) (Position.X * 2) / 2;
+            nextXBorder = x > Position.X ? (int) (x * 2) / 2f : (int) (Position.X * 2) / 2f;
 
             if ((int) nextXBorder > (int) Position.X) {
                 nextXBorder -= 0.01f;
@@ -492,7 +492,7 @@ public class Player : Entity {
         }
 
         if (yCross) {
-            nextYBorder = y > Position.Y ? (int) (y * 2) / 2 : (int) (Position.Y * 2) / 2;
+            nextYBorder = y > Position.Y ? (int) (y * 2) / 2f : (int) (Position.Y * 2) / 2f;
 
             if ((int) nextYBorder > (int) Position.Y) {
                 nextYBorder -= 0.01f;
