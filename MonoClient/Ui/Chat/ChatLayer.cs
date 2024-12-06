@@ -13,7 +13,7 @@ public class ChatLayer : Sprite {
 
     protected override void OnUpdate(GameTime gameTime) {
         while (Queue.TryDequeue(out var data)) {
-            AddChild(new SpeechBubble(data, this));
+            AddChild(new SpeechBubble(data));
         }
     }
 }

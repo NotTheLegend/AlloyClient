@@ -12,7 +12,7 @@ using EventHandler = MonoClient.UiLib.Core.Events.EventHandler;
 
 namespace MonoClient.UiLib.Core;
 
-public abstract partial class Sprite {
+public partial class Sprite {
 
     private readonly MouseEventHandler _mouseEventHandler = new();
     private readonly TaskEventHandler _taskEventHandler = new();

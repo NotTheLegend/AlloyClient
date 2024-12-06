@@ -5,7 +5,7 @@ using MonoClient.UiLib.Core;
 
 namespace MonoClient.Display;
 
-public class TooltipManager : Sprite {
+public sealed class TooltipManager : Sprite {
 
     private static TooltipManager _instance;
     

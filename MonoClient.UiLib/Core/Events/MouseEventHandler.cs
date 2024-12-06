@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Common.Vector;
+using Microsoft.Xna.Framework.Input;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Core.Events.Types;
@@ -35,6 +36,11 @@ internal class MouseEventHandler {
         var pos = MouseInput.GetMousePosition();
         var delta = Math.Max(Math.Min(MouseInput.GetScrollDelta(), 1), -1);
         var inBounds = sprite.IsInBounds(pos);
+        var shift = KeyboardInput.IsKeyDown(Keys.LeftShift) || KeyboardInput.IsKeyDown(Keys.RightShift);
+        var ctrl = KeyboardInput.IsKeyDown(Keys.LeftControl) || KeyboardInput.IsKeyDown(Keys.RightControl);
+        var alt = KeyboardInput.IsKeyDown(Keys.LeftAlt) || KeyboardInput.IsKeyDown(Keys.RightAlt);
+
+        var args = new MouseEventArgs(sprite, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetScrollDelta(), 1), -1), shift, ctrl, alt);
 
         if (Sprite.HighestSprite == null && inBounds) {
             Sprite.HighestSprite = sprite;
@@ -45,7 +51,7 @@ internal class MouseEventHandler {
         if (forceOut && _prevMouseInBounds) {
             foreach (var data in _mouseOut) {
                 _prevMouseInBounds = false;
-                DoCallback(data.Callback, sprite);
+                DoCallback(data.Callback, args);
             }
         }
         
@@ -54,14 +60,14 @@ internal class MouseEventHandler {
             switch (data.EventId) {
                 case MouseEventId.MouseMove when pos != _prevMousePositionGlobal:
                     _prevMousePositionGlobal = pos;
-                    DoCallback(data.Callback, sprite);
+                    DoCallback(data.Callback, args);
                     break;
                 case MouseEventId.Scroll when bounds:
                     if (delta == 0f) {
                         break;
                     }
                     
-                    DoCallback(data.Callback, sprite);
+                    DoCallback(data.Callback, args);
                     break;
                 case MouseEventId.LeftClick:
                 case MouseEventId.MiddleClick:
@@ -73,7 +79,7 @@ internal class MouseEventHandler {
                 case MouseEventId.MiddleUp:
                 case MouseEventId.RightUp:
                     if (bounds && MouseInput.HandleEvent(data.EventId)) {
-                        DoCallback(data.Callback, sprite);
+                        DoCallback(data.Callback, args);
                     }
                     break;
             }
@@ -84,24 +90,29 @@ internal class MouseEventHandler {
         var pos = MouseInput.GetMousePosition();
         var delta = Math.Max(Math.Min(MouseInput.GetScrollDelta(), 1), -1);
         var inBounds = sprite.IsInBounds(pos);
+        var shift = KeyboardInput.IsKeyDown(Keys.LeftShift) || KeyboardInput.IsKeyDown(Keys.RightShift);
+        var ctrl = KeyboardInput.IsKeyDown(Keys.LeftControl) || KeyboardInput.IsKeyDown(Keys.RightControl);
+        var alt = KeyboardInput.IsKeyDown(Keys.LeftAlt) || KeyboardInput.IsKeyDown(Keys.RightAlt);
+
+        var args = new MouseEventArgs(sprite, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetScrollDelta(), 1), -1), shift, ctrl, alt);
         
         foreach (var data in _callbacks) {
             var bounds = data.IgnoreBounds || inBounds;
             switch (data.EventId) {
                 case MouseEventId.MouseMove when pos != _prevMousePosition:
                     _prevMousePosition = pos;
-                    DoCallback(data.Callback, sprite);
+                    DoCallback(data.Callback, args);
                     break;
                 case MouseEventId.MouseOver when bounds && !_prevMouseInBounds:
                     _prevMouseInBounds = true;
-                    DoCallback(data.Callback, sprite);
+                    DoCallback(data.Callback, args);
                     break;
                 case MouseEventId.Scroll when bounds:
                     if (delta == 0f) {
                         break;
                     }
                     
-                    DoCallback(data.Callback, sprite);
+                    DoCallback(data.Callback, args);
                     break;
                 case MouseEventId.LeftClick:
                 case MouseEventId.MiddleClick:
@@ -113,20 +124,20 @@ internal class MouseEventHandler {
                 case MouseEventId.MiddleUp:
                 case MouseEventId.RightUp:
                     if (bounds && MouseInput.HandleEvent(data.EventId)) {
-                        DoCallback(data.Callback, sprite);
+                        DoCallback(data.Callback, args);
                     }
                     break;
             }
         }
     }
 
-    private static void DoCallback(Delegate action, Sprite sprite) {
+    private static void DoCallback(Delegate action, MouseEventArgs args) {
         switch (action) {
             case Action callback:
                 callback();
                 break;
             case Action<MouseEventArgs> callback:
-                callback(new MouseEventArgs(sprite, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetScrollDelta(), 1), -1)));
+                callback(args);
                 break;
             default:
                 throw new InvalidCastException("Callback has invalid signature");

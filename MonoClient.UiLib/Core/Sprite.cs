@@ -11,9 +11,9 @@ using MonoClient.UiLib.Core.Events.Types;
 
 namespace MonoClient.UiLib.Core;
 
-public abstract partial class Sprite {
+public partial class Sprite {
 
-    public static Sprite HighestSprite;
+    internal static Sprite HighestSprite;
 
     public int X {
         get => _x;
@@ -65,6 +65,8 @@ public abstract partial class Sprite {
             UpdateBounds();
         }
     }
+
+    public Sprite Parent => _parent;
 
     public UiAnchor Anchor { get; private set; } = UiAnchor.LeftTop;
 
@@ -208,7 +210,7 @@ public abstract partial class Sprite {
 
         var update = false;
 
-        var (anchorX, anchorY) = Utils.GetAnchorOffset(Anchor, _graphicalWidth, _graphicalHeight);
+        var (anchorX, anchorY) = InternalUtils.GetAnchorOffset(Anchor, _graphicalWidth, _graphicalHeight);
 
         var x = X + (int)(anchorX * Scale.X);
         var w = (int)(_graphicalWidth * Scale.X);
@@ -276,7 +278,7 @@ public abstract partial class Sprite {
     protected virtual void OnUpdate(GameTime gameTime) { }
 
     private void InternalUpdate() {
-        (_anchorX, _anchorY) = Utils.GetAnchorOffset(Anchor, _width, _height);
+        (_anchorX, _anchorY) = InternalUtils.GetAnchorOffset(Anchor, _width, _height);
         var (tx, ty) = (0, 0);
         var ta = _alpha;
         var ts = Scale;
@@ -289,7 +291,7 @@ public abstract partial class Sprite {
             (tx, ty) = pos.ToPair();
         } else if (TooltipMode) {
             (tx, ty) = MouseInput.GetMousePosition().ToPair();
-            (_anchorX, _anchorY) = Utils.GetAnchorOffset(tx < UiRender.Screen.X / 2 ? UiAnchor.LeftBottom : UiAnchor.RightBottom, _width, _height);
+            (_anchorX, _anchorY) = InternalUtils.GetAnchorOffset(tx < UiRender.Screen.X / 2 ? UiAnchor.LeftBottom : UiAnchor.RightBottom, _width, _height);
             tx += (int) (_anchorX * _parent._trueScale.X);
             ty += (int) (_anchorY * _parent._trueScale.Y);
         } else if (_isDragging) {
@@ -553,7 +555,7 @@ public abstract partial class Sprite {
             var w = sprite._noRenderData ? sprite._childbounds.MaxX - sprite._childbounds.MinX : sprite._graphicalWidth;
             var h = sprite._noRenderData ? sprite._childbounds.MaxY - sprite._childbounds.MinY : sprite._graphicalHeight;
 
-            var (anchorX, anchorY) = Utils.GetAnchorOffset(sprite.Anchor, w, h);
+            var (anchorX, anchorY) = InternalUtils.GetAnchorOffset(sprite.Anchor, w, h);
             var offsetX = sprite.X + anchorX * sprite.Scale.X;
             var offsetY = sprite.Y + anchorY * sprite.Scale.Y;
 

@@ -12,11 +12,22 @@ using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
-using MonoClient.UiLib.Signals;
+using MonoClient.UiLib.Utils.Signals;
 
 namespace MonoClient.Screens.Game.Components.Options;
 
 public sealed class OptionsView : Panel {
+
+    public static OptionsView Panel
+    {
+        get
+        {
+            if (_panel == null)
+                _panel = new OptionsView();
+            return _panel;
+        }
+    }
+    private static OptionsView _panel;
     public const string ControlsTab = "Controls";
     public const string HotkeysTab = "Hot Keys";
     public const string ChatTab = "Chat";
@@ -149,11 +160,5 @@ public sealed class OptionsView : Panel {
         ClosePanel();
         Client.Disconnect();
         ScreenManager.FadeToScreen(new CharacterListScreen(), Easing.SineInOut, 500, 0, () => Client.Disconnect());
-    }
-
-    public override void ClosePanel() {
-        InputHandler.InOptionPanel = false;
-        InputHandler.SetPlayerInput(true);
-        base.ClosePanel();
     }
 }

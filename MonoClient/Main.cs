@@ -16,7 +16,7 @@ using MonoClient.State;
 using MonoClient.Ui;
 using MonoClient.UiLib;
 using MonoClient.UiLib.Input;
-using MonoClient.UiLib.Signals;
+using MonoClient.UiLib.Utils.Signals;
 using MonoClient.Utils;
 using Easing = MonoClient.UiLib.Easing;
 using KeyboardInput = MonoClient.UiLib.Input.KeyboardInput;

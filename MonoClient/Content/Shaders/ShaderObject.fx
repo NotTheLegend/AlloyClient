@@ -287,6 +287,16 @@ float4 GetGameObject(VertexOutput input) {
     sum += tex2D(GameAtlasSample, c + float2(px, y3)).a;
     sum += tex2D(GameAtlasSample, c + float2(x2, y3)).a;
     sum += tex2D(GameAtlasSample, c + float2(x3, y3)).a;
+    
+    y3 = py * 3.5;
+    
+    sum += tex2D(GameAtlasSample, c - float2(x3, y3)).a;
+    sum += tex2D(GameAtlasSample, c - float2(x2, y3)).a;
+    sum += tex2D(GameAtlasSample, c - float2(px, y3)).a;
+    sum += tex2D(GameAtlasSample, c + float2(0.0, y3)).a;
+    sum += tex2D(GameAtlasSample, c + float2(px, y3)).a;
+    sum += tex2D(GameAtlasSample, c + float2(x2, y3)).a;
+    sum += tex2D(GameAtlasSample, c + float2(x3, y3)).a;
 
     color.a = sum / 49.0;
     

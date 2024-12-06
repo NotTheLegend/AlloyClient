@@ -2,6 +2,7 @@
 using MonoClient.State;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
+using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Ui.Components.Dialogs;
@@ -14,7 +15,7 @@ public enum DialogState {
     Finished = 2
 }
 
-public class Dialog : DisplayContainer {
+public class Dialog : Sprite {
 
     private const int BoxWidth = 300;
 

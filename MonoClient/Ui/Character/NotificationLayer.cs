@@ -8,14 +8,9 @@ namespace MonoClient.Ui.Character;
 
 public class NotificationLayer : Sprite {
     private static readonly Queue<CharacterStatusText> _textQueue = new();
-    private static Sprite _parent;
-
-    public NotificationLayer() {
-        _parent = this;
-    }
     
     public static void AddStatusText(Entity en, string text, uint color, int lifetime, int offsetTime) {
-        var data = new CharacterStatusText(en, _parent, text, color, lifetime, offsetTime);
+        var data = new CharacterStatusText(en, text, color, lifetime, offsetTime);
         _textQueue.Enqueue(data);
     }
 

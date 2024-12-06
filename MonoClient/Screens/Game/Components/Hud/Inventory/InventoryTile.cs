@@ -18,6 +18,7 @@ using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Input;
+using MonoClient.UiLib.Utils;
 using MonoClient.Utils;
 
 namespace MonoClient.Screens.Game.Components.Hud.Inventory;
@@ -34,6 +35,9 @@ public class InventoryTile : Sprite {
     private IntVector2 _dragStart;
     private bool _checkForDrag;
     private bool _dragging;
+
+    private Timer _doubleTimer = new Timer(250, 1);
+    private bool _pendingDouble;
     
     public byte Slot;
     public Entity Owner;
@@ -43,6 +47,7 @@ public class InventoryTile : Sprite {
         _itemDesc = item;
 
         _draggable = draggable;
+        _doubleTimer.AddEventListener(TimerEvent.TimerComplete, OnSingleClick);
         
         var background = new ColorRect(new ColorRectConfig {
             Alpha = 1f,
@@ -86,6 +91,7 @@ public class InventoryTile : Sprite {
         
         if (_draggable) {
             _itemSprite.AddEventListener(MouseEventId.LeftDown, OnMouseDown);
+            _itemSprite.AddEventListener(MouseEventId.LeftUp, OnMouseUp);
         }
 		
         _itemSprite.AddEventListener(MouseEventId.MouseOver, OnMouseOver);
@@ -102,12 +108,46 @@ public class InventoryTile : Sprite {
         if (_itemDesc == null || _tooltip == null || _dragging) return;
         TooltipManager.RemoveTooltip(_tooltip);
         _tooltip = null;
+        _pendingDouble = false;
     }
 
     private void OnMouseDown(MouseEventArgs args) {
         _dragStart = args.Coords;
         _checkForDrag = true;
         _itemSprite.AddEventListener(MouseEventId.LeftUp, CancelDragCheck);
+    }
+
+    private void OnMouseUp(MouseEventArgs args) {
+        if (_dragging) return;
+
+        if (args.ShiftKey) {
+            _pendingDouble = false;
+            // todo: use item
+            return;
+        }
+
+        if (args.CtrlKey) {
+            _pendingDouble = false;
+            // todo: swap to backpack
+            return;
+        }
+
+        if (_pendingDouble) {
+            _pendingDouble = false;
+            _doubleTimer.Stop();
+            // todo: double Click
+            // equip or use
+            return;
+        }
+
+        _pendingDouble = true;
+        _doubleTimer.Reset();
+        _doubleTimer.Start();
+    }
+
+    private void OnSingleClick() {
+        _doubleTimer.Stop();
+        _pendingDouble = false;
     }
 
     private void CancelDragCheck() {
@@ -121,6 +161,7 @@ public class InventoryTile : Sprite {
         var dist = MathF.Sqrt(delta.X * delta.X + delta.Y * delta.Y);
 
         if (dist > 3) {
+            _pendingDouble = false;
             CancelDragCheck();
             OnBeginDrag();
         }
@@ -132,7 +173,7 @@ public class InventoryTile : Sprite {
         
         TooltipManager.RemoveTooltip(_tooltip);
        
-        _itemSprite.StartDrag<InventoryTile>();
+        _itemSprite.StartDrag();
         _itemSprite.AddEventListener(MouseEventId.LeftUp, OnEndDrag);
         RemoveChild(_itemSprite);
         Map.GameSprite.AddChild(_itemSprite);
@@ -150,31 +191,51 @@ public class InventoryTile : Sprite {
     }
 
     private void HandleDropTarget() {
-        if (_itemSprite.DropTarget == null) return;
-        if (_itemSprite.DropTarget is not InventoryTile tile) return;// shouldnt happen cuz its filtered but you never know
+        var list = new[] {typeof(InventoryTile), typeof(InventoryGrid), typeof(GameScreen)};
         
-        // todo add inv drop and the rest of the inventory actions
-        // the easiest way would be add an invisible inventory tile that covers the gamescreen area for a valid drop target or something
-        
-        var swap = InvSwap.CreatePacket();
-        swap.Time = (int)Map.LastGameTime.TotalGameTime.TotalMilliseconds;
-        swap.Position = new Position { X = Map.LocalPlayer.Position.X, Y = Map.LocalPlayer.Position.Y };
+        var target = _itemSprite.DropTarget.GetTypeFromList(list);
+
+        switch (target) {
+            case InventoryTile tile:
+                if (!tile._draggable) break;
+                
+                var swap = InvSwap.CreatePacket();
+                swap.Time = (int)Map.LastGameTime.TotalGameTime.TotalMilliseconds;
+                swap.Position = new Position { X = Map.LocalPlayer.Position.X, Y = Map.LocalPlayer.Position.Y };
             
-        swap.SlotObj1 = new ObjectSlot {
-            ObjectId = Owner.ObjectId,
-            SlotId = Slot,
-            ObjectType = _itemType
-        };
-        swap.SlotObj2 = new ObjectSlot {    
-            ObjectId = tile.Owner.ObjectId,
-            SlotId = tile.Slot,
-            ObjectType = tile._itemType
-        };
-        Client.QueuePacket(swap);
+                swap.SlotObj1 = new ObjectSlot {
+                    ObjectId = Owner.ObjectId,
+                    SlotId = Slot,
+                    ObjectType = _itemType
+                };
+                swap.SlotObj2 = new ObjectSlot {    
+                    ObjectId = tile.Owner.ObjectId,
+                    SlotId = tile.Slot,
+                    ObjectType = tile._itemType
+                };
+                Client.QueuePacket(swap);
             
-        (tile._itemType, _itemType) = (_itemType, tile._itemType);
-        UpdateTile();
-        tile.UpdateTile();
+                (tile._itemType, _itemType) = (_itemType, tile._itemType);
+                UpdateTile();
+                tile.UpdateTile();
+                break; // swap
+            case InventoryGrid grid:
+                break; // add to first free slot
+            case GameScreen:
+                var drop = InvDrop.CreatePacket();
+                drop.SlotObject = new ObjectSlot {
+                    ObjectId = Owner.ObjectId,
+                    SlotId = Slot,
+                    ObjectType = _itemType
+                };
+                
+                Client.QueuePacket(drop);
+                break; // drop
+            default:
+                //reset tile
+                break;
+            
+        }
     }
 
     private void UpdateTile() {

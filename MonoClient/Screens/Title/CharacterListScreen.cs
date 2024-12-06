@@ -45,7 +45,8 @@ public class CharacterListScreen : TitleScreenBase {
 
         var playButton = new MenuBarButton("play", PlayFontSize, () => {
             var charList = CharacterList.Model.Characters;
-            if (charList.Length <= 0) {
+            if (charList == null || charList.Length <= 0) 
+            {
                 ShowCharacterCreate();
                 return;
             }

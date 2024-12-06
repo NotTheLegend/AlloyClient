@@ -22,4 +22,4 @@ public enum MouseEventId : int {
 
 internal record MouseEventData(MouseEventId EventId, Delegate Callback, bool IgnoreBounds);
 
-public record MouseEventArgs(Sprite Sprite, IntVector2 Coords = new(), float Delta = 0f);
+public record struct MouseEventArgs(Sprite Sprite, IntVector2 Coords = new(), float Delta = 0f, bool ShiftKey = false, bool CtrlKey = false, bool AltKey = false);

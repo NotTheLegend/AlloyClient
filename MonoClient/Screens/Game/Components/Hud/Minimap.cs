@@ -5,7 +5,7 @@ using MonoClient.State;
 using MonoClient.UiLib;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
-using MonoClient.UiLib.Signals;
+using MonoClient.UiLib.Utils.Signals;
 
 namespace MonoClient.Screens.Game.Components.Hud;
 

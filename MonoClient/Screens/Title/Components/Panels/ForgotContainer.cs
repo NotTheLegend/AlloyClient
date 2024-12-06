@@ -30,13 +30,13 @@ public class ForgotContainer : Panel {
         var loginButton = new TextButton(loginConfig);
         AddChild(loginButton);
         
-        var cancelConfig = new TextButtonConfig { Text = "Cancel", FontSize = 28, OnClicked = () => State = PanelState.Closed, Bold = false, X = loginButton.X - loginButton.Width - 35, Y = Height - 25, Anchor = UiAnchor.RightBottom };
+        var cancelConfig = new TextButtonConfig { Text = "Cancel", FontSize = 28, OnClicked = ClosePanel, Bold = false, X = loginButton.X - loginButton.Width - 35, Y = Height - 25, Anchor = UiAnchor.RightBottom };
         var cancelButton = new TextButton(cancelConfig);
         AddChild(cancelButton);
     }
 
     private void OnForgot() {
-        State = PanelState.Closed;
+        ClosePanel();
         ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 500, 0x0);
     }
 }

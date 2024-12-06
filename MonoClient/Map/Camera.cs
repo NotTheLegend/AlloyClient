@@ -71,7 +71,7 @@ public static class Camera {
         BillboardMatrix[4] = s;
         BillboardMatrix[5] = c;
         
-        SpeechMatrix = WorldMatrix * ViewMatrix * ProjectionMatrix * Matrix.Invert(UiRender.ViewMatrix);
+        SpeechMatrix = WorldMatrix * ViewMatrix * ProjectionMatrix * Matrix.Invert(UiRender.DefaultViewMatrix);
     }
 
     // Only tested on MapEditor

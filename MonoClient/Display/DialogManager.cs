@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using MonoClient.State.Input;
 using MonoClient.Ui.Components.Dialogs;
 using MonoClient.UiLib;
 using MonoClient.UiLib.Core;
@@ -7,7 +8,7 @@ using MonoClient.UiLib.Core.Events.Types;
 
 namespace MonoClient.Display;
 
-public class DialogManager : Sprite {
+public sealed class DialogManager : Sprite {
 
     private static readonly Queue<Dialog> Dialogs = [];
     private static Dialog _current;
@@ -26,6 +27,7 @@ public class DialogManager : Sprite {
         _current.Alpha = 0f;
         AddChild(_current);
         GTween.Add(Tween.New(_current, Easing.SineInOut, 250, 1f, EaseType.Alpha));
+        InputHandler.AddInputBlocker(InputBlockers.Dialog);
         return true;
     }
 
@@ -34,6 +36,7 @@ public class DialogManager : Sprite {
         GTween.Add(Tween.New(_current, Easing.SineInOut, 250, 0f, EaseType.Alpha, onFinish: () => {
             RemoveChild(_current);
             _current = null;
+            InputHandler.RemoveInputBlocker(InputBlockers.Dialog);
         }));
     }
 

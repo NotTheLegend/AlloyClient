@@ -11,7 +11,7 @@ using MonoClient.ParticleEffects;
 using MonoClient.Rendering.VertexData;
 using MonoClient.Screens.Game.Components;
 using MonoClient.Screens.Game.Components.Hud;
-using MonoClient.UiLib.Signals;
+using MonoClient.UiLib.Utils.Signals;
 using MonoClient.Utils;
 using Console = System.Console;
 
