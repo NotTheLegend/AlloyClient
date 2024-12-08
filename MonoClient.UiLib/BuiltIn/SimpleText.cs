@@ -22,6 +22,11 @@ public struct TextConfig {
 }
 
 public sealed class SimpleText : Sprite {
+
+    private enum RenderType : int {
+        Normal = 0,
+        Small = 1
+    }
     
     public string Text { get; private set; }
     
@@ -142,6 +147,7 @@ public sealed class SimpleText : Sprite {
         
         SetBaseDimensions((int)boundWidth, (int)(boundHeight + _font.LineHeight * scale));
         Extra1.X = _outlineThickness;
+        Extra1.Y = (int) (_fontScale < 16 ? RenderType.Small : RenderType.Normal);
     }
 
     private void Rebuild() {

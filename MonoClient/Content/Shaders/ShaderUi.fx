@@ -124,6 +124,9 @@ VertexOutput MainVertex(in VertexInput input)
     return output;
 }
 
+static const float TextTypeNormal = 0.0;
+static const float TextTypeSmall = 1.0;
+
 static const float IdColor = 0.0;
 static const float IdGameAtlas = 1.0;
 static const float IdUiAtlas = 2.0;
@@ -135,14 +138,11 @@ static const float IdTitleGraphic = 7.0;
 static const float IdMinimap = 8.0;
 static const float IdEllipse = 9.0;
 
-float map(float value, float originalMin, float originalMax, float newMin, float newMax)
-{
+float map(float value, float originalMin, float originalMax, float newMin, float newMax) {
     return (value - originalMin) / (originalMax - originalMin) * (newMax - newMin) + newMin;
 }
 
-float scale(float val, float2 rect, float border, float borderTex)
-{
-    float v = map(val, 0, 1, rect.x, rect.y);
+float scale(float val, float2 rect, float border, float borderTex) {
     if (val <= border)
         return map(val, 0, border, rect.x, rect.x + borderTex);
     if (val >= 1.0 - border)
@@ -150,21 +150,39 @@ float scale(float val, float2 rect, float border, float borderTex)
     return map(val, border, 1.0 - border, rect.x + borderTex, rect.y - borderTex);
 }
 
-float4 slice(VertexOutput input)
-{
+float4 slice(VertexOutput input) {
     float2 uv;
     uv.x = scale(input.UVCoords.x, input.Extra1.xy, input.Extra2.z, input.Extra2.x);
     uv.y = scale(input.UVCoords.y, input.Extra1.zw, input.Extra2.w, input.Extra2.y);
     return tex2D(UiAtlasSample, uv);
 }
 
-float median(float a, float b, float c)
-{
+float median(float a, float b, float c) {
     return max(min(a, b), min(max(a, b), c));
 }
 
-float4 RenderText(VertexOutput input, sampler2D sample, float2 dim, float pRange)
+float2 SafeNormalize(float2 v)
 {
+    float vLength = length(v);
+
+    vLength = (vLength > 0.0) ? 1.0 / vLength : 0.0;
+
+    return v * vLength;
+}
+
+float GetOpacityFromDistance(float signedDistance, float2 Jdx, float2 Jdy, float pRange) {
+    const float distanceLimit = sqrt(2.0f) / 2.0f;  
+    const float thickness = 1.0f / (pRange/ 2.0);
+ 
+    float2 gradientDistance = SafeNormalize(float2(ddx(signedDistance), ddy(signedDistance)));
+    float2 gradient = float2(gradientDistance.x * Jdx.x + gradientDistance.y * Jdy.x, gradientDistance.x * Jdx.y + gradientDistance.y * Jdy.y);
+ 
+    float scaledDistanceLimit = min(thickness * distanceLimit * length(gradient), 0.5f);
+ 
+    return smoothstep(-scaledDistanceLimit, scaledDistanceLimit, signedDistance);
+}
+
+float4 RenderText(VertexOutput input, sampler2D sample, float2 dim, float pRange) {
     float2 msdfUnit = pRange / dim;
     float3 samp = tex2D(sample, input.UVCoords).rgb;
     float4 outColor = pRange == 0.0 ? input.Color : input.Override;
@@ -175,9 +193,21 @@ float4 RenderText(VertexOutput input, sampler2D sample, float2 dim, float pRange
     float strokeDist = median(samp.r, samp.g, samp.b) - 0.25f * (1.0 + (pRange - input.Extra1.x) / pRange) - strokeThickness;
     strokeDist = -(abs(strokeDist) - strokeThickness);
     strokeDist = strokeDist * dot(msdfUnit, 0.5f / fwidth(input.UVCoords));
-
-    float opacity = clamp(sigDist + 0.5f, 0.0f, 1.0f);
-    float strokeOpacity = clamp(strokeDist + 0.5f, 0.0f, 1.0f);
+    
+    float opacity = 0;
+    float strokeOpacity = 0;
+    
+    if (input.Extra1.y == TextTypeSmall) {
+        float2 pixelCoord = input.UVCoords * dim;
+        float2 Jdx = ddx(pixelCoord);
+        float2 Jdy = ddy(pixelCoord);
+        opacity = GetOpacityFromDistance(sigDist, Jdx, Jdy, pRange);
+        strokeOpacity = GetOpacityFromDistance(strokeDist, Jdx, Jdy, pRange);
+    } else {
+        opacity = clamp(sigDist + 0.5f, 0.0f, 1.0f);
+        strokeOpacity = clamp(strokeDist + 0.5f, 0.0f, 1.0f);
+    }
+    
     return lerp(outColor, input.Color, opacity) * max(opacity, strokeOpacity);
 }
 
@@ -215,8 +245,7 @@ float4 RenderOutline(VertexOutput input, sampler2D sample) : COLOR {
     return color;
 }
 
-float4 RenderNoOutline(VertexOutput input, sampler2D sample) : COLOR
-{
+float4 RenderNoOutline(VertexOutput input, sampler2D sample) : COLOR {
     return tex2D(sample, input.UVCoords);
 }
 
@@ -253,53 +282,34 @@ float4 RenderEllipse(VertexOutput input) : COLOR {
     return lerp(input.Color, input.Override, color); 
 }
 
-float4 MainPixel(VertexOutput input) : COLOR
-{
+float4 MainPixel(VertexOutput input) : COLOR {
     float4 pixel = (float4)0;
 
-    if (input.Position1.x < input.Scissor.x || input.Position1.x > input.Scissor.z || input.Position1.y < input.Scissor.w || input.Position1.y > input.Scissor.y)
-    {
+    if (input.Position1.x < input.Scissor.x || input.Position1.x > input.Scissor.z || input.Position1.y < input.Scissor.w || input.Position1.y > input.Scissor.y) {
         discard;
     }
 
     float type = input.Info.x;
 
-    if (type == IdColor)
-    {
+    if (type == IdColor) {
         pixel = input.Color;
-    }
-    else if (type == IdGameAtlas)
-    {
+    } else if (type == IdGameAtlas) {
         pixel = RenderOutline(input, GameAtlasSample);
-    }
-    else if (type == IdUiAtlas)
-    {
+    } else if (type == IdUiAtlas) {
         pixel = RenderNoOutline(input, UiAtlasSample);
-    }
-    else if (type == IdUiSlice)
-    {
+    } else if (type == IdUiSlice){
         pixel = slice(input);
-    }
-    else if (type == IdText)
-    {
+    } else if (type == IdText) {
         pixel = RenderText(input, TextSample, TextTextureSize, PixelRange);
-    }
-    else if (type == IdTextBold)
-    {
+    } else if (type == IdTextBold) {
         pixel = RenderText(input, TextBoldSample, TextTextureSizeBold, PixelRangeBold);
-    }
-    else if (type == IdTitleBackground)
-    {
+    } else if (type == IdTitleBackground) {
         pixel = RenderNoOutline(input, TitleBackgroundSample);
-    }
-    else if (type == IdTitleGraphic)
-    {
+    } else if (type == IdTitleGraphic) {
         pixel = RenderNoOutline(input, TitleGraphicSample);
-    } 
-    else if (type == IdMinimap) {
+    } else if (type == IdMinimap) {
         pixel = RenderMinimap(input);
-    }
-    else if (type = IdEllipse) {
+    } else if (type == IdEllipse) {
         pixel = RenderEllipse(input);
     }
 
@@ -315,15 +325,12 @@ float4 MainPixel(VertexOutput input) : COLOR
     return pixel;
 }
 
-technique MainDraw
-{
-	pass P0
-    {
+technique MainDraw {
+	pass P0 {
         AlphaBlendEnable = TRUE;
         DestBlend = INVSRCALPHA;
         SrcBlend = SRCALPHA;
         VertexShader = compile VS_SHADERMODEL MainVertex();
         PixelShader = compile PS_SHADERMODEL MainPixel();
-	
     }
 };

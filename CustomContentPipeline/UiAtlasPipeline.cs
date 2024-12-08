@@ -112,7 +112,7 @@ unsafe class UiAtlasProcessor : ContentProcessor<string, UiAtlasResult> {
     }
 
     private void AddImage(string lookup, string imageName, int cutWidth = -1, int cutHeight = -1) {
-        var image = ImageResult.FromMemory(File.ReadAllBytes(_directory + imageName));
+        var image = ImageResult.FromMemory(File.ReadAllBytes(_directory + imageName), ColorComponents.RedGreenBlueAlpha);
         if (cutWidth == -1) {
             cutWidth = image.Width;
         }
@@ -127,10 +127,6 @@ unsafe class UiAtlasProcessor : ContentProcessor<string, UiAtlasResult> {
         
         if (image.Height % cutHeight != 0) {
             throw new Exception($"Skipping image <{imageName}>, cutHeight <{cutHeight}> not a multiple of {image.Height}");
-        }
-
-        if (image.Width * image.Height * 4 != image.Data.Length) {
-            throw new Exception($"Failed on image <{imageName}>, pngs must be in TruecolorAlpha format");
         }
         
         var cutSize = cutWidth * cutHeight;

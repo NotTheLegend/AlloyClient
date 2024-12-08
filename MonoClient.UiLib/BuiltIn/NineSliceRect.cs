@@ -73,7 +73,7 @@ public sealed class NineSliceRect : Sprite {
         if (scaleX > 1.0f)
             scaleX = 1.0f;
 
-        var scaleY = _w / (_cutX * 2f);
+        var scaleY = _h / (_cutY * 2f);
         if (scaleY > 1.0f)
             scaleY = 1.0f;
 
