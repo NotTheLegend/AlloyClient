@@ -402,7 +402,10 @@ public class Player : Entity {
         var projProps =  ObjectLibrary.TypeToObjectProps[projType];
 
         for (int i = 0; i < props.NumProjectiles; i++) {
-            var angle = AttackAngle + MathHelper.ToRadians(props.ArcGap) * i;
+            var arc = MathHelper.ToRadians(props.ArcGap) * (props.NumProjectiles - 1);
+            var startAngle = AttackAngle - arc / 2;
+            
+            var angle = startAngle + MathHelper.ToRadians(props.ArcGap) * i;
             var proj = new Projectile {
                 Properties = projProps,
                 ProjDesc = props.Projectiles[0],
