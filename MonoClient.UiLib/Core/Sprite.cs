@@ -89,7 +89,7 @@ public partial class Sprite {
     
     protected VertexUi[] VertexData = [];
 
-    internal int OverridePrimCount = -1;
+    public int OverridePrimCount = -1;
 
     internal IntVector2 Radii;
     
@@ -408,7 +408,8 @@ public partial class Sprite {
 
         numVertices++;
         for (var i = 0; i < numVertices; i++) {
-            _vertices[_vertexCount + i] = new VertexDataUi(VertexData[i].Position.Transform(_trueScale, _trueX, _trueY), Color, ColorSecondary, _info, VertexData[i].UV, _scissor, Extra1, Extra2, _trueTransform);
+            var color = VertexData[i].Color;
+            _vertices[_vertexCount + i] = new VertexDataUi(VertexData[i].Position.Transform(_trueScale, _trueX, _trueY), color.A == 0f ? Color : color, ColorSecondary, _info, VertexData[i].UV, _scissor, Extra1, Extra2, _trueTransform);
         }
 
         _vertexCount += numVertices;

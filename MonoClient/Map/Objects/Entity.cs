@@ -471,6 +471,10 @@ public class Entity {
                     CurrentFrameIndex = CurrentFrameIndex == 1 ? 2 : 1;
 
                     Texture = GetFrameData(directionalIndex, CurrentFrameIndex);
+                    
+                    if (Texture.W == 0 || Texture.H == 0) // some sheets have a blank frame 2
+                        Texture = GetFrameData(directionalIndex, 0);
+                    
                     AnimationTimer.Restart();
                 }
 
@@ -501,6 +505,7 @@ public class Entity {
                     CurrentFrameIndex = CurrentFrameIndex == 4 ? 5 : 4;
 
                     Texture = GetFrameData(directionalIndex, CurrentFrameIndex);
+                    
                     AnimationTimer.Restart();
                 }
 

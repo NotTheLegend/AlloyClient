@@ -94,15 +94,30 @@ public struct VertexUi {
     
     public Vector2 Position;
     public Vector2 UV;
+    public Color Color;
 
+    public VertexUi(Vector2 pos, Vector2 uv, Color color) {
+        Position = pos;
+        UV = uv;
+        Color = color;
+    }
+    
     public VertexUi(Vector2 pos, Vector2 uv) {
         Position = pos;
         UV = uv;
+        Color = new Color(0);
+    }
+    
+    public VertexUi(Vector2 pos, Color color) {
+        Position = pos;
+        UV = new Vector2(0f);
+        Color = color;
     }
 
     public VertexUi(Vector2 pos) {
         Position = pos;
         UV = new Vector2(0f);
+        Color = new Color(0);
     }
 }
 

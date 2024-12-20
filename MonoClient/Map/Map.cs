@@ -38,7 +38,7 @@ public static class Map {
 
     private static MapTile[,] _tiles;
     public static readonly RenderStorage EntityStorage = new();
-    public static readonly Dictionary<int, Entity> Entities = new();
+    public static readonly Dictionary<int, Entity> Entities = new(); // todo: add players to separate dic for minimap prio
 
     private static readonly List<Projectile> Projectiles = [];
 
@@ -54,8 +54,7 @@ public static class Map {
     private static int _particleCount;
     private static readonly VertexParticle[] Particles = new VertexParticle[30000];
 
-    public static void InitMap(int width, int height, string name, string display, int diff, uint seed, int background,
-        bool allowTp, bool showDisplays) {
+    public static void InitMap(int width, int height, string name, string display, int diff, uint seed, int background, bool allowTp, bool showDisplays) {
         Width = width;
         Height = height;
         Name = name;

@@ -14,12 +14,14 @@ public sealed class Minimap : Sprite {
     public static readonly SingleSignal<int> OnZoom = new();
     public static readonly SingleSignal<int, int> OnNewMap = new();
     
-    private const int MapSize = 246;
+    public const int MapSize = 246;
     
     private float _zoom = 4.0f;
     private float _maxZoom;
     private float _zoomStep;
     private float _size;
+
+    private readonly MinimapLayer _layer;
 
     public Minimap() {
         SetBaseDimensions(MapSize, MapSize);
@@ -30,6 +32,9 @@ public sealed class Minimap : Sprite {
         
         OnZoom.Set(ZoomHandle);
         OnNewMap.Set(OnMapEnter);
+
+        _layer = new MinimapLayer();
+        AddChild(_layer);
     }
 
     protected override void ResizeBackBuffer() {
@@ -73,5 +78,7 @@ public sealed class Minimap : Sprite {
         VertexData[1].UV = new Vector2(x2 / 4096, y1 / 4096);
         VertexData[2].UV = new Vector2(x2 / 4096, y2 / 4096);
         VertexData[3].UV = new Vector2(x1 / 4096, y2 / 4096);
+        
+        _layer.SetSize(size);
     }
 }

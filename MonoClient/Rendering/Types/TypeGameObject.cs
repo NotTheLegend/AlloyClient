@@ -72,11 +72,13 @@ public sealed class TypeGameObject : RenderBase {
     public override void SetDepth(float depth) {
         Extra.SortId = depth;
         _name.SetDepth(depth);
+        _hpBar.SetDepth(depth);
     }
     
     public override void SetAlpha(float alpha) {
         Extra.Alpha = alpha;
         _name.SetAlpha(alpha);
+        _hpBar.SetAlpha(alpha);
     }
 
     public override void SetName(string name) { }
