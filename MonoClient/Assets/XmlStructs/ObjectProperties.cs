@@ -36,6 +36,7 @@ public class ObjectProperties {
     public readonly bool FullOccupy;
 
     public readonly bool Static;
+    public readonly bool NoMiniMap;
     public readonly bool DrawOnGround;
 
     public readonly int RealSize;
@@ -87,6 +88,7 @@ public class ObjectProperties {
         FullOccupy = e.GetValue<bool>("FullOccupy");
 
         Static = e.GetValue<bool>("Static");
+        NoMiniMap = e.GetValue<bool>("NoMiniMap");
         DrawOnGround = e.GetValue<bool>("DrawOnGround");
 
         RealSize = e.GetValue<int>("RealSize", -1);

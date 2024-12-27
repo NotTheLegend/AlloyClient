@@ -43,8 +43,11 @@ public class MapTile(int x, int y, bool isMapEditor = false) {
     private Vector4 _cornerTop = new(-1);
 
     private void SetMinimapColor(Entity entity) {
-        if (entity == null) MinimapData.UncoverTile(X, Y, _color);
-        else MinimapData.UncoverTile(X, Y, entity.GetDominateColor());
+        if (entity != null && entity.Properties.Static && entity.Properties.OccupySquare && !entity.Properties.NoMiniMap) {
+            MinimapData.UncoverTile(X, Y, entity.GetDominateColor());
+        } else {
+            MinimapData.UncoverTile(X, Y, _color);
+        }
     }
 
     public void DrawTile() {

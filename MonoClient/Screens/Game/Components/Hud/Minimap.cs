@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoClient.State;
 using MonoClient.UiLib;
+using MonoClient.UiLib.BuiltIn;
+using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Utils.Signals;
@@ -13,6 +15,9 @@ public sealed class Minimap : Sprite {
 
     public static readonly SingleSignal<int> OnZoom = new();
     public static readonly SingleSignal<int, int> OnNewMap = new();
+
+    private static readonly ColorTransform DefaultCt = new (1f, 1f, 1f, 1f);
+    private static readonly ColorTransform FadeCt = new (0.5f, 0.5f, 0.5f, 1f);
     
     public const int MapSize = 246;
     
@@ -22,6 +27,10 @@ public sealed class Minimap : Sprite {
     private float _size;
 
     private readonly MinimapLayer _layer;
+
+    private readonly IconButton _zoomIn;
+    private readonly IconButton _zoomOut;
+    private readonly ObjectRect _arrow;
 
     public Minimap() {
         SetBaseDimensions(MapSize, MapSize);
@@ -35,6 +44,55 @@ public sealed class Minimap : Sprite {
 
         _layer = new MinimapLayer();
         AddChild(_layer);
+
+        _zoomIn = new IconButton(new IconButtonConfig {
+            Texture = TextureInfo.FromGameAtlas("lofiInterface", 54),
+            Padding = false,
+            X = MapSize,
+            Y = 0,
+            Width = 24,
+            Height = 24,
+            Anchor = UiAnchor.RightTop,
+            OnClick = () => ZoomHandle(1)
+        });
+        AddChild(_zoomIn);
+        
+        _zoomOut = new IconButton(new IconButtonConfig {
+            Texture = TextureInfo.FromGameAtlas("lofiInterface", 55),
+            Padding = false,
+            X = MapSize,
+            Y = _zoomIn.Height + 4,
+            Width = 24,
+            Height = 24,
+            Anchor = UiAnchor.RightTop,
+            OnClick = () => ZoomHandle(-1)
+        });
+        AddChild(_zoomOut);
+
+        _arrow = new ObjectRect(new ObjectRectConfig {
+            Texture = TextureInfo.FromGameAtlas("lofiInterface", 54),
+            Padding = false,
+            X = MapSize / 2,
+            Y = MapSize / 2,
+            Width = 9,
+            Height = 36,
+            Anchor = UiAnchor.Middle
+        });
+        _arrow.ColorTransformation = new ColorTransform(0f, 0f, 1f, 1f);
+        AddChild(_arrow);
+    }
+
+    private void UpdateButtons() {
+        if (_zoom <= 1f) {
+            _zoomIn.ColorTransformation = ColorTransform.Default;
+            _zoomOut.ColorTransformation = ColorTransform.Dark;
+        } else if (_zoom >= _maxZoom) {
+            _zoomIn.ColorTransformation = ColorTransform.Dark;
+            _zoomOut.ColorTransformation = ColorTransform.Default;
+        } else {
+            _zoomIn.ColorTransformation = ColorTransform.Default;
+            _zoomOut.ColorTransformation = ColorTransform.Default;
+        }
     }
 
     protected override void ResizeBackBuffer() {
@@ -53,6 +111,7 @@ public sealed class Minimap : Sprite {
     private void ZoomHandle(int zoom) {
         _zoom += _zoomStep * zoom;
         _zoom = Math.Max(1, Math.Min(_maxZoom, _zoom));
+        UpdateButtons();
     }
     
     private void OnMapEnter(int w, int h) {
@@ -66,6 +125,8 @@ public sealed class Minimap : Sprite {
     
     protected override void OnUpdate(GameTime time) {
         if (Map.LocalPlayer == null) return;
+
+        _arrow.Rotation = -Camera.CameraAngle;
 
         var pos = Map.LocalPlayer.Position;
         var size = _size / _zoom / 2.0f;

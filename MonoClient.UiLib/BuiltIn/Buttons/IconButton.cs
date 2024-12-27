@@ -10,6 +10,7 @@ namespace MonoClient.UiLib.BuiltIn.Buttons;
 public struct IconButtonConfig {
 
     public TextureInfo Texture;
+    public bool Padding = true;
     public int X = 0;
     public int Y = 0;
     public int Width = 0;
@@ -44,6 +45,9 @@ public sealed class IconButton : Sprite {
         Alpha = config.Alpha;
         SetAnchor(config.Anchor);
         _onClick = config.OnClick;
+        
+        if (!config.Padding)
+            _texture.RemovePadding();
 
         MouseEnabled = true;
         AddEventListener(MouseEventId.LeftDown, OnLeftDown);

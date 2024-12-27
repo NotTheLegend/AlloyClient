@@ -142,6 +142,8 @@ public class Player : Entity {
 
     public bool HasBackPack;
 
+    public bool IsFellowGuild;
+
     #endregion
 
     protected override RenderBase GetRenderType(ushort type) {

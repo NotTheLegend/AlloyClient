@@ -8,6 +8,7 @@ namespace MonoClient.UiLib.BuiltIn;
 
 public struct ObjectRectConfig {
     public TextureInfo Texture;
+    public bool Padding = true;
     public int X = 0;
     public int Y = 0;
     public int Width = 0;
@@ -41,6 +42,9 @@ public class ObjectRect : Sprite {
 
         _texture = config.Texture.AtlasData;
         TextureId = config.Texture.TextureType;
+        
+        if (!config.Padding)
+            _texture.RemovePadding();
 
         ResizeBackBuffer();
         FillData();

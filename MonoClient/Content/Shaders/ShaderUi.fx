@@ -318,7 +318,10 @@ float4 MainPixel(VertexOutput input) : COLOR {
 
     int4 add = input.ColorTransform / 1000;
     float4 mult = input.ColorTransform - add * 1000;
-    pixel *= mult;
+    
+    pixel = clamp(pixel, float4(0, 0, 0, 0), float4(1, 1, 1, 1));
+    
+    pixel = mult * pixel;
     pixel += add / 255.0;
 
     pixel.a *= input.Info.y;

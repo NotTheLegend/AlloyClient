@@ -314,6 +314,7 @@ public static class Map {
         }
 
         LocalPlayer = player;
+        MinimapLayer.SetFocus(player);
         OnPlayerUpdate.Dispatch(player);
     }
 }

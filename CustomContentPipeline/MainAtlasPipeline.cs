@@ -128,6 +128,8 @@ unsafe class MainAtlasProcessor : ContentProcessor<string, MainAtlasResult> {
         AddImage("lofiEnvironment3", "lofienvironment3.png", 8, 8);
         AddImage("redLootBag", "redlootbag.png", 8, 8);
         AddImage("lofiInterfaceBig", "lofiinterfacebig.png", 16, 16);
+        AddImage("lofiInterface", "lofiinterface.png", 8, 8);
+        AddImage("lofiInterface2", "lofiinterface2.png", 8, 8);
         AddImage("lofiObj", "lofiobj.png", 8, 8);
         AddImage("lofiObj2", "lofiobj2.png", 8, 8);
         AddImage("lofiObj3", "lofiobj3.png", 8, 8);

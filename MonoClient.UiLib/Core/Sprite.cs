@@ -66,6 +66,8 @@ public partial class Sprite {
         }
     }
 
+    public float Rotation = 0;
+
     public Sprite Parent => _parent;
 
     public UiAnchor Anchor { get; private set; } = UiAnchor.LeftTop;
@@ -154,6 +156,8 @@ public partial class Sprite {
     private int _trueX;
     
     private int _trueY;
+
+    private float _trueRotation;
 
     private float _trueAlpha;
 
@@ -283,6 +287,7 @@ public partial class Sprite {
         var ta = _alpha;
         var ts = Scale;
         var tt = ColorTransformation;
+        var tr = Rotation;
         var test = false;
         
 
@@ -317,6 +322,7 @@ public partial class Sprite {
             ta *= _parent._trueAlpha;
             ts *= _parent._trueScale;
             tt *= _parent._trueTransform;
+            tr += _parent.Rotation;
             parentInteract = _parent._canInteract;
             
             if (_parent.EnableClipRect || _parent.ClipChildren) {
@@ -333,6 +339,7 @@ public partial class Sprite {
         _trueAlpha = ta;
         _trueScale = ts;
         _trueTransform = tt;
+        _trueRotation = tr;
 
         if (TooltipMode) {
             _trueX = Math.Clamp(_trueX, 0, UiRender.Screen.X - Width);
@@ -409,7 +416,7 @@ public partial class Sprite {
         numVertices++;
         for (var i = 0; i < numVertices; i++) {
             var color = VertexData[i].Color;
-            _vertices[_vertexCount + i] = new VertexDataUi(VertexData[i].Position.Transform(_trueScale, _trueX, _trueY), color.A == 0f ? Color : color, ColorSecondary, _info, VertexData[i].UV, _scissor, Extra1, Extra2, _trueTransform);
+            _vertices[_vertexCount + i] = new VertexDataUi(VertexData[i].Position.Transform(_trueScale, _trueRotation, _trueX, _trueY, _anchorX, _anchorY), color.A == 0f ? Color : color, ColorSecondary, _info, VertexData[i].UV, _scissor, Extra1, Extra2, _trueTransform);
         }
 
         _vertexCount += numVertices;

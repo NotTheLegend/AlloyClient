@@ -44,8 +44,14 @@ internal static class InternalUtils {
         return false;
     }
     
-    internal static Vector2 Transform(this Vector2 pos, Vector2 scale, float tx, float ty) {
-        return new Vector2(pos.X * scale.X + tx, pos.Y * scale.Y + ty);
+    internal static Vector2 Transform(this Vector2 pos, Vector2 scale, float rotation, float tx, float ty, int ax, int ay) {
+        var x = pos.X + ax;
+        var y = pos.Y + ay;
+
+        var x1 = (x * MathF.Cos(rotation) - y * MathF.Sin(rotation) - ax) * scale.X + tx;
+        var y1 = (x * MathF.Sin(rotation) + y * MathF.Cos(rotation) - ay) * scale.Y + ty;
+        
+        return new Vector2(x1, y1);
     }
 
     internal static void Hex(ref this Color color, uint rgb, float alpha = 1.0f) {
