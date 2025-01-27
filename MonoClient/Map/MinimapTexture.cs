@@ -2,9 +2,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MonoClient.Screens.Game.Components.Hud;
+namespace MonoClient;
 
-public static class MinimapData {
+public static class MinimapTexture {
     
     private static Texture2D _texture;
     private static Color[] _data;

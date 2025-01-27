@@ -73,7 +73,7 @@ public class Main : Game {
     protected override void LoadContent() {
         Atlas = ContentManager.Load<MainAtlas>("atlas");
         UiAtlas = ContentManager.Load<UiAtlas>("AtlasUi");
-        MinimapData.Init(GraphicsDevice, out var mapTexture);
+        MinimapTexture.Init(GraphicsDevice, out var mapTexture);
         
         ModelData.Load();
         

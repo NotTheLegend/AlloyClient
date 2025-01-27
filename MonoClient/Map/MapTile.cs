@@ -44,9 +44,9 @@ public class MapTile(int x, int y, bool isMapEditor = false) {
 
     private void SetMinimapColor(Entity entity) {
         if (entity != null && entity.Properties.Static && entity.Properties.OccupySquare && !entity.Properties.NoMiniMap) {
-            MinimapData.UncoverTile(X, Y, entity.GetDominateColor());
+            MinimapTexture.UncoverTile(X, Y, entity.GetDominateColor());
         } else {
-            MinimapData.UncoverTile(X, Y, _color);
+            MinimapTexture.UncoverTile(X, Y, _color);
         }
     }
 

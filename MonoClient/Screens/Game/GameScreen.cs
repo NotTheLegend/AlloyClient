@@ -49,6 +49,6 @@ public sealed class GameScreen : Screen {
     public override void Draw(GameTime gameTime) {
         _frames++;
         Map.Draw(gameTime);
-        MinimapData.PreDrawUpdate();
+        MinimapTexture.PreDrawUpdate();
     }
 }

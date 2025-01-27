@@ -6,6 +6,7 @@ using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Utils.Signals;
 
@@ -25,6 +26,8 @@ public sealed class Minimap : Sprite {
     private float _maxZoom;
     private float _zoomStep;
     private float _size;
+
+    private bool _mouseOver;
 
     private readonly MinimapLayer _layer;
 
@@ -80,6 +83,9 @@ public sealed class Minimap : Sprite {
         });
         _arrow.ColorTransformation = new ColorTransform(0f, 0f, 1f, 1f);
         AddChild(_arrow);
+        
+        AddEventListener(MouseEventId.MouseOver, () => _mouseOver = true);
+        AddEventListener(MouseEventId.MouseOut, () => _mouseOver = false);
     }
 
     private void UpdateButtons() {
@@ -120,7 +126,7 @@ public sealed class Minimap : Sprite {
         _zoomStep = size / Settings.DefaultScreenWidth ;
         _size = size;
 
-        MinimapData.ClearData();
+        MinimapTexture.ClearData();
     }
     
     protected override void OnUpdate(GameTime time) {
