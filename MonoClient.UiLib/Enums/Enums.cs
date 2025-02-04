@@ -1,4 +1,6 @@
-﻿namespace MonoClient.UiLib.Enums;
+﻿using System;
+
+namespace MonoClient.UiLib.Enums;
 
 public enum UiAnchor : byte {
     LeftTop = 0,
@@ -31,4 +33,18 @@ public enum HitboxType : byte {
     Ellipse,
     Complex,
     Custom
+}
+
+[Flags]
+public enum CutEdges : uint {
+    None = 0,
+    TopLeft = 1 << 1,
+    TopRight = 1 << 2,
+    BottomRight = 1 << 3,
+    BottomLeft = 1 << 4,
+    Left = TopLeft | BottomLeft,
+    Right = TopRight | BottomRight,
+    Top = TopLeft | TopRight,
+    Bottom = BottomLeft | BottomRight,
+    All = Top | Bottom
 }

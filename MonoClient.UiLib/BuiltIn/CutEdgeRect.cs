@@ -11,6 +11,7 @@ public struct CutEdgeConfig {
     public int Height = 0;
     public int CutX = 0;
     public int CutY = 0;
+    public CutEdges Cuts = CutEdges.All;
     public uint Color = 0x000000;
     public float Alpha = 1.0f;
     public UiAnchor Anchor = UiAnchor.LeftTop;
@@ -27,6 +28,7 @@ public sealed class CutEdgeRect : Sprite {
 
     private int _cx;
     private int _cy;
+    private CutEdges _cuts;
 
     public CutEdgeRect(CutEdgeConfig config) {
         X = config.X;
@@ -35,6 +37,7 @@ public sealed class CutEdgeRect : Sprite {
         _h = config.Height;
         _cx = config.CutX;
         _cy = config.CutY;
+        _cuts = config.Cuts;
         SetColor(config.Color);
         Alpha = config.Alpha;
         SetBaseDimensions(_w, _h);
@@ -69,7 +72,7 @@ public sealed class CutEdgeRect : Sprite {
 
     private void FillData() {
         // Top Left
-        VertexData[0] = new VertexUi(new Vector2(_cx / 2f, _cy / 2f));
+        VertexData[0] = new VertexUi((_cuts & CutEdges.TopLeft) != 0 ? new Vector2(_cx / 2f, _cy / 2f) : new Vector2(0f, 0f));
         VertexData[1] = new VertexUi(new Vector2(_cx, 0f));
         VertexData[2] = new VertexUi(new Vector2(_cx, _cy));
         VertexData[3] = new VertexUi(new Vector2(0f, _cy));
@@ -79,7 +82,7 @@ public sealed class CutEdgeRect : Sprite {
         VertexData[6] = new VertexUi(new Vector2(_w - _cx, _cy));
         VertexData[7] = new VertexUi(new Vector2(_cx, _cy));
         // Top Right
-        VertexData[8] = new VertexUi(new Vector2(_w - _cx / 2f, _cy / 2f));
+        VertexData[8] = new VertexUi((_cuts & CutEdges.TopRight) != 0 ? new Vector2(_w - _cx / 2f, _cy / 2f) : new Vector2(_w, 0f));
         VertexData[9] = new VertexUi(new Vector2(_w, _cy));
         VertexData[10] = new VertexUi(new Vector2(_w - _cx, _cy));
         VertexData[11] = new VertexUi(new Vector2(_w - _cx, 0f));
@@ -99,7 +102,7 @@ public sealed class CutEdgeRect : Sprite {
         VertexData[22] = new VertexUi(new Vector2(_w, _h - _cy));
         VertexData[23] = new VertexUi(new Vector2(_w - _cx, _h - _cy));
         // Bottom Left
-        VertexData[24] = new VertexUi(new Vector2(_cx / 2f, _h - _cy / 2f));
+        VertexData[24] = new VertexUi((_cuts & CutEdges.BottomLeft) != 0 ? new Vector2(_cx / 2f, _h - _cy / 2f) : new Vector2(0f, _h));
         VertexData[25] = new VertexUi(new Vector2(0, _h - _cy));
         VertexData[26] = new VertexUi(new Vector2(_cx, _h - _cy));
         VertexData[27] = new VertexUi(new Vector2(_cx, _h));
@@ -109,7 +112,7 @@ public sealed class CutEdgeRect : Sprite {
         VertexData[30] = new VertexUi(new Vector2(_w - _cx, _h));
         VertexData[31] = new VertexUi(new Vector2(_cx, _h));
         // Bottom Right
-        VertexData[32] = new VertexUi(new Vector2(_w - _cx / 2f, _h - _cy / 2f));
+        VertexData[32] = new VertexUi((_cuts & CutEdges.BottomRight) != 0 ? new Vector2(_w - _cx / 2f, _h - _cy / 2f) : new Vector2(_w, _h));
         VertexData[33] = new VertexUi(new Vector2(_w - _cx, _h));
         VertexData[34] = new VertexUi(new Vector2(_w - _cx, _h - _cy));
         VertexData[35] = new VertexUi(new Vector2(_w, _h - _cy));
