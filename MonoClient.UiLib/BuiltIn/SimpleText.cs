@@ -44,7 +44,7 @@ public sealed class SimpleText : Sprite {
         X = config.X;
         Y = config.Y;
         Alpha = config.Alpha;
-        SetOutlineSize(config.OutlineThickness);
+        _outlineThickness = _font.ValidateOutlineSize(config.OutlineThickness);
         SetColor(config.Color);
         SetColorSecondary(config.OutlineColor);
         SetAnchor(config.Anchor);
