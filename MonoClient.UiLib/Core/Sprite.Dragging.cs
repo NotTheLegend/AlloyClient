@@ -62,7 +62,7 @@ public partial class Sprite {
     }
 
     private void DropCheck(IntVector2 pos, ref Sprite target) {
-        if (!IsInBounds(pos) || this == _dragSprite)
+        if (!Visible || !IsInBounds(pos) || this == _dragSprite)
             return;
         
         if (_dropType.IsInstanceOfType(this))
