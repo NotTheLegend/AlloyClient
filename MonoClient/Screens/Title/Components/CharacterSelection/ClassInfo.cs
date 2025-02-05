@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoClient.Assets.Libraries;
+using MonoClient.Objects.Util.ItemDatas;
 using MonoClient.Screens.Game.Components.Hud.Inventory;
 using MonoClient.State;
 using MonoClient.UiLib;
@@ -22,7 +23,7 @@ public class ClassInfo : Container {
     private ClassRect _selectedClass;
     private ColorRect _background;
 
-    private List<InventoryTile> _classEquipment = [];
+    private EquippedGrid _classEquipment;
     
     public ClassInfo() {
         _background = new ColorRect(new ColorRectConfig {
@@ -95,18 +96,14 @@ public class ClassInfo : Container {
         
         _background.AddChild(_characterRect);
         _background.AddChild(_className);
-        
-        for (var i = 0; i < 4; i++) {
-            var tile = new InventoryTile(ObjectLibrary.CreateItem(props.Equipment[i] ?? 0), false) {
-                X = _characterRect.X - 52 + i * 52,
-                Y = 200,
-                Slot = (byte)i,
-                Owner = null
-            };
-            
-            _classEquipment.Add(tile);
-            _background.AddChild(tile);
-        }
+
+        var startingItems = new [] { ObjectLibrary.CreateItem(props.Equipment[0] ?? 0),ObjectLibrary.CreateItem(props.Equipment[1] ?? 0),ObjectLibrary.CreateItem(props.Equipment[2] ?? 0),ObjectLibrary.CreateItem(props.Equipment[3] ?? 0),};
+        var equipped = new EquippedGrid(startingItems, props.SlotTypes);
+        equipped.X = _characterRect.X - 52;
+        equipped.Y = 200;
+
+        _classEquipment = equipped;
+        _background.AddChild(_classEquipment);
         
         foreach (var item in ObjectLibrary.TypeToSkins.Where(item => item.Item1 == _selectedClass.Type)) {
             Logger.Info("skin added to list: " + item.Item2);
@@ -114,7 +111,7 @@ public class ClassInfo : Container {
     }
 
     private void ClearChildren() {
-        _classEquipment.ForEach(x => _background.RemoveChild(x));
+       _background.RemoveChild(_classEquipment);
         
         _background.RemoveChild(_characterRect);
         _background.RemoveChild(_className);

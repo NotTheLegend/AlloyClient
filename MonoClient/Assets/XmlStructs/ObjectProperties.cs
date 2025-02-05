@@ -48,6 +48,8 @@ public class ObjectProperties {
     
     public readonly ushort PlayerClassType;
     public readonly bool Skin;
+
+    public readonly bool Container;
     
     public readonly List<int> SlotTypes;
     public readonly List<ushort?> Equipment;
@@ -108,6 +110,8 @@ public class ObjectProperties {
                 SlotTypes.Add(int.Parse(slot));
             }
         }
+
+        Container = e.HasElement("Container");
 
         Equipment = [];
         var equipment = e.GetValue<string>("Equipment");

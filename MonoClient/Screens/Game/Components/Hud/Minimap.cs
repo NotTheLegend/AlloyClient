@@ -15,7 +15,7 @@ namespace MonoClient.Screens.Game.Components.Hud;
 public sealed class Minimap : Sprite {
 
     public static readonly SingleSignal<int> OnZoom = new();
-    public static readonly SingleSignal<int, int> OnNewMap = new();
+    public static readonly SingleSignal<int, int, bool> OnNewMap = new();
 
     private static readonly ColorTransform DefaultCt = new (1f, 1f, 1f, 1f);
     private static readonly ColorTransform FadeCt = new (0.5f, 0.5f, 0.5f, 1f);
@@ -120,13 +120,14 @@ public sealed class Minimap : Sprite {
         UpdateButtons();
     }
     
-    private void OnMapEnter(int w, int h) {
+    private void OnMapEnter(int w, int h, bool reset) {
         var size = (float)Math.Max(w, h);
         _maxZoom = size / 32;
         _zoomStep = size / Settings.DefaultScreenWidth ;
         _size = size;
 
-        MinimapTexture.ClearData();
+        if (reset)
+            MinimapTexture.ClearData();
     }
     
     protected override void OnUpdate(GameTime time) {

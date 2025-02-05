@@ -67,7 +67,7 @@ public static class Map {
 
         _tiles = new MapTile[width + 1, height + 1];
         
-        Minimap.OnNewMap.Dispatch(width, height);
+        Minimap.OnNewMap.Dispatch(width, height, true);
     }
 
     public static void Update(double time, double dt) {
@@ -315,7 +315,13 @@ public static class Map {
 
         LocalPlayer = player;
         MinimapLayer.SetFocus(player);
+        GameSprite.Hud.Create();
         OnPlayerUpdate.Dispatch(player);
+        Minimap.OnNewMap.Dispatch(Width, Height, false);
+
+        for (var i = 0; i < player.Equipment.Length; i++) {
+            player.InventoryUpdate.Dispatch(i);
+        }
     }
 }
 

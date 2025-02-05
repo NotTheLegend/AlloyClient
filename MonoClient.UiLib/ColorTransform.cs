@@ -8,6 +8,7 @@ public struct ColorTransform {
     public static ColorTransform Bright2 = new(40, 40, 40, 0);
     public static ColorTransform VeryBlue = new(0.3f, 0.3f, 1, 1, 0, 0, 100, 0);
     public static ColorTransform Dark = new(0.6f, 0.6f, 0.6f, 1);
+    public static ColorTransform Dim = new(0.4f, 0.4f, 0.4f, 1);
     
     // Stars
     public static ColorTransform HalfTransparent = new(1f, 1f, 1f, 0.5f);

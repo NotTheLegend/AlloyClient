@@ -7,7 +7,7 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace MonoClient.Ui.Components.Tooltips;
 
-public class EquipmentToolTip : Tooltip 
+public sealed class EquipmentToolTip : Tooltip 
 {
     private ItemDesc Item;
 

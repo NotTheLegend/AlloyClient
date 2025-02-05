@@ -4,7 +4,7 @@ using MonoClient.UiLib.Core;
 
 namespace MonoClient.Utils;
 
-public static class Utils {
+public static class SpriteUtils {
     
     public static Sprite GetTypeFromList(this Sprite sprite, Type[] list) {
         var obj = sprite;

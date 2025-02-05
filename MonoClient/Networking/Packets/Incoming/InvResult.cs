@@ -19,8 +19,8 @@ public class InvResult : IncomingPacket<InvResult> {
         if (Result < 1) 
             return;
         
-        InventoryGrid.Initialized = false;
-        ContainerGrid.Initialized = false;
+        //OldInventoryGrid.Initialized = false;
+        //ContainerGrid.Initialized = false;
     }
 
     public override string ToString() {

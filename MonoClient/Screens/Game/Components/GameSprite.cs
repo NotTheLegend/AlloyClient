@@ -14,16 +14,16 @@ namespace MonoClient.Screens.Game.Components;
 
 public sealed class GameSprite : Sprite {
 
-    private readonly HudView _hud;
+    public readonly HudView Hud;
     private readonly ChatView _chat;
 
     public GameSprite() {
         AddChild(new ChatLayer());
         AddChild(new NotificationLayer());
         
-        _hud = new HudView();
-        _hud.X = Settings.DefaultScreenWidth;
-        AddChild(_hud);
+        Hud = new HudView();
+        Hud.X = Settings.DefaultScreenWidth;
+        AddChild(Hud);
 
         _chat = new ChatView();
         AddChild(_chat);
@@ -32,6 +32,6 @@ public sealed class GameSprite : Sprite {
     }
 
     public void Update() {
-        _hud.Update();
+        Hud.Update();
     }
 }

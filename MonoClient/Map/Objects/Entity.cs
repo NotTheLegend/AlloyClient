@@ -19,6 +19,7 @@ using MonoClient.ParticleEffects;
 using MonoClient.State;
 using MonoClient.State.Input;
 using MonoClient.Ui.Character;
+using MonoClient.UiLib.Utils.Signals;
 using MonoClient.Utils;
 using Newtonsoft.Json;
 
@@ -31,6 +32,8 @@ public class Entity {
 
     public int ObjectId;
     public ushort Type;
+    
+    public Signal<int> InventoryUpdate = new();
 
     public float SpeechOffset;
     public Vector2 Position;
@@ -360,6 +363,7 @@ public class Entity {
                     else if (Equipment[index] == null || (Equipment[index] != null && stat.Value != ((ItemDesc) Equipment[index]).ObjectType)) {
                         Equipment[index] = ObjectLibrary.CreateItem((ushort)stat.Value);
                     }
+                    InventoryUpdate.Dispatch(index);
                     break;
                 case StatsType.Effects:
                     ConditionEffectBatches[ConditionEffectUtil.FirstBatch] = (uint)stat.Value;
@@ -407,6 +411,7 @@ public class Entity {
                     else if (Equipment[index] == null || (Equipment[index] != null && stat.Value != ((ItemDesc) Equipment[index]).ObjectType)) {
                         Equipment[index] = ObjectLibrary.CreateItem((ushort)stat.Value);
                     }
+                    InventoryUpdate.Dispatch(index);
                     break;
                 case StatsType.HasBackpack:
                     //todo

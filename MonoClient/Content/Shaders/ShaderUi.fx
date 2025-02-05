@@ -313,7 +313,7 @@ float4 MainPixel(VertexOutput input) : COLOR {
         pixel = RenderEllipse(input);
     }
 
-    if (input.Color.a > 0 && type != IdColor && type != IdText && type != IdTextBold)
+    if (input.Color.a > 0 && type != IdColor && type != IdText && type != IdTextBold && type != IdEllipse)
         pixel *= input.Color;
 
     int4 add = input.ColorTransform / 1000;

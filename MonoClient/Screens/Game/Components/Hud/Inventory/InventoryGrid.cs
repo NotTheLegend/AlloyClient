@@ -1,88 +1,47 @@
-﻿using System.Collections.Generic;
-using MonoClient.Objects.Util.ItemDatas;
+﻿using MonoClient.Objects;
+using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Screens.Game.Components.Hud.Inventory;
 
-public class InventoryGrid : Sprite {
-    public static bool Initialized;
-    public bool Dragging;
-    
-    public static List<InventoryTile> InventoryTiles;
-    public ItemDesc[] CurrentEquipment = [];
-    
-    public void CreateGrid() {
-        if (Map.LocalPlayer == null)
-            return;
+public sealed class InventoryGrid : Sprite {
+
+    private const int NumSlots = 8;
+
+    private static readonly CutEdges[] Cuts = [CutEdges.TopLeft, CutEdges.None, CutEdges.None, CutEdges.TopRight, CutEdges.BottomLeft, CutEdges.None, CutEdges.None, CutEdges.BottomRight];
+    private readonly ItemTile[] _tiles = new ItemTile[NumSlots];
+
+    private readonly Entity _owner;
+
+    private readonly int _offset;
+
+    private readonly bool _interactive;
+
+    public InventoryGrid(Entity owner, int offset) {
+        _owner = owner;
+        _offset = offset;
+        _interactive = owner == Map.LocalPlayer || owner.Properties.Container;
         
-        CurrentEquipment = (ItemDesc[])Map.LocalPlayer.Equipment.Clone();
-        InventoryTiles = [];
+        var bg = new CutEdgeRect(new CutEdgeConfig { Width = 218, Height = 110, CutX = 6, CutY = 6, Cuts = CutEdges.All, Color = 0x676767 });
+        AddChild(bg);
         
-        // equipment
-        for (var i = 0; i < 4; i++) {
-            var tile = new InventoryTile(Map.LocalPlayer.Equipment[i]) {
-                X = i * 52,
-                Slot = (byte)i,
-                Owner = Map.LocalPlayer
-            };
-            
-            InventoryTiles.Add(tile);
-            AddChild(tile);
+        _owner.InventoryUpdate.Add(OnInventoryChange);
+
+        for (var i = 0; i < NumSlots; i++) {
+            var slot = new ItemTile(owner, (byte)(i + offset), _interactive, Cuts[i]);
+            slot.SetTileNumber(i + 1);
+            slot.X = i % 4 * (50 + 4) + 3;
+            slot.Y = i / 4 * (50 + 4) + 3;
+            AddChild(slot);
+            _tiles[i] = slot;
         }
         
-        // inventory
-        for (int row = 0; row < 2; row++) {
-            for (int col = 0; col < 4; col++) {
-                int index = row * 4 + col;
-
-                var tile = new InventoryTile(Map.LocalPlayer.Equipment[index + 4]) {
-                    X = col * 52,
-                    Y = 60 + row * 52,
-                    Slot = (byte)(index + 4),
-                    Owner = Map.LocalPlayer
-                };
-
-                InventoryTiles.Add(tile);
-                AddChild(tile);
-            }
-        }
-
-        Initialized = true;
-    }
-
-    public void Update() {
-        if (!Initialized || Map.LocalPlayer == null)
-            return;
-        
-        for (var i = 0; i < Map.LocalPlayer.Equipment.Length; i++) {
-            if (CurrentEquipment[i] == Map.LocalPlayer.Equipment[i]) 
-                continue;
-
-            RefreshTiles();
-            break;
-        }
-        
-        if (InventoryTiles == null)
-            return;
-        
-        /*foreach (var tile in InventoryTiles) {
-
-            if (tile.Dragging) {
-                Dragging = true;
-                PrioritizeChild(tile);
-
-                return;
-            }
-
-            Dragging = false;
-        }*/
     }
     
-    public void RefreshTiles() {
-        InventoryTiles.Clear();
-        InventoryTiles = null;
-            
-        RemoveAllChildren();
-        CreateGrid();
+    private void OnInventoryChange(int slot) {
+        if (slot < _offset || slot >= _offset + NumSlots) return;
+        _tiles[slot - _offset].SetItem(_owner.Equipment[slot]);
     }
+    
 }

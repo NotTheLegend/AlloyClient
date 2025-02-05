@@ -9,19 +9,22 @@ namespace MonoClient.Screens.Game.Components.Hud;
 
 public sealed class HudView : Sprite {
 
+    private bool _init = false;
+
     private Minimap _minimap;
     private CharacterDetails _details;
     private CharacterBars _bars;
-    
+
+    private EquippedGrid _equippedGrid;
     private InventoryGrid _inventoryGrid;
+    
     private ContainerGrid _containerGrid;
 
     public HudView() {
         SetAnchor(UiAnchor.RightTop);
-        Create();
     }
     
-    private void Create() {
+    public void Create() {
         var bg = new ColorRect(new ColorRectConfig { Width = 256, Height = Settings.DefaultScreenHeight, Color = 0x363636 });
         AddChild(bg);
 
@@ -40,24 +43,30 @@ public sealed class HudView : Sprite {
         _bars.Y = _details.Y + _details.Height + 10;
         AddChild(_bars);
 
-        _inventoryGrid = new InventoryGrid {
-            X = 10,
-            Y = _bars.Y + _bars.Height * 4 + 10
-        };
-        InventoryGrid.Initialized = false;
+        _equippedGrid = new EquippedGrid(Map.LocalPlayer);
+        _equippedGrid.X = 10;
+        _equippedGrid.Y = _bars.Y + _bars.Height * 4 + 10;
+        AddChild(_equippedGrid);
+
+        _inventoryGrid = new InventoryGrid(Map.LocalPlayer, 4);
+        _inventoryGrid.X = 10;
+        _inventoryGrid.Y = _equippedGrid.Y + _equippedGrid.Height + 5;
         AddChild(_inventoryGrid);
         
-        _containerGrid = new ContainerGrid(null) {
+        _containerGrid = new ContainerGrid() {
             X = 10,
             Y = _bars.Y + _bars.Height * 9 + 10,
             Visible = false
         };
-        ContainerGrid.Initialized = false;
-        AddChild(_containerGrid);
+        //ContainerGrid.Initialized = false;
+        //AddChild(_containerGrid);
     }
 
     public void Update() {
+        if (!_init) return;
+        
         _bars.Update();
+        _equippedGrid.UpdateAbilitySlot();
         ManageInventory();
 
         var closestEntity = EntityUtils.FindClosestSpecialInRadius(Map.LocalPlayer, Map.Entities.Values, 1f);
@@ -67,29 +76,21 @@ public sealed class HudView : Sprite {
         }
 
         // need to re-create instead of hiding ideally
-        switch (closestEntity.Properties.Class) {
-            case "Container":
-                _containerGrid.SetOwner(closestEntity);
-                _containerGrid.Visible = true;
-                break;
-        }
+        //switch (closestEntity.Properties.Class) {
+        //    case "Container":
+        //        _containerGrid.SetOwner(closestEntity);
+        //        _containerGrid.Visible = true;
+        //        break;
+        //}
     }
 
     private void ManageInventory() {
-        if (!InventoryGrid.Initialized) {
-            _inventoryGrid.CreateGrid();
-        }
-        _inventoryGrid.Update();
-        
-        if (!ContainerGrid.Initialized) {
+       /* if (!ContainerGrid.Initialized) {
             _containerGrid.CreateGrid();
         }
         _containerGrid.Update();
         
-        if (_inventoryGrid.Dragging)
-            PrioritizeChild(_inventoryGrid);
-        
         if (_containerGrid.Dragging)
-            PrioritizeChild(_containerGrid);
+            PrioritizeChild(_containerGrid);*/
     }
 }

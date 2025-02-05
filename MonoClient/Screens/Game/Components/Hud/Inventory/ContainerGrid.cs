@@ -7,7 +7,7 @@ using MonoClient.UiLib.Core;
 namespace MonoClient.Screens.Game.Components.Hud.Inventory;
 
 public class ContainerGrid : Sprite {
-    public Entity GridOwner;
+    /*public Entity GridOwner;
     
     public static bool Initialized;
     public bool Dragging;
@@ -68,7 +68,7 @@ public class ContainerGrid : Sprite {
             }
 
             Dragging = false;
-        }*/
+        }
     }
     
     public void RefreshTiles() {
@@ -88,5 +88,5 @@ public class ContainerGrid : Sprite {
         }
 
         GridOwner = entity;
-    }
+    }*/
 }
