@@ -39,6 +39,7 @@ public static class Map {
     private static MapTile[,] _tiles;
     public static readonly RenderStorage EntityStorage = new();
     public static readonly Dictionary<int, Entity> Entities = new(); // todo: add players to separate dic for minimap prio
+    public static readonly Dictionary<int, Entity> InteractiveObjects = new();
 
     private static readonly List<Projectile> Projectiles = [];
 
@@ -67,7 +68,7 @@ public static class Map {
 
         _tiles = new MapTile[width + 1, height + 1];
         
-        Minimap.OnNewMap.Dispatch(width, height, true);
+        Minimap.OnNewMap.Dispatch(width, height);
     }
 
     public static void Update(double time, double dt) {
@@ -243,12 +244,17 @@ public static class Map {
 
         EntityStorage.Add(en);
 
+        if (Entity.IsInteractiveObject(en))
+            InteractiveObjects.TryAdd(en.ObjectId, en);
+
         en.OnAddedToMap(position);
     }
 
     public static void RemoveEntity(int id) {
         if (!Entities.Remove(id, out var en)) 
             return;
+
+        InteractiveObjects.Remove(id);
 
         EntityStorage.Remove(en);
         en.OnRemovedFromMap();
@@ -315,13 +321,8 @@ public static class Map {
 
         LocalPlayer = player;
         MinimapLayer.SetFocus(player);
-        GameSprite.Hud.Create();
+        GameSprite.Hud.CreatePlayerDependentAssets();
         OnPlayerUpdate.Dispatch(player);
-        Minimap.OnNewMap.Dispatch(Width, Height, false);
-
-        for (var i = 0; i < player.Equipment.Length; i++) {
-            player.InventoryUpdate.Dispatch(i);
-        }
     }
 }
 

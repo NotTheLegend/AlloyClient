@@ -30,6 +30,8 @@ public static class InputHandler {
 
     public static readonly SingleSignal OnChatKey = new();
     public static readonly SingleSignal<string> OnChatOpen = new();
+    
+    public static readonly SingleSignal OnInteract = new();
 
     //todo: add keyboard events to sprite and swap these to that system
     public static readonly SingleSignal OnChatHistoryUp = new();
@@ -127,18 +129,8 @@ public static class InputHandler {
             if (Reconnecting) {
                 return;
             }
-
-            var entities = EntityUtils.FindEntitiesInRadius(Map.LocalPlayer, Map.Entities.Values, 2f);
-
-            foreach (Entity en in entities) {
-                if (en.Properties.Class == "Portal") {
-                    Reconnecting = true;
-
-                    var portal = UsePortal.CreatePacket();
-                    portal.ObjectId = en.ObjectId;
-                    Client.QueuePacket(portal);
-                }
-            }
+            
+            OnInteract.Dispatch();
         }
 
         if (state.IsPressed(Settings.Walk)) {
@@ -221,10 +213,10 @@ public static class InputHandler {
         if ((_inputBlockers & (InputBlockers.Chat | InputBlockers.Dialog)) != 0) return;
 
         if (state.IsToggled(Settings.Options, ref _prevInputState)) {
-            if (PanelManager.CurrentPanelIs(OptionsView.Panel)) {
-                PanelManager.ClosePanel();
+            if (OverlayManager.CurrentOverlayIs(OptionsView.Panel)) {
+                OverlayManager.CloseOverlay();
             } else {
-                PanelManager.Enqueue(OptionsView.Panel);
+                OverlayManager.Enqueue(OptionsView.Panel);
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿using MonoClient.Screens.Game.Components.Hud.Inventory;
+﻿using System;
 
 namespace MonoClient.Networking.Packets.Incoming;
 
@@ -16,11 +16,8 @@ public class InvResult : IncomingPacket<InvResult> {
     }
 
     public override void Handle() {
-        if (Result < 1) 
-            return;
-        
-        //OldInventoryGrid.Initialized = false;
-        //ContainerGrid.Initialized = false;
+        Console.WriteLine($"[InvResult]: {Result}");
+        //todo
     }
 
     public override string ToString() {

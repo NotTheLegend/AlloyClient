@@ -1,4 +1,5 @@
-﻿using MonoClient.Objects;
+﻿using System;
+using MonoClient.Objects;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
@@ -18,10 +19,12 @@ public sealed class InventoryGrid : Sprite {
 
     private readonly bool _interactive;
 
-    public InventoryGrid(Entity owner, int offset) {
+    public InventoryGrid(Entity owner, int offset, bool oneWay = false) {
         _owner = owner;
         _offset = offset;
         _interactive = owner == Map.LocalPlayer || owner.Properties.Container;
+        
+        //todo: one way chest logic
         
         var bg = new CutEdgeRect(new CutEdgeConfig { Width = 218, Height = 110, CutX = 6, CutY = 6, Cuts = CutEdges.All, Color = 0x676767 });
         AddChild(bg);
@@ -40,6 +43,7 @@ public sealed class InventoryGrid : Sprite {
     }
     
     private void OnInventoryChange(int slot) {
+        Console.WriteLine($"{slot} | {_offset} - {_offset + NumSlots}");
         if (slot < _offset || slot >= _offset + NumSlots) return;
         _tiles[slot - _offset].SetItem(_owner.Equipment[slot]);
     }

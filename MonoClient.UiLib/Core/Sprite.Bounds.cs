@@ -39,11 +39,11 @@ public partial class Sprite {
     
     private bool ComplexHitbox(IntVector2 pos) {
         var len = Indices.Length;
-        
+
         for (var i = 0; i < len; i += 3) {
-            var t1 = VertexData[i + 0].Position;
-            var t2 = VertexData[i + 1].Position;
-            var t3 = VertexData[i + 2].Position;
+            var t1 = VertexData[Indices[i + 0]].Position;
+            var t2 = VertexData[Indices[i + 1]].Position;
+            var t3 = VertexData[Indices[i + 2]].Position;
 
             var d1 = (pos.X - t2.X) * (t1.Y - t2.Y) - (t1.X - t2.X) * (pos.Y - t2.Y);
             var d2 = (pos.X - t3.X) * (t2.Y - t3.Y) - (t2.X - t3.X) * (pos.Y - t3.Y);

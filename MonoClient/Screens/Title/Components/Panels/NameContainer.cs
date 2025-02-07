@@ -11,7 +11,7 @@ using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Screens.Title.Components.Panels;
 
-public class NameContainer : Panel {
+public class NameContainer : Overlay {
 
     private readonly TextInput _nameInput;
     

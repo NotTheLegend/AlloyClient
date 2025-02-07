@@ -14,7 +14,7 @@ using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Screens.Title.Components.Panels;
 
-public class ClassContainer : Panel {
+public class ClassContainer : Overlay {
 
     public CharacterWheel CharacterWheel;
     public ClassInfo ClassInfo;

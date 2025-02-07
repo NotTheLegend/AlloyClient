@@ -16,7 +16,7 @@ using MonoClient.UiLib.Utils.Signals;
 
 namespace MonoClient.Screens.Game.Components.Options;
 
-public sealed class OptionsView : Panel {
+public sealed class OptionsView : Overlay {
 
     public static OptionsView Panel
     {

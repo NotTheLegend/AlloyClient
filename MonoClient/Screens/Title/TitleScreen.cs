@@ -29,7 +29,7 @@ public class TitleScreen : TitleScreenBase {
                 ScreenManager.FadeToScreen(new CharacterListScreen(), Easing.SineInOut, 1000, 0x0);
             }
             else {
-                PanelManager.Enqueue(new LoginContainer());
+                OverlayManager.Enqueue(new LoginContainer());
             }
         }, true);
         playButton.SetAnchor(UiAnchor.Middle);

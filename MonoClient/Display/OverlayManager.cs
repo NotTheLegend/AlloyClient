@@ -12,9 +12,9 @@ using MonoClient.Utils;
 
 namespace MonoClient.Display;
 
-public sealed class PanelManager : Sprite {
+public sealed class OverlayManager : Sprite {
     
-    private enum PanelState {
+    private enum OverlayState {
         None,
         Active,
         Closed,
@@ -23,20 +23,20 @@ public sealed class PanelManager : Sprite {
 
     private static readonly Sprite Overlay = new ColorRect(new ColorRectConfig { Width = Settings.DefaultScreenWidth, Height = Settings.DefaultScreenHeight, Color = 0x2B2B2B, Alpha = 0.8f });
     
-    private static readonly Queue<Panel> Panels = [];
-    private static Panel _current;
-    private static PanelState _state = PanelState.None;
+    private static readonly Queue<Overlay> Overlays = [];
+    private static Overlay _current;
+    private static OverlayState _state = OverlayState.None;
     
-    public static void Enqueue(Panel panel) {
-        Panels.Enqueue(panel);
+    public static void Enqueue(Overlay overlay) {
+        Overlays.Enqueue(overlay);
     }
 
-    public static void ClosePanel(Panel panel) {
-        if (panel != _current) return;
-        _state = PanelState.Closed;
+    public static void CloseOverlay(Overlay overlay) {
+        if (overlay != _current) return;
+        _state = OverlayState.Closed;
     }
 
-    public static void ClosePanel()
+    public static void CloseOverlay()
     {
         if (_current != null)
         {
@@ -44,21 +44,19 @@ public sealed class PanelManager : Sprite {
         }
     }
 
-    public static bool CurrentPanelIs(Panel panel)
-        => _current != null && _current == panel;
+    public static bool CurrentOverlayIs(Overlay overlay)
+        => _current != null && _current == overlay;
 
     protected override void OnUpdate(GameTime gameTime) {
-        if (_state == PanelState.None && !TryStart(true)) return;
-        if (_state == PanelState.Closed) OnClosed();
+        if (_state == OverlayState.None && !TryStart(true)) return;
+        if (_state == OverlayState.Closed) OnClosed();
     }
 
     private bool TryStart(bool dimTween) {
-        if (!Panels.TryDequeue(out var panel)) return false;
-        
-        Console.WriteLine("EEenter");
+        if (!Overlays.TryDequeue(out var panel)) return false;
 
         _current = panel;
-        _state = PanelState.Active;
+        _state = OverlayState.Active;
         InputHandler.AddInputBlocker(InputBlockers.Panel);
 
         if (dimTween) {
@@ -73,9 +71,9 @@ public sealed class PanelManager : Sprite {
     }
 
     private void OnClosed() {
-        _state = PanelState.Finished;
+        _state = OverlayState.Finished;
 
-        if (Panels.TryPeek(out _)) {
+        if (Overlays.TryPeek(out _)) {
             GTween.Add(Tween.New(_current, Easing.SineInOut, 250, 0f, EaseType.Alpha, onFinish: () => {
                 RemoveChild(_current);
                 TryStart(false);
@@ -85,7 +83,7 @@ public sealed class PanelManager : Sprite {
             GTween.Add(Tween.New(_current, Easing.SineInOut, 250, 0f, EaseType.Alpha, onFinish: () => {
                 RemoveChild(_current);
                 _current = null;
-                _state = PanelState.None;
+                _state = OverlayState.None;
                 InputHandler.RemoveInputBlocker(InputBlockers.Panel);
             }));
         }

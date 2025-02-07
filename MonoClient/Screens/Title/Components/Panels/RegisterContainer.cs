@@ -11,7 +11,7 @@ using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Screens.Title.Components.Panels;
 
-public class RegisterContainer : Panel {
+public class RegisterContainer : Overlay {
     
     private readonly TextInput _emailInput;
     private readonly TextInput _passwordInput;

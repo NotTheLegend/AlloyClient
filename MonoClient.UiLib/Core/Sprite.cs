@@ -456,6 +456,11 @@ public partial class Sprite {
             child.Draw();
         }
     }
+
+    public bool ContainsChild(Sprite child) {
+        if (child == null) return false;
+        return _children.Contains(child) || _childQueue.Contains(child);
+    }
     
     public void AddChild(Sprite child) {
         if (_children.Contains(child) || _childQueue.Contains(child) || child == this) return;

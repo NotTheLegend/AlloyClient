@@ -1,0 +1,65 @@
+﻿using MonoClient.Objects;
+using MonoClient.Objects.Util;
+using MonoClient.Screens.Game.Components.Hud.Panels;
+using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Utils.Signals;
+
+namespace MonoClient.Screens.Game.Components.Hud;
+
+public class InteractPanel : Sprite {
+
+    public static readonly SingleSignal<Panel> AddOverride = new();
+
+    private Entity _currentObject;
+
+    private Panel _currentPanel;
+
+    private Panel _overridePanel;
+
+    public InteractPanel() {
+        AddOverride.Set(SetOverride);
+    }
+
+    private void SetOverride(Panel panel) {
+        if (_overridePanel != null)
+            RemoveChild(_overridePanel);
+
+        _currentPanel.Visible = false;
+        _overridePanel = panel;
+        AddChild(_overridePanel);
+    }
+    
+
+    public void Update() {
+        if (_overridePanel != null)
+            return;
+
+        var obj = EntityUtils.FindClosestEntityInRadius(Map.LocalPlayer, Map.InteractiveObjects.Values, 1f);
+
+        if (obj == _currentObject && _currentPanel != null) return;
+        
+        _currentObject = obj;
+        SetPanel(GetInteractPanel(_currentObject));
+    }
+
+    private void SetPanel(Panel panel) {
+        RemoveChild(_currentPanel);
+        _currentPanel = panel;
+
+        if (_currentPanel == null)
+            return;
+        
+        AddChild(_currentPanel);
+    }
+
+    private static Panel GetInteractPanel(Entity entity) {
+        if (entity == null)
+            return null;
+        
+        return entity.Properties.Class switch {
+            "Container" => new ContainerPanel(entity, false),
+            "Portal" => new PortalPanel(entity),
+            _ => null
+        };
+    }
+}

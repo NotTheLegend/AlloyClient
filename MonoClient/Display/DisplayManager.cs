@@ -13,7 +13,7 @@ public static class DisplayManager {
     static DisplayManager() {
         Screen.AddChild(ScreenManager.FadeScreen);
         Screen.AddChild(new ScreenManager());
-        Screen.AddChild(new PanelManager());
+        Screen.AddChild(new OverlayManager());
         Screen.AddChild(new DialogManager());
         Screen.AddChild(new TooltipManager());
     }

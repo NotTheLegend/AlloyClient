@@ -88,6 +88,10 @@ public sealed class ItemTile : Sprite {
         _tierText.X = Size - 2;
         _tierText.Y = Size;
         AddChild(_tierText);
+
+        if (Owner != null) {
+            SetItem(Owner.Equipment[SlotId]);
+        }
         
         _sprite.MouseEnabled = true;
         
@@ -113,6 +117,7 @@ public sealed class ItemTile : Sprite {
             _background.SetColor(0x545454);
             if (SlotType != 0) _slotDetail.Visible = true;
             if (Owner is Player && SlotType == 0) _slotId.Visible = true;
+            if (_tooltip != null) TooltipManager.RemoveTooltip(_tooltip);
         }
         
         UpdateTierTag();

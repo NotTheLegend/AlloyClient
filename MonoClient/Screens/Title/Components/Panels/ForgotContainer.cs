@@ -8,7 +8,7 @@ using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Screens.Title.Components.Panels;
 
-public class ForgotContainer : Panel {
+public class ForgotContainer : Overlay {
     public ForgotContainer() {
         X = Settings.DefaultScreenWidth / 2;
         Y = Settings.DefaultScreenHeight / 2;

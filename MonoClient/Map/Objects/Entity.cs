@@ -96,6 +96,8 @@ public class Entity {
 
     public int CustomTexture;
 
+    public bool PortalUsable;
+
     #endregion
 
     public int Timer;
@@ -166,6 +168,14 @@ public class Entity {
             "DoubleWall2" => new TypeWall(this, ModelType.PbDoubleWall), // ModelType.PbDoubleWall2
             "TripleWall" => new TypeWall(this, ModelType.PbDoubleWall), // ModelType.PbTripleWall
             _ => new TypeGameObject(this)
+        };
+    }
+
+    public static bool IsInteractiveObject(Entity entity) {
+        return entity.Properties.Class switch {
+            "Container" => true,
+            "Portal" => true,
+            _ => false
         };
     }
 
@@ -415,6 +425,9 @@ public class Entity {
                     break;
                 case StatsType.HasBackpack:
                     //todo
+                    break;
+                case StatsType.PortalUsable:
+                    PortalUsable = stat.Value != 0;
                     break;
             }
         }

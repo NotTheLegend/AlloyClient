@@ -11,7 +11,7 @@ using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Screens.Title.Components.Panels;
 
-public class LoginContainer : Panel {
+public class LoginContainer : Overlay {
     private readonly TextInput _emailInput;
     private readonly TextInput _passwordInput;
 
@@ -38,11 +38,11 @@ public class LoginContainer : Panel {
         _passwordInput = new TextInput(passwordConfig);
         AddChild(_passwordInput);
 
-        var registerConfig = new TextButtonConfig { Text = "New user? Click here to Register!", FontSize = 16, OnClicked = () => { ClosePanel(); PanelManager.Enqueue(new RegisterContainer()); }, Bold = true, X = Width / 2, Y = _passwordInput.Y + 40, Anchor = UiAnchor.Middle };
+        var registerConfig = new TextButtonConfig { Text = "New user? Click here to Register!", FontSize = 16, OnClicked = () => { ClosePanel(); OverlayManager.Enqueue(new RegisterContainer()); }, Bold = true, X = Width / 2, Y = _passwordInput.Y + 40, Anchor = UiAnchor.Middle };
         var registerButton = new TextButton(registerConfig);
         AddChild(registerButton);
         
-        var forgotConfig = new TextButtonConfig { Text = "Forgot Password?", FontSize = 16, OnClicked = () => { ClosePanel(); PanelManager.Enqueue(new ForgotContainer()); }, Bold = true, X = Width / 2, Y = registerButton.Y + 30, Anchor = UiAnchor.Middle };
+        var forgotConfig = new TextButtonConfig { Text = "Forgot Password?", FontSize = 16, OnClicked = () => { ClosePanel(); OverlayManager.Enqueue(new ForgotContainer()); }, Bold = true, X = Width / 2, Y = registerButton.Y + 30, Anchor = UiAnchor.Middle };
         var forgotButton = new TextButton(forgotConfig);
         AddChild(forgotButton);
         

@@ -99,7 +99,7 @@ public class CharacterListScreen : TitleScreenBase {
             Bold = true,
             X = Settings.DefaultScreenWidth / 2,
             Y = 50,
-            OnClicked = () => PanelManager.Enqueue(new NameContainer()),
+            OnClicked = () => OverlayManager.Enqueue(new NameContainer()),
             ActiveColor = 0xB3B3B3,
             InactiveColor = 0xB3B3B3,
             Anchor = UiAnchor.Middle,
@@ -297,7 +297,7 @@ public class CharacterListScreen : TitleScreenBase {
     }
 
     public void ShowCharacterCreate() {
-        PanelManager.Enqueue(new ClassContainer());
+        OverlayManager.Enqueue(new ClassContainer());
     }
     
     public void HideCharacterCreate() {
