@@ -29,6 +29,8 @@ public sealed class ItemTile : Sprite {
     
     public readonly bool Interactive;
 
+    public readonly bool OneWay;
+
     public readonly Entity Owner;
     
     public ItemDesc Item;
@@ -49,11 +51,12 @@ public sealed class ItemTile : Sprite {
     private readonly ObjectRect _slotDetail;
     private readonly SimpleText _slotId;
 
-    public ItemTile(Entity owner, byte slotId, bool interactive, CutEdges cut, byte slotType = 0) {
+    public ItemTile(Entity owner, byte slotId, bool interactive, CutEdges cut, bool oneWay, byte slotType = 0) {
         Owner = owner;
         SlotId = slotId;
         SlotType = slotType;
         Interactive = interactive;
+        OneWay = oneWay;
         
         _doubleTimer.AddEventListener(TimerEvent.TimerComplete, OnSingleClick);
         
@@ -268,6 +271,7 @@ public sealed class ItemTile : Sprite {
         switch (target) {
             case ItemTile tile:
                 if (!tile.Interactive) break;
+                if (tile.OneWay) break;
                 if (!CanSwapItems(this, tile)) break;
                 
                 var swap = InvSwap.CreatePacket();

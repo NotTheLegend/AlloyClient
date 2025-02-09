@@ -244,7 +244,7 @@ public static class Map {
 
         EntityStorage.Add(en);
 
-        if (Entity.IsInteractiveObject(en))
+        if (InteractPanel.IsInteractiveObject(en))
             InteractiveObjects.TryAdd(en.ObjectId, en);
 
         en.OnAddedToMap(position);

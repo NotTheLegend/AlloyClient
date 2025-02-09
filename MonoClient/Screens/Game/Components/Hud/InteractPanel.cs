@@ -51,6 +51,15 @@ public class InteractPanel : Sprite {
         
         AddChild(_currentPanel);
     }
+    
+    public static bool IsInteractiveObject(Entity entity) {
+        return entity.Properties.Class switch {
+            "Container" => true,
+            "OneWayContainer" => true,
+            "Portal" => true,
+            _ => false
+        };
+    }
 
     private static Panel GetInteractPanel(Entity entity) {
         if (entity == null)
@@ -58,6 +67,7 @@ public class InteractPanel : Sprite {
         
         return entity.Properties.Class switch {
             "Container" => new ContainerPanel(entity, false),
+            "OneWayContainer" => new ContainerPanel(entity, true),
             "Portal" => new PortalPanel(entity),
             _ => null
         };

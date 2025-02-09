@@ -171,14 +171,6 @@ public class Entity {
         };
     }
 
-    public static bool IsInteractiveObject(Entity entity) {
-        return entity.Properties.Class switch {
-            "Container" => true,
-            "Portal" => true,
-            _ => false
-        };
-    }
-
     public void SetPos(float x, float y) {
         Position.X = x;
         Position.Y = y;
