@@ -554,6 +554,11 @@ public partial class Sprite {
     }
     
     public void SetHitboxType(HitboxType hitbox) => HitboxType = hitbox;
+
+    public IntVector2 GetRelativeMousePosition() {
+        var pos = MouseInput.GetMousePosition();
+        return new IntVector2(pos.X - _trueX, pos.Y - _trueY);
+    }
     
     private struct Bounds {
         
