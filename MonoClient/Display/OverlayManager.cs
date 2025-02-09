@@ -40,7 +40,7 @@ public sealed class OverlayManager : Sprite {
     {
         if (_current != null)
         {
-            _current.ClosePanel();
+            _current.CloseOverlay();
         }
     }
 
@@ -79,7 +79,7 @@ public sealed class OverlayManager : Sprite {
                 TryStart(false);
             }));
         } else {
-            GTween.Add(Tween.New(Overlay, Easing.SineInOut, 250, 0f, EaseType.Alpha));
+            GTween.Add(Tween.New(Overlay, Easing.SineInOut, 250, 0f, EaseType.Alpha, onFinish: () => RemoveChild(Overlay)));
             GTween.Add(Tween.New(_current, Easing.SineInOut, 250, 0f, EaseType.Alpha, onFinish: () => {
                 RemoveChild(_current);
                 _current = null;

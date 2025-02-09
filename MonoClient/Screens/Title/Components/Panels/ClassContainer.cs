@@ -27,7 +27,7 @@ public class ClassContainer : Overlay {
         AddChild(ClassInfo);
         AddChild(CharacterWheel);
         
-        var cancelConfig = new TextButtonConfig { Text = "Cancel", FontSize = 50, OnClicked = ClosePanel, Bold = false, X = 75, Y = 650 };
+        var cancelConfig = new TextButtonConfig { Text = "Cancel", FontSize = 50, OnClicked = CloseOverlay, Bold = false, X = 75, Y = 650 };
         var cancelButton = new TextButton(cancelConfig);
         AddChild(cancelButton);
         
@@ -50,7 +50,7 @@ public class ClassContainer : Overlay {
         Account.CharacterType = ClassType;
         ScreenManager.FadeToScreen(new GameScreen(), Easing.SineInOut, 1000, 0x0);
         
-        ClosePanel();
+        CloseOverlay();
     }
     
     protected override void OnUpdate(GameTime gameTime) {

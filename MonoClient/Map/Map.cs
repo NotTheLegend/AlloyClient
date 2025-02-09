@@ -288,6 +288,7 @@ public static class Map {
         ShowDisplays = false;
 
         Entities.Clear();
+        InteractiveObjects.Clear();
         EntityStorage.Clear();
         
         Projectiles.Clear();

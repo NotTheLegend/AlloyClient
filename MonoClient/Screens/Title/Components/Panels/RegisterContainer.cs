@@ -45,7 +45,7 @@ public class RegisterContainer : Overlay {
         var loginButton = new TextButton(loginConfig);
         AddChild(loginButton);
         
-        var cancelConfig = new TextButtonConfig { Text = "Cancel", FontSize = 28, OnClicked = ClosePanel, Bold = false, X = loginButton.X - loginButton.Width - 35, Y = Height - 25, Anchor = UiAnchor.RightBottom };
+        var cancelConfig = new TextButtonConfig { Text = "Cancel", FontSize = 28, OnClicked = CloseOverlay, Bold = false, X = loginButton.X - loginButton.Width - 35, Y = Height - 25, Anchor = UiAnchor.RightBottom };
         var cancelButton = new TextButton(cancelConfig);
         AddChild(cancelButton);
     }
@@ -62,7 +62,7 @@ public class RegisterContainer : Overlay {
         }
         
         
-        ClosePanel();
+        CloseOverlay();
         ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 500, 0x0);
     }
 }

@@ -16,7 +16,6 @@ public class InvResult : IncomingPacket<InvResult> {
     }
 
     public override void Handle() {
-        Console.WriteLine($"[InvResult]: {Result}");
         //todo
     }
 

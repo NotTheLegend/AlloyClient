@@ -38,11 +38,11 @@ public class LoginContainer : Overlay {
         _passwordInput = new TextInput(passwordConfig);
         AddChild(_passwordInput);
 
-        var registerConfig = new TextButtonConfig { Text = "New user? Click here to Register!", FontSize = 16, OnClicked = () => { ClosePanel(); OverlayManager.Enqueue(new RegisterContainer()); }, Bold = true, X = Width / 2, Y = _passwordInput.Y + 40, Anchor = UiAnchor.Middle };
+        var registerConfig = new TextButtonConfig { Text = "New user? Click here to Register!", FontSize = 16, OnClicked = () => { CloseOverlay(); OverlayManager.Enqueue(new RegisterContainer()); }, Bold = true, X = Width / 2, Y = _passwordInput.Y + 40, Anchor = UiAnchor.Middle };
         var registerButton = new TextButton(registerConfig);
         AddChild(registerButton);
         
-        var forgotConfig = new TextButtonConfig { Text = "Forgot Password?", FontSize = 16, OnClicked = () => { ClosePanel(); OverlayManager.Enqueue(new ForgotContainer()); }, Bold = true, X = Width / 2, Y = registerButton.Y + 30, Anchor = UiAnchor.Middle };
+        var forgotConfig = new TextButtonConfig { Text = "Forgot Password?", FontSize = 16, OnClicked = () => { CloseOverlay(); OverlayManager.Enqueue(new ForgotContainer()); }, Bold = true, X = Width / 2, Y = registerButton.Y + 30, Anchor = UiAnchor.Middle };
         var forgotButton = new TextButton(forgotConfig);
         AddChild(forgotButton);
         
@@ -50,7 +50,7 @@ public class LoginContainer : Overlay {
         var loginButton = new TextButton(loginConfig);
         AddChild(loginButton);
         
-        var cancelConfig = new TextButtonConfig { Text = "Cancel", FontSize = 28, OnClicked = ClosePanel, Bold = false, X = loginButton.X - loginButton.Width - 35, Y = Height - 25, Anchor = UiAnchor.RightBottom };
+        var cancelConfig = new TextButtonConfig { Text = "Cancel", FontSize = 28, OnClicked = CloseOverlay, Bold = false, X = loginButton.X - loginButton.Width - 35, Y = Height - 25, Anchor = UiAnchor.RightBottom };
         var cancelButton = new TextButton(cancelConfig);
         AddChild(cancelButton);
     }
@@ -65,7 +65,7 @@ public class LoginContainer : Overlay {
             DialogManager.Enqueue(dialog);
             return;
         }
-        ClosePanel();
+        CloseOverlay();
         ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 500, 0x0);
     }
 }
