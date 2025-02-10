@@ -6,7 +6,7 @@ using MonoClient.UiLib.Utils.Signals;
 
 namespace MonoClient.Screens.Game.Components.Hud;
 
-public class InteractPanel : Sprite {
+public sealed class InteractPanel : Sprite {
 
     public static readonly SingleSignal<Panel> AddOverride = new();
 
@@ -15,6 +15,8 @@ public class InteractPanel : Sprite {
     private Panel _currentPanel;
 
     private Panel _overridePanel;
+
+    private readonly PartyPanel _partyPanel = new();
 
     public InteractPanel() {
         AddOverride.Set(SetOverride);
@@ -36,7 +38,14 @@ public class InteractPanel : Sprite {
 
         var obj = EntityUtils.FindClosestEntityInRadius(Map.LocalPlayer, Map.InteractiveObjects.Values, 1f);
 
-        if (obj == _currentObject && _currentPanel != null) return;
+        if (obj == null) {
+            _currentObject = null;
+            SetPanel(_partyPanel);
+            return;
+        }
+
+        if (obj == _currentObject && _currentPanel != null)
+            return;
         
         _currentObject = obj;
         SetPanel(GetInteractPanel(_currentObject));

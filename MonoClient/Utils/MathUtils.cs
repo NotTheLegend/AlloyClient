@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 namespace MonoClient.Utils;
 
 public class MathUtils {
+    
     private static readonly Random Random = new();
 
     public static Vector2 RotatePoint(Vector2 point, Vector2 pivot, float angle) {
@@ -26,4 +27,10 @@ public class MathUtils {
     public static int RandomInt(int max) => Random.Next(max);
 
     public static int RandomInt(int min, int max) => Random.Next(min, max);
+
+    public static float GetDistanceSquared(Vector2 pos1, Vector2 pos2) {
+        var x = pos2.X - pos1.X;
+        var y = pos2.Y - pos1.Y;
+        return x * x + y * y;
+    }
 }

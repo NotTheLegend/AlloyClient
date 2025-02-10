@@ -7,6 +7,7 @@ using MonoClient.Networking.Packets.Outgoing;
 using MonoClient.Networking.Structs.DataObjects;
 using MonoClient.Objects;
 using MonoClient.Objects.Util.ItemDatas;
+using MonoClient.State;
 using MonoClient.Ui.Components.Tooltips;
 using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
@@ -244,7 +245,7 @@ public sealed class ItemTile : Sprite {
         RemoveChild(_sprite);
         RemoveChild(_tierText);
         
-        _sprite.StartDrag();
+        _sprite.StartDrag(true);
         _sprite.AddEventListener(MouseEventId.LeftUp, OnEndDrag);
         Map.GameSprite.AddChild(_sprite);
     }
@@ -264,7 +265,7 @@ public sealed class ItemTile : Sprite {
     }
 
     private void HandleDropTarget() {
-        var list = new[] {typeof(ItemTile), typeof(InventoryGrid), typeof(GameScreen)};
+        var list = new[] {typeof(ItemTile), typeof(InventoryGrid), typeof(HudView), typeof(GameScreen)};
         
         var target = _sprite.DropTarget.GetTypeFromList(list);
 
@@ -306,6 +307,8 @@ public sealed class ItemTile : Sprite {
                 };
                 
                 Client.QueuePacket(drop);
+                
+                SetItem(null);
                 break; // drop
             default:
                 //reset tile

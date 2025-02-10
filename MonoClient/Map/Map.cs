@@ -38,6 +38,7 @@ public static class Map {
 
     private static MapTile[,] _tiles;
     public static readonly RenderStorage EntityStorage = new();
+    public static readonly Dictionary<int, Player> Players = new();
     public static readonly Dictionary<int, Entity> Entities = new(); // todo: add players to separate dic for minimap prio
     public static readonly Dictionary<int, Entity> InteractiveObjects = new();
 
@@ -244,6 +245,14 @@ public static class Map {
 
         EntityStorage.Add(en);
 
+        if (en is Player p) {
+            if(p.ObjectId != LocalPlayerId)
+                Players.TryAdd(p.ObjectId, p);
+            p.Ignored = PartyData.Ignored.Contains(p.AccountId);
+            p.Locked = PartyData.Locked.Contains(p.AccountId);
+        }
+            
+
         if (InteractPanel.IsInteractiveObject(en))
             InteractiveObjects.TryAdd(en.ObjectId, en);
 
@@ -254,6 +263,7 @@ public static class Map {
         if (!Entities.Remove(id, out var en)) 
             return;
 
+        Players.Remove(id);
         InteractiveObjects.Remove(id);
 
         EntityStorage.Remove(en);
@@ -287,7 +297,10 @@ public static class Map {
         AllowPlayerTeleport = false;
         ShowDisplays = false;
 
+        PartyData.Clear();
+        
         Entities.Clear();
+        Players.Clear();
         InteractiveObjects.Clear();
         EntityStorage.Clear();
         

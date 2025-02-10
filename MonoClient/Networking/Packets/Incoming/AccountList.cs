@@ -2,7 +2,7 @@
 
 public class AccountList : IncomingPacket<AccountList> {
     public int AccountListId;
-    public string[] AccountIds;
+    public int[] AccountIds;
 
     public override PacketId PacketId => PacketId.AccountList;
 
@@ -14,14 +14,15 @@ public class AccountList : IncomingPacket<AccountList> {
     public override void Read(NetworkReader reader) {
         AccountListId = reader.ReadInt32();
 
-        AccountIds = new string[reader.ReadInt16()];
+        AccountIds = new int[reader.ReadInt16()];
 
         for (var i = 0; i < AccountIds.Length; i++) {
-            AccountIds[i] = reader.ReadUtf();
+            AccountIds[i] = int.Parse(reader.ReadUtf());
         }
     }
 
     public override void Handle() {
+        PartyData.SetData(AccountListId, AccountIds);
     }
 
     public override string ToString() {

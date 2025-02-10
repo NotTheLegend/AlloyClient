@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Common;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Input;
 using Common.Vector;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Core.Events.Types;
@@ -384,6 +386,10 @@ public partial class Sprite {
     }
 
     internal void InternalUpdateLoop(GameTime gameTime) {
+        if (_lockMouse && MouseInput.GetMousePosition().Clamp(new IntVector2(0), UiRender.Screen, out var pos)) {
+            Mouse.SetPosition(pos.X, pos.Y);
+        }
+        
         Update(gameTime);
         
         HandleEvents();

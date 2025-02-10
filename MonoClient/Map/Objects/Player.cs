@@ -40,6 +40,10 @@ public class Player : Entity {
 
     public int Timer;
 
+    public bool Locked;
+
+    public bool Ignored;
+
     public byte NextBulletId = 1;
 
     #region StatData
