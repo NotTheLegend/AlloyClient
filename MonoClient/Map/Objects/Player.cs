@@ -80,6 +80,7 @@ public class Player : Entity {
 
     public int AccountId;
 
+    public int NextLevelExp;
     public int Experience;
 
     public int Stars;
@@ -289,6 +290,9 @@ public class Player : Entity {
                     break;
                 case StatsType.AccountId:
                     AccountId = stat.Value;
+                    break;
+                case StatsType.ExperienceGoal:
+                    NextLevelExp = stat.Value;
                     break;
                 case StatsType.Experience:
                     Experience = stat.Value;

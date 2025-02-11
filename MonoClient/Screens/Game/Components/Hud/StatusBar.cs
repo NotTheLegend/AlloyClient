@@ -18,27 +18,25 @@ public class StatusBar : Sprite {
     private SimpleText _label;
     private SimpleText _valueText;
 
+    public string labelString;
     private bool _mouseOver;
 
     public StatusBar(int width, int height, uint color, uint backColor, uint outlineColor, string label) {
         SetBaseDimensions(_width = width, _height = height);
-        
-        _outlineBar = new NineSliceRect(new NineSliceConfig { SliceData = SliceConfig.StatusBar, CutX = 10, CutY = 10, X = -1, Y = -1, Width = _width + 2, Height = _height + 2 });
-        _outlineBar.SetColor(outlineColor);
-        AddChild(_outlineBar);
-        
+
         _backgroundBar = new NineSliceRect(new NineSliceConfig { SliceData = SliceConfig.StatusBar, CutX = 10, CutY = 10, Width = _width, Height = _height });
         _backgroundBar.SetColor(backColor);
         AddChild(_backgroundBar);
-        
+
         _mainBar = new NineSliceRect(new NineSliceConfig { SliceData = SliceConfig.StatusBar, CutX = 10, CutY = 10, Width = _width, Height = _height });
         _mainBar.SetColor(color);
         AddChild(_mainBar);
-        
-        _label = new SimpleText(new TextConfig { Text = label, FontSize = 14, Bold = true, X = 8, Y = _height / 2, OutlineThickness = 1, Color = 0xFFFFFF, OutlineColor = 0xFFFFFF, Anchor = UiAnchor.MiddleLeft });
+
+        labelString = label;
+        _label = new SimpleText(new TextConfig { Text = label, FontSize = 16, Bold = true, X = 4, Y = _height / 2, OutlineThickness = 1, Color = 0xFFFFFF, OutlineColor = 0xFFFFFF, Anchor = UiAnchor.MiddleLeft });
         AddChild(_label);
         
-        _valueText = new SimpleText(new TextConfig { Text = "", FontSize = 14, Bold = true, Y = _height / 2, OutlineThickness = 1, Color = 0xFFFFFF, OutlineColor = 0xFFFFFF, Anchor = UiAnchor.MiddleLeft });
+        _valueText = new SimpleText(new TextConfig { Text = "", FontSize = 16, Bold = true, Y = _height / 2, OutlineThickness = 1, Color = 0xFFFFFF, OutlineColor = 0xFFFFFF, Anchor = UiAnchor.MiddleLeft });
         AddChild(_valueText);
 
         AddEventListener(MouseEventId.MouseOver, OnMouseOver);
@@ -52,6 +50,18 @@ public class StatusBar : Sprite {
 
         if (_mouseOver || Settings.ToggleBarText)
             UpdateText(val, max, boost, baseMax, level);
+    }
+
+    public void UpdateLabel(string label)
+    {
+        if(_label != null)
+        {
+            RemoveChild(_label);
+        }
+
+        labelString = label;
+        _label = new SimpleText(new TextConfig { Text = label, FontSize = 16, Bold = true, X = 8, Y = _height / 2, OutlineThickness = 1, Color = 0xFFFFFF, OutlineColor = 0xFFFFFF, Anchor = UiAnchor.MiddleLeft });
+        AddChild(_label);
     }
 
     private void UpdateText(int val, int max, int boost, int baseMax, int level) {

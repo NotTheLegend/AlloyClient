@@ -18,9 +18,9 @@ public sealed class CharacterDetails : Sprite {
             FontSize = 25,
             Bold = true,
             X = 44,
-            Y = 25,
+            Y = 20, 
             OutlineThickness = 4,
-            Color = 0xFFA500,
+            Color = 0xb3b3b3,
             OutlineColor = 0,
             Anchor = UiAnchor.MiddleLeft
         });

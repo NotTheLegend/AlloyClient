@@ -19,28 +19,32 @@ public sealed class EquippedGrid : Sprite {
     public EquippedGrid(Player owner) {
         _owner = owner;
         
-        var bg = new CutEdgeRect(new CutEdgeConfig { Width = 218, Height = 56, CutX = 6, CutY = 6, Cuts = CutEdges.All, Color = 0x676767 });
+        var bg = new CutEdgeRect(new CutEdgeConfig { Width = 216, Height = 56, CutX = 6, CutY = 6, Cuts = CutEdges.All, Color = 0x676767 });
         AddChild(bg);
         
         _owner.InventoryUpdate.Add(OnInventoryChange);
 
         for (byte i = 0; i < NumSlots; i++) {
             var slot = new ItemTile(_owner, i, true, Cuts[i], false, (byte)_owner.Properties.SlotTypes[i]);
-            slot.X = i % 4 * (50 + 4) + 3;
-            slot.Y = i / 4 * (50 + 4) + 3;
+            slot.Width = 49;
+            slot.Height = 49;
+            slot.X = i % 4 * (49 + 4) + 4;
+            slot.Y = i / 4 * (49 + 4) + 3;
             AddChild(slot);
             _tileSlots[i] = slot;
         }
     }
     
     public EquippedGrid(ItemDesc[] items, List<int> slotTypes) {
-        var bg = new CutEdgeRect(new CutEdgeConfig { Width = 218, Height = 56, CutX = 6, CutY = 6, Cuts = CutEdges.All, Color = 0x676767 });
+        var bg = new CutEdgeRect(new CutEdgeConfig { Width = 216, Height = 56, CutX = 6, CutY = 6, Cuts = CutEdges.All, Color = 0x676767 });
         AddChild(bg);
 
         for (byte i = 0; i < NumSlots; i++) {
             var slot = new ItemTile(null, i, false, Cuts[i], false, (byte)slotTypes[i]);
-            slot.X = i % 4 * (50 + 4) + 3;
-            slot.Y = i / 4 * (50 + 4) + 3;
+            slot.Width = 49;
+            slot.Height = 49;
+            slot.X = i % 4 * (49 + 4) + 4;
+            slot.Y = i / 4 * (49 + 4) + 3;
             slot.SetItem(items[i]);
             AddChild(slot);
             _tileSlots[i] = slot;

@@ -35,7 +35,7 @@ public static class Camera {
 
         var halfWidth = Settings.DefaultScreenWidth;
         var halfHeight = Settings.DefaultScreenHeight;
-        var hudOffset = includeHud ? halfWidth / 5f : 0f;
+        var hudOffset = includeHud ? 240f : 0f;
 
         ProjectionMatrix = Matrix.CreateOrthographicOffCenter(-halfWidth + hudOffset, halfWidth + hudOffset,
             -halfHeight, halfHeight, -10000f, 10000f);

@@ -21,7 +21,7 @@ public sealed class HudView : Sprite {
     public HudView() {
         SetAnchor(UiAnchor.RightTop);
         
-        var bg = new ColorRect(new ColorRectConfig { Width = 256, Height = Settings.DefaultScreenHeight, Color = 0x363636 });
+        var bg = new ColorRect(new ColorRectConfig { Width = 240, Height = Settings.DefaultScreenHeight, Color = 0x363636 });
         AddChild(bg);
 
         _minimap = new Minimap();
@@ -31,12 +31,12 @@ public sealed class HudView : Sprite {
 
         _details = new CharacterDetails();
         _details.X = 5;
-        _details.Y = _minimap.Y + _minimap.Height + 10;
+        _details.Y = _minimap.Y + _minimap.Height + 5;
         AddChild(_details);
 
         _bars = new CharacterBars();
-        _bars.X = 10;
-        _bars.Y = _details.Y + _details.Height + 10;
+        _bars.X = 15;
+        _bars.Y = _details.Y + _details.Height + 5;
         AddChild(_bars);
     }
 
@@ -46,18 +46,18 @@ public sealed class HudView : Sprite {
         RemoveChild(_interactPanel);
         
         _equippedGrid = new EquippedGrid(Map.LocalPlayer);
-        _equippedGrid.X = 10;
-        _equippedGrid.Y = _bars.Y + _bars.Height * 4 + 10;
+        _equippedGrid.X = 12;
+        _equippedGrid.Y = _bars.Y + _bars.height * 3 + _bars.offset * 3;
         AddChild(_equippedGrid);
 
         _inventoryGrid = new InventoryGrid(Map.LocalPlayer, 4);
-        _inventoryGrid.X = 10;
-        _inventoryGrid.Y = _equippedGrid.Y + _equippedGrid.Height + 5;
+        _inventoryGrid.X = 8;
+        _inventoryGrid.Y = _equippedGrid.Y + _equippedGrid.Height + 32;
         AddChild(_inventoryGrid);
 
         _interactPanel = new InteractPanel();
-        _interactPanel.X = 10;
-        _interactPanel.Y = _inventoryGrid.Y + _inventoryGrid.Height + 5;
+        _interactPanel.X = 11;
+        _interactPanel.Y = Settings.DefaultScreenHeight - 120;
         AddChild(_interactPanel);
     }
 

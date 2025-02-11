@@ -20,7 +20,7 @@ public sealed class Minimap : Sprite {
     private static readonly ColorTransform DefaultCt = new (1f, 1f, 1f, 1f);
     private static readonly ColorTransform FadeCt = new (0.5f, 0.5f, 0.5f, 1f);
     
-    public const int MapSize = 246;
+    public const int MapSize = 230;
     
     private float _zoom = 4.0f;
     private float _maxZoom;

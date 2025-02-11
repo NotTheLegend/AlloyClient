@@ -73,6 +73,7 @@ unsafe class UiAtlasProcessor : ContentProcessor<string, UiAtlasResult> {
         
         AddImage("bar1", "bar1.png");
         AddImage("bar2", "bar2.png");
+        AddImage("bar3", "bar3.png");
         AddImage("textBox", "TextBox.png");
         AddImage("tooltipBackground", "TooltipBackground.png");
         
