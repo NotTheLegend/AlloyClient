@@ -50,14 +50,14 @@ public sealed class HudView : Sprite {
         _equippedGrid.Y = _bars.Y + _bars.height * 3 + _bars.offset * 3;
         AddChild(_equippedGrid);
 
-        _inventoryGrid = new InventoryGrid(Map.LocalPlayer, 4);
+        _inventoryGrid = new InventoryGrid(Map.LocalPlayer, 4,PlayerInv:true);
         _inventoryGrid.X = 8;
         _inventoryGrid.Y = _equippedGrid.Y + _equippedGrid.Height + 32;
         AddChild(_inventoryGrid);
 
         _interactPanel = new InteractPanel();
-        _interactPanel.X = 11;
-        _interactPanel.Y = Settings.DefaultScreenHeight - 120;
+        _interactPanel.X = 8;
+        _interactPanel.Y = Settings.DefaultScreenHeight - 115;
         AddChild(_interactPanel);
     }
 

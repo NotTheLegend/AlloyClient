@@ -17,29 +17,57 @@ public sealed class InventoryGrid : Sprite {
 
     private readonly int _offset;
 
+    private readonly int _height;
+
     private readonly bool _interactive;
 
-    public InventoryGrid(Entity owner, int offset, bool oneWay = false) {
+    public InventoryGrid(Entity owner, int offset, bool oneWay = false, bool PlayerInv = true) {
         _owner = owner;
         _offset = offset;
         _interactive = owner == Map.LocalPlayer || owner.Properties.Container;
+        _height = 100;
 
-        //Tabs will be handled differently. 
-        var invTab = new CutEdgeRect(new CutEdgeConfig { Width = 34, Height = 32, CutX = 4, CutY = 4, Cuts = CutEdges.Top, Color = 0x242222 });
-        invTab.Y -= 24;
-        AddChild(invTab);
+        //Tabs & PlayerInv will be handled differently. please forgive me while i goto sleep tonight ; )
+        if (PlayerInv)
+        {
+            var invTab = new CutEdgeRect(new CutEdgeConfig { Width = 34, Height = 32, CutX = 4, CutY = 4, Cuts = CutEdges.Top, Color = 0x242222 });
+            invTab.Y -= 24;
+            AddChild(invTab);
 
-        var statsTab = new CutEdgeRect(new CutEdgeConfig { Width = 34, Height = 32, CutX = 4, CutY = 4, Cuts = CutEdges.Top, Color = 0x6b6a6a });
-        statsTab.Y -= 24;
-        statsTab.X = invTab.X + 38;
-        AddChild(statsTab);
+            var statsTab = new CutEdgeRect(new CutEdgeConfig { Width = 34, Height = 32, CutX = 4, CutY = 4, Cuts = CutEdges.Top, Color = 0x6b6a6a });
+            statsTab.Y -= 24;
+            statsTab.X = invTab.X + 38;
+            AddChild(statsTab);
+            _height = 152;
+        
+            var bg = new CutEdgeRect(new CutEdgeConfig { Width = 224, Height = _height, CutX = 6, CutY = 6, Cuts = CutEdges.All, Color = 0x242222 });
+            AddChild(bg);
 
-        var bg = new CutEdgeRect(new CutEdgeConfig { Width = 224, Height = 152, CutX = 6, CutY = 6, Cuts = CutEdges.All, Color = 0x242222 });
-        AddChild(bg);
+            var hpSlotOutline = new CutEdgeRect(new CutEdgeConfig { Width = 103, Height = 30, CutX = 4, CutY = 4, Cuts = CutEdges.Left, Color = 0x3e3d3d });
+            hpSlotOutline.Y += 152 - 38;
+            hpSlotOutline.X = 6;
+            AddChild(hpSlotOutline);
+
+            var hpSlot = new CutEdgeRect(new CutEdgeConfig { Width = 97, Height = 24, CutX = 4, CutY = 4, Cuts = CutEdges.Left, Color = 0x242222 });
+            hpSlot.Y += 152 - 38 + 3;
+            hpSlot.X = 6 + 3;
+            AddChild(hpSlot);
+
+            var mpSlotOutline = new CutEdgeRect(new CutEdgeConfig { Width = 103, Height = 30, CutX = 4, CutY = 4, Cuts = CutEdges.Right, Color = 0x3e3d3d });
+            mpSlotOutline.Y += 152 - 38;
+            mpSlotOutline.X = hpSlotOutline.X + 102 + 6;
+            AddChild(mpSlotOutline);
+
+            var mpSlot = new CutEdgeRect(new CutEdgeConfig { Width = 97, Height = 24, CutX = 4, CutY = 4, Cuts = CutEdges.Right, Color = 0x242222 });
+            mpSlot.Y += 152 - 38 + 3;
+            mpSlot.X = hpSlotOutline.X + 102 + 6 + 3;
+            AddChild(mpSlot);
+        }
 
         _owner.InventoryUpdate.Add(OnInventoryChange);
 
-        for (var i = 0; i < NumSlots; i++) {
+        for (var i = 0; i < NumSlots; i++)
+        {
             var slot = new ItemTile(owner, (byte)(i + offset), _interactive, Cuts[i], oneWay);
             slot.SetTileNumber(i + 1);
             slot.Width = 49;
@@ -49,29 +77,6 @@ public sealed class InventoryGrid : Sprite {
             AddChild(slot);
             _tiles[i] = slot;
         }
-
-
-        //Ill put somewhere else later when i display everything correctly.
-        var hpSlotOutline = new CutEdgeRect(new CutEdgeConfig { Width = 103, Height = 30, CutX = 4, CutY = 4, Cuts = CutEdges.Left, Color = 0x3e3d3d });
-        hpSlotOutline.Y += 152 - 38;
-        hpSlotOutline.X = 6;
-        AddChild(hpSlotOutline);
-
-        var hpSlot = new CutEdgeRect(new CutEdgeConfig { Width = 97, Height = 24, CutX = 4, CutY = 4, Cuts = CutEdges.Left, Color = 0x242222 });
-        hpSlot.Y += 152 - 38 + 3;
-        hpSlot.X = 6 + 3;
-        AddChild(hpSlot);
-
-        var mpSlotOutline = new CutEdgeRect(new CutEdgeConfig { Width = 103, Height = 30, CutX = 4, CutY = 4, Cuts = CutEdges.Right, Color = 0x3e3d3d });
-        mpSlotOutline.Y += 152 - 38;
-        mpSlotOutline.X = hpSlotOutline.X + 102 + 6;
-        AddChild(mpSlotOutline);
-
-        var mpSlot = new CutEdgeRect(new CutEdgeConfig { Width = 97, Height = 24, CutX = 4, CutY = 4, Cuts = CutEdges.Right, Color = 0x242222 });
-        mpSlot.Y += 152 - 38 + 3;
-        mpSlot.X = hpSlotOutline.X + 102 + 6 + 3;
-        AddChild(mpSlot);
-
     }
     
     private void OnInventoryChange(int slot) {
