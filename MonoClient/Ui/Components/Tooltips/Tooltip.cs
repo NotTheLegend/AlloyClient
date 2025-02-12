@@ -27,8 +27,8 @@ public abstract class Tooltip : Sprite {
         {
             SliceData = SliceConfig.TooltipBackground,
             Padding = false,
-            CutX = 10,
-            CutY = 10,
+            CutX = 0,
+            CutY = 0,
             Width = ToolWidth,
             Height = ToolHeight,
             MouseEnabled = true

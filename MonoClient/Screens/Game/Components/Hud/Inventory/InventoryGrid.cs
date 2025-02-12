@@ -21,25 +21,18 @@ public sealed class InventoryGrid : Sprite {
 
     private readonly bool _interactive;
 
-    public InventoryGrid(Entity owner, int offset, bool oneWay = false, bool PlayerInv = true) {
+    private readonly bool _backpack;
+
+
+    public InventoryGrid(Entity owner, int offset, bool oneWay = false, bool isBackpack = false) {
         _owner = owner;
         _offset = offset;
+        _backpack = isBackpack;
         _interactive = owner == Map.LocalPlayer || owner.Properties.Container;
-        _height = 100;
+        _height = 150;
 
-        //Tabs & PlayerInv will be handled differently. please forgive me while i goto sleep tonight ; )
-        if (PlayerInv)
+        if (owner == Map.LocalPlayer)
         {
-            var invTab = new CutEdgeRect(new CutEdgeConfig { Width = 34, Height = 32, CutX = 4, CutY = 4, Cuts = CutEdges.Top, Color = 0x242222 });
-            invTab.Y -= 24;
-            AddChild(invTab);
-
-            var statsTab = new CutEdgeRect(new CutEdgeConfig { Width = 34, Height = 32, CutX = 4, CutY = 4, Cuts = CutEdges.Top, Color = 0x6b6a6a });
-            statsTab.Y -= 24;
-            statsTab.X = invTab.X + 38;
-            AddChild(statsTab);
-            _height = 152;
-        
             var bg = new CutEdgeRect(new CutEdgeConfig { Width = 224, Height = _height, CutX = 6, CutY = 6, Cuts = CutEdges.All, Color = 0x242222 });
             AddChild(bg);
 

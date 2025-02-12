@@ -1,4 +1,5 @@
 using MonoClient.Objects.Util.ItemDatas;
+using MonoClient.Objects.Util;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Enums;
 using MonoClient.Utils;
@@ -16,6 +17,9 @@ public sealed class EquipmentToolTip : Tooltip
     private SimpleText TitleText;
     private SimpleText DescText;
 
+    private SimpleText DamageText;
+    private SimpleText StatsText;
+    private string statsText;
     public EquipmentToolTip(ItemDesc item) : base(220, 100)
     {
         Item = item;
@@ -23,6 +27,7 @@ public sealed class EquipmentToolTip : Tooltip
         AddTitle();
         AddTierTag();
         AddDescription();
+        AddStatBonus();
         Position();
         DrawSprite();
     }
@@ -59,6 +64,40 @@ public sealed class EquipmentToolTip : Tooltip
         AddChild(DescText);
     }
 
+    private void AddStatBonus()
+    {
+        statsText = "";
+        if (Item.StatBoosts != null)
+        {
+            foreach (var stat in Item.StatBoosts)
+            {
+                /*Logger.Debug(stat.ToString());
+                Logger.Debug(stat.Amount.ToString());
+                Logger.Debug(stat.Stat.ToString());*/
+                statsText += $"\n{StatsUtil.FromId(stat.Stat)}: {stat.Amount}";
+            }
+        }
+        if (Item.Activate != null)
+        {
+            foreach (var Activate in Item.Activate)
+            {
+                /*Logger.Debug(stat.ToString());
+                Logger.Debug(stat.Amount.ToString());
+                Logger.Debug(stat.Stat.ToString());*/
+                statsText += $"\n{Activate.EffectName}: {Activate.DurationMS}";
+            }
+        }
+        if (Item.FameBonus != 0)
+        {
+            statsText += $"\nFame: {Item.FameBonus}%";
+        }
+        if (statsText != "")
+        {
+            StatsText = new SimpleText(SimpleConfig(statsText, 14, false, 0xaaaaaa, 0xaaaaaa, 1, 204));
+            AddChild(StatsText);
+        }
+    }
+
     private void Position()
     {
         Icon.X = Icon.Y = 5;
@@ -68,6 +107,11 @@ public sealed class EquipmentToolTip : Tooltip
         TierTag.Y = TitleText.Y;
         DescText.X = 8;
         DescText.Y = Icon.Y + Icon.Width + 3;
+        if (StatsText != null)
+        {
+            StatsText.X = 8;
+            StatsText.Y = DescText.Y + DescText.Height + 3;
+        }
     }
 
     public override void DrawSprite()

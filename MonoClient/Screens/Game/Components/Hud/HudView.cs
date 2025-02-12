@@ -15,6 +15,7 @@ public sealed class HudView : Sprite {
 
     private EquippedGrid _equippedGrid;
     private InventoryGrid _inventoryGrid;
+    private TabStrip _tabStrip;
 
     private InteractPanel _interactPanel;
 
@@ -50,7 +51,12 @@ public sealed class HudView : Sprite {
         _equippedGrid.Y = _bars.Y + _bars.height * 3 + _bars.offset * 3;
         AddChild(_equippedGrid);
 
-        _inventoryGrid = new InventoryGrid(Map.LocalPlayer, 4,PlayerInv:true);
+        _tabStrip = new TabStrip();
+        _tabStrip.X = 8;
+        _tabStrip.Y = _equippedGrid.Y + _equippedGrid.Height + 32;
+        AddChild(_tabStrip);
+
+        _inventoryGrid = new InventoryGrid(Map.LocalPlayer, 4, Map.LocalPlayer.HasBackPack);
         _inventoryGrid.X = 8;
         _inventoryGrid.Y = _equippedGrid.Y + _equippedGrid.Height + 32;
         AddChild(_inventoryGrid);
