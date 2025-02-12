@@ -4,15 +4,17 @@ using System.Linq;
 using System.Numerics;
 using MonoClient.Objects;
 using MonoClient.UiLib.BuiltIn;
+using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
 using NAudio.SoundFont;
+using static MonoClient.Screens.MapEditor.Misc.MapEditorUtils;
 
 namespace MonoClient.Screens.Game.Components.Hud.Inventory;
 
 public sealed class TabStrip : Sprite {
 
-    enum TabTypes
+    private enum TabTypes
     {
         None,
         Inventory,
@@ -32,7 +34,7 @@ public sealed class TabStrip : Sprite {
     private readonly uint TabColor = 2368034;
     private readonly uint BackgroundColor = 7039594;
 
-    Dictionary<int, TabTypes> Tabs = new Dictionary<int, TabTypes>()
+    private Dictionary<int, TabTypes> Tabs = new Dictionary<int, TabTypes>()
     {
         { (int)TabTypes.Inventory, TabTypes.Inventory }, //Key is 1
         { (int)TabTypes.StatsView, TabTypes.StatsView }  //Key is 2
@@ -40,9 +42,13 @@ public sealed class TabStrip : Sprite {
 
     public int currentTabIndex = 1;
 
-    CutEdgeRect InventoryTab;
-    CutEdgeRect StatsViewTab;
-    CutEdgeRect BackpackTab;
+    private readonly IconButton InventoryTabButton;
+    private readonly IconButton StatsViewTabButton;
+    private readonly IconButton BackpackTabButton;
+
+    private readonly CutEdgeRect InventoryTab;
+    private readonly CutEdgeRect StatsViewTab;
+    private readonly CutEdgeRect BackpackTab;
 
     public TabStrip() {
 
@@ -68,18 +74,22 @@ public sealed class TabStrip : Sprite {
         foreach (var tab in Tabs)
         {
             CutEdgeRect invTab;
+            IconButton invTabButton;
             uint tempColor = currentTabIndex == tab.Key ? TabColor : BackgroundColor;
 
             switch (tab.Value)
             {
                 case TabTypes.Inventory:
                     invTab = InventoryTab;
+                    invTabButton = InventoryTabButton;
                     break;
                 case TabTypes.StatsView:
                     invTab = StatsViewTab;
+                    invTabButton = StatsViewTabButton;
                     break;
                 case TabTypes.Backpack:
                     invTab = BackpackTab;
+                    invTabButton = BackpackTabButton;
                     break;
                 case TabTypes.PetInfo:
                     //Lets hope we never need to show pet info :kappa:
@@ -92,12 +102,24 @@ public sealed class TabStrip : Sprite {
 
             AddChild(invTab);
 
+            invTabButton = new IconButton(new IconButtonConfig
+            {
+                Texture = TextureInfo.FromGameAtlas("lofiInterfaceBig", 23 + (tab.Key)), //So this is weird but 24 translates to Inv, 25 Stats, 26 Backpack so this works.
+                Padding = false,
+                X = X + 6,
+                Y = Y,
+                Width = 24,
+                Height = 24,
+                OnClick = () => OnTabSelected(tab.Value)
+            });
+            AddChild(invTabButton);
+
             X = invTab.X + 38;
         } 
     }
 
-    private void OnTabSelected()
+    private void OnTabSelected(TabTypes tabType)
     {
-
+        Console.WriteLine(tabType);
     }
 }
