@@ -69,8 +69,10 @@ public sealed class IconButton : Sprite {
         VertexData[1] = new VertexUi(new Vector2(0, 0), new Vector2(_texture.U, _texture.V)); // Top Left
         VertexData[2] = new VertexUi(new Vector2(_width, 0), new Vector2(_texture.U + _texture.W, _texture.V)); // Top Right
         VertexData[3] = new VertexUi(new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H)); // Bottom Right
+
+        Extra1 = new Vector4(_texture.V + _texture.H * 0.4f, _texture.V + _texture.H, -1f, -1f);
     }
-    
+
     private void OnLeftDown() {
         _leftDown = true;
     }
