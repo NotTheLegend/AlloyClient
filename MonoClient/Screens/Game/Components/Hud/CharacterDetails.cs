@@ -16,7 +16,7 @@ public sealed class CharacterDetails : Sprite {
         _name = new SimpleText(new TextConfig {
             Text = "test",
             FontSize = 25,
-            Bold = true,
+            Bold = 2,
             X = 44,
             Y = 20, 
             OutlineThickness = 4,

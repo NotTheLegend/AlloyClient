@@ -32,7 +32,7 @@ public class TierText : Sprite
         Tag = new SimpleText(new TextConfig()
         {
             FontSize = 16,
-            Bold = true,
+            Bold = 1,
             Text = text,
             OutlineColor = 0,
             OutlineThickness = 2

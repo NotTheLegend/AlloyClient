@@ -6,6 +6,7 @@ public static class RenderConfig {
     
     public const float NoBold = 0f;
     public const float Bold = 1f;
+    public const float Bolder = 2f;
 
     public const float TypeGameObject = 0f;
     public const float TypeModel = 1f;

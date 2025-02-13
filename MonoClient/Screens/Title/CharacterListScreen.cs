@@ -43,14 +43,13 @@ public class CharacterListScreen : TitleScreenBase {
     public CharacterListScreen() {
         #region Title Buttons
 
-        var playButton = new MenuBarButton("play", PlayFontSize, () => {
+        var playButton = new MenuBarButton("play",  PlayFontSize, () => {
             var charList = CharacterList.Model.Characters;
             if (charList == null || charList.Length <= 0) 
             {
                 ShowCharacterCreate();
                 return;
             }
-            
             Account.SelectedCharacterId = _selectedCharacterId;
             ScreenManager.FadeToScreen(new GameScreen(), Easing.SineInOut, 1000, 0x0);
         }, true);
@@ -96,7 +95,7 @@ public class CharacterListScreen : TitleScreenBase {
         var nameText = new TextButton(new TextButtonConfig() {
             Text = Account.Username,
             FontSize = 32,
-            Bold = true,
+            Bold = 1,
             X = Settings.DefaultScreenWidth / 2,
             Y = 50,
             OnClicked = () => OverlayManager.Enqueue(new NameContainer()),
@@ -120,7 +119,7 @@ public class CharacterListScreen : TitleScreenBase {
         var goldText = new SimpleText(new TextConfig {
             Text = CharacterList.Model.Account.Credits.ToString(),
             FontSize = 24,
-            Bold = false,
+            Bold = 0,
             X = goldIcon.X - goldIcon.Width - 5,
             Y = 93,
             Color = 0xFFFFFF,
@@ -141,7 +140,7 @@ public class CharacterListScreen : TitleScreenBase {
         var fameText = new SimpleText(new TextConfig {
             Text = CharacterList.Model.Account.Stats.Fame.ToString(),
             FontSize = 24,
-            Bold = false,
+            Bold = 0,
             X = fameIcon.X - fameIcon.Width - 5,
             Y = 93,
             Color = 0xFFFFFF,

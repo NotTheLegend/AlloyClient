@@ -51,7 +51,7 @@ public sealed class OptionsView : Overlay {
         var titleText = new SimpleText(new TextConfig {
             Text = "Options",
             FontSize = 57,
-            Bold = true,
+            Bold = 1,
             X = Settings.DefaultScreenWidth / 2,
             Y = 10,
             OutlineThickness = 2,
@@ -103,7 +103,7 @@ public sealed class OptionsView : Overlay {
             var tab = new TextButton(new TextButtonConfig {
                 Text = tabName,
                 FontSize = 25,
-                Bold = true,
+                Bold = 1,
                 ActiveColor = 0xB3B3B3,
                 HoverColor = 0xFFFFFF,
                 InactiveColor = 0xFFC800,

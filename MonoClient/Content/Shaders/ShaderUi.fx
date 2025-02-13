@@ -62,6 +62,20 @@ sampler2D TextBoldSample = sampler_state{
 
 };
 
+float PixelRangeBolder;
+float2 TextTextureSizeBolder;
+texture TextBolderTexture;
+sampler2D TextBolderSample = sampler_state
+{
+    Texture = (TextBolderTexture);
+    AddressU = CLAMP;
+    AddressV = CLAMP;
+    MagFilter = LINEAR;
+    MinFilter = LINEAR;
+    Mipfilter = LINEAR;
+
+};
+
 texture TitleBackgroundTexture;
 sampler2D TitleBackgroundSample = sampler_state{
     Texture = (TitleBackgroundTexture);
@@ -133,10 +147,11 @@ static const float IdUiAtlas = 2.0;
 static const float IdUiSlice = 3.0;
 static const float IdText = 4.0;
 static const float IdTextBold = 5.0;
-static const float IdTitleBackground = 6.0;
-static const float IdTitleGraphic = 7.0;
-static const float IdMinimap = 8.0;
-static const float IdEllipse = 9.0;
+static const float IdTextBolder = 6.0;
+static const float IdTitleBackground = 7.0;
+static const float IdTitleGraphic = 8.0;
+static const float IdMinimap = 9.0;
+static const float IdEllipse = 10.0;
 
 float map(float value, float originalMin, float originalMax, float newMin, float newMax) {
     return (value - originalMin) / (originalMax - originalMin) * (newMax - newMin) + newMin;
@@ -303,6 +318,8 @@ float4 MainPixel(VertexOutput input) : COLOR {
         pixel = RenderText(input, TextSample, TextTextureSize, PixelRange);
     } else if (type == IdTextBold) {
         pixel = RenderText(input, TextBoldSample, TextTextureSizeBold, PixelRangeBold);
+    } else if (type == IdTextBolder) {
+        pixel = RenderText(input, TextBolderSample, TextTextureSizeBolder, PixelRangeBolder);
     } else if (type == IdTitleBackground) {
         pixel = RenderNoOutline(input, TitleBackgroundSample);
     } else if (type == IdTitleGraphic) {

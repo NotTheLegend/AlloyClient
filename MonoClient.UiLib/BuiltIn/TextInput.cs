@@ -14,7 +14,7 @@ public struct InputConfig {
     public int X = 0;
     public int Y = 0;
     public float FontSize = 10;
-    public bool Bold = false;
+    public int Bold = 0;
     public uint Color = 0xFFFFFF;
     public uint OutlineColor = 0x0;
     public uint OutlineThickness = 4;
@@ -82,7 +82,20 @@ public sealed class TextInput : Sprite {
         SetAnchor(config.Anchor);
 
         MouseEnabled = true;
-        TextureId = config.Bold ? TextureType.TextBold : TextureType.TextNormal;
+
+        switch (config.Bold)
+        {
+            case 0:
+                TextureId = TextureType.TextNormal;
+                break;
+            case 1:
+                TextureId = TextureType.TextBold;
+                break;
+            case 2:
+                TextureId = TextureType.TextBolder;
+                break;
+        }
+
         Extra1.X = _outlineThickness;
 
         _inputText.Append(config.DefaultText);

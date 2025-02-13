@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Reflection.Emit;
 using MonoClient.Objects;
 using MonoClient.UiLib.BuiltIn;
@@ -20,14 +21,6 @@ namespace MonoClient.Screens.Game.Components.Hud.Inventory
             PetInfo
         }
 
-        private static readonly CutEdges[] Cuts = [CutEdges.TopLeft, CutEdges.None, CutEdges.None, CutEdges.TopRight, CutEdges.BottomLeft, CutEdges.None, CutEdges.None, CutEdges.BottomRight];
-
-        private readonly int _offset;
-        private readonly bool _backpack;
-
-        private readonly int _tabHeight;
-        private readonly int _tabWidth;
-
         private readonly uint TabColor = 2368034;
         private readonly uint BackgroundColor = 7039594;
 
@@ -40,45 +33,46 @@ namespace MonoClient.Screens.Game.Components.Hud.Inventory
         public int currentTabIndex = 1;
 
         private readonly IconButton InventoryTabButton;
-        private readonly IconButton StatsViewTabButton;
         private readonly IconButton BackpackTabButton;
+        private readonly IconButton StatsViewTabButton;
 
         private readonly CutEdgeRect InventoryTab;
-        private readonly CutEdgeRect StatsViewTab;
         private readonly CutEdgeRect BackpackTab;
+        private readonly CutEdgeRect StatsViewTab;
 
         private InventoryGrid _inventoryGrid;
+        private InventoryGrid _backpackPanel;
         private StatsPanel _statsPanel;
-        private BackpackPanel _backpackPanel;
 
-        public TabStrip()
+        private CutEdgeRect invTab;
+        private IconButton invTabButton;
+
+        private readonly Entity _owner;
+
+        public TabStrip(Entity owner)
         {
-            Update();
+            _owner = owner;
 
-            if (1==1)//(_backpack && !Tabs.ContainsKey(3)) //Contains Key 3 translates to backpack enum
-            {
-                AddTab(TabTypes.Backpack);
-            }
+            currentTabIndex = (int)TabTypes.Inventory;
 
-            InitializeTabs(); //Order is fucked because theres NO Z AXIS.... 
-        }
-
-        private void AddTab(TabTypes tab) //call when equipping a backpack and maybe equipping a pet?
-        {
-            Tabs.Add((int)tab, tab);
             Update();
         }
 
         private void Update()
         {
             int Y = -24;
-            int X = 0;
+            int X = 6;
+
+            if (Map.LocalPlayer.HasBackPack && !Tabs.ContainsKey(3)) 
+            { 
+                AddTab(TabTypes.Backpack); 
+            }
+
+            RemoveAllChildren(); //Remove All Panels
+            _owner.InventoryUpdate.RemoveAll(); //Remove InventoryUpdate
 
             foreach (var tab in Tabs)
             {
-                CutEdgeRect invTab;
-                IconButton invTabButton;
-
                 switch (tab.Value)
                 {
                     case TabTypes.Inventory:
@@ -94,10 +88,10 @@ namespace MonoClient.Screens.Game.Components.Hud.Inventory
                         invTabButton = BackpackTabButton;
                         break;
                     case TabTypes.PetInfo:
-                        continue;
+                        break;
                 }
 
-                invTab = new CutEdgeRect(new CutEdgeConfig { Width = 34, Height = 32, CutX = 4, CutY = 4, Cuts = CutEdges.Top, Color = currentTabIndex == tab.Key ? TabColor : BackgroundColor });
+                invTab = new CutEdgeRect(new CutEdgeConfig { Width = 34, Height = 24, CutX = 5, CutY = 5, Cuts = CutEdges.Top, Color = currentTabIndex == tab.Key ? TabColor : BackgroundColor });
                 invTab.X = X;
                 invTab.Y = Y;
 
@@ -114,43 +108,45 @@ namespace MonoClient.Screens.Game.Components.Hud.Inventory
                     Height = 24,
                     OnClick = () => OnTabSelected(tab.Value)
                 });
+
                 AddChild(invTabButton);
 
-                X = invTab.X + 38;
+                X = invTab.X + 40;
             }
+
+            InitializeTabs();
+        }
+
+        private void AddTab(TabTypes tab)
+        {
+            Tabs.Add((int)tab, tab);
         }
 
         private void InitializeTabs()
         {
-            _inventoryGrid = new InventoryGrid(Map.LocalPlayer, 4, Map.LocalPlayer.HasBackPack);
-            _inventoryGrid.X = 0;
-            _inventoryGrid.Y = 0;
+            _inventoryGrid = new InventoryGrid(Map.LocalPlayer, 4, false);
             AddChild(_inventoryGrid);
 
             _statsPanel = new StatsPanel();
-            _statsPanel.X = 0;
-            _statsPanel.Y = 0;
             AddChild(_statsPanel);
 
-            _backpackPanel = new BackpackPanel();
-            _backpackPanel.X = 0;
-            _backpackPanel.Y = 0;
+            _backpackPanel = new InventoryGrid(Map.LocalPlayer, 12, false);
             AddChild(_backpackPanel);
 
-            SetTabVisibility(TabTypes.Inventory);
+            SetTabVisibility(currentTabIndex);
         }
 
-        private void SetTabVisibility(TabTypes tabType)
+        private void SetTabVisibility(int tabType)
         {
-            _inventoryGrid.Visible = tabType == TabTypes.Inventory;
-            _statsPanel.Visible = tabType == TabTypes.StatsView;
-            _backpackPanel.Visible = tabType == TabTypes.Backpack;
+            _inventoryGrid.Visible = tabType == (int)TabTypes.Inventory;
+            _statsPanel.Visible = tabType == (int)TabTypes.StatsView;
+            _backpackPanel.Visible = tabType == (int)TabTypes.Backpack;
         }
 
         private void OnTabSelected(TabTypes tabType)
         {
             currentTabIndex = (int)tabType;
-            SetTabVisibility(tabType);
+            Update();
         }
     }
 
@@ -158,21 +154,54 @@ namespace MonoClient.Screens.Game.Components.Hud.Inventory
     {
         public StatsPanel()
         {
+            var p = Map.LocalPlayer;
+            int y = 150/2 - 16 - 10; //Height - Size - Spacing 
+            int offset = 40;
             var bg = new CutEdgeRect(new CutEdgeConfig { Width = 224, Height = 150, CutX = 6, CutY = 6, Cuts = CutEdges.All, Color = 0x242222 });
             AddChild(bg);
 
-            SimpleText labelReal;
-            string stats = "Stat 1 ect";
-            labelReal = new SimpleText(new TextConfig { Text = "stats", FontSize = 16, Bold = true, X = 4, Y = 80 / 2, OutlineThickness = 1, Color = 0xFFFFFF, OutlineColor = 0xFFFFFF, Anchor = UiAnchor.MiddleLeft });
-            AddChild(labelReal);
-        }
-    }
+            string[] IndexName = { "ATK" , "DEF", "SPD", "DEX" , "VIT" , "WIS"};
+            int[] IndexValue = { p.Attack, p.Defense, p.Speed, p.Dexterity, p.Vitality, p.Wisdom};
 
-    public class BackpackPanel : Sprite
-    {
-        public BackpackPanel()
-        {
 
+            for (int i = 0; i < IndexValue.Length; i++) 
+            {
+                bool even = (i == 0 || i == 2 || i == 4);
+                bool extraInfo = false;
+
+                SimpleText StatName = new SimpleText(new TextConfig 
+                { 
+                    Text = IndexName[i], 
+                    FontSize = 16, 
+                    Bold = 0, 
+                    X = even ? offset : Width - 16 - offset*2, 
+                    Y = y, 
+                    OutlineThickness = 0, 
+                    Color = 0xFFFFFF, 
+                    OutlineColor = 0xFFFFFF, 
+                    Anchor = UiAnchor.
+                    MiddleLeft 
+                });
+
+                AddChild(StatName);
+
+                SimpleText StatValue = new SimpleText(new TextConfig 
+                { 
+                    Text = IndexValue[i].ToString() + (extraInfo ? $" +{0}" : ""), 
+                    FontSize = 16, 
+                    Bold = 1, 
+                    X = (even ? offset : Width - 16 - offset*2) + StatName.Width + 5, //kinda gross but its needed
+                    Y = y, 
+                    OutlineThickness = 0, 
+                    Color = 0xFFC800, 
+                    OutlineColor = 0xFFFFFF, 
+                    Anchor = UiAnchor.MiddleLeft 
+                });
+
+                AddChild(StatValue);
+
+                y += even ? 0 : StatName.Height + 10;
+            }
         }
     }
 }

@@ -34,6 +34,11 @@
 /processor:MsdfProcessor
 /build:Fonts/MyriadPro/MyriadProBold.msdf
 
+#begin Fonts/MyriadPro/MyriadProBolder.msdf
+/importer:MsdfImporter
+/processor:MsdfProcessor
+/build:Fonts/MyriadPro/MyriadProBolder.msdf
+
 #begin Icon.bmp
 /importer:TextureImporter
 /processor:TextureProcessor

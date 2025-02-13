@@ -20,7 +20,7 @@ public class LoadingScreen : Screen {
         var config = new TextConfig {
             Text = "Loading...",
             FontSize = 40,
-            Bold = true,
+            Bold = 1,
             X = Settings.DefaultScreenWidth / 2,
             Y = Settings.DefaultScreenHeight - 50,
             Color = 0xFFFFFF,

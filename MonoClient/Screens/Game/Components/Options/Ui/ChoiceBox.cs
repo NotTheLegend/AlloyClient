@@ -44,7 +44,7 @@ public class ChoiceBox<T> : Sprite {
         AddChild(_background);
 
         _char = new SimpleText(new TextConfig
-            { Text = labels[_selected], FontSize = 25, Bold = true, X = BoxWidth / 2, Y = BoxHeight / 2, OutlineThickness = 2, Anchor = UiAnchor.Middle });
+            { Text = labels[_selected], FontSize = 25, Bold = 1, X = BoxWidth / 2, Y = BoxHeight / 2, OutlineThickness = 2, Anchor = UiAnchor.Middle });
         AddChild(_char);
 
         AddEventListener(MouseEventId.MouseOver, () => _background.SetColor(11776947));

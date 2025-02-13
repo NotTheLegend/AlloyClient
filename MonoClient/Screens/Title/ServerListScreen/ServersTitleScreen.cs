@@ -36,7 +36,7 @@ public class ServersTitleScreen : TitleScreenBase {
         var serverTitle = new SimpleText(new TextConfig() {
             Text = "Server Selection",
             FontSize = 32,
-            Bold = true,
+            Bold = 1,
             X = Settings.DefaultScreenWidth / 2,
             Y = 50,
             Anchor = UiAnchor.Middle,

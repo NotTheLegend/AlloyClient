@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using Common.Vector;
 using Microsoft.Xna.Framework;
 using MonoClient.Display;
@@ -22,7 +23,7 @@ namespace MonoClient.Screens.Game.Components.Hud.Inventory;
 
 public sealed class ItemTile : Sprite {
 
-    public const int Size = 50;
+    public int Size = 50; 
     
     public readonly byte SlotId;
 
@@ -52,7 +53,8 @@ public sealed class ItemTile : Sprite {
     private readonly ObjectRect _slotDetail;
     private readonly SimpleText _slotId;
 
-    public ItemTile(Entity owner, byte slotId, bool interactive, CutEdges cut, bool oneWay, byte slotType = 0) {
+    public ItemTile(Entity owner, byte slotId, bool interactive, CutEdges cut, bool oneWay, byte slotType = 0, int tileSize = 50) {
+        Size = tileSize;
         Owner = owner;
         SlotId = slotId;
         SlotType = slotType;
@@ -75,7 +77,7 @@ public sealed class ItemTile : Sprite {
             _slotDetail.Visible = true;
         }
 
-        _slotId = new SimpleText(new TextConfig { Text = "", X = Size / 2, Y = Size / 2, FontSize = 32, Bold = true, Color = 0x363636, OutlineColor = 0x363636, Anchor = UiAnchor.Middle });
+        _slotId = new SimpleText(new TextConfig { Text = "", X = Size / 2, Y = Size / 2, FontSize = 32, Bold = 1, Color = 0x363636, OutlineColor = 0x363636, Anchor = UiAnchor.Middle });
         _slotId.Visible = false;
         AddChild(_slotId);
 
@@ -86,7 +88,7 @@ public sealed class ItemTile : Sprite {
         _sprite = new ObjectRect(new ObjectRectConfig { Texture = AssetUtils.GetTextureInfo(0x0096), Width = Size, Height = Size });
         AddChild(_sprite);
         
-        _tierText = new SimpleText(new TextConfig { FontSize = 16, Bold = true, Text = "", OutlineThickness = 6 });
+        _tierText = new SimpleText(new TextConfig { FontSize = 16, Bold = 1, Text = "", OutlineThickness = 6 });
         _tierText.Visible = false;
         _tierText.SetAnchor(UiAnchor.RightBottom);
         _tierText.X = Size - 2;
@@ -186,7 +188,15 @@ public sealed class ItemTile : Sprite {
 
         if (args.ShiftKey) {
             _pendingDouble = false;
-            // todo: use item
+            
+            // added basic consume logic, this will be looked at another time i assume
+            if(Item.ObjectType == ItemConstants.PotionType || Item.Consumable)
+            {
+                int timeStuff = (int)Map.LastGameTime.TotalGameTime.TotalMilliseconds;
+                Console.WriteLine($" Stats: Time: {timeStuff} ObjectId: {Owner.ObjectId} SlotId: {SlotId} ObjectType: {Item.ObjectType} PosX: {Owner.Position.X} PosY: {Owner.Position.Y} Byte: {(byte)UseType.START_USE}");
+                useItem(timeStuff, Owner.ObjectId, SlotId, Item.ObjectType, Owner.Position.X, Owner.Position.Y, (byte)UseType.START_USE);
+            }
+
             return;
         }
 
@@ -271,10 +281,11 @@ public sealed class ItemTile : Sprite {
 
         switch (target) {
             case ItemTile tile:
+                Console.WriteLine($"{!tile.Interactive} {tile.OneWay} {!CanSwapItems(this, tile)}");
                 if (!tile.Interactive) break;
                 if (tile.OneWay) break;
                 if (!CanSwapItems(this, tile)) break;
-                
+
                 var swap = InvSwap.CreatePacket();
                 swap.Time = (int)Map.LastGameTime.TotalGameTime.TotalMilliseconds;
                 swap.Position = new Position { X = Map.LocalPlayer.Position.X, Y = Map.LocalPlayer.Position.Y };
@@ -342,5 +353,20 @@ public sealed class ItemTile : Sprite {
         }
 
         return false;
+    }
+
+    private static void useItem(int time, int objectId, byte slotId, ushort objectType, float itemUsePosX, float itemUsePosY, byte useType) //Simple for now
+    {
+        var packet = UseItem.CreatePacket();
+
+        packet.Time = time;
+        packet.SlotObject.ObjectId = objectId;
+        packet.SlotObject.SlotId = slotId;
+        packet.SlotObject.ObjectType = objectType;
+        packet.ItemUsePos.X = itemUsePosX;
+        packet.ItemUsePos.Y = itemUsePosY;
+        packet.UseType = useType;
+
+        Client.QueuePacket(packet);
     }
 }

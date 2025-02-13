@@ -47,7 +47,7 @@ public class ServerRect : Container {
         _serverNameText = new SimpleText(new TextConfig() {
             Text = "Name",
             FontSize = FontSize,
-            Bold = true,
+            Bold = 1,
             OutlineThickness = 3,
             Color = 0xFFFFFF,
             Anchor = UiAnchor.MiddleLeft
@@ -59,7 +59,7 @@ public class ServerRect : Container {
         _playersText = new SimpleText(new TextConfig() {
             Text = "0 / 0",
             FontSize = FontSize,
-            Bold = true,
+            Bold = 1,
             OutlineThickness = 3,
             Color = AvailableServerColor,
             Anchor = UiAnchor.MiddleRight

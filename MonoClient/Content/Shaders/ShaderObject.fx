@@ -46,6 +46,20 @@ sampler2D TextBoldSample = sampler_state{
 
 };
 
+float PixelRangeBolder;
+float2 TextTextureSizeBolder;
+texture TextBolderTexture;
+sampler2D TextBolderSample = sampler_state
+{
+    Texture = (TextBolderTexture);
+    AddressU = CLAMP;
+    AddressV = CLAMP;
+    MagFilter = LINEAR;
+    MinFilter = LINEAR;
+    Mipfilter = LINEAR;
+
+};
+
 struct VertexInput {
 	float4 Position : POSITION0;
 	float2 BaseUV : BLENDWEIGHT0;
@@ -308,7 +322,12 @@ float4 GetText(VertexOutput input) {
     float3 samp;
     float pRange;
     float2 dim;
-    if (input.Extra.z == 1.0) {
+    if (input.Extra.z == 2.0)
+    {
+        samp = tex2D(TextBolderSample, uv).rgb;
+        pRange = PixelRangeBolder;
+        dim = TextTextureSizeBolder;
+    } else if (input.Extra.z == 1.0) {
         samp = tex2D(TextBoldSample, uv).rgb;
         pRange = PixelRangeBold;
         dim = TextTextureSizeBold;

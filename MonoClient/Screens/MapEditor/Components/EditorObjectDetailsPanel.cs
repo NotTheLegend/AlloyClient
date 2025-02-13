@@ -41,7 +41,7 @@ public class EditorObjectDetailsPanel : Sprite {
 
         var textConfig = new TextConfig {
             FontSize = 16,
-            Bold = true,
+            Bold = 1,
             X = 5,
             Y = 5,
             Text = "Empty",

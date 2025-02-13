@@ -46,7 +46,7 @@ public sealed class EquipmentToolTip : Tooltip
 
     private void AddTitle()
     {
-        TitleText = new SimpleText(SimpleConfig(Item.ObjectId, 16, true));
+        TitleText = new SimpleText(SimpleConfig(Item.ObjectId, 16, bold: 1));
         TitleText.SetAnchor(UiAnchor.MiddleLeft);
         AddChild(TitleText);
     }
@@ -60,7 +60,7 @@ public sealed class EquipmentToolTip : Tooltip
     
     private void AddDescription()
     {
-        DescText = new SimpleText(SimpleConfig(Item.Description, 14, false, 0xaaaaaa, 0xaaaaaa, 1, 204));
+        DescText = new SimpleText(SimpleConfig(Item.Description, 14, bold: 0, 0xaaaaaa, 0xaaaaaa, 1, 204));
         AddChild(DescText);
     }
 
@@ -93,7 +93,7 @@ public sealed class EquipmentToolTip : Tooltip
         }
         if (statsText != "")
         {
-            StatsText = new SimpleText(SimpleConfig(statsText, 14, false, 0xaaaaaa, 0xaaaaaa, 1, 204));
+            StatsText = new SimpleText(SimpleConfig(statsText, 14, bold: 0, 0xaaaaaa, 0xaaaaaa, 1, 204));
             AddChild(StatsText);
         }
     }
@@ -133,7 +133,7 @@ public sealed class EquipmentToolTip : Tooltip
         return number;
     }
 
-    public static TextConfig SimpleConfig(string text = "", int size = 12, bool bold = false, uint color = 0xffffff, uint outline = 0, int thickness = 1, int maxWidth = 200)
+    public static TextConfig SimpleConfig(string text = "", int size = 12, int bold = 0, uint color = 0xffffff, uint outline = 0, int thickness = 1, int maxWidth = 200)
     {
         return new TextConfig()
         {

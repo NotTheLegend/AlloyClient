@@ -9,7 +9,7 @@ public struct TextButtonConfig {
     public string Text = "";
     public float FontSize = 1f;
     public Action OnClicked = null;
-    public bool Bold = true;
+    public int Bold = 1;
     public uint ActiveColor = 0xFFFFFF;
     public uint HoverColor = 0xFFDC85;
     public uint InactiveColor = 0x363636;

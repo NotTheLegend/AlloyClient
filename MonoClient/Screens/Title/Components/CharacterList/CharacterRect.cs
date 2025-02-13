@@ -50,7 +50,7 @@ public sealed class CharacterRect : Container {
         var charNameText = new SimpleText(new TextConfig {
             Text = "New Character",
             FontSize = 18,
-            Bold = true,
+            Bold = 1,
             Color = 0xFFFFFF,
             Anchor = UiAnchor.Middle,
         });
@@ -99,7 +99,7 @@ public sealed class CharacterRect : Container {
             var statsMaxedText = new SimpleText(new TextConfig {
                 Text = $"{_statsMaxed}/{NumberStatsMaxed}",
                 FontSize = 16,
-                Bold = true,
+                Bold = 1,
                 Color = 0xCFCFCF,
                 Anchor = UiAnchor.Middle,
             });
@@ -136,7 +136,7 @@ public sealed class CharacterRect : Container {
             var fameText = new SimpleText(new TextConfig {
                 Text = _baseFame.ToString(),
                 FontSize = 16,
-                Bold = true,
+                Bold = 1,
                 Color = 0xFFFFFF,
                 Anchor = UiAnchor.Middle,
             });
@@ -185,7 +185,7 @@ public sealed class CharacterRect : Container {
             var remainingSlotsText = new SimpleText(new TextConfig {
                 Text = $"{remainingSlots} Character Slots",
                 FontSize = 18,
-                Bold = true,
+                Bold = 1,
                 Color = 0xFFFFFF,
                 Anchor = UiAnchor.Middle,
             });
@@ -196,7 +196,7 @@ public sealed class CharacterRect : Container {
             var remainingSlotsText2 = new SimpleText(new TextConfig {
                 Text = "Remaining",
                 FontSize = 18,
-                Bold = true,
+                Bold = 1,
                 Color = 0xFFFFFF,
                 Anchor = UiAnchor.Middle,
             });

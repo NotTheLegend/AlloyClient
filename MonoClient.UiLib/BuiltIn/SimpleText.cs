@@ -8,7 +8,7 @@ namespace MonoClient.UiLib.BuiltIn;
 public struct TextConfig {
     public string Text = "";
     public float FontSize = 1f;
-    public bool Bold = false;
+    public int Bold = 0;
     public int X = 0;
     public int Y = 0;
     public int MaxWidth = -1;
@@ -48,8 +48,19 @@ public sealed class SimpleText : Sprite {
         SetColor(config.Color);
         SetColorSecondary(config.OutlineColor);
         SetAnchor(config.Anchor);
-        
-        TextureId = config.Bold ? TextureType.TextBold : TextureType.TextNormal;
+
+        switch (config.Bold)
+        {
+            case 0:
+                TextureId = TextureType.TextNormal;
+                break;
+            case 1:
+                TextureId = TextureType.TextBold;
+                break;
+            case 2:
+                TextureId = TextureType.TextBolder;
+                break;
+        }
         
         ResizeBackBuffer();
         FillData();

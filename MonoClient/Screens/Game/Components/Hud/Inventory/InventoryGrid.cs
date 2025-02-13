@@ -21,7 +21,7 @@ public sealed class InventoryGrid : Sprite {
 
     private readonly bool _interactive;
 
-    private readonly bool _backpack;
+    private bool _backpack;
 
 
     public InventoryGrid(Entity owner, int offset, bool oneWay = false, bool isBackpack = false) {
@@ -61,10 +61,8 @@ public sealed class InventoryGrid : Sprite {
 
         for (var i = 0; i < NumSlots; i++)
         {
-            var slot = new ItemTile(owner, (byte)(i + offset), _interactive, Cuts[i], oneWay);
+            var slot = new ItemTile(owner, (byte)(i + offset), _interactive, Cuts[i], oneWay, tileSize: 49);
             slot.SetTileNumber(i + 1);
-            slot.Width = 49;
-            slot.Height = 49;
             slot.X = i % 4 * (50 + 4) + 6;
             slot.Y = i / 4 * (50 + 4) + 6;
             AddChild(slot);
@@ -72,8 +70,15 @@ public sealed class InventoryGrid : Sprite {
         }
     }
     
-    private void OnInventoryChange(int slot) {
-        Console.WriteLine($"{slot} | {_offset} - {_offset + NumSlots}");
+    private void OnInventoryChange(int slot) 
+    {
+        if (!Visible) //Unsure how reliable this is, its to stop issues with the Backpack & Inventory trying to update when hidden
+        {
+            return;
+        }
+
+        Console.WriteLine($"New {slot} | {_offset} - {_offset + NumSlots} BackPack {_backpack} {Visible}");
+
         if (slot < _offset || slot >= _offset + NumSlots) return;
         _tiles[slot - _offset].SetItem(_owner.Equipment[slot]);
     }

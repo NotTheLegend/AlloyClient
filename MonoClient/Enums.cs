@@ -22,3 +22,9 @@ public enum SpeechColors {
     Party,
     Tell
 }
+
+public enum UseType {
+    DEFAULT = 0,
+    START_USE = 1,
+    END_USE = 2
+}

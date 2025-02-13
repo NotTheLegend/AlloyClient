@@ -22,10 +22,11 @@ public enum TextureType : byte {
     UiSlice = 3,
     TextNormal = 4,
     TextBold = 5,
-    TitleBackground = 6,
-    TitleGraphic = 7,
-    Minimap = 8,
-    Ellipse = 9,
+    TextBolder = 6,
+    TitleBackground = 7,
+    TitleGraphic = 8,
+    Minimap = 9,
+    Ellipse = 10,
 }
 
 public enum HitboxType : byte {

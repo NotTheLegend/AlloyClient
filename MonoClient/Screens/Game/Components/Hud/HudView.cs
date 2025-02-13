@@ -54,7 +54,7 @@ namespace MonoClient.Screens.Game.Components.Hud
             _equippedGrid.Y = _bars.Y + _bars.height * 3 + _bars.offset * 3;
             AddChild(_equippedGrid);
 
-            _tabStrip = new TabStrip(); //Inv + Backpack + StatView is handled under TabStrip.
+            _tabStrip = new TabStrip(Map.LocalPlayer); //Inv + Backpack + StatView is handled under TabStrip.
             _tabStrip.X = 8;
             _tabStrip.Y = _equippedGrid.Y + _equippedGrid.Height + 32;
             AddChild(_tabStrip);

@@ -36,7 +36,7 @@ public class PortalPanel : Panel {
             Y = 16,
             Text = txt,
             FontSize = 22,
-            Bold = true,
+            Bold = 1,
             OutlineColor = 0xFFFFFF,
             Anchor = UiAnchor.MiddleTop
         });
@@ -47,7 +47,7 @@ public class PortalPanel : Panel {
             Y = name.Height + 50,
             Text = _locked ? "Locked" : "Full",
             FontSize = 20,
-            Bold = true,
+            Bold = 1,
             OutlineColor = 0xFF0000,
             Color = 0xFF0000,
             Anchor = UiAnchor.MiddleTop
@@ -58,7 +58,7 @@ public class PortalPanel : Panel {
             Text = "Enter",
             FontSize = 20,
             OnClicked = EnterPortal,
-            Bold = true,
+            Bold = 1,
             X = Width / 2,
             Y = name.Height + 50,
             Anchor = UiAnchor.MiddleTop

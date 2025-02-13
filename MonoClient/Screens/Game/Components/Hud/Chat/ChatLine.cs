@@ -80,7 +80,7 @@ public class ChatLine {
             nameFormat = textFormat = ChatFormats.GuildFormat;
         } else if (!string.IsNullOrEmpty(_recipient)) {
             nameFormat = textFormat = ChatFormats.TellFormat;
-            nameFormat.Bold = true;
+            nameFormat.Bold = 1;
             if (!_toMe) {
                 prefix = "To: ";
                 name = _recipient;
@@ -95,7 +95,7 @@ public class ChatLine {
         }
 
         if (!string.IsNullOrEmpty(name)) {
-            nameFormat.Bold = true;
+            nameFormat.Bold = 1;
             
             var nameText = new SimpleText(nameFormat);
             nameText.SetText($"{prefix}<{name}> ");

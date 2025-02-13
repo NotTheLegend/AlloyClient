@@ -26,18 +26,18 @@ public class NameContainer : Overlay {
         var titleBackground = new ColorRect(new ColorRectConfig { Width = 475, Height = 50, Color = 0x4d4d4d });
         AddChild(titleBackground);
 
-        var title = new SimpleText(new TextConfig { Text = "Set Name", FontSize = 22, Bold = true, X = Width / 2, Y = titleBackground.Height / 2, Color = 0xFFFFFF, Anchor = UiAnchor.Middle });
+        var title = new SimpleText(new TextConfig { Text = "Set Name", FontSize = 22, Bold = 1, X = Width / 2, Y = titleBackground.Height / 2, Color = 0xFFFFFF, Anchor = UiAnchor.Middle });
         AddChild(title);
         
-        var nameConfig = new InputConfig { X = Width / 2, Y = 100, FontSize = 24, Bold = true, Color = 0xFFFFFF, Width = 350, DefaultText = "Name", Anchor = UiAnchor.Middle };
+        var nameConfig = new InputConfig { X = Width / 2, Y = 100, FontSize = 24, Bold = 1, Color = 0xFFFFFF, Width = 350, DefaultText = "Name", Anchor = UiAnchor.Middle };
         _nameInput = new TextInput(nameConfig);
         AddChild(_nameInput);
         
-        var loginConfig = new TextButtonConfig { Text = "Name", FontSize = 28, OnClicked = OnSetName, Bold = false, X = 475 - 25, Y = Height - 25, Anchor = UiAnchor.RightBottom };
+        var loginConfig = new TextButtonConfig { Text = "Name", FontSize = 28, OnClicked = OnSetName, Bold = 0, X = 475 - 25, Y = Height - 25, Anchor = UiAnchor.RightBottom };
         var loginButton = new TextButton(loginConfig);
         AddChild(loginButton);
         
-        var cancelConfig = new TextButtonConfig { Text = "Cancel", FontSize = 28, OnClicked = CloseOverlay, Bold = false, X = loginButton.X - loginButton.Width - 35, Y = Height - 25, Anchor = UiAnchor.RightBottom };
+        var cancelConfig = new TextButtonConfig { Text = "Cancel", FontSize = 28, OnClicked = CloseOverlay, Bold = 0, X = loginButton.X - loginButton.Width - 35, Y = Height - 25, Anchor = UiAnchor.RightBottom };
         var cancelButton = new TextButton(cancelConfig);
         AddChild(cancelButton);
     }

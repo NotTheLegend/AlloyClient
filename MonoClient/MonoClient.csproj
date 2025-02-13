@@ -32,6 +32,9 @@
         <None Update="Content\Fonts\MyriadPro\MyriadProBold.otf">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+		<None Update="Content\Fonts\MyriadPro\MyriadProBolder.otf">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
     </ItemGroup>
     
     <ItemGroup>

@@ -11,7 +11,7 @@ public class SliderOption : Option {
         _text = new SimpleText(new TextConfig {
             Text = text,
             FontSize = 22,
-            Bold = true,
+            Bold = 1,
             OutlineThickness = 2,
             Color = 0xABABAB
         });

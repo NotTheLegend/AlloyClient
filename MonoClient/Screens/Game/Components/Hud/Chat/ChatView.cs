@@ -35,7 +35,7 @@ public class ChatView : Sprite {
 
         _chatBox = new TextInput(new InputConfig {
             FontSize = 18,
-            Bold = true,
+            Bold = 1,
             OutlineThickness = 3,
             ClickToActivate = true,
             Width = Width,
