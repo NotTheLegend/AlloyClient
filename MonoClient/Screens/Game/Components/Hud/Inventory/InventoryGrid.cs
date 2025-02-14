@@ -62,7 +62,7 @@ public sealed class InventoryGrid : Sprite {
         for (var i = 0; i < NumSlots; i++)
         {
             var slot = new ItemTile(owner, (byte)(i + offset), _interactive, Cuts[i], oneWay, tileSize: 49);
-            slot.SetTileNumber(i + 1);
+            slot.SetTileNumber(i + (_backpack ? 9 : 1));
             slot.X = i % 4 * (50 + 4) + 6;
             slot.Y = i / 4 * (50 + 4) + 6;
             AddChild(slot);

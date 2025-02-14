@@ -60,7 +60,7 @@ public class StatusBar : Sprite {
         }
 
         labelString = label;
-        _label = new SimpleText(new TextConfig { Text = label, FontSize = 16, Bold = 1, X = 4, Y = _height / 2, OutlineThickness = 1, Color = 0xFFFFFF, OutlineColor = 0xFFFFFF, Anchor = UiAnchor.MiddleLeft });
+        _label = new SimpleText(new TextConfig { Text = label, FontSize = 16, Bold = 2, X = 4, Y = _height / 2, OutlineThickness = 1, Color = 0xFFFFFF, OutlineColor = 0xFFFFFF, Anchor = UiAnchor.MiddleLeft });
         AddChild(_label);
     }
 

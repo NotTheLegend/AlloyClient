@@ -130,7 +130,7 @@ namespace MonoClient.Screens.Game.Components.Hud.Inventory
             _statsPanel = new StatsPanel();
             AddChild(_statsPanel);
 
-            _backpackPanel = new InventoryGrid(Map.LocalPlayer, 12, false);
+            _backpackPanel = new InventoryGrid(Map.LocalPlayer, 12, false, true);
             AddChild(_backpackPanel);
 
             SetTabVisibility(currentTabIndex);
