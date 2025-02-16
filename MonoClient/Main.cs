@@ -6,6 +6,7 @@ using Common.Vector;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MonoClient.AppEngine;
 using MonoClient.Assets;
 using MonoClient.Assets.Libraries;
 using MonoClient.Display;
@@ -85,6 +86,12 @@ public class Main : Game {
         SliceConfig.LoadSliceData();
         
         DisplayManager.Init();
+
+
+
+
+        /* uncomment to force restart app/world servers, takes around 1 minute for reboot to finish */
+        //AppEngineClient.SendRequest("/dev/backup/restart");
     }
 
     protected override void Update(GameTime gameTime) {
