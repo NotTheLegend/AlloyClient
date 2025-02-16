@@ -33,7 +33,7 @@ namespace MonoClient.Screens.Game.Components.Hud
 
             _details = new CharacterDetails();
             _details.X = 5;
-            _details.Y = _minimap.Y + _minimap.Height + 5;
+            _details.Y = _minimap.Y + _minimap.Height;
             AddChild(_details);
 
             _bars = new CharacterBars();

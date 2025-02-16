@@ -7,7 +7,7 @@ namespace MonoClient.Screens.Game.Components.Hud;
 public class CharacterBars : Sprite {
 
     public int height = 20;
-    public int offset = 7;
+    public int offset = 8;
 
     private readonly StatusBar _expBar;
     private readonly StatusBar _fameBar;

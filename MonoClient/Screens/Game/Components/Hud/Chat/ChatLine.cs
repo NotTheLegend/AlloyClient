@@ -50,7 +50,7 @@ public class ChatLine {
         });
 
         string name = _sender;
-        int xOffset = 0;
+        int xOffset = 5;
         
         TextConfig nameFormat = ChatFormats.PlayerFormat;
         TextConfig textFormat = _sender switch {
@@ -89,6 +89,7 @@ public class ChatLine {
         
         if (_numStars >= 0) {
             var starIcon = FameUtils.StarsToIcon(_numStars);
+            starIcon.Alpha = 1;
             lineSprite.AddChild(starIcon);
             
             xOffset += starIcon.Width;
@@ -108,7 +109,7 @@ public class ChatLine {
         }
 
         textFormat.MaxWidth = lineSprite.Width;
-        
+        textFormat.Bold = 1;
         var messageText = new SimpleText(textFormat);
         messageText.OffsetFirstLineBy(xOffset);
         messageText.SetText(_text);

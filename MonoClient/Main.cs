@@ -53,7 +53,7 @@ public class Main : Game {
     }
 
     protected override void Initialize() {
-        Window.Title = "Domain of Magica";
+        Window.Title = "Mono 7.0";
 
         Graphics.IsFullScreen = Settings.Fullscreen;
         Graphics.HardwareModeSwitch = !Settings.Fullscreen;

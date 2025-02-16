@@ -45,6 +45,7 @@ public sealed class ItemTile : Sprite {
     private IntVector2 _dragStart;
     private bool _checkForDrag;
     private bool _dragging;
+    private uint _bgColor;
 
     private readonly Timer _doubleTimer = new Timer(250, 1);
     private bool _pendingDouble;
@@ -53,17 +54,18 @@ public sealed class ItemTile : Sprite {
     private readonly ObjectRect _slotDetail;
     private readonly SimpleText _slotId;
 
-    public ItemTile(Entity owner, byte slotId, bool interactive, CutEdges cut, bool oneWay, byte slotType = 0, int tileSize = 50) {
+    public ItemTile(Entity owner, byte slotId, bool interactive, CutEdges cut, bool oneWay, byte slotType = 0, int tileSize = 50, uint bgcolor = 0x545454) {
         Size = tileSize;
         Owner = owner;
         SlotId = slotId;
         SlotType = slotType;
         Interactive = interactive;
         OneWay = oneWay;
-        
+        _bgColor = bgcolor;
+
         _doubleTimer.AddEventListener(TimerEvent.TimerComplete, OnSingleClick);
         
-        _background = new CutEdgeRect(new CutEdgeConfig { Width = Size, Height = Size, CutX = 4, CutY = 4, Cuts = cut, Color = 0x545454 });
+        _background = new CutEdgeRect(new CutEdgeConfig { Width = Size, Height = Size, CutX = 4, CutY = 4, Cuts = cut, Color = _bgColor });
         AddChild(_background);
         
         _slotDetail = new ObjectRect(new ObjectRectConfig { Texture = AssetUtils.GetTextureInfo(0x0096), Width = Size, Height = Size });
@@ -110,22 +112,25 @@ public sealed class ItemTile : Sprite {
         _sprite.AddEventListener(MouseEventId.MouseOut, OnMouseOut);
     }
 
-    public void SetItem(ItemDesc item) {
+    public void SetItem(ItemDesc item)
+    {
         Item = item;
-
-        if (Item != null && Item.ObjectType > 0) {
+        if (Item != null && Item.ObjectType > 0)
+        {
             _sprite.ChangeTexture(AssetUtils.GetTextureInfo(Item.ObjectType));
-            _background.SetColor(IsUsableByPlayer(Item) ? 0x545454u : 0x5C1D1Du);
+            _background.SetColor(IsUsableByPlayer(Item) ? _bgColor : 0x5C1D1Du);
             _slotDetail.Visible = false;
             _slotId.Visible = false;
-        } else {
+        }
+        else
+        {
             _sprite.ChangeTexture(AssetUtils.GetTextureInfo(0x0096));
-            _background.SetColor(0x545454);
+            _background.SetColor(_bgColor);
             if (SlotType != 0) _slotDetail.Visible = true;
             if (Owner is Player && SlotType == 0) _slotId.Visible = true;
             if (_tooltip != null) TooltipManager.RemoveTooltip(_tooltip);
         }
-        
+
         UpdateTierTag();
     }
 
@@ -138,7 +143,7 @@ public sealed class ItemTile : Sprite {
     }
 
     private void UpdateTierTag() {
-        if (Item == null) {
+        if (Item == null || Item.Consumable || Item.SlotType == 10) {
             _tierText.Visible = false;
             return;
         }
@@ -150,13 +155,14 @@ public sealed class ItemTile : Sprite {
             color = 0x8A2BE2;
             tag = "UT";
         }
-        
+
         //todo: item set
         /*if (Item.Set) {
             color = 0xFF9900;
             tag = "ST";
         }*/
-        
+
+
         _tierText.SetText(tag);
         _tierText.SetColor(color);
         _tierText.Visible = true;

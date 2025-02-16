@@ -11,16 +11,18 @@ public sealed class CharacterDetails : Sprite {
     private readonly SimpleText _name;
 
     public CharacterDetails() {
-        _skin = new ObjectRect(new ObjectRectConfig { Width = 40, Height = 40 });
+        _skin = new ObjectRect(new ObjectRectConfig { Width = 30, Height = 30 });
+        _skin.Y = 4;
+        _skin.X = 4;
         AddChild(_skin);
         _name = new SimpleText(new TextConfig {
             Text = "test",
             FontSize = 25,
             Bold = 2,
-            X = 44,
-            Y = 20, 
-            OutlineThickness = 4,
-            Color = 0xb3b3b3,
+            X = 40,
+            Y = 20,
+            Color = 0xdadada,
+            OutlineThickness = 0,
             OutlineColor = 0,
             Anchor = UiAnchor.MiddleLeft
         });

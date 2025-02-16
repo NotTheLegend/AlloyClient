@@ -25,7 +25,7 @@ public sealed class EquippedGrid : Sprite {
         _owner.InventoryUpdate.Add(OnInventoryChange);
 
         for (byte i = 0; i < NumSlots; i++) {
-            var slot = new ItemTile(_owner, i, true, Cuts[i], false, (byte)_owner.Properties.SlotTypes[i], tileSize: 49);
+            var slot = new ItemTile(_owner, i, true, Cuts[i], false, (byte)_owner.Properties.SlotTypes[i], tileSize: 49, bgcolor: 0x454545);
             slot.X = i % 4 * (49 + 4) + 4;
             slot.Y = i / 4 * (49 + 4) + 3;
             AddChild(slot);
@@ -38,9 +38,7 @@ public sealed class EquippedGrid : Sprite {
         AddChild(bg);
 
         for (byte i = 0; i < NumSlots; i++) {
-            var slot = new ItemTile(null, i, false, Cuts[i], false, (byte)slotTypes[i]);
-            slot.Width = 49;
-            slot.Height = 49;
+            var slot = new ItemTile(null, i, false, Cuts[i], false, (byte)slotTypes[i], tileSize: 49, bgcolor: 0x454545);
             slot.X = i % 4 * (49 + 4) + 4;
             slot.Y = i / 4 * (49 + 4) + 3;
             slot.SetItem(items[i]);

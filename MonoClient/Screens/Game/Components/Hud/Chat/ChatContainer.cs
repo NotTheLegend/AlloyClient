@@ -17,7 +17,7 @@ namespace MonoClient.Screens.Game.Components.Hud.Chat;
 
 public class ChatContainer : Container {
     private const int MaxChatHistory = 40;
-    private const int MaxChatShown = 10;
+    private const int MaxChatShown = 8;
     
     private readonly LinkedList<ChatLine> _chatLines = [];
     
@@ -67,7 +67,7 @@ public class ChatContainer : Container {
     }
 
     private void RefreshChatOrder() {
-        var yOffset = 0;
+        var yOffset = 10;
 
         var index = 0;
         foreach (var line in _chatLines) {
@@ -78,7 +78,7 @@ public class ChatContainer : Container {
                 sprite.Visible = false;
             } else {
                 sprite.Y = Height - yOffset;
-                yOffset += sprite.Height;
+                yOffset += sprite.Height + 10;
                 sprite.Visible = true;
             }
             index++;
