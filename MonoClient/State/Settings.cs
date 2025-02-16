@@ -18,8 +18,8 @@ public static class Settings {
     public const string BuildVersion = "7.0";
     public const string BuildLabel = $"Mono v{BuildVersion}";
 
-    public const string AppEngineAddress = "127.0.0.1";//162.248.102.164
-    //public const string AppEngineAddress = "162.248.102.164";//162.248.102.164
+    //public const string AppEngineAddress = "127.0.0.1";//162.248.102.164
+    public const string AppEngineAddress = "162.248.102.164";//162.248.102.164
     public const string AssetUrl = "https://domain-of-magica.github.io";
 
     public const string AppEnginePort = "8080";
@@ -29,8 +29,8 @@ public static class Settings {
 
     public const string RegisterCode = "Love_DoM";
 
-    public const string GameServerAddress = "127.0.0.1"; //162.248.102.164
-    //public const string GameServerAddress = "162.248.102.164"; //162.248.102.164
+    //public const string GameServerAddress = "127.0.0.1"; //162.248.102.164
+    public const string GameServerAddress = "162.248.102.164"; //162.248.102.164
     public const ushort GameServerPort = 2050;
 
     public static float XScaleUp {
