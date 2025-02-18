@@ -1,4 +1,5 @@
 ﻿using System;
+using Common;
 using MonoClient.State.SettingTypes;
 using MonoClient.UiLib.BuiltIn;
 
@@ -11,7 +12,7 @@ public class SliderOption : Option {
         _text = new SimpleText(new TextConfig {
             Text = text,
             FontSize = 22,
-            Bold = 1,
+            FontType = FontType.Bold,
             OutlineThickness = 2,
             Color = 0xABABAB
         });

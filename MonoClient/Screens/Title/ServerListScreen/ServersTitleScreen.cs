@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Common;
 using MonoClient.Data;
 using MonoClient.Data.XmlModels;
 using MonoClient.Display;
@@ -36,7 +37,7 @@ public class ServersTitleScreen : TitleScreenBase {
         var serverTitle = new SimpleText(new TextConfig() {
             Text = "Server Selection",
             FontSize = 32,
-            Bold = 1,
+            FontType = FontType.Bold,
             X = Settings.DefaultScreenWidth / 2,
             Y = 50,
             Anchor = UiAnchor.Middle,

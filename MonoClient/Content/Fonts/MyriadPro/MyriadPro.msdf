@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Settings>
-  <FontPath>Fonts\MyriadPro\MyriadPro.otf</FontPath>
+<Settings group="MyriadProFamily">
+  <FontPath type="Normal">Fonts\MyriadPro\MyriadPro.otf</FontPath>
+  <FontPath type="Bold">Fonts\MyriadPro\MyriadProBold.otf</FontPath>
+  <FontPath type="Bolder">Fonts\MyriadPro\MyriadProBolder.otf</FontPath>
   <MaxOutlineSize>16</MaxOutlineSize>
   <CharRange start="0x20" end="0xFF" />
   <CharRange start="0x2190" end="0x2199" />

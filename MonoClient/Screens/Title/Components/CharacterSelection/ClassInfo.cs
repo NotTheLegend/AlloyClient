@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Common;
 using Microsoft.Xna.Framework;
 using MonoClient.Assets.Libraries;
 using MonoClient.Objects.Util.ItemDatas;
@@ -76,7 +77,7 @@ public class ClassInfo : Container {
         _className = new SimpleText(new TextConfig {
             Text = props.ObjectId,
             FontSize = 30,
-            Bold = 1
+            FontType = FontType.Bold
         });
         _className.X = _characterRect.X + _characterRect.Width / 2 - _className.Width / 2;;
         _className.Y = _characterRect.Y - 40;
@@ -87,7 +88,7 @@ public class ClassInfo : Container {
         _classDescription = new SimpleText(new TextConfig {
             Text = props.Description,
             FontSize = 20,
-            Bold = 1,
+            FontType = FontType.Bold,
             MaxWidth = 200
         });
         _classDescription.X = 100;

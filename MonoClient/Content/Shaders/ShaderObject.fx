@@ -33,33 +33,6 @@ sampler2D TextSample = sampler_state{
 
 };
 
-float PixelRangeBold;
-float2 TextTextureSizeBold;
-texture TextBoldTexture;
-sampler2D TextBoldSample = sampler_state{
-    Texture = (TextBoldTexture);
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MagFilter = LINEAR;
-    MinFilter = LINEAR;
-    Mipfilter = LINEAR;
-
-};
-
-float PixelRangeBolder;
-float2 TextTextureSizeBolder;
-texture TextBolderTexture;
-sampler2D TextBolderSample = sampler_state
-{
-    Texture = (TextBolderTexture);
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MagFilter = LINEAR;
-    MinFilter = LINEAR;
-    Mipfilter = LINEAR;
-
-};
-
 struct VertexInput {
 	float4 Position : POSITION0;
 	float2 BaseUV : BLENDWEIGHT0;
@@ -317,26 +290,12 @@ float4 GetGameObject(VertexOutput input) {
     return color;
 }
 
+//todo bring over ui text improvements
 float4 GetText(VertexOutput input) {
     float2 uv = map(input.BaseUV, input.UV.xy, input.UV.xy + input.UV.zw);
-    float3 samp;
-    float pRange;
-    float2 dim;
-    if (input.Extra.z == 2.0)
-    {
-        samp = tex2D(TextBolderSample, uv).rgb;
-        pRange = PixelRangeBolder;
-        dim = TextTextureSizeBolder;
-    } else if (input.Extra.z == 1.0) {
-        samp = tex2D(TextBoldSample, uv).rgb;
-        pRange = PixelRangeBold;
-        dim = TextTextureSizeBold;
-    } else {
-        samp = tex2D(TextSample, uv).rgb;
-        pRange = PixelRange;
-        dim = TextTextureSize;
-    }
-    
+    float3 samp = tex2D(TextSample, uv).rgb;
+    float pRange = PixelRange;
+    float2 dim = TextTextureSize;
     
     float2 msdfUnit = pRange / dim;
    

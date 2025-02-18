@@ -1,4 +1,5 @@
-﻿using MonoClient.Data;
+﻿using Common;
+using MonoClient.Data;
 using MonoClient.Display;
 using MonoClient.Screens.Title.Components.Panels;
 using MonoClient.State;
@@ -37,11 +38,11 @@ public class AccountOverlay : Sprite {
 
         _newAccount = new Container();
 
-        var newConfig = new TextConfig { Text = "new account - ", FontSize = 24, Bold = 0, Color = 0xB3B3B3 };
+        var newConfig = new TextConfig { Text = "new account - ", FontSize = 24, FontType = FontType.Normal, Color = 0xB3B3B3 };
         var newText = new SimpleText(newConfig);
         _newAccount.AddChild(newText);
 
-        var registerConfig = new TextButtonConfig { Text = "register", FontSize = 24, OnClicked = () => OverlayManager.Enqueue(new RegisterContainer()), Bold = 1, X = newText.Width };
+        var registerConfig = new TextButtonConfig { Text = "register", FontSize = 24, OnClicked = () => OverlayManager.Enqueue(new RegisterContainer()), FontType = FontType.Bold, X = newText.Width };
         var registerButton = new TextButton(registerConfig);
         _newAccount.AddChild(registerButton);
 
@@ -49,7 +50,7 @@ public class AccountOverlay : Sprite {
         var dashText = new SimpleText(dashConfig);
         _newAccount.AddChild(dashText);
 
-        var loginConfig = new TextButtonConfig { Text = "login", FontSize = 24, OnClicked = () => OverlayManager.Enqueue(new LoginContainer()), Bold = 1, X = dashText.X + dashText.Width };
+        var loginConfig = new TextButtonConfig { Text = "login", FontSize = 24, OnClicked = () => OverlayManager.Enqueue(new LoginContainer()), FontType = FontType.Bold, X = dashText.X + dashText.Width };
         var loginButton = new TextButton(loginConfig);
         _newAccount.AddChild(loginButton);
     }

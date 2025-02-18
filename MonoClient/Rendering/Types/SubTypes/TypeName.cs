@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Common;
+using Microsoft.Xna.Framework;
 using MonoClient.Rendering.VertexData;
 using MonoClient.Objects;
 using MonoClient.UiLib;
@@ -29,13 +30,13 @@ public class TypeName : SubRenderBase {
             Name = "Default";
         
         SetTextures();
-        Extra = new ExtraData(RenderConfig.TypeText, RenderConfig.NoBold);
+        Extra = new ExtraData(RenderConfig.TypeText, RenderConfig.NoShade);
     }
 
     public void SetTextures() {
         const float size = 0.5f * 0.5f;
         
-        var font = UiRender.MyriadPro;
+        var font = UiRender.GetFont(FontType.Normal);
         _glyphs = new GlyphData[Name.Length];
 
         _height = font.Ascender * size;

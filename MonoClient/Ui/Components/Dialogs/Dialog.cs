@@ -1,4 +1,5 @@
 ﻿using System;
+using Common;
 using MonoClient.State;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
@@ -29,7 +30,7 @@ public class Dialog : Sprite {
         var box = new ColorRect(boxConfig);
         AddChild(box);
 
-        var titleConfig = new TextConfig { Text = title, FontSize = 24, Bold = 1, Color = 0xFFFFFF, Anchor = UiAnchor.MiddleTop};
+        var titleConfig = new TextConfig { Text = title, FontSize = 24, FontType = FontType.Bold, Color = 0xFFFFFF, Anchor = UiAnchor.MiddleTop};
         var titleText = new SimpleText(titleConfig);
         box.AddChild(titleText);
 

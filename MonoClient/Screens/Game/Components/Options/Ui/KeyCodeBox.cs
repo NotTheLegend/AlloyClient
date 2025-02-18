@@ -1,4 +1,5 @@
 ﻿using System;
+using Common;
 using Common.Vector;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -61,7 +62,7 @@ public class KeyCodeBox : Sprite {
         AddChild(_background);
 
         _char = new SimpleText(new TextConfig {
-            Text = _mouseText ?? CharCodes[(int) _keyCode], FontSize = 25, Bold = 1, X = BoxWidth / 2, Y = BoxHeight / 2, OutlineThickness = 2, Anchor = UiAnchor.Middle
+            Text = _mouseText ?? CharCodes[(int) _keyCode], FontSize = 25, FontType = FontType.Bold, X = BoxWidth / 2, Y = BoxHeight / 2, OutlineThickness = 2, Anchor = UiAnchor.Middle
         });
         AddChild(_char);
 

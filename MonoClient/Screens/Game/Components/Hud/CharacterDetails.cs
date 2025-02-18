@@ -1,4 +1,5 @@
-﻿using MonoClient.Objects;
+﻿using Common;
+using MonoClient.Objects;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
@@ -18,7 +19,7 @@ public sealed class CharacterDetails : Sprite {
         _name = new SimpleText(new TextConfig {
             Text = "test",
             FontSize = 25,
-            Bold = 2,
+            FontType = FontType.Bolder,
             X = 40,
             Y = 20,
             Color = 0xdadada,

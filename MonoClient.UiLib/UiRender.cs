@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using Common;
 using Common.Pipeline;
 using Common.Vector;
 using Microsoft.Xna.Framework;
@@ -29,9 +30,8 @@ public static class UiRender {
 
     public static Texture2D Minimap;
 
-    public static BitmapFont MyriadPro { get; private set; }
-    public static BitmapFont MyriadProBold { get; private set; }
-    public static BitmapFont MyriadProBolder { get; private set; }
+    public static BitmapFamily MyriadPro;
+    
 
 
     public static Matrix ViewMatrix;
@@ -51,9 +51,7 @@ public static class UiRender {
         
         game.Window.TextInput += OnTextInput;
 
-        MyriadPro = new BitmapFont("Fonts/MyriadPro/MyriadPro");
-        MyriadProBold = new BitmapFont("Fonts/MyriadPro/MyriadProBold");
-        MyriadProBolder = new BitmapFont("Fonts/MyriadPro/MyriadProBolder");
+        MyriadPro = new BitmapFamily("Fonts/MyriadPro/MyriadPro");
 
         UiShader = Content.Load<Effect>("shaders/ShaderUi");
 
@@ -62,16 +60,8 @@ public static class UiRender {
         UiShader.Parameters["MinimapTexture"].SetValue(Minimap);
 
         UiShader.Parameters["PixelRange"].SetValue(MyriadPro.PixelRange);
-        UiShader.Parameters["TextTextureSize"].SetValue(new Vector2(MyriadPro.Texture.Width, MyriadPro.Texture.Height));
-        UiShader.Parameters["TextTexture"].SetValue(MyriadPro.Texture);
-
-        UiShader.Parameters["PixelRangeBold"].SetValue(MyriadProBold.PixelRange);
-        UiShader.Parameters["TextTextureSizeBold"].SetValue(new Vector2(MyriadProBold.Texture.Width, MyriadProBold.Texture.Height));
-        UiShader.Parameters["TextBoldTexture"].SetValue(MyriadProBold.Texture);
-
-        UiShader.Parameters["PixelRangeBolder"].SetValue(MyriadProBolder.PixelRange);
-        UiShader.Parameters["TextTextureSizeBolder"].SetValue(new Vector2(MyriadProBolder.Texture.Width, MyriadProBolder.Texture.Height));
-        UiShader.Parameters["TextBolderTexture"].SetValue(MyriadProBolder.Texture);
+        UiShader.Parameters["TextTextureSize"].SetValue(new Vector2(MyriadPro.Atlas.Width, MyriadPro.Atlas.Height));
+        UiShader.Parameters["TextTexture"].SetValue(MyriadPro.Atlas);
 
         UiShader.Parameters["TitleBackgroundTexture"].SetValue(Content.Load<Texture2D>("Ui/titleView/TitleScreenBackground"));
         UiShader.Parameters["TitleGraphicTexture"].SetValue(Content.Load<Texture2D>("Ui/titleView/TitleScreenGraphic"));
@@ -89,18 +79,8 @@ public static class UiRender {
 
     }
 
-    public static BitmapFont GetFont(int bold)
-    {
-        switch (bold)
-        {
-            case 0:
-                return MyriadPro;
-            case 1:
-                return MyriadProBold;
-            case 2:
-                return MyriadProBolder;
-        }
-        return MyriadPro;
+    public static BitmapFont GetFont(FontType type) {
+        return MyriadPro.Fonts[type];
     }
 
     private static void OnTextInput(object _, TextInputEventArgs args) {

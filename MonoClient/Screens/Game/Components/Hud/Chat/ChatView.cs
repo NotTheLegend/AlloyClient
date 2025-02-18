@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Common;
 using Microsoft.Xna.Framework;
 using MonoClient.Networking;
 using MonoClient.Networking.Packets.Outgoing;
@@ -35,7 +36,7 @@ public class ChatView : Sprite {
 
         _chatBox = new TextInput(new InputConfig {
             FontSize = 18,
-            Bold = 1,
+            FontType = FontType.Bold,
             OutlineThickness = 3,
             ClickToActivate = true,
             Width = Width,

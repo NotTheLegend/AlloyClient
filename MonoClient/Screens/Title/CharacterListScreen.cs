@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Common;
 using MonoClient.Data;
 using MonoClient.Display;
 using MonoClient.Screens.Game;
@@ -95,7 +96,7 @@ public class CharacterListScreen : TitleScreenBase {
         var nameText = new TextButton(new TextButtonConfig() {
             Text = Account.Username,
             FontSize = 32,
-            Bold = 1,
+            FontType = FontType.Bold,
             X = Settings.DefaultScreenWidth / 2,
             Y = 50,
             OnClicked = () => OverlayManager.Enqueue(new NameContainer()),
@@ -119,7 +120,7 @@ public class CharacterListScreen : TitleScreenBase {
         var goldText = new SimpleText(new TextConfig {
             Text = CharacterList.Model.Account.Credits.ToString(),
             FontSize = 24,
-            Bold = 0,
+            FontType = FontType.Normal,
             X = goldIcon.X - goldIcon.Width - 5,
             Y = 93,
             Color = 0xFFFFFF,
@@ -140,7 +141,7 @@ public class CharacterListScreen : TitleScreenBase {
         var fameText = new SimpleText(new TextConfig {
             Text = CharacterList.Model.Account.Stats.Fame.ToString(),
             FontSize = 24,
-            Bold = 0,
+            FontType = FontType.Normal,
             X = fameIcon.X - fameIcon.Width - 5,
             Y = 93,
             Color = 0xFFFFFF,

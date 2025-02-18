@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Common;
+using Microsoft.Xna.Framework;
 using MonoClient.Networking;
 using MonoClient.Networking.Packets.Outgoing;
 using MonoClient.Objects;
@@ -36,7 +37,7 @@ public class PortalPanel : Panel {
             Y = 16,
             Text = txt,
             FontSize = 22,
-            Bold = 1,
+            FontType = FontType.Bold,
             OutlineColor = 0xFFFFFF,
             Anchor = UiAnchor.MiddleTop
         });
@@ -47,7 +48,7 @@ public class PortalPanel : Panel {
             Y = name.Height + 50,
             Text = _locked ? "Locked" : "Full",
             FontSize = 20,
-            Bold = 1,
+            FontType = FontType.Bold,
             OutlineColor = 0xFF0000,
             Color = 0xFF0000,
             Anchor = UiAnchor.MiddleTop
@@ -58,7 +59,7 @@ public class PortalPanel : Panel {
             Text = "Enter",
             FontSize = 20,
             OnClicked = EnterPortal,
-            Bold = 1,
+            FontType = FontType.Bold,
             X = Width / 2,
             Y = name.Height + 50,
             Anchor = UiAnchor.MiddleTop

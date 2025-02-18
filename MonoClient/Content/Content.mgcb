@@ -25,19 +25,9 @@
 /build:AtlasUi.uiAtlasFlag
 
 #begin Fonts/MyriadPro/MyriadPro.msdf
-/importer:MsdfImporter
-/processor:MsdfProcessor
+/importer:FontFamilyImporter
+/processor:FontFamilyProcessor
 /build:Fonts/MyriadPro/MyriadPro.msdf
-
-#begin Fonts/MyriadPro/MyriadProBold.msdf
-/importer:MsdfImporter
-/processor:MsdfProcessor
-/build:Fonts/MyriadPro/MyriadProBold.msdf
-
-#begin Fonts/MyriadPro/MyriadProBolder.msdf
-/importer:MsdfImporter
-/processor:MsdfProcessor
-/build:Fonts/MyriadPro/MyriadProBolder.msdf
 
 #begin Icon.bmp
 /importer:TextureImporter

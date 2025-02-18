@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Common;
 using MonoClient.Assets;
 using MonoClient.Data;
 using MonoClient.Display;
@@ -20,7 +21,7 @@ public class LoadingScreen : Screen {
         var config = new TextConfig {
             Text = "Loading...",
             FontSize = 40,
-            Bold = 1,
+            FontType = FontType.Bold,
             X = Settings.DefaultScreenWidth / 2,
             Y = Settings.DefaultScreenHeight - 50,
             Color = 0xFFFFFF,

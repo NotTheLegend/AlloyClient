@@ -20,13 +20,11 @@ public enum TextureType : byte {
     GameAtlas = 1,
     UiAtlas = 2,
     UiSlice = 3,
-    TextNormal = 4,
-    TextBold = 5,
-    TextBolder = 6,
-    TitleBackground = 7,
-    TitleGraphic = 8,
-    Minimap = 9,
-    Ellipse = 10,
+    Text = 4,
+    TitleBackground = 5,
+    TitleGraphic = 6,
+    Minimap = 7,
+    Ellipse = 8,
 }
 
 public enum HitboxType : byte {

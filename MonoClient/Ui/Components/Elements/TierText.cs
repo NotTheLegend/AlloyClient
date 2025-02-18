@@ -1,4 +1,5 @@
-﻿using MonoClient.Objects.Util.ItemDatas;
+﻿using Common;
+using MonoClient.Objects.Util.ItemDatas;
 using MonoClient.UiLib.Core;
 using Microsoft.Xna.Framework;
 namespace MonoClient.UiLib.BuiltIn;
@@ -32,7 +33,7 @@ public class TierText : Sprite
         Tag = new SimpleText(new TextConfig()
         {
             FontSize = 16,
-            Bold = 1,
+            FontType = FontType.Bold,
             Text = text,
             OutlineColor = 0,
             OutlineThickness = 2

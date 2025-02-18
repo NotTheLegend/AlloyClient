@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection.Emit;
+using Common;
 using MonoClient.Objects;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
@@ -173,7 +174,7 @@ namespace MonoClient.Screens.Game.Components.Hud.Inventory
                 { 
                     Text = IndexName[i], 
                     FontSize = 16, 
-                    Bold = 0, 
+                    FontType = FontType.Normal, 
                     X = even ? offset : Width - 16 - offset*2, 
                     Y = y, 
                     OutlineThickness = 0, 
@@ -189,7 +190,7 @@ namespace MonoClient.Screens.Game.Components.Hud.Inventory
                 { 
                     Text = IndexValue[i].ToString() + (extraInfo ? $" +{0}" : ""), 
                     FontSize = 16, 
-                    Bold = 1, 
+                    FontType = FontType.Bold, 
                     X = (even ? offset : Width - 16 - offset*2) + StatName.Width + 5, //kinda gross but its needed
                     Y = y, 
                     OutlineThickness = 0, 

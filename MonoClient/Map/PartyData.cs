@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using MonoClient.Networking;
 using MonoClient.Networking.Packets.Outgoing;
@@ -13,20 +14,22 @@ public static class PartyData {
 
     private const int MaxDistance = 50 * 50;
 
-    public static readonly HashSet<int> Locked = [];
+    public static readonly HashSet<int> LockedPlayers = [];
     
-    public static readonly HashSet<int> Ignored = [];
+    public static readonly HashSet<int> IgnoredPlayers = [];
 
     private static double _lastUpdateTime;
 
-    private static readonly PartyInfo[] _members = new PartyInfo[250];
+    private static readonly PartyInfo[] Members = new PartyInfo[250];
 
-    public static readonly ArraySegment<PartyInfo> PartyMembers = new(_members, 0, MaxVisibleMembers);
+    public static readonly ArraySegment<PartyInfo> PartyMembers = new(Members, 0, MaxVisibleMembers);
+
+    private static readonly PartyComparison PartyComparer = new();
 
     public static void Clear() {
-        Locked.Clear();
-        Ignored.Clear();
-        Array.Clear(_members);
+        LockedPlayers.Clear();
+        IgnoredPlayers.Clear();
+        Array.Clear(Members);
     }
 
     public static void Update(double time) {
@@ -38,7 +41,7 @@ public static class PartyData {
         
         _lastUpdateTime = time;
         
-        Array.Clear(_members);
+        Array.Clear(Members);
 
         var localPosition = Map.LocalPlayer.Position;
         var i = 0;
@@ -46,23 +49,23 @@ public static class PartyData {
         foreach (var player in Map.Players.Values) {
             var dist = MathUtils.GetDistanceSquared(localPosition, player.Position);
             if (dist < MaxDistance) {
-                _members[i] = new PartyInfo(player, player.Locked, dist, player.ObjectId);
+                Members[i] = new PartyInfo(player, player.Locked, dist, player.ObjectId);
                 i++;
             }
         }
         
-        Array.Sort(_members, (self, other) => (self.Starred && !other.Starred) || (self.Dist < other.Dist) || (self.ObjectId < other.ObjectId) ? -1 : 1);
+        Array.Sort(Members, 0, i, PartyComparer);
     }
 
     public static void SetData(int id, int[] list) {
-        var set = id == 0 ? Locked : Ignored;
+        var set = id == 0 ? LockedPlayers : IgnoredPlayers;
         set.UnionWith(list);
     }
 
     public static void LockPlayer(Player player) {
         player.Locked = true;
         _lastUpdateTime = int.MinValue;
-        Locked.Add(player.AccountId);
+        LockedPlayers.Add(player.AccountId);
 
         var pkt = EditAccountList.CreatePacket();
         pkt.AccountListId = 0;
@@ -75,7 +78,7 @@ public static class PartyData {
     public static void UnlockPlayer(Player player) {
         player.Locked = false;
         _lastUpdateTime = int.MinValue;
-        Locked.Remove(player.AccountId);
+        LockedPlayers.Remove(player.AccountId);
 
         var pkt = EditAccountList.CreatePacket();
         pkt.AccountListId = 0;
@@ -88,7 +91,7 @@ public static class PartyData {
     public static void IgnorePlayer(Player player) {
         player.Ignored = true;
         _lastUpdateTime = int.MinValue;
-        Ignored.Add(player.AccountId);
+        IgnoredPlayers.Add(player.AccountId);
 
         var pkt = EditAccountList.CreatePacket();
         pkt.AccountListId = 1;
@@ -101,7 +104,7 @@ public static class PartyData {
     public static void UnignorePlayer(Player player) {
         player.Ignored = false;
         _lastUpdateTime = int.MinValue;
-        Ignored.Remove(player.AccountId);
+        IgnoredPlayers.Remove(player.AccountId);
 
         var pkt = EditAccountList.CreatePacket();
         pkt.AccountListId = 1;
@@ -111,5 +114,11 @@ public static class PartyData {
         Client.QueuePacket(pkt);
     }
 
-    public sealed record PartyInfo(Player Player, bool Starred = false, float Dist = float.MaxValue, int ObjectId = int.MaxValue);
+    public sealed record PartyInfo(Player Player, bool Locked = false, float Dist = float.MaxValue, int ObjectId = int.MaxValue);
+    
+    private class PartyComparison : IComparer<PartyInfo> {
+        public int Compare(PartyInfo self, PartyInfo other) {
+            return (self!.Locked && !other!.Locked) || (self.Dist < other!.Dist) || (self.ObjectId < other.ObjectId) ? -1 : 1;
+        }
+    }
 }

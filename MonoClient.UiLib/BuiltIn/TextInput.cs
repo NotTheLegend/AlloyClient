@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Common;
 using Common.Vector;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -14,7 +15,7 @@ public struct InputConfig {
     public int X = 0;
     public int Y = 0;
     public float FontSize = 10;
-    public int Bold = 0;
+    public FontType FontType = FontType.Normal;
     public uint Color = 0xFFFFFF;
     public uint OutlineColor = 0x0;
     public uint OutlineThickness = 4;
@@ -68,7 +69,7 @@ public sealed class TextInput : Sprite {
         X = config.X;
         Y = config.Y;
         _fontScale = config.FontSize;
-        _font = UiRender.GetFont(config.Bold);
+        _font = UiRender.GetFont(config.FontType);
         SetColor(config.Color);
         SetColorSecondary(config.OutlineColor);
         _outlineThickness = _font.ValidateOutlineSize(config.OutlineThickness);
@@ -83,24 +84,13 @@ public sealed class TextInput : Sprite {
 
         MouseEnabled = true;
 
-        switch (config.Bold)
-        {
-            case 0:
-                TextureId = TextureType.TextNormal;
-                break;
-            case 1:
-                TextureId = TextureType.TextBold;
-                break;
-            case 2:
-                TextureId = TextureType.TextBolder;
-                break;
-        }
+        TextureId = TextureType.Text;
 
         Extra1.X = _outlineThickness;
 
         _inputText.Append(config.DefaultText);
         
-        var caretConfig = new TextConfig { Text = "|", FontSize = config.FontSize, Bold = config.Bold, Color = config.Color, OutlineColor = config.OutlineColor, OutlineThickness = (int)_outlineThickness };
+        var caretConfig = new TextConfig { Text = "|", FontSize = config.FontSize, FontType = config.FontType, Color = config.Color, OutlineColor = config.OutlineColor, OutlineThickness = (int)_outlineThickness };
         _caret = new SimpleText(caretConfig);
         _caret.Visible = false;
         AddChild(_caret);

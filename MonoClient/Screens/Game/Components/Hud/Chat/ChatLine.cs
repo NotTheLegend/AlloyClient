@@ -1,4 +1,5 @@
-﻿using MonoClient.Data;
+﻿using Common;
+using MonoClient.Data;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
@@ -80,7 +81,7 @@ public class ChatLine {
             nameFormat = textFormat = ChatFormats.GuildFormat;
         } else if (!string.IsNullOrEmpty(_recipient)) {
             nameFormat = textFormat = ChatFormats.TellFormat;
-            nameFormat.Bold = 1;
+            nameFormat.FontType = FontType.Bold;
             if (!_toMe) {
                 prefix = "To: ";
                 name = _recipient;
@@ -96,7 +97,7 @@ public class ChatLine {
         }
 
         if (!string.IsNullOrEmpty(name)) {
-            nameFormat.Bold = 1;
+            nameFormat.FontType = FontType.Bold;
             
             var nameText = new SimpleText(nameFormat);
             nameText.SetText($"{prefix}<{name}> ");
@@ -109,7 +110,7 @@ public class ChatLine {
         }
 
         textFormat.MaxWidth = lineSprite.Width;
-        textFormat.Bold = 1;
+        textFormat.FontType = FontType.Bold;
         var messageText = new SimpleText(textFormat);
         messageText.OffsetFirstLineBy(xOffset);
         messageText.SetText(_text);

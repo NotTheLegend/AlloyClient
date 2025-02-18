@@ -1,4 +1,5 @@
 using System.Text;
+using Common;
 using MonoClient.State;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
@@ -41,7 +42,7 @@ public class EditorObjectDetailsPanel : Sprite {
 
         var textConfig = new TextConfig {
             FontSize = 16,
-            Bold = 1,
+            FontType = FontType.Bold,
             X = 5,
             Y = 5,
             Text = "Empty",

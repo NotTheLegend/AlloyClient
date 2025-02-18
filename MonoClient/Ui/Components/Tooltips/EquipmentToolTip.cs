@@ -5,6 +5,7 @@ using MonoClient.UiLib.Enums;
 using MonoClient.Utils;
 using System;
 using System.Reflection.Metadata.Ecma335;
+using Common;
 
 namespace MonoClient.Ui.Components.Tooltips;
 
@@ -46,7 +47,7 @@ public sealed class EquipmentToolTip : Tooltip
 
     private void AddTitle()
     {
-        TitleText = new SimpleText(SimpleConfig(Item.ObjectId, 16, bold: 1, maxWidth: 204));
+        TitleText = new SimpleText(SimpleConfig(Item.ObjectId, 16, FontType.Bold, maxWidth: 204));
         TitleText.SetAnchor(UiAnchor.MiddleLeft);
         AddChild(TitleText);
     }
@@ -65,7 +66,7 @@ public sealed class EquipmentToolTip : Tooltip
     
     private void AddDescription()
     {
-        DescText = new SimpleText(SimpleConfig(Item.Description, 14, bold: 0, 0xaaaaaa, 0x0, 0.5f, 204));
+        DescText = new SimpleText(SimpleConfig(Item.Description, 14, FontType.Normal, 0xaaaaaa, 0x0, 0.5f, 204));
         AddChild(DescText);
     }
 
@@ -98,7 +99,7 @@ public sealed class EquipmentToolTip : Tooltip
         }
         if (statsText != "")
         {
-            StatsText = new SimpleText(SimpleConfig(statsText, 14, bold: 0, 0xaaaaaa, 0x0, 0.5f, 204));
+            StatsText = new SimpleText(SimpleConfig(statsText, 14, FontType.Normal, 0xaaaaaa, 0x0, 0.5f, 204));
             AddChild(StatsText);
         }
     }
@@ -140,12 +141,12 @@ public sealed class EquipmentToolTip : Tooltip
 
         return number;
     }
-    public static TextConfig SimpleConfig(string text = "", int size = 12, int bold = 0, uint color = 0xffffff, uint outline = 0x0, float thickness = 1f, int maxWidth = 220)
+    public static TextConfig SimpleConfig(string text = "", int size = 12, FontType type = FontType.Normal, uint color = 0xffffff, uint outline = 0x0, float thickness = 1f, int maxWidth = 220)
     {
         return new TextConfig()
         {
             FontSize = size,
-            Bold = bold,
+            FontType = type,
             Text = text,
             Color = color, 
             OutlineColor = outline,

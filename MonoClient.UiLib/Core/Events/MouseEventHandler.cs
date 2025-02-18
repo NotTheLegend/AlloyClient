@@ -156,7 +156,8 @@ internal class MouseEventHandler {
                 _pending.Enqueue(new EventData(eventData, global, true));
                 break;
             default:
-                Console.WriteLine("Unable to add callback, invalid signature, must be 'Callback()' or 'Callback(MouseEventArgs)'");
+                Console.WriteLine($"Unable to add callback, invalid signature, must be 'Callback()' or 'Callback(MouseEventArgs)' : {eventData.Callback.GetType().Name}");
+                throw new Exception();
                 break;
                     
         }

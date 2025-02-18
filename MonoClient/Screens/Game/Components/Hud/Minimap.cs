@@ -84,8 +84,9 @@ public sealed class Minimap : Sprite {
         _arrow.ColorTransformation = new ColorTransform(0f, 0f, 1f, 1f);
         AddChild(_arrow);
         
-        AddEventListener(MouseEventId.MouseOver, () => _mouseOver = true);
-        AddEventListener(MouseEventId.MouseOut, () => _mouseOver = false);
+        // :smallbrain: not valid callbacks, doesnt support lambdas /shrug >:
+        //AddEventListener(MouseEventId.MouseOver, () => _mouseOver = true);
+        //AddEventListener(MouseEventId.MouseOut, () => _mouseOver = false);
     }
 
     private void UpdateButtons() {

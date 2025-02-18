@@ -57,17 +57,10 @@ public static partial class Render {
         
         _shaderObject = Main.ContentManager.Load<Effect>("Shaders/ShaderObject");
         _shaderObject.Parameters["GameTexture"].SetValue(Main.Atlas.Texture);
+        
         _shaderObject.Parameters["PixelRange"].SetValue(UiRender.MyriadPro.PixelRange);
-        _shaderObject.Parameters["TextTextureSize"].SetValue(new Vector2(UiRender.MyriadPro.Texture.Width, UiRender.MyriadPro.Texture.Height));
-        _shaderObject.Parameters["TextTexture"].SetValue(UiRender.MyriadPro.Texture);
-
-        _shaderObject.Parameters["PixelRangeBold"].SetValue(UiRender.MyriadProBold.PixelRange);
-        _shaderObject.Parameters["TextTextureSizeBold"].SetValue(new Vector2(UiRender.MyriadProBold.Texture.Width, UiRender.MyriadProBold.Texture.Height));
-        _shaderObject.Parameters["TextBoldTexture"].SetValue(UiRender.MyriadProBold.Texture);
-
-        _shaderObject.Parameters["PixelRangeBolder"].SetValue(UiRender.MyriadProBolder.PixelRange);
-        _shaderObject.Parameters["TextTextureSizeBolder"].SetValue(new Vector2(UiRender.MyriadProBolder.Texture.Width, UiRender.MyriadProBolder.Texture.Height));
-        _shaderObject.Parameters["TextBolderTexture"].SetValue(UiRender.MyriadProBolder.Texture);
+        _shaderObject.Parameters["TextTextureSize"].SetValue(new Vector2(UiRender.MyriadPro.Atlas.Width, UiRender.MyriadPro.Atlas.Height));
+        _shaderObject.Parameters["TextTexture"].SetValue(UiRender.MyriadPro.Atlas);
 
         _shaderParticle = Main.ContentManager.Load<Effect>("Shaders/ShaderParticle");
         _shaderParticle.Parameters["GameTexture"].SetValue(Main.Atlas.Texture);

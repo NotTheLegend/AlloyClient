@@ -1,4 +1,5 @@
 ﻿using System;
+using Common;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
@@ -9,7 +10,7 @@ public struct TextButtonConfig {
     public string Text = "";
     public float FontSize = 1f;
     public Action OnClicked = null;
-    public int Bold = 1;
+    public FontType FontType = FontType.Bold;
     public uint ActiveColor = 0xFFFFFF;
     public uint HoverColor = 0xFFDC85;
     public uint InactiveColor = 0x363636;
@@ -39,7 +40,7 @@ public class TextButton : Sprite {
         _activeColor = config.ActiveColor;
         _onHoverColor = config.HoverColor;
         _inactive = config.InactiveColor;
-        _text = new SimpleText(new TextConfig {Text = config.Text, FontSize = config.FontSize, Bold = config.Bold, Color = _activeColor});
+        _text = new SimpleText(new TextConfig {Text = config.Text, FontSize = config.FontSize, FontType = config.FontType, Color = _activeColor});
         _onClicked = config.OnClicked;
 
         X = config.X;

@@ -1,4 +1,5 @@
 ﻿using System;
+using Common;
 using Microsoft.Xna.Framework;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
@@ -8,7 +9,7 @@ namespace MonoClient.UiLib.BuiltIn;
 public struct TextConfig {
     public string Text = "";
     public float FontSize = 1f;
-    public int Bold = 0;
+    public FontType FontType = FontType.Normal;
     public int X = 0;
     public int Y = 0;
     public int MaxWidth = -1;
@@ -39,7 +40,7 @@ public sealed class SimpleText : Sprite {
     public SimpleText(TextConfig config) {
         Text = config.Text;
         _fontScale = config.FontSize;
-        _font = UiRender.GetFont(config.Bold);
+        _font = UiRender.GetFont(config.FontType);
         _maxWidth = config.MaxWidth;
         X = config.X;
         Y = config.Y;
@@ -49,18 +50,7 @@ public sealed class SimpleText : Sprite {
         SetColorSecondary(config.OutlineColor);
         SetAnchor(config.Anchor);
 
-        switch (config.Bold)
-        {
-            case 0:
-                TextureId = TextureType.TextNormal;
-                break;
-            case 1:
-                TextureId = TextureType.TextBold;
-                break;
-            case 2:
-                TextureId = TextureType.TextBolder;
-                break;
-        }
+        TextureId = TextureType.Text;
         
         ResizeBackBuffer();
         FillData();

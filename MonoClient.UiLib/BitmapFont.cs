@@ -1,18 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Common;
 using Common.Atlas;
 using Common.Pipeline;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoClient.UiLib;
 
-public class BitmapFont {
+public class BitmapFamily {
+
+    public readonly Texture2D Atlas;
     
-    public readonly Texture2D Texture;
+    public readonly Dictionary<FontType, BitmapFont> Fonts = [];
+
+    public readonly float PixelRange;
+
+    public BitmapFamily(string fontFamily) {
+        var data = UiRender.Content.Load<FontFamily>(fontFamily);
+
+        Atlas = data.Atlas;
+
+        foreach (var kvp in data.FontData) {
+            Fonts[kvp.Key] = new BitmapFont(kvp.Value, Atlas.Width);
+        }
+
+        PixelRange = data.PixelRange;
+    }
+
+}
+
+public class BitmapFont {
 
     public readonly float LineHeight;
-    public readonly float PixelRange;
     public readonly float Ascender;
     public readonly float Descender;
     public readonly float OutlineTexel;
@@ -20,16 +41,13 @@ public class BitmapFont {
     public readonly Dictionary<char, FontGlyph> Glyphs;
     public readonly Dictionary<(char, char), float> Kernings;
 
-    public BitmapFont(string fontName) {
-        var msdfData = UiRender.Content.Load<MsdfData>(fontName);
-        Texture = msdfData.Texture;
-        LineHeight = msdfData.LineHeight;
-        PixelRange = msdfData.PixelRange;
-        Ascender = msdfData.Ascender;
-        Descender = msdfData.Descender;
-        Glyphs = msdfData.Glyphs;
-        Kernings = msdfData.Kernings;
-        OutlineTexel = msdfData.Texture.Width;
+    public BitmapFont(FontData fontData, int atlasWidth) {
+        LineHeight = fontData.LineHeight;
+        Ascender = fontData.Ascender;
+        Descender = fontData.Descender;
+        Glyphs = fontData.Glyphs;
+        Kernings = fontData.Kernings;
+        OutlineTexel = atlasWidth;// ??? tf was i on when i made this, i dont this is right for whatever its used for
     }
 
     //todo do this better

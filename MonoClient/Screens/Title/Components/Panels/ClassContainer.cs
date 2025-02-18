@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Common;
+using Microsoft.Xna.Framework;
 using MonoClient.Data;
 using MonoClient.Display;
 using MonoClient.Screens.Game;
@@ -27,14 +28,14 @@ public class ClassContainer : Overlay {
         AddChild(ClassInfo);
         AddChild(CharacterWheel);
         
-        var cancelConfig = new TextButtonConfig { Text = "Cancel", FontSize = 50, OnClicked = CloseOverlay, Bold = 0, X = 75, Y = 650 };
+        var cancelConfig = new TextButtonConfig { Text = "Cancel", FontSize = 50, OnClicked = CloseOverlay, FontType = FontType.Normal, X = 75, Y = 650 };
         var cancelButton = new TextButton(cancelConfig);
         AddChild(cancelButton);
         
         var slotConfig = new TextButtonConfig { Text = "Play", FontSize = 50, OnClicked = () => {
             ClassType = CharacterWheel.SelectedClass.Type;
             AddEventListener(TaskEvent.Completed, Account.PurchaseClassUnlock(ClassType), OnCreateResponse);
-        }, Bold = 0, X = 1000, Y = 360 };
+        }, FontType = FontType.Normal, X = 1000, Y = 360 };
         var slotButton = new TextButton(slotConfig);
         
         AddChild(slotButton);

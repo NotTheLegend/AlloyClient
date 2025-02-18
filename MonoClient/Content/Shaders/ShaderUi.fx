@@ -49,33 +49,6 @@ sampler2D TextSample = sampler_state{
 
 };
 
-float PixelRangeBold;
-float2 TextTextureSizeBold;
-texture TextBoldTexture;
-sampler2D TextBoldSample = sampler_state{
-    Texture = (TextBoldTexture);
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MagFilter = LINEAR;
-    MinFilter = LINEAR;
-    Mipfilter = LINEAR;
-
-};
-
-float PixelRangeBolder;
-float2 TextTextureSizeBolder;
-texture TextBolderTexture;
-sampler2D TextBolderSample = sampler_state
-{
-    Texture = (TextBolderTexture);
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MagFilter = LINEAR;
-    MinFilter = LINEAR;
-    Mipfilter = LINEAR;
-
-};
-
 texture TitleBackgroundTexture;
 sampler2D TitleBackgroundSample = sampler_state{
     Texture = (TitleBackgroundTexture);
@@ -146,12 +119,10 @@ static const float IdGameAtlas = 1.0;
 static const float IdUiAtlas = 2.0;
 static const float IdUiSlice = 3.0;
 static const float IdText = 4.0;
-static const float IdTextBold = 5.0;
-static const float IdTextBolder = 6.0;
-static const float IdTitleBackground = 7.0;
-static const float IdTitleGraphic = 8.0;
-static const float IdMinimap = 9.0;
-static const float IdEllipse = 10.0;
+static const float IdTitleBackground = 5.0;
+static const float IdTitleGraphic = 6.0;
+static const float IdMinimap = 7.0;
+static const float IdEllipse = 8.0;
 
 float map(float value, float originalMin, float originalMax, float newMin, float newMax) {
     return (value - originalMin) / (originalMax - originalMin) * (newMax - newMin) + newMin;
@@ -176,8 +147,8 @@ float median(float a, float b, float c) {
     return max(min(a, b), min(max(a, b), c));
 }
 
-float screenPxRange(float pRange, float2 dim, float2 uv) {
-    float2 unitRange = float2(pRange, pRange) / dim;
+float screenPxRange(float2 uv) {
+    float2 unitRange = float2(PixelRange, PixelRange) / TextTextureSize;
     float2 screenSize = float2(1.0, 1.0) / fwidth(uv);
     return max(0.5 * dot(unitRange, screenSize), 1.0);
 }
@@ -191,9 +162,9 @@ float2 SafeNormalize(float2 v)
     return v * vLength;
 }
 
-float GetOpacityFromDistance(float signedDistance, float2 Jdx, float2 Jdy, float pRange) {
+float GetOpacityFromDistance(float signedDistance, float2 Jdx, float2 Jdy) {
     const float distanceLimit = sqrt(2.0f) / 2.0f;  
-    const float thickness = 1.0f / (pRange/ 2.0);
+    const float thickness = 1.0f / (PixelRange/ 2.0);
  
     float2 gradientDistance = SafeNormalize(float2(ddx(signedDistance), ddy(signedDistance)));
     float2 gradient = float2(gradientDistance.x * Jdx.x + gradientDistance.y * Jdy.x, gradientDistance.x * Jdx.y + gradientDistance.y * Jdy.y);
@@ -203,25 +174,25 @@ float GetOpacityFromDistance(float signedDistance, float2 Jdx, float2 Jdy, float
     return smoothstep(-scaledDistanceLimit, scaledDistanceLimit, signedDistance);
 }
 
-float4 RenderText(VertexOutput input, sampler2D sample, float2 dim, float pRange) {
-    float4 mtsdf = tex2D(sample, input.UVCoords);
+float4 RenderText(VertexOutput input) {
+    float4 mtsdf = tex2D(TextSample, input.UVCoords);
     float dist = median(mtsdf.r, mtsdf.g, mtsdf.b) - 0.5;
         
-    float pxRange = screenPxRange(pRange, dim, input.UVCoords);
+    float pxRange = screenPxRange(input.UVCoords);
     
     float bodyDist = dist * pxRange;
     float glowDist = mtsdf.a;
-    float glowSize = input.Extra1.x / pRange;
+    float glowSize = input.Extra1.x / PixelRange;
     
     float bodyAlpha;
     float glowAlpha;
     
     if (input.Extra1.y == TextTypeSmall) {
-        float2 pixelCoord = input.UVCoords * dim;
+        float2 pixelCoord = input.UVCoords * TextTextureSize;
         float2 Jdx = ddx(pixelCoord);
         float2 Jdy = ddy(pixelCoord);
-        bodyAlpha = GetOpacityFromDistance(bodyDist, Jdx, Jdy, pRange);
-        glowAlpha = GetOpacityFromDistance(glowDist, Jdx, Jdy, pRange) * glowSize;
+        bodyAlpha = GetOpacityFromDistance(bodyDist, Jdx, Jdy);
+        glowAlpha = GetOpacityFromDistance(glowDist, Jdx, Jdy) * glowSize;
     } else {
         bodyAlpha = clamp(bodyDist + 0.5f, 0.0f, 1.0f);
         glowAlpha = glowDist * glowSize;
@@ -321,11 +292,7 @@ float4 MainPixel(VertexOutput input) : COLOR {
     } else if (type == IdUiSlice){
         pixel = slice(input);
     } else if (type == IdText) {
-        pixel = RenderText(input, TextSample, TextTextureSize, PixelRange);
-    } else if (type == IdTextBold) {
-        pixel = RenderText(input, TextBoldSample, TextTextureSizeBold, PixelRangeBold);
-    } else if (type == IdTextBolder) {
-        pixel = RenderText(input, TextBolderSample, TextTextureSizeBolder, PixelRangeBolder);
+        pixel = RenderText(input);
     } else if (type == IdTitleBackground) {
         pixel = RenderNoOutline(input, TitleBackgroundSample);
     } else if (type == IdTitleGraphic) {
@@ -336,7 +303,7 @@ float4 MainPixel(VertexOutput input) : COLOR {
         pixel = RenderEllipse(input);
     }
 
-    if (input.Color.a > 0 && type != IdColor && type != IdText && type != IdTextBold && type != IdEllipse)
+    if (input.Color.a > 0 && type != IdColor && type != IdText && type != IdEllipse)
         pixel *= input.Color;
 
     int4 add = input.ColorTransform / 1000;

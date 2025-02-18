@@ -1,4 +1,5 @@
 ﻿using System;
+using Common;
 using MonoClient.Data.XmlModels;
 using MonoClient.State;
 using MonoClient.UiLib.BuiltIn;
@@ -47,7 +48,7 @@ public class ServerRect : Container {
         _serverNameText = new SimpleText(new TextConfig() {
             Text = "Name",
             FontSize = FontSize,
-            Bold = 1,
+            FontType = FontType.Bold,
             OutlineThickness = 3,
             Color = 0xFFFFFF,
             Anchor = UiAnchor.MiddleLeft
@@ -59,7 +60,7 @@ public class ServerRect : Container {
         _playersText = new SimpleText(new TextConfig() {
             Text = "0 / 0",
             FontSize = FontSize,
-            Bold = 1,
+            FontType = FontType.Bold,
             OutlineThickness = 3,
             Color = AvailableServerColor,
             Anchor = UiAnchor.MiddleRight

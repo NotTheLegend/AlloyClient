@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Common;
 using Microsoft.Xna.Framework;
 using MonoClient.Screens.Title.Components.CharacterList;
 using MonoClient.State;
@@ -41,11 +42,11 @@ public class CharacterWheel : Container {
 
         UpdateCharacterWheel(0);
         
-        var spincfg = new TextButtonConfig { Text = "Forward", FontSize = 50, OnClicked = RotateToNextCharacter, Bold = 0, X = 75, Y = 485 };
+        var spincfg = new TextButtonConfig { Text = "Forward", FontSize = 50, OnClicked = RotateToNextCharacter, FontType = FontType.Normal, X = 75, Y = 485 };
         var spinButton = new TextButton(spincfg);
         AddChild(spinButton);
         
-        var backcfg = new TextButtonConfig { Text = "Back", FontSize = 50, OnClicked = RotateToPreviousCharacter, Bold = 0, X = 75, Y = 560 };
+        var backcfg = new TextButtonConfig { Text = "Back", FontSize = 50, OnClicked = RotateToPreviousCharacter, FontType = FontType.Normal, X = 75, Y = 560 };
         var spinBackButton = new TextButton(backcfg);
         AddChild(spinBackButton);
     }

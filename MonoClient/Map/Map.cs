@@ -248,8 +248,8 @@ public static class Map {
         if (en is Player p) {
             if(p.ObjectId != LocalPlayerId)
                 Players.TryAdd(p.ObjectId, p);
-            p.Ignored = PartyData.Ignored.Contains(p.AccountId);
-            p.Locked = PartyData.Locked.Contains(p.AccountId);
+            p.Ignored = PartyData.IgnoredPlayers.Contains(p.AccountId);
+            p.Locked = PartyData.LockedPlayers.Contains(p.AccountId);
         }
             
 

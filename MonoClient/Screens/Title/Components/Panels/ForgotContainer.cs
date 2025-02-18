@@ -1,4 +1,5 @@
-﻿using MonoClient.Display;
+﻿using Common;
+using MonoClient.Display;
 using MonoClient.State;
 using MonoClient.Ui.Components.Panels;
 using MonoClient.UiLib;
@@ -21,16 +22,16 @@ public class ForgotContainer : Overlay {
         var titleBackground = new ColorRect(new ColorRectConfig { Width = 475, Height = 50, Color = 0x4d4d4d });
         AddChild(titleBackground);
 
-        var title = new SimpleText(new TextConfig { Text = "Forgot Password", FontSize = 22, Bold = 1, X = Width / 2, Y = titleBackground.Height / 2, Color = 0xFFFFFF, Anchor = UiAnchor.Middle });
+        var title = new SimpleText(new TextConfig { Text = "Forgot Password", FontSize = 22, FontType = FontType.Bold, X = Width / 2, Y = titleBackground.Height / 2, Color = 0xFFFFFF, Anchor = UiAnchor.Middle });
         AddChild(title);
         
         // Todo forgot fields
         
-        var loginConfig = new TextButtonConfig { Text = "Reset", FontSize = 28, OnClicked = OnForgot, Bold = 0, X = Width - 25, Y = Height - 25, Anchor = UiAnchor.RightBottom };
+        var loginConfig = new TextButtonConfig { Text = "Reset", FontSize = 28, OnClicked = OnForgot, FontType = FontType.Normal, X = Width - 25, Y = Height - 25, Anchor = UiAnchor.RightBottom };
         var loginButton = new TextButton(loginConfig);
         AddChild(loginButton);
         
-        var cancelConfig = new TextButtonConfig { Text = "Cancel", FontSize = 28, OnClicked = CloseOverlay, Bold = 0, X = loginButton.X - loginButton.Width - 35, Y = Height - 25, Anchor = UiAnchor.RightBottom };
+        var cancelConfig = new TextButtonConfig { Text = "Cancel", FontSize = 28, OnClicked = CloseOverlay, FontType = FontType.Normal, X = loginButton.X - loginButton.Width - 35, Y = Height - 25, Anchor = UiAnchor.RightBottom };
         var cancelButton = new TextButton(cancelConfig);
         AddChild(cancelButton);
     }

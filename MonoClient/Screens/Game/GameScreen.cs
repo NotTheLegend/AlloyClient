@@ -34,6 +34,7 @@ public sealed class GameScreen : Screen {
         }
         
         Map.Update(time, dt);
+        PartyData.Update(time);
         Client.Tick();
         GameSprite.Update();
         

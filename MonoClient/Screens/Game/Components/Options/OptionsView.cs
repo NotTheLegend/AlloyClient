@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Common;
 using MonoClient.Display;
 using MonoClient.Networking;
 using MonoClient.Networking.Packets.Outgoing;
@@ -51,7 +52,7 @@ public sealed class OptionsView : Overlay {
         var titleText = new SimpleText(new TextConfig {
             Text = "Options",
             FontSize = 57,
-            Bold = 1,
+            FontType = FontType.Bold,
             X = Settings.DefaultScreenWidth / 2,
             Y = 10,
             OutlineThickness = 2,
@@ -103,7 +104,7 @@ public sealed class OptionsView : Overlay {
             var tab = new TextButton(new TextButtonConfig {
                 Text = tabName,
                 FontSize = 25,
-                Bold = 1,
+                FontType = FontType.Bold,
                 ActiveColor = 0xB3B3B3,
                 HoverColor = 0xFFFFFF,
                 InactiveColor = 0xFFC800,
