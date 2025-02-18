@@ -199,8 +199,16 @@ public sealed class ItemTile : Sprite {
             if(Item.ObjectType == ItemConstants.PotionType || Item.Consumable)
             {
                 int timeStuff = (int)Map.LastGameTime.TotalGameTime.TotalMilliseconds;
-                Console.WriteLine($" Stats: Time: {timeStuff} ObjectId: {Owner.ObjectId} SlotId: {SlotId} ObjectType: {Item.ObjectType} PosX: {Owner.Position.X} PosY: {Owner.Position.Y} Byte: {(byte)UseType.START_USE}");
-                useItem(timeStuff, Owner.ObjectId, SlotId, Item.ObjectType, Owner.Position.X, Owner.Position.Y, (byte)UseType.START_USE);
+
+                useItem(
+                    time: timeStuff, 
+                    objectId: Owner.ObjectId, 
+                    slotId: SlotId,
+                    objectType: Item.ObjectType, 
+                    itemUsePosX: Owner.Position.X,
+                    itemUsePosY: Owner.Position.Y,
+                    useType: (byte)UseType.START_USE
+                );
             }
 
             return;

@@ -83,7 +83,7 @@ public partial class Sprite {
     public bool FollowMouse = false;
 
     public bool TooltipMode = false;
-    
+
     public bool EnableClipRect = false;
     public bool ClipChildren = false;
     
@@ -130,7 +130,7 @@ public partial class Sprite {
     private int _width;
 
     private int _height;
-    
+
     private int _graphicalWidth;
 
     private int _graphicalHeight;
@@ -208,6 +208,7 @@ public partial class Sprite {
     }
 
     private void UpdateBounds() {
+
         var bounds = _childbounds;
 
         if (_childCount > 0) { 
@@ -257,6 +258,12 @@ public partial class Sprite {
             _parent.UpdateChildBounds(bounds);
             _parent.UpdateBounds();
         }
+
+        if (TooltipMode) // Lets not play with tooltip width, it should remain its width no matter the children
+        {
+            _width = _graphicalWidth;
+            return;
+        }
     }
 
     private void UpdateChildBounds(Bounds bounds) {
@@ -298,7 +305,7 @@ public partial class Sprite {
             (tx, ty) = pos.ToPair();
         } else if (TooltipMode) {
             (tx, ty) = MouseInput.GetMousePosition().ToPair();
-            (_anchorX, _anchorY) = InternalUtils.GetAnchorOffset(tx < UiRender.Screen.X / 2 ? UiAnchor.LeftBottom : UiAnchor.RightBottom, _width, _height);
+            (_anchorX, _anchorY) = InternalUtils.GetAnchorOffset(tx < UiRender.Screen.X / 2 ? UiAnchor.LeftBottom : UiAnchor.RightBottom, _width + 15, _height); //Hardcode TooltipWidth + 15
             tx += (int) (_anchorX * _parent._trueScale.X);
             ty += (int) (_anchorY * _parent._trueScale.Y);
         } else if (_isDragging) {

@@ -74,11 +74,22 @@ unsafe class UiAtlasProcessor : ContentProcessor<string, UiAtlasResult> {
         AddImage("bar1", "bar1.png");
         AddImage("bar2", "bar2.png");
         AddImage("bar3", "bar3.png");
+
+        AddImage("tooltipBackgroundLarge", "ToolTip/TooltipBackgroundLarge.png");
+        AddImage("tooltipBackgroundMedium", "ToolTip/TooltipBackgroundMedium.png");
+        AddImage("tooltipBackgroundSmall", "ToolTip/TooltipBackgroundSmall.png");
+
         AddImage("textBox", "TextBox.png");
-        AddImage("tooltipBackground", "TooltipBackground.png");
-        
         AddImage("BlackCircle", "BlackCircle.png");
+
         AddImage("CharacterList/StarGraphic", "CharacterList/StarGraphic.png");
+        AddImage("FameBackground/FameBackground", "FameBackground/FameBackground.png");
+
+        AddImage("KeysBackground", "KeysView/KeysView_BackgroundPng.png");
+        AddImage("KeysGreen", "KeysView/KeysView_greenKeyPng.png");
+        AddImage("KeysPurple", "KeysView/KeysView_purpleKeyPng.png");
+        AddImage("KeysRed", "KeysView/KeysView_redKeyPng.png");
+        AddImage("KeysYellow", "KeysView/KeysView_yellowKeyPng.png");
         
         AddImage("ScrollBar/ScrollBarBackground", "ScrollBar/ScrollBarBackground.png");
         AddImage("ScrollBar/ScrollBarHandle", "ScrollBar/ScrollBarHandle.png");

@@ -77,8 +77,6 @@ public sealed class InventoryGrid : Sprite {
             return;
         }
 
-        Console.WriteLine($"New {slot} | {_offset} - {_offset + NumSlots} BackPack {_backpack} {Visible}");
-
         if (slot < _offset || slot >= _offset + NumSlots) return;
         _tiles[slot - _offset].SetItem(_owner.Equipment[slot]);
     }

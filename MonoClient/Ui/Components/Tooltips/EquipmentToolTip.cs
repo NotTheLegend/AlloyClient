@@ -46,13 +46,18 @@ public sealed class EquipmentToolTip : Tooltip
 
     private void AddTitle()
     {
-        TitleText = new SimpleText(SimpleConfig(Item.ObjectId, 16, bold: 1));
+        TitleText = new SimpleText(SimpleConfig(Item.ObjectId, 16, bold: 1, maxWidth: 204));
         TitleText.SetAnchor(UiAnchor.MiddleLeft);
         AddChild(TitleText);
     }
 
     private void AddTierTag()
     {
+        if(Item.Consumable || Item.SlotType == 10)
+        {
+            return; 
+        }
+
         TierTag = new TierText(Item);
         TierTag.SetAnchor(UiAnchor.MiddleRight);
         AddChild(TierTag);
@@ -60,11 +65,11 @@ public sealed class EquipmentToolTip : Tooltip
     
     private void AddDescription()
     {
-        DescText = new SimpleText(SimpleConfig(Item.Description, 14, bold: 0, 0xaaaaaa, 0xaaaaaa, 1, 204));
+        DescText = new SimpleText(SimpleConfig(Item.Description, 14, bold: 0, 0xaaaaaa, 0x0, 0.5f, 204));
         AddChild(DescText);
     }
 
-    private void AddStatBonus()
+    private void AddStatBonus() //Yes this is kinda awful, im going to do make tooltips soon
     {
         statsText = "";
         if (Item.StatBoosts != null)
@@ -93,7 +98,7 @@ public sealed class EquipmentToolTip : Tooltip
         }
         if (statsText != "")
         {
-            StatsText = new SimpleText(SimpleConfig(statsText, 14, bold: 0, 0xaaaaaa, 0xaaaaaa, 1, 204));
+            StatsText = new SimpleText(SimpleConfig(statsText, 14, bold: 0, 0xaaaaaa, 0x0, 0.5f, 204));
             AddChild(StatsText);
         }
     }
@@ -102,9 +107,12 @@ public sealed class EquipmentToolTip : Tooltip
     {
         Icon.X = Icon.Y = 5;
         TitleText.X = Icon.X + Icon.Width + 3;
-        TitleText.Y = Icon.Width / 2;
-        TierTag.X = ToolWidth - 15;
-        TierTag.Y = TitleText.Y;
+        TitleText.Y = Icon.Height / 2 + TitleText.Height / 2;
+        if(TierTag != null)
+        {
+            TierTag.X = ToolWidth - 15;
+            TierTag.Y = Icon.Height / 2 + TierTag.Height / 2;
+        }
         DescText.X = 8;
         DescText.Y = Icon.Y + Icon.Width + 3;
         if (StatsText != null)
@@ -132,8 +140,7 @@ public sealed class EquipmentToolTip : Tooltip
 
         return number;
     }
-
-    public static TextConfig SimpleConfig(string text = "", int size = 12, int bold = 0, uint color = 0xffffff, uint outline = 0, float thickness = 1, int maxWidth = 200)
+    public static TextConfig SimpleConfig(string text = "", int size = 12, int bold = 0, uint color = 0xffffff, uint outline = 0x0, float thickness = 1f, int maxWidth = 220)
     {
         return new TextConfig()
         {

@@ -9,14 +9,20 @@ public abstract class Tooltip : Sprite {
     private NineSliceRect TooltipSprite;
     private NineSliceConfig TooltipConfig;
 
+
     private Container Contain;
 
     public int ToolWidth;
     public int ToolHeight;
     protected Tooltip(int width, int height) {
         TooltipMode = true;
+
         ToolWidth = width;
         ToolHeight = height;
+
+        Width = width;
+        Height = height;
+
         Contain = new Container();
         AddChild(Contain);
     }
@@ -25,10 +31,10 @@ public abstract class Tooltip : Sprite {
     {
         TooltipConfig = new NineSliceConfig
         {
-            SliceData = SliceConfig.TooltipBackground,
+            SliceData = SliceConfig.TooltipBackgroundSmall,
             Padding = false,
-            CutX = 0,
-            CutY = 0,
+            CutX = 5,
+            CutY = 5,
             Width = ToolWidth,
             Height = ToolHeight,
             MouseEnabled = true
