@@ -133,7 +133,7 @@ public sealed class EquipmentToolTip : Tooltip
         return number;
     }
 
-    public static TextConfig SimpleConfig(string text = "", int size = 12, int bold = 0, uint color = 0xffffff, uint outline = 0, int thickness = 1, int maxWidth = 200)
+    public static TextConfig SimpleConfig(string text = "", int size = 12, int bold = 0, uint color = 0xffffff, uint outline = 0, float thickness = 1, int maxWidth = 200)
     {
         return new TextConfig()
         {

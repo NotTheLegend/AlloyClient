@@ -176,6 +176,12 @@ float median(float a, float b, float c) {
     return max(min(a, b), min(max(a, b), c));
 }
 
+float screenPxRange(float pRange, float2 dim, float2 uv) {
+    float2 unitRange = float2(pRange, pRange) / dim;
+    float2 screenSize = float2(1.0, 1.0) / fwidth(uv);
+    return max(0.5 * dot(unitRange, screenSize), 1.0);
+}
+
 float2 SafeNormalize(float2 v)
 {
     float vLength = length(v);
@@ -198,32 +204,32 @@ float GetOpacityFromDistance(float signedDistance, float2 Jdx, float2 Jdy, float
 }
 
 float4 RenderText(VertexOutput input, sampler2D sample, float2 dim, float pRange) {
-    float2 msdfUnit = pRange / dim;
-    float3 samp = tex2D(sample, input.UVCoords).rgb;
-    float4 outColor = pRange == 0.0 ? input.Color : input.Override;
-
-    float sigDist = median(samp.r, samp.g, samp.b) - 0.5f;
-    sigDist = sigDist * dot(msdfUnit, 0.5f / fwidth(input.UVCoords));
-    const float strokeThickness = 0.250f * 0.75f;
-    float strokeDist = median(samp.r, samp.g, samp.b) - 0.25f * (1.0 + (pRange - input.Extra1.x) / pRange) - strokeThickness;
-    strokeDist = -(abs(strokeDist) - strokeThickness);
-    strokeDist = strokeDist * dot(msdfUnit, 0.5f / fwidth(input.UVCoords));
+    float4 mtsdf = tex2D(sample, input.UVCoords);
+    float dist = median(mtsdf.r, mtsdf.g, mtsdf.b) - 0.5;
+        
+    float pxRange = screenPxRange(pRange, dim, input.UVCoords);
     
-    float opacity = 0;
-    float strokeOpacity = 0;
+    float bodyDist = dist * pxRange;
+    float glowDist = mtsdf.a;
+    float glowSize = input.Extra1.x / pRange;
+    
+    float bodyAlpha;
+    float glowAlpha;
     
     if (input.Extra1.y == TextTypeSmall) {
         float2 pixelCoord = input.UVCoords * dim;
         float2 Jdx = ddx(pixelCoord);
         float2 Jdy = ddy(pixelCoord);
-        opacity = GetOpacityFromDistance(sigDist, Jdx, Jdy, pRange);
-        strokeOpacity = GetOpacityFromDistance(strokeDist, Jdx, Jdy, pRange);
+        bodyAlpha = GetOpacityFromDistance(bodyDist, Jdx, Jdy, pRange);
+        glowAlpha = GetOpacityFromDistance(glowDist, Jdx, Jdy, pRange) * glowSize;
     } else {
-        opacity = clamp(sigDist + 0.5f, 0.0f, 1.0f);
-        strokeOpacity = clamp(strokeDist + 0.5f, 0.0f, 1.0f);
-    }
+        bodyAlpha = clamp(bodyDist + 0.5f, 0.0f, 1.0f);
+        glowAlpha = glowDist * glowSize;
+    }    
     
-    return lerp(outColor, input.Color, opacity) * max(opacity, strokeOpacity);
+    float4 color = lerp(input.Override, input.Color, bodyAlpha);
+    float alpha = bodyAlpha + glowAlpha;
+    return float4(color.rgb, alpha);
 }
 
 float4 RenderOutline(VertexOutput input, sampler2D sample) : COLOR {

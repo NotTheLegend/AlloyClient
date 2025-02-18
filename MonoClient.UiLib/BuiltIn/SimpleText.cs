@@ -12,7 +12,7 @@ public struct TextConfig {
     public int X = 0;
     public int Y = 0;
     public int MaxWidth = -1;
-    public int OutlineThickness = 0;
+    public float OutlineThickness = 0;
     public uint Color = 0xFFFFFF;
     public uint OutlineColor = 0x0;
     public float Alpha = 1.0f;
