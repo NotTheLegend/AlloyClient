@@ -10,11 +10,11 @@ public class FontFamily {
     
     public readonly Texture2D Atlas;
 
-    public readonly Dictionary<FontType, FontData> FontData;
+    public readonly Dictionary<string, FontData> FontData;
 
     public float PixelRange;
 
-    public FontFamily(Texture2D atlas, Dictionary<FontType, FontData> fontData, float pixelRange) {
+    public FontFamily(Texture2D atlas, Dictionary<string, FontData> fontData, float pixelRange) {
         Atlas = atlas;
         FontData = fontData;
         PixelRange = pixelRange;
@@ -52,10 +52,10 @@ public class FontFamilyReader : ContentTypeReader<FontFamily> {
         using var stream = new MemoryStream(png);
         var texture = Texture2D.FromStream(graphicsDevice, stream, null);
         
-        var fontFamily = new Dictionary<FontType, FontData>();
-        var fontOrder = new FontType[reader.ReadInt32()];
+        var fontFamily = new Dictionary<string, FontData>();
+        var fontOrder = new string[reader.ReadInt32()];
         for (var i = 0; i < fontOrder.Length; i++) {
-            fontOrder[i] = (FontType)reader.ReadInt32();
+            fontOrder[i] = reader.ReadString();
         }
         
         var jdoc = JsonDocument.Parse(reader.ReadString());

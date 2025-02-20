@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Common;
 using MonoClient.Display;
 using MonoClient.Networking;
 using MonoClient.Networking.Packets.Outgoing;

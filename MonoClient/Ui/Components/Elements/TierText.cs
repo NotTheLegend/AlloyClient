@@ -1,7 +1,8 @@
-﻿using Common;
 using MonoClient.Objects.Util.ItemDatas;
 using MonoClient.UiLib.Core;
 using Microsoft.Xna.Framework;
+using MonoClient.UiLib.Enums;
+
 namespace MonoClient.UiLib.BuiltIn;
 
 public class TierText : Sprite

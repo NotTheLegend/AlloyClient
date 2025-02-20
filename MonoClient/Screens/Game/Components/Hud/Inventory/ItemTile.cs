@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using Common;
 using Common.Vector;
 using Microsoft.Xna.Framework;
 using MonoClient.Display;

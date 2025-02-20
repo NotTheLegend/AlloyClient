@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Common;
 using Common.Atlas;
 using Common.Pipeline;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoClient.UiLib.Enums;
 
 namespace MonoClient.UiLib;
 
@@ -23,7 +23,11 @@ public class BitmapFamily {
         Atlas = data.Atlas;
 
         foreach (var kvp in data.FontData) {
-            Fonts[kvp.Key] = new BitmapFont(kvp.Value, Atlas.Width);
+            if (!Enum.TryParse(kvp.Key, out FontType type)) {
+                throw new Exception($"No matching FontType value for font id : {kvp.Key}");
+            }
+            
+            Fonts[type] = new BitmapFont(kvp.Value, Atlas.Width);
         }
 
         PixelRange = data.PixelRange;

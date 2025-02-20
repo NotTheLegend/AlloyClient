@@ -1,5 +1,4 @@
 using System;
-using Common;
 using Common.Atlas;
 using Microsoft.Xna.Framework;
 using MonoClient.Assets;

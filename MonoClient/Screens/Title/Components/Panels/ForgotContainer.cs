@@ -1,4 +1,3 @@
-﻿using Common;
 using MonoClient.Display;
 using MonoClient.State;
 using MonoClient.Ui.Components.Panels;

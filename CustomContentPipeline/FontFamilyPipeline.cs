@@ -13,14 +13,14 @@ namespace CustomContentPipeline;
 
 public class FontFamilySettings {
     public string Group;
-    public List<(FontType, string)> FontPaths;
+    public List<(string, string)> FontPaths;
     public int MaxOutlineSize;
     public string Characters;
 }
 
-public class FontFamilyResult(string atlasPath, List<FontType> types, string layoutPath) {
+public class FontFamilyResult(string atlasPath, List<string> types, string layoutPath) {
     public string AtlasPath = atlasPath;
-    public List<FontType> Types = types;
+    public List<string> Types = types;
     public string LayoutPath = layoutPath;
 }
 
@@ -31,7 +31,7 @@ public class FontFamilyImporter : ContentImporter<FontFamilySettings> {
         var xml = XElement.Parse(File.ReadAllText(filename));
         
         settings.Group = xml.GetAttribute<string>("group");
-        settings.FontPaths = xml.Elements("FontPath").Select( i => (Enum.Parse<FontType>(i.GetAttribute("type", "Normal")), Path.Combine(Directory.GetCurrentDirectory(), i.Value))).ToList();
+        settings.FontPaths = xml.Elements("FontPath").Select( i => (i.GetAttribute("type", "Normal"), Path.Combine(Directory.GetCurrentDirectory(), i.Value))).ToList();
         settings.MaxOutlineSize = xml.GetValue("MaxOutlineSize", 16);
 
         var list = "";
@@ -65,7 +65,7 @@ public class FontFamilyWriter : ContentTypeWriter<FontFamilyResult> {
         
         output.Write(result.Types.Count);
         foreach (var type in result.Types) {
-            output.Write((int)type);
+            output.Write(type);
         }
         
         var json = File.ReadAllText(result.LayoutPath);
@@ -93,7 +93,7 @@ public class FontFamilyProcessor : ContentProcessor<FontFamilySettings, FontFami
             throw new Exception($"FontFamilyProcessor - Unable to fine msdfgen at {genPath}");
         }
 
-        var types = new List<FontType>();
+        var types = new List<string>();
         var args = "";
         
         foreach (var kvp in input.FontPaths) {

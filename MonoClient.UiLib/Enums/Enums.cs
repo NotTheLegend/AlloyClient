@@ -47,3 +47,9 @@ public enum CutEdges : uint {
     Bottom = BottomLeft | BottomRight,
     All = Top | Bottom
 }
+
+public enum FontType : int {
+    Normal = 0,
+    Bold = 1,
+    Bolder = 2
+}

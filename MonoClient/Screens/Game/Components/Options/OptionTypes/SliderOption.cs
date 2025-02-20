@@ -1,7 +1,7 @@
 ﻿using System;
-using Common;
 using MonoClient.State.SettingTypes;
 using MonoClient.UiLib.BuiltIn;
+using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Screens.Game.Components.Options.OptionTypes;
 

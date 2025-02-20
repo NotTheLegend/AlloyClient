@@ -1,8 +1,8 @@
-﻿using Common;
 using Microsoft.Xna.Framework;
 using MonoClient.Rendering.VertexData;
 using MonoClient.Objects;
 using MonoClient.UiLib;
+using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Rendering.Types.SubTypes;
 

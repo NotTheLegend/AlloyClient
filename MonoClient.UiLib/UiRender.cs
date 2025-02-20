@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using Common;
 using Common.Pipeline;
 using Common.Vector;
 using Microsoft.Xna.Framework;
@@ -7,6 +6,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Enums;
 
 namespace MonoClient.UiLib;
 

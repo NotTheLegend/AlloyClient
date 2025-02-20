@@ -1,4 +1,3 @@
-﻿using Common;
 using Microsoft.Xna.Framework;
 using MonoClient.Networking;
 using MonoClient.Networking.Packets.Outgoing;

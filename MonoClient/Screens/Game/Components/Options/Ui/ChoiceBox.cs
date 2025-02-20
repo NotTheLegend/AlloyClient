@@ -1,5 +1,4 @@
 ﻿using System;
-using Common;
 using MonoClient.State.SettingTypes;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;

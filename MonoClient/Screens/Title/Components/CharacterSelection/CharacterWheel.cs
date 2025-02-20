@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Common;
 using Microsoft.Xna.Framework;
 using MonoClient.Screens.Title.Components.CharacterList;
 using MonoClient.State;
 using MonoClient.Ui.Components.Panels;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
+using MonoClient.UiLib.Enums;
 using MonoClient.Utils;
 
 public class CharacterWheel : Container {

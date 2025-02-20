@@ -1,5 +1,4 @@
 ﻿using System;
-using Common;
 using MonoClient.Data.XmlModels;
 using MonoClient.State;
 using MonoClient.UiLib.BuiltIn;

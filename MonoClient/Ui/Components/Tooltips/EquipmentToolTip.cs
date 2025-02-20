@@ -5,7 +5,6 @@ using MonoClient.UiLib.Enums;
 using MonoClient.Utils;
 using System;
 using System.Reflection.Metadata.Ecma335;
-using Common;
 
 namespace MonoClient.Ui.Components.Tooltips;
 

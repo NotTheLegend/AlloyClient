@@ -1,4 +1,3 @@
-﻿using Common;
 using Microsoft.Xna.Framework;
 using MonoClient.Data;
 using MonoClient.Display;
