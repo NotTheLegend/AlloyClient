@@ -33,4 +33,8 @@ public class MathUtils {
         var y = pos2.Y - pos1.Y;
         return x * x + y * y;
     }
+    
+    public static float Map(float value, float valMin, float valMax, float newMin, float newMax) {
+        return (value - valMin) / (valMax - valMin) * (newMax - newMin) + newMin;
+    }
 }

@@ -35,7 +35,7 @@ public class Entity {
     
     public Signal<int> InventoryUpdate = new();
 
-    public float SpeechOffset;
+    public float HeightOffset;
     public Vector2 Position;
     public float Rotation;
     public float Z;

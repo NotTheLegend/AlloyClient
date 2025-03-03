@@ -7,12 +7,16 @@ using MonoClient.UiLib;
 namespace MonoClient;
 
 public static class Camera {
+
+    public const int HudOffset = 240;
+    
     public static Matrix WorldMatrix;
     public static Matrix ViewMatrix;
     public static Matrix ProjectionMatrix;
     public static Matrix ZoomMatrix;
     public static Matrix BillboardMatrix;
-    public static Matrix SpeechMatrix;
+
+    public static Vector2 VisibleTileRadius;
 
     public static float CameraAngle;
 
@@ -35,7 +39,7 @@ public static class Camera {
 
         var halfWidth = Settings.DefaultScreenWidth;
         var halfHeight = Settings.DefaultScreenHeight;
-        var hudOffset = includeHud ? 240f : 0f;
+        var hudOffset = includeHud ? HudOffset : 0f;
 
         ProjectionMatrix = Matrix.CreateOrthographicOffCenter(-halfWidth + hudOffset, halfWidth + hudOffset,
             -halfHeight, halfHeight, -10000f, 10000f);
@@ -70,8 +74,8 @@ public static class Camera {
         BillboardMatrix[1] = -s;
         BillboardMatrix[4] = s;
         BillboardMatrix[5] = c;
-        
-        SpeechMatrix = WorldMatrix * ViewMatrix * ProjectionMatrix * Matrix.Invert(UiRender.DefaultViewMatrix);
+
+        VisibleTileRadius = new Vector2((Settings.ScreenWidth - HudOffset) / Settings.CameraZoom, Settings.ScreenHeight / Settings.CameraZoom);
     }
 
     // Only tested on MapEditor

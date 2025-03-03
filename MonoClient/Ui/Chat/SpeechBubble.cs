@@ -4,6 +4,7 @@ using MonoClient.State;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
+using MonoClient.Utils;
 
 namespace MonoClient.Ui.Chat;
 
@@ -70,9 +71,13 @@ public sealed class SpeechBubble : Sprite {
 
         Scale = new Vector2(Settings.CameraZoom / 96f);
         
-        var pos = Vector2.Transform(_owner.Position, Camera.SpeechMatrix);
+        var w = Camera.VisibleTileRadius.X;
+        var h = Camera.VisibleTileRadius.Y;
 
-        X = (int)pos.X;
-        Y = (int)(pos.Y - _owner.SpeechOffset);
+        var newX = MathUtils.Map(_owner.Position.X - Camera.Position.X, -w, w, 0f, Settings.ScreenWidth - Camera.HudOffset);
+        var newY = MathUtils.Map(_owner.Position.Y + _owner.HeightOffset + Camera.Position.Y, -h, h, 0f, Settings.ScreenHeight);
+
+        X = (int)newX;
+        Y = (int)newY;
     }
 }

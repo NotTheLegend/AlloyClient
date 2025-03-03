@@ -4,6 +4,7 @@ using MonoClient.State;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
+using MonoClient.Utils;
 
 namespace MonoClient.Ui.Character;
 
@@ -60,11 +61,16 @@ public class CharacterStatusText : Sprite {
         
         Scale = new Vector2(Settings.CameraZoom / 96f);
         
-        var pos = Vector2.Transform(_owner.Position, Camera.SpeechMatrix);
+        var w = Camera.VisibleTileRadius.X;
+        var h = Camera.VisibleTileRadius.Y;
+
+        var x = MathUtils.Map(_owner.Position.X - Camera.Position.X, -w, w, 0f, Settings.ScreenWidth - Camera.HudOffset);
+        var y = MathUtils.Map(_owner.Position.Y + _owner.HeightOffset + Camera.Position.Y, -h, h, 0f, Settings.ScreenHeight);
+        
         var drift = elapsedTime / _lifetime * MaxDrift;
 
-        X = (int)pos.X;
-        Y = (int)(pos.Y - _owner.SpeechOffset - drift);
+        X = (int)x;
+        Y = (int)(y - drift);
         
         var remainingLifetime = _lifetime - elapsedTime;
         Alpha = (float)(remainingLifetime / _lifetime);

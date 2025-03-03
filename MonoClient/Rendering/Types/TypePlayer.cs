@@ -102,12 +102,7 @@ public sealed class TypePlayer : RenderBase {
         var f = Entity.Flipped ? 1f : -1f;
         Rotation = new Vector4(s, c, k, f);
         
-        //Extra.Alpha = 0.5f;
-        
-        var pos1 = Vector3.Transform(Position, Camera.SpeechMatrix);
-        var pos2 = Vector3.Transform(new Vector3(Position.X, Position.Y - 1 * Scale.Y * k + Scale.W * k, Position.Z), Camera.SpeechMatrix);
-        
-        Entity.SpeechOffset = Vector3.Distance(pos1, pos2);
+        Entity.HeightOffset = -1 * Scale.Y * k + Scale.W * k;
         
         Render.DrawEntity(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color));
         var y = 0.1f;
