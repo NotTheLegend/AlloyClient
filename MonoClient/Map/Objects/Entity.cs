@@ -73,7 +73,7 @@ public class Entity {
 
     public ItemDesc[] Equipment = new ItemDesc[20];
 
-    public uint[] ConditionEffectBatches = new uint[ConditionEffectUtil.NumConditionEffectBatches];
+    public ConditionEffects ConditionEffects = 0;
 
     public int ConnectType;
 
@@ -177,6 +177,10 @@ public class Entity {
 
         Rotation = Properties.Rotation;
         RenderBaseType.SetPosition(x, y);
+    }
+
+    public bool HasConditionEffect(ConditionEffects effect) {
+        return (ConditionEffects & effect) != 0;
     }
 
     public virtual bool Update(double time, double dt) {
@@ -368,7 +372,7 @@ public class Entity {
                     InventoryUpdate.Dispatch(index);
                     break;
                 case StatsType.Effects:
-                    ConditionEffectBatches[ConditionEffectUtil.FirstBatch] = (uint)stat.Value;
+                    ConditionEffects = (ConditionEffects)stat.Value;
                     break;
                 case StatsType.Name:
                     Name = stat.Text;

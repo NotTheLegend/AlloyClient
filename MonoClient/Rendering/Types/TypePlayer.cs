@@ -26,6 +26,7 @@ public sealed class TypePlayer : RenderBase {
     private TypeName _typeName;
     private readonly TypeHpBar _hpBar;
     private readonly TypeBar _mpBar;
+    private readonly TypeEffects _effects;
 
     public TypePlayer(Player player) {
         Entity = player;
@@ -37,6 +38,7 @@ public sealed class TypePlayer : RenderBase {
         _typeName = new TypeName(this, player);
         _hpBar = new TypeHpBar(this, player);
         _mpBar = new TypeBar(this, player, ColorUtils.ColorHex(0x6084E0));
+        _effects = new TypeEffects(this, player);
     }
     
     public override void SetPosition(float x, float y, float z = 0) {
@@ -81,6 +83,7 @@ public sealed class TypePlayer : RenderBase {
         _typeName.SetDepth(depth);
         _hpBar.SetDepth(depth);
         _mpBar.SetDepth(depth);
+        _effects.SetDepth(depth);
     }
     
     public override void SetAlpha(float alpha) {
@@ -88,6 +91,7 @@ public sealed class TypePlayer : RenderBase {
         _typeName.SetAlpha(alpha);
         _hpBar.SetAlpha(alpha);
         _mpBar.SetAlpha(alpha);
+        _effects.SetAlpha(alpha);
     }
 
     public override void SetName(string name) {
@@ -115,6 +119,8 @@ public sealed class TypePlayer : RenderBase {
         _hpBar.Draw(y);
         y += _hpBar.Height;
         _mpBar.Draw(y);
+        
+        _effects.Draw(Entity.HeightOffset);
         
     }
 

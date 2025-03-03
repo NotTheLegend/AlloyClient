@@ -23,6 +23,7 @@ public sealed class TypeGameObject : RenderBase {
     private readonly TypeName _name;
 
     private readonly TypeHpBar _hpBar;
+    private readonly TypeEffects _effects;
 
     public TypeGameObject(Entity entity) {
         Entity = entity;
@@ -30,6 +31,7 @@ public sealed class TypeGameObject : RenderBase {
         Extra = new ExtraData(RenderConfig.TypeGameObject, RenderConfig.Shade);
         _name = new TypeName(this, entity);
         _hpBar = new TypeHpBar(this, entity);
+        _effects = new TypeEffects(this, entity);
     }
     
     public override void SetPosition(float x, float y, float z = 0) {
@@ -73,12 +75,14 @@ public sealed class TypeGameObject : RenderBase {
         Extra.SortId = depth;
         _name.SetDepth(depth);
         _hpBar.SetDepth(depth);
+        _effects.SetDepth(depth);
     }
     
     public override void SetAlpha(float alpha) {
         Extra.Alpha = alpha;
         _name.SetAlpha(alpha);
         _hpBar.SetAlpha(alpha);
+        _effects.SetAlpha(alpha);
     }
 
     public override void SetName(string name) { }
@@ -103,7 +107,7 @@ public sealed class TypeGameObject : RenderBase {
             _hpBar.Draw(y);
         }
         
-        
+        _effects.Draw(Entity.HeightOffset);
     }
 
     public override void DrawShadow() {
