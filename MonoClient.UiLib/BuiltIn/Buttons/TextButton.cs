@@ -1,5 +1,6 @@
 ﻿using System;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
 
@@ -60,18 +61,18 @@ public class TextButton : Sprite {
 
     public void Activate() {
         _text.SetColor(_activeColor);
-        AddEventListener(MouseEventId.MouseOver, OnMouseOver);
-        AddEventListener(MouseEventId.MouseOut, OnMouseOut);
-        AddEventListener(MouseEventId.LeftDown, OnLeftDown);
-        AddEventListener(MouseEventId.LeftUp, OnLeftUp);
+        AddEventListener(MouseEvent.MouseOver, OnMouseOver);
+        AddEventListener(MouseEvent.MouseOut, OnMouseOut);
+        AddEventListener(MouseEvent.LeftDown, OnLeftDown);
+        AddEventListener(MouseEvent.LeftUp, OnLeftUp);
     }
 
     public void Deactivate() {
         _text.SetColor(_inactive);
-        RemoveEventListener(MouseEventId.MouseOver, OnMouseOver);
-        RemoveEventListener(MouseEventId.MouseOut, OnMouseOut);
-        RemoveEventListener(MouseEventId.LeftDown, OnLeftDown);
-        RemoveEventListener(MouseEventId.LeftUp, OnLeftUp);
+        RemoveEventListener(MouseEvent.MouseOver, OnMouseOver);
+        RemoveEventListener(MouseEvent.MouseOut, OnMouseOut);
+        RemoveEventListener(MouseEvent.LeftDown, OnLeftDown);
+        RemoveEventListener(MouseEvent.LeftUp, OnLeftUp);
     }
 
     private void OnMouseOver() {

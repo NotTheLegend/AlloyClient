@@ -3,6 +3,7 @@ using MonoClient.State;
 using MonoClient.Ui;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
 
@@ -39,8 +40,8 @@ public class StatusBar : Sprite {
         _valueText = new SimpleText(new TextConfig { Text = "", FontSize = 16, FontType = FontType.Bold, Y = _height / 2, OutlineThickness = 1, Color = 0xFFFFFF, OutlineColor = 0xFFFFFF, Anchor = UiAnchor.MiddleLeft });
         AddChild(_valueText);
 
-        AddEventListener(MouseEventId.MouseOver, OnMouseOver);
-        AddEventListener(MouseEventId.MouseOut, OnMouseOut);
+        AddEventListener(MouseEvent.MouseOver, OnMouseOver);
+        AddEventListener(MouseEvent.MouseOut, OnMouseOut);
     }
 
     public void Update(int val, int max, int boost = 0, int baseMax = -1, int level = -1) {

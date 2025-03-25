@@ -8,14 +8,14 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoClient.UiLib.BuiltIn;
-using MonoClient.UiLib.BuiltIn.Buttons;
-using MonoClient.UiLib.Core.Events.Types;
+using MonoClient.UiLib.Core.Events;
 
 namespace MonoClient.UiLib.Core;
 
-public partial class Sprite {
-
-    internal static Sprite HighestSprite;
+public partial class Sprite : EventManager {
+    
+    //todo proper stage var and add/remove stage events
+    public static Stage Stage = UiRender.Stage;
 
     public int X {
         get => _x;
@@ -305,7 +305,7 @@ public partial class Sprite {
             (tx, ty) = pos.ToPair();
         } else if (TooltipMode) {
             (tx, ty) = MouseInput.GetMousePosition().ToPair();
-            (_anchorX, _anchorY) = InternalUtils.GetAnchorOffset(tx < UiRender.Screen.X / 2 ? UiAnchor.LeftBottom : UiAnchor.RightBottom, _width + 15, _height); //Hardcode TooltipWidth + 15
+            (_anchorX, _anchorY) = InternalUtils.GetAnchorOffset(tx < UiRender.Screen.X / 2 ? UiAnchor.LeftBottom : UiAnchor.RightBottom, _width, _height);
             tx += (int) (_anchorX * _parent._trueScale.X);
             ty += (int) (_anchorY * _parent._trueScale.Y);
         } else if (_isDragging) {
@@ -385,6 +385,10 @@ public partial class Sprite {
             _children.Remove(child);
         }
         
+        UpdateNormalListeners();
+
+        CheckHighestSprite();
+        
         HandleGlobalEvents();
 
         foreach (var child in _children) {
@@ -398,13 +402,14 @@ public partial class Sprite {
         }
         
         Update(gameTime);
+
+        HandleHover();
         
-        HandleEvents();
+        HighestSprite?.DispatchMouseEvents();
         
-        HighestSprite?._mouseEventHandler.HandleCallbacks(HighestSprite);
         HighestSprite = null;
 
-        if(MouseInput.HandleEvent(MouseEventId.LeftClick) && TextInput.UnFocusOnClick)
+        if(MouseInput.CheckEvent(MouseEvent.LeftClick) && TextInput.UnFocusOnClick)
             TextInput.ActiveInput?.UnFocus();
     }
 

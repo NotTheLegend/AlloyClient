@@ -61,13 +61,13 @@ internal class EventHandler {
 
             var len = list.Count;
             for (var i = 0; i < len; i++) {
-                Event.DoCallback(list[i].Callback, data, sprite);
+                MonoClient.UiLib.Core.Events.Types.Event.DoCallback(list[i].Callback, data, sprite);
             }
         }
     }
     
     internal void AddEvent(InternalEventInfo eventInfo) {
-        if (Event.ValidateCallback(eventInfo)) 
+        if (MonoClient.UiLib.Core.Events.Types.Event.ValidateCallback(eventInfo)) 
             _pending.Enqueue((eventInfo, true));
         else 
             Console.WriteLine($"Unable to add callback, invalid signature. Must be 'Callback()', 'Callback(EventData)', 'Callback({eventInfo.Event})EventData'");

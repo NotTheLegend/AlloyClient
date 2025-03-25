@@ -1,6 +1,7 @@
 using System;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
 
@@ -37,6 +38,6 @@ public class MapEditorObjectRect : Sprite {
         _objectRect = new ObjectRect(_config);
         AddChild(_objectRect);
 
-        _objectRect.AddEventListener(MouseEventId.LeftClick, onClick);
+        _objectRect.AddEventListener(MouseEvent.LeftClick, onClick);
     }
 }

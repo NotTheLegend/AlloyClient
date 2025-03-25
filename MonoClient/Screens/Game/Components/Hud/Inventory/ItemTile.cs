@@ -13,6 +13,7 @@ using MonoClient.Ui.Components.Tooltips;
 using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Input;
@@ -104,12 +105,12 @@ public sealed class ItemTile : Sprite {
         _sprite.MouseEnabled = true;
         
         if (Interactive) {
-            _sprite.AddEventListener(MouseEventId.LeftDown, OnMouseDown);
-            _sprite.AddEventListener(MouseEventId.LeftUp, OnMouseUp);
+            _sprite.AddEventListener(MouseEvent.LeftDown, OnMouseDown);
+            _sprite.AddEventListener(MouseEvent.LeftUp, OnMouseUp);
         }
         
-        _sprite.AddEventListener(MouseEventId.MouseOver, OnMouseOver);
-        _sprite.AddEventListener(MouseEventId.MouseOut, OnMouseOut);
+        _sprite.AddEventListener(MouseEvent.MouseOver, OnMouseOver);
+        _sprite.AddEventListener(MouseEvent.MouseOut, OnMouseOut);
     }
 
     public void SetItem(ItemDesc item)
@@ -181,15 +182,15 @@ public sealed class ItemTile : Sprite {
         _pendingDouble = false;
     }
     
-    private void OnMouseDown(MouseEventArgs args) {
+    private void OnMouseDown(MouseEvent args) {
         if (Item == null) return;
         
-        _dragStart = args.Coords;
+        _dragStart = GetRelativeMousePosition();
         _checkForDrag = true;
-        _sprite.AddEventListener(MouseEventId.LeftUp, CancelDragCheck);
+        _sprite.AddEventListener(MouseEvent.LeftUp, CancelDragCheck);
     }
 
-    private void OnMouseUp(MouseEventArgs args) {
+    private void OnMouseUp(MouseEvent args) {
         if (_dragging) return;
 
         if (args.ShiftKey) {
@@ -240,12 +241,12 @@ public sealed class ItemTile : Sprite {
 
     private void CancelDragCheck() {
         _checkForDrag = false;
-        _sprite.RemoveEventListener(MouseEventId.LeftUp, CancelDragCheck);
+        _sprite.RemoveEventListener(MouseEvent.LeftUp, CancelDragCheck);
     }
 
     protected override void OnUpdate(GameTime gameTime) {
         if (!_checkForDrag) return;
-        var delta = MouseInput.GetMousePosition() - _dragStart;
+        var delta = GetRelativeMousePosition() - _dragStart;
         var dist = MathF.Sqrt(delta.X * delta.X + delta.Y * delta.Y);
 
         if (dist > 3) {
@@ -270,13 +271,13 @@ public sealed class ItemTile : Sprite {
         RemoveChild(_tierText);
         
         _sprite.StartDrag(true);
-        _sprite.AddEventListener(MouseEventId.LeftUp, OnEndDrag);
+        _sprite.AddEventListener(MouseEvent.LeftUp, OnEndDrag);
         Map.GameSprite.AddChild(_sprite);
     }
 
-    private void OnEndDrag(MouseEventArgs args) {
+    private void OnEndDrag(MouseEvent args) {
         _dragging = false;
-        _sprite.RemoveEventListener(MouseEventId.LeftUp, OnEndDrag);
+        _sprite.RemoveEventListener(MouseEvent.LeftUp, OnEndDrag);
         _sprite.EndDrag();
         Map.GameSprite.RemoveChild(_sprite);
         AddChild(_sprite);

@@ -36,11 +36,12 @@ public abstract class Tooltip : Sprite {
             CutX = 5,
             CutY = 5,
             Width = ToolWidth,
-            Height = ToolHeight,
-            MouseEnabled = true
+            Height = ToolHeight
         };
         TooltipSprite = new NineSliceRect(TooltipConfig);
         Contain.AddChild(TooltipSprite);
+        Height = ToolHeight;
+        SetBaseDimensions(ToolWidth, ToolHeight);
     }
     
 }

@@ -10,6 +10,7 @@ using MonoClient.Ui.Components.Panels;
 using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
+using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Utils.Signals;
@@ -111,7 +112,7 @@ public sealed class OptionsView : Overlay {
                 Y = 84,
                 Anchor = UiAnchor.LeftTop
             });
-            tab.AddEventListener(MouseEventId.LeftClick, SelectTab);
+            tab.AddEventListener(MouseEvent.LeftClick, OnSelectTab);
             AddChild(tab);
 
             var view = new OptionTabView(tabName) {
@@ -125,16 +126,18 @@ public sealed class OptionsView : Overlay {
                 first = false;
 
                 view.Visible = true;
-                SelectTab(new MouseEventArgs(tab));
+                SelectTab(tab);
             }
 
             xOffset += 172;
         }
     }
 
-    private void SelectTab(MouseEventArgs args) {
-        var tab = args.Sprite as TextButton;
+    private void OnSelectTab(MouseEvent args) {
+        SelectTab(args.CurrentTarget as TextButton);
+    }
 
+    private void SelectTab(TextButton tab) {
         if (_selectedTab != null) {
             _selectedTab.Activate();
             _tabViews[_selectedTab.Name].Visible = false;

@@ -13,34 +13,13 @@ using EventHandler = MonoClient.UiLib.Core.Events.EventHandler;
 namespace MonoClient.UiLib.Core;
 
 public partial class Sprite {
-
-    private readonly MouseEventHandler _mouseEventHandler = new();
+    
     private readonly TaskEventHandler _taskEventHandler = new();
     private readonly EventHandler _eventHandler = new();
 
     private void HandleGlobalEvents() {
-        _mouseEventHandler.UpdateQueue();
         _eventHandler.Handle(this);
         _taskEventHandler.Handle();
-    }
-
-    private void HandleEvents() {
-        if (!Visible) return;
-        
-        for (var i = _children.Count - 1; i >= 0; i--) {
-            _children[i].HandleEvents();
-        }
-        
-        if (_canInteract && MouseEnabled)
-            _mouseEventHandler.HandleGlobal(this);
-    }
-    
-    public void AddEventListener(MouseEventId eventId, Delegate callback, bool global = false, bool ignoreBounds = false) {
-        _mouseEventHandler.AddEvent(new MouseEventData(eventId, callback, ignoreBounds), global);
-    }
-    
-    public void RemoveEventListener(MouseEventId eventId, Delegate callback, bool global = false, bool ignoreBounds = false) {
-        _mouseEventHandler.RemoveEvent(new MouseEventData(eventId, callback, ignoreBounds), global);
     }
     
     public void DispatchEvent(EventId eventId) {

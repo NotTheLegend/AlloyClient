@@ -2,6 +2,7 @@
 using MonoClient.State.SettingTypes;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
 
@@ -47,9 +48,9 @@ public class ChoiceBox<T> : Sprite {
             { Text = labels[_selected], FontSize = 25, FontType = FontType.Bold, X = BoxWidth / 2, Y = BoxHeight / 2, OutlineThickness = 2, Anchor = UiAnchor.Middle });
         AddChild(_char);
 
-        AddEventListener(MouseEventId.MouseOver, () => _background.SetColor(11776947));
-        AddEventListener(MouseEventId.MouseOut, () => _background.SetColor(4473924));
-        AddEventListener(MouseEventId.LeftClick, OnClick);
+        AddEventListener(MouseEvent.MouseOver, () => _background.SetColor(11776947));
+        AddEventListener(MouseEvent.MouseOut, () => _background.SetColor(4473924));
+        AddEventListener(MouseEvent.LeftClick, OnClick);
     }
 
     private void OnClick() {

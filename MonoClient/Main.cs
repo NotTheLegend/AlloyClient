@@ -6,6 +6,7 @@ using Common.Vector;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoClient.AppEngine;
 using MonoClient.Assets;
 using MonoClient.Assets.Libraries;
@@ -21,7 +22,6 @@ using MonoClient.UiLib.Utils.Signals;
 using MonoClient.Utils;
 using Easing = MonoClient.UiLib.Easing;
 using KeyboardInput = MonoClient.UiLib.Input.KeyboardInput;
-using MouseInput = MonoClient.UiLib.Input.MouseInput;
 
 namespace MonoClient;
 
@@ -69,8 +69,8 @@ public class Main : Game {
         base.Initialize();
     }
     
-    [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH", MessageId = "type: System.Byte[]")]
     [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH", MessageId = "type: Microsoft.Xna.Framework.Color[]")]
+    [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH", MessageId = "type: System.Byte[]; size: 65MB")]
     protected override void LoadContent() {
         Atlas = ContentManager.Load<MainAtlas>("atlas");
         UiAtlas = ContentManager.Load<UiAtlas>("AtlasUi");
@@ -79,13 +79,14 @@ public class Main : Game {
         ModelData.Load();
         
         //UiRender needs to be loaded first so Render can pull font data from it
-        UiRender.ConfigureAndLoad(this, ContentManager, GraphicsDevice, Atlas, UiAtlas, mapTexture, new IntVector2(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight));
+        UiRender.ConfigureAndLoad(this, Atlas, UiAtlas, mapTexture, new IntVector2(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight), out var stage);
         UiRender.UpdateViewMatrix(Settings.ScreenWidth, Settings.ScreenHeight);
         Render.FirstTimeInit();
         
         SliceConfig.LoadSliceData();
         
-        DisplayManager.Init();
+        DisplayManager.Init(stage);
+        DisplayManager.Start();
 
 
 
@@ -101,12 +102,6 @@ public class Main : Game {
             _lastScreenWidth = Settings.ScreenWidth;
             _lastScreenHeight = Settings.ScreenHeight;
             ScreenResized?.Invoke();
-        }
-        
-        // Only update inputs if window is active
-        if (IsActive) {
-            MouseInput.Update();
-            KeyboardInput.Update();
         }
         
         DisplayManager.Update(gameTime);

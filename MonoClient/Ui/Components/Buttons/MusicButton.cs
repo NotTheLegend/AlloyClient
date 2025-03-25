@@ -2,6 +2,7 @@
 using MonoClient.State;
 using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
 
@@ -39,8 +40,8 @@ public class MusicButton : Sprite {
         
         SetBaseDimensions(_button.Width, _button.Height);
         MouseEnabled = true;
-        AddEventListener(MouseEventId.MouseOver, OnMouseOver);
-        AddEventListener(MouseEventId.MouseOut, OnMouseOut);
+        AddEventListener(MouseEvent.MouseOver, OnMouseOver);
+        AddEventListener(MouseEvent.MouseOut, OnMouseOut);
     }
 
     private void OnClick() {

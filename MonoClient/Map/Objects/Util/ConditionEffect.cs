@@ -56,7 +56,7 @@ public static class ConditionEffectUtil {
     static ConditionEffectUtil() {
         foreach (var effect in Effects) {
             if (effect.IconOffsets != null)
-                EffectIcons[effect.Bit] = effect.IconOffsets.Select(i => Main.Atlas.GetAtlasData("lofiInterface2", i).ToVector4(true)).ToArray();
+                EffectIcons[effect.Bit] = effect.IconOffsets.Select(i => Main.Atlas.GetAtlasData("lofiInterface2", i).ToVector4()).ToArray();
             else
                 IconlessEffects |= effect.Bit;
             

@@ -2,6 +2,7 @@
 using MonoClient.Data.XmlModels;
 using MonoClient.State;
 using MonoClient.UiLib.BuiltIn;
+using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
 
@@ -70,9 +71,9 @@ public class ServerRect : Container {
 
         MouseEnabled = true;
         
-        AddEventListener(MouseEventId.MouseOver, OnMouseOver);
-        AddEventListener(MouseEventId.MouseOut, OnMouseOut);
-        AddEventListener(MouseEventId.LeftClick, () => Clicked?.Invoke());
+        AddEventListener(MouseEvent.MouseOver, OnMouseOver);
+        AddEventListener(MouseEvent.MouseOut, OnMouseOut);
+        AddEventListener(MouseEvent.LeftClick, () => Clicked?.Invoke());
         
         SetServer(model);
     }

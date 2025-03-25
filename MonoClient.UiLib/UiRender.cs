@@ -4,13 +4,17 @@ using Common.Vector;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
+using MonoClient.UiLib.Input;
 
 namespace MonoClient.UiLib;
 
 public static class UiRender {
+
+    internal static Stage Stage;
 
     internal static IntVector2 DefaultScreen;
     internal static IntVector2 Screen;
@@ -32,24 +36,32 @@ public static class UiRender {
 
     public static BitmapFamily MyriadPro;
     
-
-
     public static Matrix ViewMatrix;
     
     public static readonly Matrix DefaultViewMatrix = Matrix.CreateOrthographicOffCenter(0, 1280, 720, 0, -1, 1);
 
     internal static Effect UiShader;
 
-    public static void ConfigureAndLoad(Game game, ContentManager content, GraphicsDevice graphics, MainAtlas gameAtlas, UiAtlas uiAtlas, Texture2D minimap, IntVector2 defaultScreen) {
+    public static void ConfigureAndLoad(Game game, MainAtlas gameAtlas, UiAtlas uiAtlas, Texture2D minimap, IntVector2 defaultScreen, out Stage stage) {
+        if (Game != null) {
+            stage = Stage;
+            return;
+        }
+        
         Game = game;
-        Content = content;
-        Graphics = graphics;
+        Content = game.Content;
+        Graphics = game.GraphicsDevice;
         GameAtlas = gameAtlas;
         UiAtlas = uiAtlas;
         Minimap = minimap;
         DefaultScreen = defaultScreen;
+
+        stage = Stage = new Stage();
         
         game.Window.TextInput += OnTextInput;
+        
+        KeyboardInput.Register(game, Stage);
+        MouseInput.Register(game);
 
         MyriadPro = new BitmapFamily("Fonts/MyriadPro/MyriadPro");
 
@@ -66,7 +78,7 @@ public static class UiRender {
         UiShader.Parameters["TitleBackgroundTexture"].SetValue(Content.Load<Texture2D>("Ui/titleView/TitleScreenBackground"));
         UiShader.Parameters["TitleGraphicTexture"].SetValue(Content.Load<Texture2D>("Ui/titleView/TitleScreenGraphic"));
 
-        Sprite.BuildBuffers(graphics);
+        Sprite.BuildBuffers(Graphics);
         
         UpdateViewMatrix(defaultScreen.X, DefaultScreen.Y);
     }

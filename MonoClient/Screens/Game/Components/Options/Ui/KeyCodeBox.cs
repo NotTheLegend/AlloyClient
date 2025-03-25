@@ -6,6 +6,7 @@ using MonoClient.State.Input;
 using MonoClient.State.SettingTypes;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Input;
@@ -65,11 +66,11 @@ public class KeyCodeBox : Sprite {
         });
         AddChild(_char);
 
-        AddEventListener(MouseEventId.MouseOver, () => _background.SetColor(11776947));
-        AddEventListener(MouseEventId.MouseOut, () => _background.SetColor(4473924));
-        AddEventListener(MouseEventId.LeftClick, OnLeftClick);
-        AddEventListener(MouseEventId.RightClick, OnRightClick);
-        AddEventListener(MouseEventId.MiddleClick, OnMiddleClick);
+        AddEventListener(MouseEvent.MouseOver, () => _background.SetColor(11776947));
+        AddEventListener(MouseEvent.MouseOut, () => _background.SetColor(4473924));
+        AddEventListener(MouseEvent.LeftClick, OnLeftClick);
+        AddEventListener(MouseEvent.RightClick, OnRightClick);
+        AddEventListener(MouseEvent.MiddleClick, OnMiddleClick);
     }
 
     protected override void OnUpdate(GameTime gameTime) {
@@ -81,10 +82,6 @@ public class KeyCodeBox : Sprite {
         if (_elapsed > 500) {
             _char.Visible = !_char.Visible;
             _elapsed = 0;
-        }
-
-        if (KeyboardInput.IsKeyPressed(Keys.Escape)) {
-            Reset();
         }
     }
 
@@ -110,6 +107,11 @@ public class KeyCodeBox : Sprite {
 
     private void OnKeyPress(object _, TextInputEventArgs args) {
         Main.GameInstance.Window.TextInput -= OnKeyPress;
+
+        if (args.Key == Keys.Escape) {
+            Reset();
+            return;
+        }
 
         _keyCode = args.Key;
         _mouseText = null;

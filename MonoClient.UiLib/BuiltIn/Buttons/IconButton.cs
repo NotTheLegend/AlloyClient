@@ -2,6 +2,7 @@
 using Common.Atlas;
 using Microsoft.Xna.Framework;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
 
@@ -50,8 +51,8 @@ public sealed class IconButton : Sprite {
             _texture.RemovePadding();
 
         MouseEnabled = true;
-        AddEventListener(MouseEventId.LeftDown, OnLeftDown);
-        AddEventListener(MouseEventId.LeftUp, OnLeftUp);
+        AddEventListener(MouseEvent.LeftDown, OnLeftDown);
+        AddEventListener(MouseEvent.LeftUp, OnLeftUp);
 
         SetBaseDimensions(_width, _height);
         ResizeBackBuffer();

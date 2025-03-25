@@ -4,6 +4,7 @@ using Common.Vector;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Input;
@@ -101,7 +102,7 @@ public sealed class TextInput : Sprite {
         SetBaseDimensions(_textBox.Width, _textBox.Height);
         SetHitboxType(HitboxType.Custom);
         
-        AddEventListener(MouseEventId.LeftClick, OnMouseClick);
+        AddEventListener(MouseEvent.LeftClick, OnMouseClick);
         
         ResizeBackBuffer();
         FillData();
@@ -206,7 +207,7 @@ public sealed class TextInput : Sprite {
         return hit;
     }
 
-    private void OnMouseClick(MouseEventArgs args) {
+    private void OnMouseClick(MouseEvent args) {
         if (ActiveInput != this && _clickActivate) {
             ActiveInput?.UnFocus();
             Focus();

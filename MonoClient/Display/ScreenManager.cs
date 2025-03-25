@@ -8,6 +8,8 @@ using MonoClient.State;
 using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Core.Events;
+using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Input;
 
 namespace MonoClient.Display;
@@ -23,6 +25,8 @@ public sealed class ScreenManager : Sprite {
         _instance = this;
         FadeScreen.Visible = false;
         SetScreen(new FadeScreen(0));
+        
+        AddEventListener(KeyboardEvent.KeyUp, OnKeyUp);
     }
 
     /// <summary>
@@ -63,35 +67,32 @@ public sealed class ScreenManager : Sprite {
         _instance.RemoveChild(_currScreen);
     }
 
-    protected override void OnUpdate(GameTime gameTime) {
-        HandleGlobalCommands();
+    private void OnKeyUp(KeyboardEvent args) {
+        if ((args.Key == Keys.Enter && args.Alt) || args.Key == Keys.F11)
+            ToggleFullscreen();
     }
 
-    private static void HandleGlobalCommands() {
-        // Fullscreen toggle
-        if (KeyboardInput.AreKeysPressed(Keys.LeftAlt, Keys.Enter) || KeyboardInput.IsKeyPressed(Keys.F11)) {
-            Main.Graphics.IsFullScreen = !Main.Graphics.IsFullScreen;
-            Main.Graphics.HardwareModeSwitch = !Main.Graphics.IsFullScreen;
+    private static void ToggleFullscreen() {
+        Main.Graphics.IsFullScreen = !Main.Graphics.IsFullScreen;
+        Main.Graphics.HardwareModeSwitch = !Main.Graphics.IsFullScreen;
 
-            int width, height;
-            if (Main.Graphics.IsFullScreen) {
-                width = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-                height = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            }
-            else {
-                width = Settings.NonFullscreenWidth;
-                height = Settings.NonFullscreenHeight;
-            }
-
-            Main.Graphics.PreferredBackBufferWidth = width;
-            Main.Graphics.PreferredBackBufferHeight = height;
-            Main.Graphics.ApplyChanges();
-
-            Settings.Fullscreen = Main.Graphics.IsFullScreen;
-            Settings.SetWindowSize(width, height);
-            Settings.SaveSettings();
-            UiRender.UpdateViewMatrix(width, height);
+        int width, height;
+        if (Main.Graphics.IsFullScreen) {
+            width = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            height = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+        } else {
+            width = Settings.NonFullscreenWidth;
+            height = Settings.NonFullscreenHeight;
         }
+
+        Main.Graphics.PreferredBackBufferWidth = width;
+        Main.Graphics.PreferredBackBufferHeight = height;
+        Main.Graphics.ApplyChanges();
+
+        Settings.Fullscreen = Main.Graphics.IsFullScreen;
+        Settings.SetWindowSize(width, height);
+        Settings.SaveSettings();
+        UiRender.UpdateViewMatrix(width, height);
     }
 }
 

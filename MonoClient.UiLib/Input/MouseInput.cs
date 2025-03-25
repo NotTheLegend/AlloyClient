@@ -1,55 +1,89 @@
 ﻿using System;
-using MonoClient.UiLib.Core.Events.Types;
+using System.Collections.Generic;
 using Common.Vector;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Core.Events;
 
 namespace MonoClient.UiLib.Input;
 
-public static class MouseInput {
+internal static class MouseInput {
+    
+    private static Game _game;
+
+    private static readonly string[] EventTypes = [
+        MouseEvent.LeftClick, MouseEvent.MiddleClick, MouseEvent.RightClick, 
+        MouseEvent.LeftDown, MouseEvent.MiddleDown, MouseEvent.RightDown, 
+        MouseEvent.LeftUp, MouseEvent.MiddleUp, MouseEvent.RightUp, 
+        /*MouseEvent.MouseMove,*/ MouseEvent.Scroll];
+    
+    internal static readonly List<string> Events = [];
+    
     private static MouseState _prevInput;
     private static MouseState _currInput;
 
-    public static void Update() {
-        _prevInput = _currInput;
-        _currInput = Mouse.GetState();
+    internal static void Register(Game game) {
+        if (_game != null) return;
+
+        _game = game;
     }
 
-    public static IntVector2 GetMousePosition() => new(_currInput.X, _currInput.Y);
+    internal static void Update() {
+        if (!_game.IsActive)
+            return;
+        
+        _prevInput = _currInput;
+        _currInput = Mouse.GetState();
 
-    public static float GetScrollDelta() => _currInput.ScrollWheelValue - _prevInput.ScrollWheelValue;
+        if (_currInput.X < 0 || _currInput.X > UiRender.Screen.X || _currInput.Y < 0 || _currInput.Y > UiRender.Screen.Y)
+            return;
+        
+        foreach (var type in EventTypes) {
+            if (CheckEvent(type)) {
+                Events.Add(type);
+            }
+        }
+    }
+
+    internal static void Clear() {
+        Events.Clear();
+    }
     
-    public static bool HandleEvent(MouseEventId eventId) {
-        return eventId switch {
-            MouseEventId.LeftClick => WasButtonUp(MouseEventId.LeftClick),
-            MouseEventId.MiddleClick => WasButtonUp(MouseEventId.MiddleClick),
-            MouseEventId.RightClick => WasButtonUp(MouseEventId.RightClick),
-            MouseEventId.LeftDown => WasButtonDown(MouseEventId.LeftClick),
-            MouseEventId.MiddleDown => WasButtonDown(MouseEventId.MiddleClick),
-            MouseEventId.RightDown => WasButtonDown(MouseEventId.RightClick),
-            MouseEventId.LeftUp => WasButtonUp(MouseEventId.LeftClick),
-            MouseEventId.MiddleUp => WasButtonUp(MouseEventId.MiddleClick),
-            MouseEventId.RightUp => WasButtonUp(MouseEventId.RightClick),
+    internal static float GetScrollDelta() => _currInput.ScrollWheelValue - _prevInput.ScrollWheelValue;
+    
+    internal static IntVector2 GetMousePosition() => new(_currInput.X, _currInput.Y);
+
+    internal static bool CheckEvent(string type) {
+        return type switch {
+            MouseEvent.LeftClick => WasButtonUp(MouseEvent.LeftClick),
+            MouseEvent.MiddleClick => WasButtonUp(MouseEvent.MiddleClick),
+            MouseEvent.RightClick => WasButtonUp(MouseEvent.RightClick),
+            MouseEvent.LeftDown => WasButtonDown(MouseEvent.LeftClick),
+            MouseEvent.MiddleDown => WasButtonDown(MouseEvent.MiddleClick),
+            MouseEvent.RightDown => WasButtonDown(MouseEvent.RightClick),
+            MouseEvent.LeftUp => WasButtonUp(MouseEvent.LeftClick),
+            MouseEvent.MiddleUp => WasButtonUp(MouseEvent.MiddleClick),
+            MouseEvent.RightUp => WasButtonUp(MouseEvent.RightClick),
+            MouseEvent.Scroll => _currInput.ScrollWheelValue != _prevInput.ScrollWheelValue,
             _ => throw new NotSupportedException()
         };
     }
     
-    public static bool WasButtonDown(MouseEventId eventId) {
+    private static bool WasButtonDown(string eventId) {
         return GetMouseButtonState(_currInput, eventId, ButtonState.Pressed) && GetMouseButtonState(_prevInput, eventId, ButtonState.Released);
     }
     
-    public static bool WasButtonUp(MouseEventId eventId) {
+    private static bool WasButtonUp(string eventId) {
         return GetMouseButtonState(_currInput, eventId, ButtonState.Released) && GetMouseButtonState(_prevInput, eventId, ButtonState.Pressed);
     }
 
-    private static bool GetMouseButtonState(MouseState input, MouseEventId eventId, ButtonState state) {
+    private static bool GetMouseButtonState(MouseState input, string eventId, ButtonState state) {
         return eventId switch {
-            MouseEventId.LeftClick => input.LeftButton == state,
-            MouseEventId.MiddleClick => input.MiddleButton == state,
-            MouseEventId.RightClick => input.RightButton == state,
+            MouseEvent.LeftClick => input.LeftButton == state,
+            MouseEvent.MiddleClick => input.MiddleButton == state,
+            MouseEvent.RightClick => input.RightButton == state,
             _ => throw new ArgumentOutOfRangeException(nameof(eventId), eventId, null)
         };
         
     }
 }
-

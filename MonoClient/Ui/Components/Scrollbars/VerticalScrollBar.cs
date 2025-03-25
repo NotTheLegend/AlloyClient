@@ -1,6 +1,7 @@
 using System;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
 
@@ -56,9 +57,10 @@ public class VerticalScrollBar : Sprite {
         _scrollHeight = config.Height - handleHeight;
         _heightDifference = config.TotalContentHeight - config.VisibleContentHeight;
 
-        _scrollBarHandleTexture.AddEventListener(MouseEventId.LeftDown, OnHandleDown);
-        _scrollBarHandleTexture.AddEventListener(MouseEventId.MouseMove, OnMouseMove);
-        clipRect.AddEventListener(MouseEventId.Scroll, Scroll);
+        _scrollBarHandleTexture.AddEventListener(MouseEvent.LeftDown, OnHandleDown);
+        //todo mousemove?
+        //_scrollBarHandleTexture.AddEventListener(MouseEvent.MouseMove, OnMouseMove);
+        clipRect.AddEventListener(MouseEvent.Scroll, Scroll);
 
         MouseEnabled = true;
     }
@@ -69,14 +71,15 @@ public class VerticalScrollBar : Sprite {
         return handleHeight;
     }
 
-    private void OnHandleDown(MouseEventArgs args) {
-        _scrollBarHandleTexture.AddEventListener(MouseEventId.LeftUp, OnHandleUp, true, true);
+    private void OnHandleDown(MouseEvent args) {
+        //todo add stage instead
+        Stage.AddEventListener(MouseEvent.LeftUp, OnHandleUp, true);
         _isDragging = true;
         _dragOffset = args.Coords.Y - _scrollBarHandleTexture.Y;
     }
 
     private void OnHandleUp() {
-        _scrollBarHandleTexture.RemoveEventListener(MouseEventId.LeftUp, OnHandleUp, true, true);
+        _scrollBarHandleTexture.RemoveEventListener(MouseEvent.LeftUp, OnHandleUp, true);
         _isDragging = false;
     }
 
@@ -90,7 +93,7 @@ public class VerticalScrollBar : Sprite {
         }
     }
 
-    private void OnMouseMove(MouseEventArgs args) {
+    private void OnMouseMove(MouseEvent args) {
         if (!_isDragging) {
             return;
         }
@@ -99,7 +102,7 @@ public class VerticalScrollBar : Sprite {
         UpdateScrollHandlePosition(newY);
     }
 
-    private void Scroll(MouseEventArgs args) {
+    private void Scroll(MouseEvent args) {
         if (_heightDifference < 0) return;
         
         var newScrollY = _lastScrollY - args.Delta * _scrollStep;
