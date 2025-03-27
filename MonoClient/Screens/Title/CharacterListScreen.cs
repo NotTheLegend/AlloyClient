@@ -217,7 +217,7 @@ public class CharacterListScreen : TitleScreenBase {
         
         MouseEnabled = true;
         
-        AddEventListener(TaskEvent.Completed, CharacterList.LoadAsync(), () => {
+        AddEventListener(CharacterList.LoadAsync(), () => {
             LoadCharacterList();
             LoadGraveyardList();
         });

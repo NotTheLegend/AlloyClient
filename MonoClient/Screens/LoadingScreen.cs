@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MonoClient.Assets;
 using MonoClient.Data;
 using MonoClient.Display;
@@ -30,7 +31,7 @@ public class LoadingScreen : Screen {
         var text = new SimpleText(config);
         AddChild(text);
         
-        AddEventListener(UiLib.Core.Events.TaskEvent.Completed, Task.WhenAll(
+        AddEventListener(Task.WhenAll(
             Account.LoadAsync(),
             //Task.Run(SoundManager.PreLoadSounds),
             //Task.Run(Music.PreLoadSongs),

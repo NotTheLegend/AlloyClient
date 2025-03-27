@@ -108,7 +108,7 @@ public class ServersTitleScreen : TitleScreenBase {
         #endregion
         
         if (RequestNewCharList)
-            AddEventListener(TaskEvent.Completed, CharacterList.LoadAsync(), OnCharListReceived);
+            AddEventListener(CharacterList.LoadAsync(), OnCharListReceived);
         else {
             BuildServerListUI(CharacterList.Model.Servers.ServerItems);
         }

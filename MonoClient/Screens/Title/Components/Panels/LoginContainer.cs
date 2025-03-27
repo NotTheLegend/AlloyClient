@@ -56,7 +56,7 @@ public class LoginContainer : Overlay {
     }
 
     private void OnLogin() {
-        AddEventListener(TaskEvent.Completed, Account.LoginAsync(_emailInput.Text, _passwordInput.Text), OnLoginResponse);
+        AddEventListener(Account.LoginAsync(_emailInput.Text, _passwordInput.Text), OnLoginResponse);
     }
     
     private void OnLoginResponse(LoginResponse response) {

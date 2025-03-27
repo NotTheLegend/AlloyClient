@@ -53,3 +53,9 @@ public enum FontType : int {
     Bold = 1,
     Bolder = 2
 }
+
+public enum TaskState {
+    Completed,
+    Faulted,
+    Canceled
+}

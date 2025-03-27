@@ -3,7 +3,6 @@ using MonoClient.State;
 using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Core.Events;
-using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Ui.Components.Buttons;

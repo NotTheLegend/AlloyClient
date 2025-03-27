@@ -43,7 +43,7 @@ public class NameContainer : Overlay {
     }
     
     private void OnSetName() {
-        AddEventListener(TaskEvent.Completed, Account.SetName(_nameInput.Text), OnLoginResponse);
+        AddEventListener(Account.SetName(_nameInput.Text), OnLoginResponse);
     }
     
     private void OnLoginResponse(LoginResponse response) {

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework.Input;
+using System.Threading.Tasks;
 using MonoClient.UiLib.Core.Events;
+using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Input;
+using MonoClient.UiLib.Utils;
 
 namespace MonoClient.UiLib.Core;
 
@@ -23,6 +25,22 @@ public abstract class EventManager {
     private readonly Dictionary<string, List<Delegate>> _captureEventListeners = [];
 
     private Dictionary<string, List<Delegate>> GetListeners(bool capture) => capture ? _captureEventListeners : _eventListeners;
+    
+    public void AddEventListener(Task task, Action callback) {
+        task.ContinueWith(_ => callback());
+    }
+    
+    public void AddEventListener(Task task, Action<TaskState> callback) {
+        task.ContinueWith(t => callback(t.GetStatus()));
+    }
+    
+    public void AddEventListener<T>(Task<T> task, Action<T> callback) {
+        task.ContinueWith(t => callback(t.Result));
+    }
+    
+    public void AddEventListener<T>(Task<T> task, Action<T, TaskState> callback) {
+        task.ContinueWith(t => callback(t.Result, t.GetStatus()));
+    }
 
     public void AddEventListener(string type, Delegate callback, bool capture = false) {
         ValidateAgainstBuiltIn(type, callback);
@@ -60,20 +78,21 @@ public abstract class EventManager {
         switch (callback) {
             case Action:
             case Action<Event>:
-            case Action<KeyboardEvent> when KeyboardEvent.ValidateType(type):
-            case Action<MouseEvent> when MouseEvent.ValidateType(type):
                 return;
-            default:
+            case Action<KeyboardEvent> when !KeyboardEvent.ValidateType(type):
+            case Action<MouseEvent> when !MouseEvent.ValidateType(type):
+            case Action<ResizeEvent> when !ResizeEvent.ValidateType(type):
                 throw new InvalidCallbackException("Invalid signature for defined callback");
-            
+            default:
+                return;
         }
     }
     
     internal void UpdateNormalListeners() {
-        List<Delegate> list;
-        Dictionary<string, List<Delegate>> listeners;
         while (_pending.TryDequeue(out var pending)) {
-            listeners = GetListeners(pending.Capture);
+            var listeners = GetListeners(pending.Capture);
+            List<Delegate> list;
+            
             switch (pending.State) {
                 case QueueState.Add:
                     if (listeners.TryGetValue(pending.Type, out list)) {

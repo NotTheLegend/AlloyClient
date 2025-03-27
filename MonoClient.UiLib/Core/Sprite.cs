@@ -388,8 +388,6 @@ public partial class Sprite : EventManager {
         UpdateNormalListeners();
 
         CheckHighestSprite();
-        
-        HandleGlobalEvents();
 
         foreach (var child in _children) {
             child.Update(gameTime);

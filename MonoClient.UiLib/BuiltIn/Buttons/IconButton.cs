@@ -3,7 +3,6 @@ using Common.Atlas;
 using Microsoft.Xna.Framework;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Core.Events;
-using MonoClient.UiLib.Core.Events.Types;
 using MonoClient.UiLib.Enums;
 
 namespace MonoClient.UiLib.BuiltIn.Buttons;

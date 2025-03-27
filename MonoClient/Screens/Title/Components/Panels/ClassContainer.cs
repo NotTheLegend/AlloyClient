@@ -33,7 +33,7 @@ public class ClassContainer : Overlay {
         
         var slotConfig = new TextButtonConfig { Text = "Play", FontSize = 50, OnClicked = () => {
             ClassType = CharacterWheel.SelectedClass.Type;
-            AddEventListener(TaskEvent.Completed, Account.PurchaseClassUnlock(ClassType), OnCreateResponse);
+            AddEventListener(Account.PurchaseClassUnlock(ClassType), OnCreateResponse);
         }, FontType = FontType.Normal, X = 1000, Y = 360 };
         var slotButton = new TextButton(slotConfig);
         

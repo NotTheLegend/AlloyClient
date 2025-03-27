@@ -51,7 +51,7 @@ public class RegisterContainer : Overlay {
     }
     
     private void OnRegister() {
-        AddEventListener(TaskEvent.Completed, Account.Register(_emailInput.Text, _passwordInput.Text), OnLoginResponse);
+        AddEventListener(Account.Register(_emailInput.Text, _passwordInput.Text), OnLoginResponse);
     }
     
     private void OnLoginResponse(LoginResponse response) {

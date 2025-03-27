@@ -1,6 +1,5 @@
 ﻿using MonoClient.Objects;
 using MonoClient.UiLib.Core;
-using MonoClient.UiLib.Core.Events.Types;
 
 namespace MonoClient.Screens.Game.Components.Hud;
 

@@ -19,6 +19,9 @@ public record Event(string Type, bool Bubbles = false) {
     public void StopPropagation() => Stop = true;
     
     public void StopImmediatePropagation() => ImmediateStop = true;
+    
+    public const string AddedToStage = "addedToStage";
+    public const string RemovedToStage = "removedToStage";
 }
 
 /// <summary>
@@ -83,6 +86,17 @@ public record MouseEvent(string Type, IntVector2 Coords = new(), float Delta = 0
             MiddleUp => true,
             RightUp => true,
             Scroll => true,
+            _ => false
+        };
+    }
+}
+
+public record ResizeEvent(string Type, int Width, int Height) : Event(Type) {
+    public const string Resize = "resize";
+
+    internal static bool ValidateType(string type) {
+        return type switch {
+            Resize => true,
             _ => false
         };
     }
