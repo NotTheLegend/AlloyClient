@@ -13,9 +13,22 @@ using MonoClient.UiLib.Core.Events;
 namespace MonoClient.UiLib.Core;
 
 public partial class Sprite : EventManager {
-    
-    //todo proper stage var and add/remove stage events
-    public static Stage Stage = UiRender.Stage;
+
+    public Sprite Stage {
+        get;
+        internal set {
+            if (field == null && value == null) return;
+            if (field == value) return;
+
+            if (value == null) {
+                DispatchEvent(new Event(Event.RemovedToStage));
+                field = null;
+            } else {
+                field = value;
+                DispatchEvent(new Event(Event.AddedToStage));
+            }
+        }
+    }
 
     public int X {
         get => _x;
@@ -473,6 +486,14 @@ public partial class Sprite : EventManager {
         }
     }
 
+    private void SetStage(Sprite sprite) {
+        foreach (var child in _children) {
+            child.UpdateNormalListeners();
+            child.Stage = sprite;
+            child.SetStage(sprite);
+        }
+    }
+
     public bool ContainsChild(Sprite child) {
         if (child == null) return false;
         return _children.Contains(child) || _childQueue.Contains(child);
@@ -484,6 +505,10 @@ public partial class Sprite : EventManager {
         _childCount++;
         child._parent = this;
         _childQueue.Enqueue(child);
+
+        child.UpdateNormalListeners();
+        child.Stage = Stage;
+        child.SetStage(Stage);
 
         _childbounds.MinX = Math.Min(_childbounds.MinX, child._bounds.MinX);
         _childbounds.MaxX = Math.Max(_childbounds.MaxX, child._bounds.MaxX);
@@ -499,6 +524,9 @@ public partial class Sprite : EventManager {
         _childRemovalQueue.Enqueue(child);
 
         child._parent = null;
+        
+        child.Stage = null;
+        child.SetStage(null);
 
         var bounds = new Bounds();
 

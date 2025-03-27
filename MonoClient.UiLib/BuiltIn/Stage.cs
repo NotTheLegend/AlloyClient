@@ -12,6 +12,7 @@ public class Stage : Sprite {
 
     internal Stage() {
         MouseEnabled = true;
+        Stage = this;
     }
     
     public void Update(GameTime gameTime) {

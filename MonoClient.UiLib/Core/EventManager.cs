@@ -24,22 +24,28 @@ public abstract class EventManager {
     private readonly Dictionary<string, List<Delegate>> _eventListeners = [];
     private readonly Dictionary<string, List<Delegate>> _captureEventListeners = [];
 
+    private readonly Queue<Action> _completedTasks = [];
+
     private Dictionary<string, List<Delegate>> GetListeners(bool capture) => capture ? _captureEventListeners : _eventListeners;
+
+    private void QueueTaskFinish(Action callback) {
+        _completedTasks.Enqueue(callback);
+    }
     
     public void AddEventListener(Task task, Action callback) {
-        task.ContinueWith(_ => callback());
+            task.ContinueWith(_ => QueueTaskFinish(callback));
     }
     
     public void AddEventListener(Task task, Action<TaskState> callback) {
-        task.ContinueWith(t => callback(t.GetStatus()));
+        task.ContinueWith(t => QueueTaskFinish(() => callback(t.GetStatus())));
     }
     
     public void AddEventListener<T>(Task<T> task, Action<T> callback) {
-        task.ContinueWith(t => callback(t.Result));
+        task.ContinueWith(t => QueueTaskFinish(() => callback(t.Result)));
     }
     
     public void AddEventListener<T>(Task<T> task, Action<T, TaskState> callback) {
-        task.ContinueWith(t => callback(t.Result, t.GetStatus()));
+        task.ContinueWith(t => QueueTaskFinish(() => callback(t.Result, t.GetStatus())));
     }
 
     public void AddEventListener(string type, Delegate callback, bool capture = false) {
@@ -117,6 +123,10 @@ public abstract class EventManager {
                     break;
             }
         }
+
+        while (_completedTasks.TryDequeue(out var callback)) {
+            callback();
+        }
     }
 
     internal void DispatchMouseEvents() {
@@ -127,7 +137,7 @@ public abstract class EventManager {
 
     public void DispatchEvent(Event @event) {
         var bubble = @event.Bubbles;
-        
+
         if (!bubble && !_eventListeners.ContainsKey(@event.Type))
             return;
 
@@ -139,6 +149,7 @@ public abstract class EventManager {
         } else {
             InvokeEvent(@event, false);
         }
+        
         @event.SetTarget(prev);
     }
 
