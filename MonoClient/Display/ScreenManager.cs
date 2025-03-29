@@ -23,7 +23,7 @@ public sealed class ScreenManager : Sprite {
     public ScreenManager() {
         _instance = this;
         FadeScreen.Visible = false;
-        SetScreen(new FadeScreen(0));
+        _instance.AddChild(FadeScreen);
         
         AddEventListener(KeyboardEvent.KeyUp, OnKeyUp);
     }
@@ -31,11 +31,11 @@ public sealed class ScreenManager : Sprite {
     /// <summary>
     /// Calls the current screens virtual update call, used for drawing the actual game
     /// </summary>
-    public static void Update(GameTime gameTime) => _currScreen.Update(gameTime);
+    public static void Update(GameTime gameTime) => _currScreen?.Update(gameTime);
     /// <summary>
     /// Calls the current screens virtual draw call, used for drawing the actual game
     /// </summary>
-    public static void Draw(GameTime gameTime) => _currScreen.Draw(gameTime);
+    public static void Draw(GameTime gameTime) => _currScreen?.Draw(gameTime);
 
     public static void SetScreen(Screen screen) {
         RemovePrevious();

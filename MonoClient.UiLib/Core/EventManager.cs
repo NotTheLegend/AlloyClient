@@ -19,7 +19,9 @@ public abstract class EventManager {
     
     private record EventData(string Type, Delegate Callback, bool Capture, QueueState State);
     
-    private readonly Queue<EventData> _pending = new();
+    private readonly Queue<EventData> _pending = [];
+
+    private readonly Queue<string> _pendingClicks = [];
 
     private readonly Dictionary<string, List<Delegate>> _eventListeners = [];
     private readonly Dictionary<string, List<Delegate>> _captureEventListeners = [];
@@ -130,7 +132,11 @@ public abstract class EventManager {
     }
 
     internal void DispatchMouseEvents() {
-        foreach (var type in MouseInput.Events) {
+        while(MouseInput.Events.TryDequeue(out var type)){
+            DispatchEvent(new MouseEvent(type, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetScrollDelta(), 1), -1), KeyboardInput.IsShiftDown(), KeyboardInput.IsCtrlDown(), KeyboardInput.IsAltDown()));
+        }
+
+        while (_pendingClicks.TryDequeue(out var type)) {
             DispatchEvent(new MouseEvent(type, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetScrollDelta(), 1), -1), KeyboardInput.IsShiftDown(), KeyboardInput.IsCtrlDown(), KeyboardInput.IsAltDown()));
         }
     }
@@ -153,6 +159,10 @@ public abstract class EventManager {
         @event.SetTarget(prev);
     }
 
+    private static Sprite _leftTarget;
+    private static Sprite _middleTarget;
+    private static Sprite _rightTarget;
+    
     private bool InvokeMouseEvent(MouseEvent mouseEvent, List<Delegate> listeners) {
         var sprite = this as Sprite;
 
@@ -166,6 +176,34 @@ public abstract class EventManager {
 
         if (button && !inBounds)
             return false;
+
+        switch (mouseEvent.Type) {
+            case MouseEvent.LeftDown:
+                _leftTarget = sprite;
+                break;
+            case MouseEvent.LeftUp:
+                if (_leftTarget == sprite)
+                    _pendingClicks.Enqueue(MouseEvent.LeftClick);
+                _leftTarget = null;
+                break;
+            case MouseEvent.MiddleDown:
+                _middleTarget = sprite;
+                break;
+            case MouseEvent.MiddleUp:
+                if (_middleTarget == sprite)
+                    _pendingClicks.Enqueue(MouseEvent.MiddleClick);
+                _middleTarget = null;
+                break;
+            case MouseEvent.RightDown:
+                _rightTarget = sprite;
+                break;
+            case MouseEvent.RightUp:
+                if (_rightTarget == sprite)
+                    _pendingClicks.Enqueue(MouseEvent.RightClick);
+                _rightTarget = null;
+                break;
+        }
+        
         
         var len = listeners.Count;
         for (var i = 0; i < len; i++) {

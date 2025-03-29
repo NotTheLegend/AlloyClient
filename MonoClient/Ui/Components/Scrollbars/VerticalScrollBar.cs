@@ -1,4 +1,5 @@
 using System;
+using Microsoft.Xna.Framework;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Core.Events;
@@ -26,8 +27,7 @@ public class VerticalScrollBar : Sprite {
     private readonly NineSliceRect _scrollBarHandleTexture;
 
     private readonly Action<int> _onValueChanged;
-
-    private bool _isDragging;
+    
     private int _dragOffset;
 
     private readonly int _scrollStep;
@@ -39,7 +39,7 @@ public class VerticalScrollBar : Sprite {
         X = config.X;
         Y = config.Y;
         _onValueChanged = config.OnValueChanged;
-        
+
         _scrollStep = config.ScrollStep == -1 ? config.Height / 20 : config.ScrollStep;
 
         var scrollBarTexture = new NineSliceRect(new NineSliceConfig {
@@ -52,7 +52,7 @@ public class VerticalScrollBar : Sprite {
             SliceData = SliceConfig.ScrollBar, CutX = 4, CutY = 4, Width = config.Width, Height = handleHeight, Anchor = UiAnchor.MiddleTop, MouseEnabled = true
         });
         AddChild(_scrollBarHandleTexture);
-        
+
         _scrollHeight = config.Height - handleHeight;
         _heightDifference = config.TotalContentHeight - config.VisibleContentHeight;
 
@@ -71,15 +71,15 @@ public class VerticalScrollBar : Sprite {
     }
 
     private void OnHandleDown(MouseEvent args) {
-        //todo add stage instead
         Stage.AddEventListener(MouseEvent.LeftUp, OnHandleUp, true);
-        _isDragging = true;
+        Stage.AddEventListener(MouseEvent.MouseMove, OnMouseMove, true);
         _dragOffset = args.Coords.Y - _scrollBarHandleTexture.Y;
     }
 
-    private void OnHandleUp() {
-        _scrollBarHandleTexture.RemoveEventListener(MouseEvent.LeftUp, OnHandleUp, true);
-        _isDragging = false;
+    private void OnHandleUp(MouseEvent args) {
+        args.StopImmediatePropagation();
+        Stage.RemoveEventListener(MouseEvent.LeftUp, OnHandleUp, true);
+        Stage.RemoveEventListener(MouseEvent.MouseMove, OnMouseMove, true);
     }
 
     private void UpdateScrollHandlePosition(float newY) {
@@ -93,10 +93,7 @@ public class VerticalScrollBar : Sprite {
     }
 
     private void OnMouseMove(MouseEvent args) {
-        if (!_isDragging) {
-            return;
-        }
-
+        args.StopImmediatePropagation();
         var newY = args.Coords.Y - _dragOffset;
         UpdateScrollHandlePosition(newY);
     }

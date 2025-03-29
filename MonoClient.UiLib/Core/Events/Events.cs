@@ -52,7 +52,7 @@ public record MouseEvent(string Type, IntVector2 Coords = new(), float Delta = 0
     public const string LeftUp = "leftUp";
     public const string MiddleUp = "middleUp";
     public const string RightUp = "rightUp";
-    //public const string MouseMove = "mouseMove";
+    public const string MouseMove = "mouseMove";
     public const string Scroll = "scroll";
     
     internal static bool ValidateType(string type) {
@@ -68,7 +68,7 @@ public record MouseEvent(string Type, IntVector2 Coords = new(), float Delta = 0
             LeftUp => true,
             MiddleUp => true,
             RightUp => true,
-            //MouseMove => true,
+            MouseMove => true,
             Scroll => true,
             _ => false
         };

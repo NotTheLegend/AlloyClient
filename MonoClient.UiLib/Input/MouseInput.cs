@@ -12,12 +12,11 @@ internal static class MouseInput {
     private static Game _game;
 
     private static readonly string[] EventTypes = [
-        MouseEvent.LeftClick, MouseEvent.MiddleClick, MouseEvent.RightClick, 
         MouseEvent.LeftDown, MouseEvent.MiddleDown, MouseEvent.RightDown, 
         MouseEvent.LeftUp, MouseEvent.MiddleUp, MouseEvent.RightUp, 
-        /*MouseEvent.MouseMove,*/ MouseEvent.Scroll];
+        MouseEvent.MouseMove, MouseEvent.Scroll];
     
-    internal static readonly List<string> Events = [];
+    internal static readonly Queue<string> Events = [];
     
     private static MouseState _prevInput;
     private static MouseState _currInput;
@@ -31,33 +30,26 @@ internal static class MouseInput {
     internal static void Update() {
         if (!_game.IsActive)
             return;
-        
+
         _prevInput = _currInput;
         _currInput = Mouse.GetState();
 
         if (_currInput.X < 0 || _currInput.X > UiRender.Screen.X || _currInput.Y < 0 || _currInput.Y > UiRender.Screen.Y)
             return;
-        
+
         foreach (var type in EventTypes) {
             if (CheckEvent(type)) {
-                Events.Add(type);
+                Events.Enqueue(type);
             }
         }
     }
 
-    internal static void Clear() {
-        Events.Clear();
-    }
-    
     internal static float GetScrollDelta() => _currInput.ScrollWheelValue - _prevInput.ScrollWheelValue;
     
     internal static IntVector2 GetMousePosition() => new(_currInput.X, _currInput.Y);
 
     internal static bool CheckEvent(string type) {
         return type switch {
-            MouseEvent.LeftClick => WasButtonUp(MouseEvent.LeftClick),
-            MouseEvent.MiddleClick => WasButtonUp(MouseEvent.MiddleClick),
-            MouseEvent.RightClick => WasButtonUp(MouseEvent.RightClick),
             MouseEvent.LeftDown => WasButtonDown(MouseEvent.LeftClick),
             MouseEvent.MiddleDown => WasButtonDown(MouseEvent.MiddleClick),
             MouseEvent.RightDown => WasButtonDown(MouseEvent.RightClick),
@@ -65,6 +57,7 @@ internal static class MouseInput {
             MouseEvent.MiddleUp => WasButtonUp(MouseEvent.MiddleClick),
             MouseEvent.RightUp => WasButtonUp(MouseEvent.RightClick),
             MouseEvent.Scroll => _currInput.ScrollWheelValue != _prevInput.ScrollWheelValue,
+            MouseEvent.MouseMove => _currInput.Position != _prevInput.Position,
             _ => throw new NotSupportedException()
         };
     }

@@ -12,7 +12,6 @@ using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Core;
-using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Enums;
 using ColorRect = MonoClient.UiLib.BuiltIn.ColorRect;
 using Container = MonoClient.UiLib.BuiltIn.Container;

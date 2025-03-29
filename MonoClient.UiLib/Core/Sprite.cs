@@ -17,7 +17,6 @@ public partial class Sprite : EventManager {
     public Sprite Stage {
         get;
         internal set {
-            if (field == null && value == null) return;
             if (field == value) return;
 
             if (value == null) {
@@ -27,6 +26,8 @@ public partial class Sprite : EventManager {
                 field = value;
                 DispatchEvent(new Event(Event.AddedToStage));
             }
+
+            var e = value;
         }
     }
 
@@ -420,7 +421,7 @@ public partial class Sprite : EventManager {
         
         HighestSprite = null;
 
-        if(MouseInput.CheckEvent(MouseEvent.LeftClick) && TextInput.UnFocusOnClick)
+        if(MouseInput.CheckEvent(MouseEvent.LeftUp) && TextInput.UnFocusOnClick)
             TextInput.ActiveInput?.UnFocus();
     }
 
@@ -488,6 +489,12 @@ public partial class Sprite : EventManager {
 
     private void SetStage(Sprite sprite) {
         foreach (var child in _children) {
+            child.UpdateNormalListeners();
+            child.Stage = sprite;
+            child.SetStage(sprite);
+        }
+
+        foreach (var child in _childQueue) {
             child.UpdateNormalListeners();
             child.Stage = sprite;
             child.SetStage(sprite);

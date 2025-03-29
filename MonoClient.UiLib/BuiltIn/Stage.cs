@@ -22,8 +22,6 @@ public class Stage : Sprite {
         
         Scale = UiRender.ScreenScale;
         InternalUpdateLoop(gameTime);
-        
-        MouseInput.Clear();
     }
 
     public void Draw(GameTime gameTime) {

@@ -11,17 +11,15 @@ public static class DisplayManager {
     private static Stage _stage;
 
     public static void Init(Stage stage) {
+        if (_stage != null)
+            return;
+        
         _stage = stage;
         _stage.AddChild(ScreenManager.FadeScreen);
         _stage.AddChild(new ScreenManager());
         _stage.AddChild(new OverlayManager());
         _stage.AddChild(new DialogManager());
         _stage.AddChild(new TooltipManager());
-    }
-
-    public static void Start() {
-        //ScreenManager.FadeToScreen(new TestScreen(), Easing.SineInOut, 500, 0x0);
-        ScreenManager.FadeToScreen(new LoadingScreen(), Easing.SineInOut, 1000, 0x0);
     }
     
     public static void Update(GameTime gameTime) {

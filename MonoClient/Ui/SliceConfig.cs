@@ -4,6 +4,8 @@ namespace MonoClient.Ui;
 
 public static class SliceConfig {
     
+    //todo probably turn this into an xml file instead
+    
     public const string StatusBar = "bar3";
     public const string ScrollBarBg = "ScrollBar/ScrollBarBackground";
     public const string ScrollBar = "ScrollBar/ScrollBarHandle";

@@ -86,9 +86,8 @@ public class Main : Game {
         SliceConfig.LoadSliceData();
         
         DisplayManager.Init(stage);
-        DisplayManager.Start();
 
-
+        ScreenManager.FadeToScreen(new LoadingScreen(), Easing.SineInOut, 1000, 0x0);
 
 
         /* uncomment to force restart app/world servers, takes around 1 minute for reboot to finish */
