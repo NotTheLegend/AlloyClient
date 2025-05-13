@@ -25,7 +25,12 @@ public sealed class ScreenManager : Sprite {
         FadeScreen.Visible = false;
         _instance.AddChild(FadeScreen);
         
-        AddEventListener(KeyboardEvent.KeyUp, OnKeyUp);
+        AddEventListener(Event.AddedToStage, AddedToStage);
+    }
+
+    private void AddedToStage() {
+        Stage.AddEventListener(KeyboardEvent.KeyUp, OnKeyUp);
+        Stage.AddEventListener(ResizeEvent.Resize, OnResize);
     }
 
     /// <summary>
@@ -56,6 +61,8 @@ public sealed class ScreenManager : Sprite {
         GTween.Add(Tween.New(_currScreen, ease, durationMs / 2, 0f, EaseType.Alpha, 0, () => { onFinish?.Invoke(); SetScreen(screen); }));
         GTween.Add(Tween.New(screen, ease, durationMs / 2, 1f, EaseType.Alpha, durationMs / 2, () => { FadeScreen.Visible = false; }));
     }
+
+    public static void FadeTo(Screen screen, Action callback = null) => FadeToScreen(screen, Easing.SineInOut, 1000, 0x0, callback);
 
     public static void FadeToPrevious(Easing ease, int durationMs, uint color) {
         FadeToScreen(_prevScreen, ease, durationMs, color);
@@ -93,11 +100,25 @@ public sealed class ScreenManager : Sprite {
         Settings.SaveSettings();
         UiRender.UpdateViewMatrix(width, height);
     }
+
+    private void OnResize(ResizeEvent args) {
+        Main.Graphics.PreferredBackBufferWidth = args.Width;
+        Main.Graphics.PreferredBackBufferHeight = args.Height;
+        Main.Graphics.ApplyChanges();
+
+        Main.GameInstance.Window.Position = new Point(args.X, args.Y);
+
+        Settings.Fullscreen = Main.Graphics.IsFullScreen;
+        Settings.SetWindowSize(args.Width, args.Height);
+        Settings.SaveSettings();
+    }
 }
 
 public abstract class Screen : Sprite {
     public virtual void Update(GameTime gameTime) { }
     public virtual void Draw(GameTime gameTime) { }
+    
+    protected virtual void OnResize(ResizeEvent args) { }
 }
 
 public class FadeScreen : Screen {

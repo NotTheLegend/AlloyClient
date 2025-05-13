@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using Common.Pipeline;
 using Common.Vector;
 using Microsoft.Xna.Framework;
@@ -7,8 +8,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Input;
+using MonoClient.UiLib.Utils;
 
 namespace MonoClient.UiLib;
 
@@ -18,7 +21,9 @@ public static class UiRender {
 
     internal static IntVector2 DefaultScreen;
     internal static IntVector2 Screen;
-    internal static Vector2 ScreenScale;
+    public static Vector2 ScreenScale;//Todo: move to stage?
+
+    public static readonly IntVector2 MinimumScreen = new (800, 600);
     
     public static int LastRenderCount = 0;
 
@@ -36,9 +41,7 @@ public static class UiRender {
 
     public static BitmapFamily MyriadPro;
     
-    public static Matrix ViewMatrix;
-    
-    public static readonly Matrix DefaultViewMatrix = Matrix.CreateOrthographicOffCenter(0, 1280, 720, 0, -1, 1);
+    public static Matrix ViewMatrix = new(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, -0.5f, 0f, -1f, 1f, 0.5f, 1f);
 
     internal static Effect UiShader;
 
@@ -55,13 +58,14 @@ public static class UiRender {
         UiAtlas = uiAtlas;
         Minimap = minimap;
         DefaultScreen = defaultScreen;
-
-        stage = Stage = new Stage();
+        Stage = stage = new Stage();
         
         game.Window.TextInput += OnTextInput;
         
         KeyboardInput.Register(game, Stage);
         MouseInput.Register(game);
+
+        Game.Window.ClientSizeChanged += OnResize;
 
         MyriadPro = new BitmapFamily("Fonts/MyriadPro/MyriadPro");
 
@@ -81,6 +85,40 @@ public static class UiRender {
         Sprite.BuildBuffers(Graphics);
         
         UpdateViewMatrix(defaultScreen.X, DefaultScreen.Y);
+    }
+
+    internal static void OnResize(object _, EventArgs __) {
+        var rect = Game.Window.ClientBounds;
+        var screen = new IntVector2(rect.Width, rect.Height);
+
+        if (screen == Screen)
+            return;
+
+        screen = IntVector2.Max(screen, MinimumScreen);
+        Screen = screen;
+
+        Game.Window.Position = new Point(rect.X, rect.Y);
+        
+        var ratio = MathF.Min((float)Screen.X / DefaultScreen.X, (float)Screen.Y / DefaultScreen.Y);
+        
+        //ScreenScale = new Vector2((float) Screen.X / DefaultScreen.X, (float) Screen.Y / DefaultScreen.Y);
+        ScreenScale = new Vector2(ratio, ratio);
+
+        Stage.StageWidth = Screen.X;
+        Stage.StageHeight = Screen.Y;
+
+        ViewMatrix.M11 = 2.0f / Screen.X;
+        ViewMatrix.M22 = 2.0f / -Screen.Y;
+
+        UiShader.Parameters["ViewMatrix"].SetValue(ViewMatrix);
+        
+        Stage.DispatchEvent(new ResizeEvent(ResizeEvent.Resize, rect.X, rect.Y, Screen.X, Screen.Y));
+    }
+
+    public static void SetStartingResolution(int width, int height) {
+        Stage.StageWidth = width;
+        Stage.StageHeight = height;
+        UpdateViewMatrix(width, height);
     }
 
     public static void UpdateViewMatrix(int width, int height) {

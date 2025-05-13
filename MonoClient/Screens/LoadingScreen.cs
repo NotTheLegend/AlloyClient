@@ -8,28 +8,31 @@ using MonoClient.State;
 using MonoClient.Ui.Components.Graphics;
 using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
+using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Screens;
 
 public class LoadingScreen : Screen {
+
+    private readonly SimpleText _text;
     
     public LoadingScreen() {
-        var background = new ScreenGraphic(new ScreenGraphicConfig { Width = Settings.DefaultScreenWidth, Height = Settings.DefaultScreenHeight });
+        var background = new ScreenGraphic();
         AddChild(background);
-        
-        var config = new TextConfig {
+
+        _text = new SimpleText(new TextConfig {
             Text = "Loading...",
             FontSize = 40,
             FontType = FontType.Bold,
             X = Settings.DefaultScreenWidth / 2,
-            Y = Settings.DefaultScreenHeight - 50,
+            Y = Settings.DefaultScreenHeight - 90,
             Color = 0xFFFFFF,
             Anchor = UiAnchor.Middle
-        };
-
-        var text = new SimpleText(config);
-        AddChild(text);
+        });
+        AddChild(_text);
+        
+        SetAutoResize(OnResize);
         
         AddEventListener(Task.WhenAll(
             Account.LoadAsync(),
@@ -38,5 +41,11 @@ public class LoadingScreen : Screen {
             AssetParser.ParseAssetsAsync(),
             Task.Delay(2000) // Loading screen too fast lmao
         ), () => { ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 1000, 0x0); });
+    }
+    
+    private void OnResize(ResizeEvent args) {
+        _text.Scale = UiRender.ScreenScale;
+        _text.X = Stage.StageWidth / 2;
+        _text.Y = Stage.StageHeight - (int)(90 * UiRender.ScreenScale.Y);
     }
 }

@@ -14,20 +14,30 @@ namespace MonoClient.UiLib.Core;
 
 public partial class Sprite : EventManager {
 
-    public Sprite Stage {
+    public Stage Stage {
         get;
         internal set {
-            if (field == value) return;
+            if (field == value)
+                return;
 
             if (value == null) {
                 DispatchEvent(new Event(Event.RemovedToStage));
+                
+                if (_autoResize != null) {
+                    field.RemoveEventListener(ResizeEvent.Resize, _autoResize);
+                }
+                
                 field = null;
             } else {
                 field = value;
+                
+                if (_autoResize != null) {
+                    field.AddEventListener(ResizeEvent.Resize, _autoResize);
+                    _autoResize(new ResizeEvent(ResizeEvent.Resize, -1, -1, field.StageWidth, field.StageHeight));
+                }
+                
                 DispatchEvent(new Event(Event.AddedToStage));
             }
-
-            var e = value;
         }
     }
 
@@ -193,6 +203,8 @@ public partial class Sprite : EventManager {
 
     private Bounds _childbounds = new();
     private Bounds _bounds = new();
+
+    private Action<ResizeEvent> _autoResize;
 
     #endregion
 
@@ -487,17 +499,17 @@ public partial class Sprite : EventManager {
         }
     }
 
-    private void SetStage(Sprite sprite) {
+    private void SetStage(Stage stage) {
         foreach (var child in _children) {
             child.UpdateNormalListeners();
-            child.Stage = sprite;
-            child.SetStage(sprite);
+            child.Stage = stage;
+            child.SetStage(stage);
         }
 
         foreach (var child in _childQueue) {
             child.UpdateNormalListeners();
-            child.Stage = sprite;
-            child.SetStage(sprite);
+            child.Stage = stage;
+            child.SetStage(stage);
         }
     }
 
@@ -603,6 +615,8 @@ public partial class Sprite : EventManager {
         Anchor = anchor;
         UpdateBounds();
     }
+
+    public void SetAutoResize(Action<ResizeEvent> callback) => _autoResize = callback;
     
     public void SetHitboxType(HitboxType hitbox) => HitboxType = hitbox;
 

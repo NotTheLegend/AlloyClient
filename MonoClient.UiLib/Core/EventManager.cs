@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Input;
@@ -134,50 +135,21 @@ public abstract class EventManager {
     internal void DispatchMouseEvents() {
         while(MouseInput.Events.TryDequeue(out var type)){
             DispatchEvent(new MouseEvent(type, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetScrollDelta(), 1), -1), KeyboardInput.IsShiftDown(), KeyboardInput.IsCtrlDown(), KeyboardInput.IsAltDown()));
+            CheckClicks(type);
         }
 
         while (_pendingClicks.TryDequeue(out var type)) {
             DispatchEvent(new MouseEvent(type, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetScrollDelta(), 1), -1), KeyboardInput.IsShiftDown(), KeyboardInput.IsCtrlDown(), KeyboardInput.IsAltDown()));
         }
     }
-
-    public void DispatchEvent(Event @event) {
-        var bubble = @event.Bubbles;
-
-        if (!bubble && !_eventListeners.ContainsKey(@event.Type))
-            return;
-
-        var prev = @event.Target;
-        @event.SetTarget(this as Sprite);
-
-        if (bubble) {
-            BubbleEvent(@event);
-        } else {
-            InvokeEvent(@event, false);
-        }
-        
-        @event.SetTarget(prev);
-    }
-
+    
     private static Sprite _leftTarget;
     private static Sprite _middleTarget;
     private static Sprite _rightTarget;
-    
-    private bool InvokeMouseEvent(MouseEvent mouseEvent, List<Delegate> listeners) {
+
+    private void CheckClicks(string type) {
         var sprite = this as Sprite;
-
-        if (!sprite!.MouseEnabled)
-            return false;
-        
-        mouseEvent.SetCurrentTarget(sprite);
-        
-        var inBounds = sprite!.IsInBounds(mouseEvent.Coords);
-        var button = MouseEvent.IsButtonType(mouseEvent.Type);
-
-        if (button && !inBounds)
-            return false;
-
-        switch (mouseEvent.Type) {
+        switch (type) {
             case MouseEvent.LeftDown:
                 _leftTarget = sprite;
                 break;
@@ -203,6 +175,39 @@ public abstract class EventManager {
                 _rightTarget = null;
                 break;
         }
+    }
+
+    public void DispatchEvent(Event @event) {
+        var bubble = @event.Bubbles;
+
+        if (!bubble && !_eventListeners.ContainsKey(@event.Type))
+            return;
+
+        var prev = @event.Target;
+        @event.SetTarget(this as Sprite);
+
+        if (bubble) {
+            BubbleEvent(@event);
+        } else {
+            InvokeEvent(@event, false);
+        }
+        
+        @event.SetTarget(prev);
+    }
+    
+    private bool InvokeMouseEvent(MouseEvent mouseEvent, List<Delegate> listeners) {
+        var sprite = this as Sprite;
+
+        if (!sprite!.MouseEnabled)
+            return false;
+        
+        mouseEvent.SetCurrentTarget(sprite);
+        
+        var inBounds = sprite!.IsInBounds(mouseEvent.Coords);
+        var button = MouseEvent.IsButtonType(mouseEvent.Type);
+
+        if (button && !inBounds)
+            return false;
         
         
         var len = listeners.Count;

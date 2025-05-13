@@ -1,39 +1,42 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using MonoClient.UiLib;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Ui.Components.Graphics;
 
-public struct ScreenGraphicConfig {
-
-    public bool TitleScreen = false;
-    public int X = 0;
-    public int Y = 0;
-    public int Width = 0;
-    public int Height = 0;
-    public UiAnchor Anchor = UiAnchor.LeftTop;
-    
-    public ScreenGraphicConfig() { }
-}
-
 public sealed class ScreenGraphic : Sprite {
     
-    private readonly int _width;
-    private readonly int _height;
+    private const int TexWidth = 1280;
+    private const int TexHeight = 720;
 
-    public ScreenGraphic(ScreenGraphicConfig config) {
-        X = config.X;
-        Y = config.Y;
-        _width = config.Width;
-        _height = config.Height;
-        SetAnchor(config.Anchor);
+    public ScreenGraphic(bool splash = false) {
 
-        TextureId = config.TitleScreen ? TextureType.TitleGraphic : TextureType.TitleBackground;
+        TextureId = splash ? TextureType.TitleGraphic : TextureType.TitleBackground;
 
-        SetBaseDimensions(_width, _height);
+        SetBaseDimensions(TexWidth, TexHeight);
         ResizeBackBuffer();
-        FillData();
+        FillData(TexWidth, TexHeight);
+        
+        SetAutoResize(OnResize);
+    }
+
+    private void OnResize(ResizeEvent args) {
+        var x = (float)args.Width / TexWidth;
+        var y = (float)args.Height / TexHeight;
+
+        var scale = MathF.Max(x, y);
+
+        var w = (int)(TexWidth * scale);
+        var h = (int)(TexHeight * scale);
+
+        X = (w - Stage.StageWidth) / -2;
+        Y = (h - Stage.StageHeight) / -2;
+        
+        SetBaseDimensions(w, h);
+        FillData(w, h);
     }
     
     protected override void ResizeBackBuffer() {
@@ -42,11 +45,10 @@ public sealed class ScreenGraphic : Sprite {
         base.ResizeBackBuffer();
     }
 
-   private void FillData() {
-       VertexData[0] = new VertexUi(new Vector2(0, _height), new Vector2(0f, 1f));
+   private void FillData(int width, int height) {
+       VertexData[0] = new VertexUi(new Vector2(0, height), new Vector2(0f, 1f));
        VertexData[1] = new VertexUi(new Vector2(0, 0), new Vector2(0f, 0f));
-       VertexData[2] = new VertexUi(new Vector2(_width, 0), new Vector2(1f, 0f));
-       VertexData[3] = new VertexUi(new Vector2(_width, _height), new Vector2(1f, 1f));
+       VertexData[2] = new VertexUi(new Vector2(width, 0), new Vector2(1f, 0f));
+       VertexData[3] = new VertexUi(new Vector2(width, height), new Vector2(1f, 1f));
     }
-    
 }

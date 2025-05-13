@@ -16,6 +16,8 @@ public struct TextButtonConfig {
     public int X = 0;
     public int Y = 0;
     public float Alpha = 1.0f;
+    public uint OutlineColor = 0x0;
+    public float OutlineThickness = 0;
     public UiAnchor Anchor = UiAnchor.LeftTop;
 
     public TextButtonConfig() { }
@@ -39,7 +41,7 @@ public class TextButton : Sprite {
         _activeColor = config.ActiveColor;
         _onHoverColor = config.HoverColor;
         _inactive = config.InactiveColor;
-        _text = new SimpleText(new TextConfig {Text = config.Text, FontSize = config.FontSize, FontType = config.FontType, Color = _activeColor});
+        _text = new SimpleText(new TextConfig {Text = config.Text, FontSize = config.FontSize, FontType = config.FontType, Color = _activeColor, OutlineColor = config.OutlineColor, OutlineThickness = config.OutlineThickness});
         _onClicked = config.OnClicked;
 
         X = config.X;

@@ -105,4 +105,10 @@ public struct IntVector2 : IEquatable<IntVector2> {
     public override string ToString() {
         return "{X:" + X + " Y:" + Y + "}";
     }
+
+    public static IntVector2 Max(IntVector2 value1, IntVector2 value2) {
+        value1.X = Math.Max(value1.X, value2.X);
+        value1.Y = Math.Max(value1.Y, value2.Y);
+        return value1;
+    }
 }

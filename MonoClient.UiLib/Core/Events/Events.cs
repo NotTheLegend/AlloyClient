@@ -91,7 +91,7 @@ public record MouseEvent(string Type, IntVector2 Coords = new(), float Delta = 0
     }
 }
 
-public record ResizeEvent(string Type, int Width, int Height) : Event(Type) {
+public record ResizeEvent(string Type,int X, int Y, int Width, int Height) : Event(Type) {
     public const string Resize = "resize";
 
     internal static bool ValidateType(string type) {

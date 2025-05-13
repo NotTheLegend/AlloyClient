@@ -62,7 +62,7 @@ public class Main : Game {
         Graphics.PreferredBackBufferHeight = Settings.ScreenHeight;
         Graphics.ApplyChanges();
         
-        
+        Window.AllowUserResizing = true;
 
         Map.GraphicsDevice = Graphics.GraphicsDevice;
 
@@ -80,7 +80,7 @@ public class Main : Game {
         
         //UiRender needs to be loaded first so Render can pull font data from it
         UiRender.ConfigureAndLoad(this, Atlas, UiAtlas, mapTexture, new IntVector2(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight), out var stage);
-        UiRender.UpdateViewMatrix(Settings.ScreenWidth, Settings.ScreenHeight);
+        UiRender.SetStartingResolution(Settings.ScreenWidth, Settings.ScreenHeight);
         Render.FirstTimeInit();
         
         SliceConfig.LoadSliceData();
@@ -88,6 +88,7 @@ public class Main : Game {
         DisplayManager.Init(stage);
 
         ScreenManager.FadeToScreen(new LoadingScreen(), Easing.SineInOut, 1000, 0x0);
+        //ScreenManager.FadeToScreen(new TestScreen(), Easing.SineInOut, 1000, 0x0);
 
 
         /* uncomment to force restart app/world servers, takes around 1 minute for reboot to finish */
