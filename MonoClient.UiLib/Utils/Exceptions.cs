@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MonoClient.UiLib;
+namespace MonoClient.UiLib.Utils;
 
 internal sealed class InvalidCallbackException : Exception {
     

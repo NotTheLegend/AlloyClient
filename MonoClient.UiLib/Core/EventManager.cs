@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MonoClient.UiLib.BuiltIn;
-using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Input;
 using MonoClient.UiLib.Utils;
@@ -30,6 +29,15 @@ public abstract class EventManager {
     private readonly Queue<Action> _completedTasks = [];
 
     private Dictionary<string, List<Delegate>> GetListeners(bool capture) => capture ? _captureEventListeners : _eventListeners;
+    
+    private static TaskState GetStatus(Task task) {
+        if (task.IsFaulted)
+            return TaskState.Faulted;
+        if (task.IsCanceled)
+            return TaskState.Canceled;
+
+        return TaskState.Completed;
+    }
 
     private void QueueTaskFinish(Action callback) {
         _completedTasks.Enqueue(callback);
@@ -40,7 +48,7 @@ public abstract class EventManager {
     }
     
     public void AddEventListener(Task task, Action<TaskState> callback) {
-        task.ContinueWith(t => QueueTaskFinish(() => callback(t.GetStatus())));
+        task.ContinueWith(t => QueueTaskFinish(() => callback(GetStatus(t))));
     }
     
     public void AddEventListener<T>(Task<T> task, Action<T> callback) {
@@ -48,7 +56,7 @@ public abstract class EventManager {
     }
     
     public void AddEventListener<T>(Task<T> task, Action<T, TaskState> callback) {
-        task.ContinueWith(t => QueueTaskFinish(() => callback(t.Result, t.GetStatus())));
+        task.ContinueWith(t => QueueTaskFinish(() => callback(t.Result, GetStatus(t))));
     }
 
     public void AddEventListener(string type, Delegate callback, bool capture = false) {

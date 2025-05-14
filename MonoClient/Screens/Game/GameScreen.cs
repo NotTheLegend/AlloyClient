@@ -11,7 +11,6 @@ using MonoClient.State;
 using MonoClient.State.Input;
 using MonoClient.UiLib;
 using MonoClient.UiLib.Core;
-using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Input;
 using MonoClient.Utils;
 

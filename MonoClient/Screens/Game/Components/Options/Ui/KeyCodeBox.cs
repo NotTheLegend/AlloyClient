@@ -6,7 +6,6 @@ using MonoClient.State.Input;
 using MonoClient.State.SettingTypes;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
-using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Input;
 

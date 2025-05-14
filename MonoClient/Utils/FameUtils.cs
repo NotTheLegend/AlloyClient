@@ -2,9 +2,11 @@
 using System.Linq;
 using MonoClient.Assets.Libraries;
 using MonoClient.UiLib;
+using MonoClient.UiLib.Assets;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
+using MonoClient.UiLib.Extra;
 
 namespace MonoClient.Utils;
 
@@ -30,16 +32,16 @@ public static class FameUtils {
 
     public static ColorTransform StarsToColorTransform(int numStars) {
         if (numStars < ClassCount)
-            return ColorTransform.LightBlue;
+            return Transforms.LightBlue;
         if (numStars < ClassCount * 2)
-            return ColorTransform.DarkBlue;
+            return Transforms.DarkBlue;
         if (numStars < ClassCount * 3)
-            return ColorTransform.Red;
+            return Transforms.Red;
         if (numStars < ClassCount * 4)
-            return ColorTransform.Orange;
+            return Transforms.Orange;
         if (numStars < ClassCount * 5)
-            return ColorTransform.Yellow;
-        return ColorTransform.Default;
+            return Transforms.Yellow;
+        return Transforms.Default;
     }
     
     public static Sprite StarsToIcon(int numStars) {
@@ -48,7 +50,7 @@ public static class FameUtils {
             Width = 18,
             Height = 18,
         });
-        bg.ColorTransformation = ColorTransform.HalfTransparent;
+        bg.ColorTransformation = Transforms.HalfTransparent;
         var star = new ObjectRect(new ObjectRectConfig {
             Texture = TextureInfo.FromUiAtlas("CharacterList/StarGraphic"),
             Width = 16,

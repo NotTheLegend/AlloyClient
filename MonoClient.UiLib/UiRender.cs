@@ -6,10 +6,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoClient.UiLib.Assets;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
-using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Enums;
+using MonoClient.UiLib.Extra;
 using MonoClient.UiLib.Input;
 using MonoClient.UiLib.Utils;
 
@@ -60,8 +61,6 @@ public static class UiRender {
         DefaultScreen = defaultScreen;
         Stage = stage = new Stage();
         
-        game.Window.TextInput += OnTextInput;
-        
         KeyboardInput.Register(game, Stage);
         MouseInput.Register(game);
 
@@ -87,7 +86,7 @@ public static class UiRender {
         UpdateViewMatrix(defaultScreen.X, DefaultScreen.Y);
     }
 
-    internal static void OnResize(object _, EventArgs __) {
+    private static void OnResize(object _, EventArgs __) {
         var rect = Game.Window.ClientBounds;
         var screen = new IntVector2(rect.Width, rect.Height);
 
@@ -131,11 +130,6 @@ public static class UiRender {
 
     public static BitmapFont GetFont(FontType type) {
         return MyriadPro.Fonts[type];
-    }
-
-    private static void OnTextInput(object _, TextInputEventArgs args) {
-        if (!Game.IsActive) return;
-        TextInput.ActiveInput?.OnTextInput(args);
     }
 }
 

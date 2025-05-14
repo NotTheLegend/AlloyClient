@@ -2,7 +2,7 @@
 using MonoClient.Objects.Util;
 using MonoClient.Screens.Game.Components.Hud.Panels;
 using MonoClient.UiLib.Core;
-using MonoClient.UiLib.Utils.Signals;
+using MonoClient.UiLib.Signals;
 
 namespace MonoClient.Screens.Game.Components.Hud;
 

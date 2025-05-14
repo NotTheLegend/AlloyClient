@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MonoClient.UiLib.Assets;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
 

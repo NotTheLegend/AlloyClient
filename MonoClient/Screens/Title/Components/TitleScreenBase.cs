@@ -4,7 +4,7 @@ using MonoClient.Ui.Components.Buttons;
 using MonoClient.Ui.Components.Graphics;
 using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
-using MonoClient.UiLib.Core.Events;
+using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Screens.Title.Components;

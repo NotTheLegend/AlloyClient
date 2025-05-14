@@ -7,6 +7,7 @@ using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
+using MonoClient.UiLib.Extra;
 
 namespace MonoClient.Screens.Title.Components;
 

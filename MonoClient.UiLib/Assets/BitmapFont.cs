@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using Common.Atlas;
 using Common.Pipeline;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoClient.UiLib.Enums;
 
-namespace MonoClient.UiLib;
+namespace MonoClient.UiLib.Assets;
 
 public class BitmapFamily {
 

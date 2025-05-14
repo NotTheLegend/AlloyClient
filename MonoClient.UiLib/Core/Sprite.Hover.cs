@@ -1,5 +1,4 @@
 ﻿using System;
-using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Input;
 
 namespace MonoClient.UiLib.Core;

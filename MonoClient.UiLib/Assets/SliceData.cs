@@ -4,7 +4,7 @@ using Common;
 using Common.Atlas;
 using Microsoft.Xna.Framework;
 
-namespace MonoClient.UiLib;
+namespace MonoClient.UiLib.Assets;
 
 public record SliceData(AtlasData AtlasData, Vector2 Cuts);
 
@@ -12,7 +12,7 @@ public static class SliceDataManager {
     
     private static readonly Dictionary<string, SliceData> Slices = new();
 
-    public static void LoadBuiltIn() {
+    static SliceDataManager() {
         CreateSlice("textBox", 2, 2, "textBox");
     }
 

@@ -2,7 +2,6 @@ using System;
 using Microsoft.Xna.Framework;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
-using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Ui.Components.Scrollbars;

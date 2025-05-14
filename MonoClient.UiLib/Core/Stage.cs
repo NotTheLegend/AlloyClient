@@ -1,10 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using MonoClient.UiLib.Core;
-using MonoClient.UiLib.Enums;
+using MonoClient.UiLib.Extra;
 using MonoClient.UiLib.Input;
 using MonoClient.UiLib.Utils;
 
-namespace MonoClient.UiLib.BuiltIn;
+namespace MonoClient.UiLib.Core;
 
 /// <summary>
 /// This is the layer zero sprite that provides access to sprites internal Update/Draw functions, there can only be one

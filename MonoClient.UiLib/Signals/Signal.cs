@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MonoClient.UiLib.Utils.Signals;
+namespace MonoClient.UiLib.Signals;
 
 public sealed class Signal {
 

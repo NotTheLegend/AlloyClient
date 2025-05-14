@@ -1,4 +1,5 @@
 ﻿using MonoClient.UiLib;
+using MonoClient.UiLib.Assets;
 
 namespace MonoClient.Ui;
 
@@ -15,7 +16,6 @@ public static class SliceConfig {
     public const string TooltipBackgroundSmall = "tooltipBackgroundSmall";
     
     internal static void LoadSliceData() {
-        SliceDataManager.LoadBuiltIn();
         SliceDataManager.CreateSlice(StatusBar, 7, 7, "bar3");
         
         SliceDataManager.CreateSlice(ScrollBarBg, 4, 4, "ScrollBar/ScrollBarBackground");

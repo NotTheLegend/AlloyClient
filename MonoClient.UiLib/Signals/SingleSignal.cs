@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MonoClient.UiLib.Utils.Signals;
+namespace MonoClient.UiLib.Signals;
 
 public sealed class SingleSignal {
 

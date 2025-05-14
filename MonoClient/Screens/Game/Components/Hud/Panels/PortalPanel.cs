@@ -6,7 +6,6 @@ using MonoClient.State.Input;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Enums;
-using MonoClient.UiLib.Utils.Signals;
 
 namespace MonoClient.Screens.Game.Components.Hud.Panels;
 

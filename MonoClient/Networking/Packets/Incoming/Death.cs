@@ -2,6 +2,7 @@
 using MonoClient.Screens;
 using MonoClient.Screens.Title;
 using MonoClient.UiLib;
+using MonoClient.UiLib.Extra;
 
 namespace MonoClient.Networking.Packets.Incoming;
 

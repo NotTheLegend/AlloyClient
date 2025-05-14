@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace MonoClient.UiLib.Utils.Signals;
+namespace MonoClient.UiLib.Signals;
 
 internal sealed class SignalCallback<T> : IEquatable<SignalCallback<T>> where T : Delegate {
 

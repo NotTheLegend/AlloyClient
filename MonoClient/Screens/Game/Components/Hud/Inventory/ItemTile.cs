@@ -13,8 +13,8 @@ using MonoClient.Ui.Components.Tooltips;
 using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
-using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Enums;
+using MonoClient.UiLib.Extra;
 using MonoClient.UiLib.Input;
 using MonoClient.UiLib.Utils;
 using MonoClient.Utils;
@@ -139,7 +139,7 @@ public sealed class ItemTile : Sprite {
     }
 
     public void SetDim(bool isDim) {
-        _sprite.ColorTransformation = isDim ? ColorTransform.Dark : ColorTransform.Default;
+        _sprite.ColorTransformation = isDim ? Transforms.Dark : Transforms.Default;
     }
 
     private void UpdateTierTag() {

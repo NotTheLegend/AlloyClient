@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using MonoClient.UiLib.Core;
 using Microsoft.Xna.Framework;
+using MonoClient.UiLib.Core;
 
-namespace MonoClient.UiLib;
+namespace MonoClient.UiLib.Extra;
 
 public static class GTween {
     

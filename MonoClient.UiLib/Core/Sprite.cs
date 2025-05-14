@@ -8,11 +8,14 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoClient.UiLib.BuiltIn;
-using MonoClient.UiLib.Core.Events;
+using MonoClient.UiLib.Extra;
+using MonoClient.UiLib.Utils;
 
 namespace MonoClient.UiLib.Core;
 
 public partial class Sprite : EventManager {
+    
+    public static Vector4 NoScissor = new Vector4(0, 0, 10000, 10000);
 
     public Stage Stage {
         get;
@@ -129,7 +132,7 @@ public partial class Sprite : EventManager {
     
     public Color ColorSecondary = Color.Transparent;
     
-    public ColorTransform ColorTransformation = ColorTransform.Default;
+    public ColorTransform ColorTransformation = new(1f, 1f, 1f, 1f);
     
     protected Vector4 Extra1 = Vector4.Zero;
     
@@ -137,7 +140,7 @@ public partial class Sprite : EventManager {
     
     private Vector2 _info = Vector2.Zero;
     
-    private Vector4 _scissor = UiDefaults.NoScissor;
+    private Vector4 _scissor = NoScissor;
     
     #endregion VertexData
 

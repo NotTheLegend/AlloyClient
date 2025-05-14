@@ -1,17 +1,10 @@
 ﻿using Common.Atlas;
 using MonoClient.UiLib.Enums;
 
-namespace MonoClient.UiLib.Core;
+namespace MonoClient.UiLib.Assets;
 
-public struct TextureInfo {
-    public readonly AtlasData AtlasData;
-    public readonly TextureType TextureType;
-
-    public TextureInfo(AtlasData data, TextureType type) {
-        AtlasData = data;
-        TextureType = type;
-    }
-
+public record struct TextureInfo(AtlasData AtlasData, TextureType TextureType) {
+    
     public static TextureInfo FromUiAtlas(string lookup, int index = 0) {
         var uv = UiRender.UiAtlas.GetAtlasData(lookup, index);
         return new TextureInfo(uv, TextureType.UiAtlas);

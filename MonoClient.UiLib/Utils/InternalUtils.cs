@@ -1,48 +1,10 @@
 ﻿using System;
-using MonoClient.UiLib.Enums;
-using Common.Vector;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
+using MonoClient.UiLib.Enums;
 
-namespace MonoClient.UiLib;
+namespace MonoClient.UiLib.Utils;
 
 internal static class InternalUtils {
-    
-    internal static bool AreKeysDown(this KeyboardState keyState, params Keys[] keys) {
-        foreach (var key in keys) {
-            if (!keyState.IsKeyDown(key)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    internal static bool AnyKeysDown(this KeyboardState keyState, params Keys[] keys) {
-        foreach (var key in keys) {
-            if (keyState.IsKeyDown(key)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    internal static bool AreKeysUp(this KeyboardState keyState, params Keys[] keys) {
-        foreach (var key in keys) {
-            if (!keyState.IsKeyUp(key)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    internal static bool AnyKeysUp(this KeyboardState keyState, params Keys[] keys) {
-        foreach (var key in keys) {
-            if (keyState.IsKeyUp(key)) {
-                return true;
-            }
-        }
-        return false;
-    }
     
     internal static Vector2 Transform(this Vector2 pos, Vector2 scale, float rotation, float tx, float ty, int ax, int ay) {
         var x = pos.X + ax;

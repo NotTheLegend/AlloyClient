@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Common.Vector;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using MonoClient.UiLib.Core.Events;
+using MonoClient.UiLib.Core;
 
 namespace MonoClient.UiLib.Input;
 

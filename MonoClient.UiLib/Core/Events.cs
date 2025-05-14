@@ -1,7 +1,7 @@
 ﻿using Common.Vector;
 using Microsoft.Xna.Framework.Input;
 
-namespace MonoClient.UiLib.Core.Events;
+namespace MonoClient.UiLib.Core;
 
 public record Event(string Type, bool Bubbles = false) {
     
@@ -91,6 +91,9 @@ public record MouseEvent(string Type, IntVector2 Coords = new(), float Delta = 0
     }
 }
 
+/// <summary>
+/// Resize events are *ONLY* dispatched on stage layer, if listeners are put on any other sprite they will not trigger!
+/// </summary>
 public record ResizeEvent(string Type,int X, int Y, int Width, int Height) : Event(Type) {
     public const string Resize = "resize";
 

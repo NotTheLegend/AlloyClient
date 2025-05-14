@@ -3,11 +3,14 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoClient.State;
 using MonoClient.UiLib;
+using MonoClient.UiLib.Assets;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
-using MonoClient.UiLib.Utils.Signals;
+using MonoClient.UiLib.Extra;
+using MonoClient.UiLib.Signals;
+using MonoClient.Utils;
 
 namespace MonoClient.Screens.Game.Components.Hud;
 
@@ -90,14 +93,14 @@ public sealed class Minimap : Sprite {
 
     private void UpdateButtons() {
         if (_zoom <= 1f) {
-            _zoomIn.ColorTransformation = ColorTransform.Default;
-            _zoomOut.ColorTransformation = ColorTransform.Dark;
+            _zoomIn.ColorTransformation = Transforms.Default;
+            _zoomOut.ColorTransformation = Transforms.Dark;
         } else if (_zoom >= _maxZoom) {
-            _zoomIn.ColorTransformation = ColorTransform.Dark;
-            _zoomOut.ColorTransformation = ColorTransform.Default;
+            _zoomIn.ColorTransformation = Transforms.Dark;
+            _zoomOut.ColorTransformation = Transforms.Default;
         } else {
-            _zoomIn.ColorTransformation = ColorTransform.Default;
-            _zoomOut.ColorTransformation = ColorTransform.Default;
+            _zoomIn.ColorTransformation = Transforms.Default;
+            _zoomOut.ColorTransformation = Transforms.Default;
         }
     }
 

@@ -9,8 +9,8 @@ using MonoClient.Ui.Components.Panels;
 using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
-using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Enums;
+using MonoClient.UiLib.Extra;
 
 namespace MonoClient.Screens.Title.Components.Panels;
 

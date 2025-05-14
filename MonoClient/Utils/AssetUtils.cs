@@ -1,4 +1,5 @@
 ﻿using MonoClient.Assets.Libraries;
+using MonoClient.UiLib.Assets;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
 

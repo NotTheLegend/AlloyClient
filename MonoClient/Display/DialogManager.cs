@@ -4,6 +4,7 @@ using MonoClient.State.Input;
 using MonoClient.Ui.Components.Dialogs;
 using MonoClient.UiLib;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Extra;
 
 namespace MonoClient.Display;
 

@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoClient.UiLib.BuiltIn;
-using MonoClient.UiLib.Core.Events;
+using MonoClient.UiLib.Core;
 
 namespace MonoClient.UiLib.Input;
 
@@ -54,6 +53,7 @@ public static class KeyboardInput {
 
     private static void OnTextInput(object _, TextInputEventArgs args) {
         if (!_game.IsActive) return;
+        TextInput.ActiveInput?.OnTextInput(args);
     }
 }
 

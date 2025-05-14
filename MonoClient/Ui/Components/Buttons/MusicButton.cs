@@ -1,8 +1,8 @@
 ﻿using MonoClient.Sound;
 using MonoClient.State;
+using MonoClient.UiLib.Assets;
 using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Core;
-using MonoClient.UiLib.Core.Events;
 using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Ui.Components.Buttons;

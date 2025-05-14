@@ -19,7 +19,7 @@ using MonoClient.ParticleEffects;
 using MonoClient.State;
 using MonoClient.State.Input;
 using MonoClient.Ui.Character;
-using MonoClient.UiLib.Utils.Signals;
+using MonoClient.UiLib.Signals;
 using MonoClient.Utils;
 using Newtonsoft.Json;
 
