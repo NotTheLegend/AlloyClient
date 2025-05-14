@@ -9,13 +9,14 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Extra;
+using MonoClient.UiLib.Rendering;
 using MonoClient.UiLib.Utils;
 
 namespace MonoClient.UiLib.Core;
 
 public partial class Sprite : EventManager {
     
-    public static Vector4 NoScissor = new Vector4(0, 0, 10000, 10000);
+    public static readonly Vector4 NoScissor = new Vector4(0, 0, 10000, 10000);
 
     public Stage Stage {
         get;
@@ -291,7 +292,6 @@ public partial class Sprite : EventManager {
         if (TooltipMode) // Lets not play with tooltip width, it should remain its width no matter the children
         {
             _width = _graphicalWidth;
-            return;
         }
     }
 

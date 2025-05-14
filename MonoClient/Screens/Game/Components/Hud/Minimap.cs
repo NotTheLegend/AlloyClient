@@ -9,6 +9,7 @@ using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Extra;
+using MonoClient.UiLib.Rendering;
 using MonoClient.UiLib.Signals;
 using MonoClient.Utils;
 

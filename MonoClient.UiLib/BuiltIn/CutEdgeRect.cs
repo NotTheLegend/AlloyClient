@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
+using MonoClient.UiLib.Rendering;
 
 namespace MonoClient.UiLib.BuiltIn;
 

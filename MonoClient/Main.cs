@@ -17,6 +17,7 @@ using MonoClient.Screens.Game.Components.Hud;
 using MonoClient.State;
 using MonoClient.Ui;
 using MonoClient.UiLib;
+using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Input;
 using MonoClient.UiLib.Signals;
 using MonoClient.Utils;
@@ -77,10 +78,24 @@ public class Main : Game {
         MinimapTexture.Init(GraphicsDevice, out var mapTexture);
         
         ModelData.Load();
-        
+
+        var settings = new UiSettings {
+            Game = this,
+            GameAtlas = Atlas,
+            UiAtlas = UiAtlas,
+            MinimumScreen = new IntVector2(800, 600),
+            DefaultScreen = new IntVector2(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight)
+        };
+
         //UiRender needs to be loaded first so Render can pull font data from it
-        UiRender.ConfigureAndLoad(this, Atlas, UiAtlas, mapTexture, new IntVector2(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight), out var stage);
-        UiRender.SetStartingResolution(Settings.ScreenWidth, Settings.ScreenHeight);
+        UiRender.ConfigureAndLoad(settings, out var stage);
+        
+        UiRender.RegisterTexture(TextureType.GameAtlas, Atlas.Texture);
+        UiRender.RegisterTexture(TextureType.UiAtlas, UiAtlas.Texture);
+        UiRender.RegisterTexture(TextureType.Minimap, mapTexture);
+        UiRender.RegisterTexture(TextureType.TitleBackground, Content.Load<Texture2D>("Ui/titleView/TitleScreenBackground"));
+        UiRender.RegisterTexture(TextureType.TitleGraphic, Content.Load<Texture2D>("Ui/titleView/TitleScreenGraphic"));
+        
         Render.FirstTimeInit();
         
         SliceConfig.LoadSliceData();

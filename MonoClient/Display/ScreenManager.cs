@@ -5,11 +5,9 @@ using Microsoft.Xna.Framework.Input;
 using MonoClient.Screens.Game;
 using MonoClient.Screens.MapEditor;
 using MonoClient.State;
-using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Extra;
-using MonoClient.UiLib.Input;
 
 namespace MonoClient.Display;
 
@@ -98,7 +96,6 @@ public sealed class ScreenManager : Sprite {
         Settings.Fullscreen = Main.Graphics.IsFullScreen;
         Settings.SetWindowSize(width, height);
         Settings.SaveSettings();
-        UiRender.UpdateViewMatrix(width, height);
     }
 
     private void OnResize(ResizeEvent args) {
@@ -106,7 +103,7 @@ public sealed class ScreenManager : Sprite {
         Main.Graphics.PreferredBackBufferHeight = args.Height;
         Main.Graphics.ApplyChanges();
 
-        Main.GameInstance.Window.Position = new Point(args.X, args.Y);
+        //Main.GameInstance.Window.Position = new Point(args.X, args.Y);
 
         Settings.Fullscreen = Main.Graphics.IsFullScreen;
         Settings.SetWindowSize(args.Width, args.Height);
