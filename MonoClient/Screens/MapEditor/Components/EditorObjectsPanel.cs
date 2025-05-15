@@ -4,9 +4,9 @@ using MonoClient.Assets.Libraries;
 using MonoClient.Screens.MapEditor.Components.Types;
 using MonoClient.State;
 using MonoClient.Ui.Components.Scrollbars;
-using MonoClient.UiLib.Assets;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Screens.MapEditor.Components;

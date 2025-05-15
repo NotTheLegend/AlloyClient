@@ -1,8 +1,8 @@
 ﻿using System;
 using MonoClient.UiLib;
-using MonoClient.UiLib.Assets;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Screens.Title.Components.CharacterList;

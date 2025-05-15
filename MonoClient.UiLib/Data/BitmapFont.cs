@@ -6,7 +6,7 @@ using Common.Pipeline;
 using Microsoft.Xna.Framework.Graphics;
 using MonoClient.UiLib.Enums;
 
-namespace MonoClient.UiLib.Assets;
+namespace MonoClient.UiLib.Data;
 
 public class BitmapFamily {
 

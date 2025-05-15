@@ -4,7 +4,7 @@ using Common;
 using Common.Atlas;
 using Microsoft.Xna.Framework;
 
-namespace MonoClient.UiLib.Assets;
+namespace MonoClient.UiLib.Data;
 
 public record SliceData(AtlasData AtlasData, Vector2 Cuts);
 

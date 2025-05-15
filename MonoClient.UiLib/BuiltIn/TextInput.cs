@@ -3,8 +3,8 @@ using System.Text;
 using Common.Vector;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using MonoClient.UiLib.Assets;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Rendering;
 

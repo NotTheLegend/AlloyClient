@@ -6,9 +6,9 @@ using MonoClient.Objects.Util.ItemDatas;
 using MonoClient.Screens.Game.Components.Hud.Inventory;
 using MonoClient.State;
 using MonoClient.UiLib;
-using MonoClient.UiLib.Assets;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
 using MonoClient.Utils;
 

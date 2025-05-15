@@ -1,5 +1,5 @@
 ﻿using MonoClient.UiLib;
-using MonoClient.UiLib.Assets;
+using MonoClient.UiLib.Data;
 
 namespace MonoClient.Ui;
 

@@ -1,7 +1,7 @@
 ﻿using Common.Atlas;
 using MonoClient.UiLib.Enums;
 
-namespace MonoClient.UiLib.Assets;
+namespace MonoClient.UiLib.Data;
 
 public record struct TextureInfo(AtlasData AtlasData, TextureType TextureType) {
     //Todo: move functions to main project?

@@ -1,8 +1,8 @@
 ﻿using System;
 using Common.Atlas;
 using Microsoft.Xna.Framework;
-using MonoClient.UiLib.Assets;
 using MonoClient.UiLib.Core;
+using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Rendering;
 
