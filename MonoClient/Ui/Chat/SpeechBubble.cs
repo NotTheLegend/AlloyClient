@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using MonoClient.Objects;
 using MonoClient.State;
 using MonoClient.UiLib.BuiltIn;
@@ -73,11 +74,21 @@ public sealed class SpeechBubble : Sprite {
         
         var w = Camera.VisibleTileRadius.X;
         var h = Camera.VisibleTileRadius.Y;
+        
+        var s = MathF.Sin(-Settings.CameraAngle);
+        var c = MathF.Cos(-Settings.CameraAngle);
 
-        var newX = MathUtils.Map(_owner.Position.X - Camera.Position.X, -w, w, 0f, Settings.ScreenWidth - Camera.HudOffset);
-        var newY = MathUtils.Map(_owner.Position.Y + _owner.HeightOffset + Camera.Position.Y, -h, h, 0f, Settings.ScreenHeight);
+        var x = _owner.Position.X - Camera.Position.X;
+        var y = _owner.Position.Y + Camera.Position.Y;
+            
+        var x1 = x * c - y * s;
+        var y1 = x * s + y * c;
+
+        var newX = MathUtils.Map(x1, -w, w, 0f, Settings.ScreenWidth - Camera.HudOffset);
+        var newY = MathUtils.Map(y1, -h, h, 0f, Settings.ScreenHeight);
+        var offset = _owner.HeightOffset / (h + h) * Settings.ScreenHeight;
 
         X = (int)newX;
-        Y = (int)newY;
+        Y = (int)newY + (int)offset;
     }
 }
