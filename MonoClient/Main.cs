@@ -81,8 +81,6 @@ public class Main : Game {
 
         var settings = new UiSettings {
             Game = this,
-            GameAtlas = Atlas,
-            UiAtlas = UiAtlas,
             MinimumScreen = new IntVector2(800, 600),
             DefaultScreen = new IntVector2(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight)
         };
@@ -98,7 +96,7 @@ public class Main : Game {
         
         Render.FirstTimeInit();
         
-        SliceConfig.LoadSliceData();
+        SliceLibrary.Load();
         
         DisplayManager.Init(stage);
 

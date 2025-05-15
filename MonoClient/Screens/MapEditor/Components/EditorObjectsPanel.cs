@@ -8,6 +8,7 @@ using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
+using MonoClient.Utils;
 
 namespace MonoClient.Screens.MapEditor.Components;
 
@@ -78,7 +79,7 @@ public class EditorObjectsPanel : Sprite {
         foreach (var groundProp in groundPropLib.Values) {
             var textureData = GroundLibrary.TypeToTextureData[groundProp.ObjectType];
             var atlasData = textureData.EditorTexture ?? textureData.GetTexture();
-            var textureInfo = new TextureInfo(atlasData, TextureType.GameAtlas);
+            var textureInfo = Atlas.Create(atlasData, TextureType.GameAtlas, false);
             var objectId = groundProp.ObjectId;
             var objectType = groundProp.ObjectType;
             var x = _groundRects.Count % columns;
@@ -95,7 +96,7 @@ public class EditorObjectsPanel : Sprite {
         foreach (var objectProp in objectPropLib.Values) {
             var textureData = ObjectLibrary.TypeToTextureData[objectProp.ObjectType];
             var atlasData = textureData.EditorTexture ?? textureData.GetTexture();
-            var textureInfo = new TextureInfo(atlasData, TextureType.GameAtlas);
+            var textureInfo = Atlas.Create(atlasData, TextureType.GameAtlas, false);
             var objectId = objectProp.ObjectId;
             var objectType = objectProp.ObjectType;
             var x = _objectRects.Count % columns;

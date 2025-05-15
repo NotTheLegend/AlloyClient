@@ -52,21 +52,21 @@ public class ClassInfo : Container {
             UpdateInfo(classRect);
         }
         
-        var frames = UiRender.GameAtlas.GetAnimationAtlasData("players", classRect.CharacterIndex);
+        var frames = Main.Atlas.GetAnimationAtlasData("players", classRect.CharacterIndex);
         var duration = 250;
         
         var totalMs = (int)gameTime.TotalGameTime.TotalMilliseconds;
         var frameIndex = 1 + totalMs / duration % 2;
 
-        _characterRect?.ChangeTexture(new TextureInfo(frames.FaceDown[frameIndex], TextureType.GameAtlas));
+        _characterRect?.ChangeTexture(Atlas.Create(frames.FaceDown[frameIndex], TextureType.GameAtlas));
     }
 
     private void UpdateInfo(ClassRect classRect) {
         ClearChildren();
         
-        var frames = UiRender.GameAtlas.GetAnimationAtlasData("players", classRect.CharacterIndex);
+        var frames = Main.Atlas.GetAnimationAtlasData("players", classRect.CharacterIndex);
         _characterRect = new ObjectRect(new ObjectRectConfig {
-            Texture = new TextureInfo(frames.FaceDown[0], TextureType.GameAtlas),
+            Texture = Atlas.Create(frames.FaceDown[0], TextureType.GameAtlas),
             Width = 120,
             Height = 120,
             X = _background.Width / 2 - 60,

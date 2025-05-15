@@ -13,6 +13,7 @@ using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Extra;
+using MonoClient.Utils;
 using ColorRect = MonoClient.UiLib.BuiltIn.ColorRect;
 using Container = MonoClient.UiLib.BuiltIn.Container;
 using ObjectRect = MonoClient.UiLib.BuiltIn.ObjectRect;
@@ -123,7 +124,7 @@ public sealed class CharacterRect : Container {
             
             atlasData.RemovePadding();
             var charPortrait = new ObjectRect(new ObjectRectConfig {
-                Texture = new TextureInfo(atlasData, TextureType.GameAtlas),
+                Texture = Atlas.Create(atlasData, TextureType.GameAtlas),
                 Width = 40,
                 Height = 40,
                 Anchor = UiAnchor.Middle,
@@ -152,7 +153,7 @@ public sealed class CharacterRect : Container {
             var numStars = GetStars(character);
             for (var i = 0; i < NumberStars; i++) {
                 var star = new ObjectRect(new ObjectRectConfig {
-                    Texture = TextureInfo.FromUiAtlas("CharacterList/StarGraphic"),
+                    Texture = Atlas.FromUiAtlas("CharacterList/StarGraphic"),
                     Width = starWidth,
                     Height = starWidth,
                     Anchor = UiAnchor.Middle,
@@ -172,9 +173,9 @@ public sealed class CharacterRect : Container {
             #region New Character
             
             var index = Random.Shared.Next(0, NumberCharacters);
-            var frames = UiRender.GameAtlas.GetAnimationAtlasData("players", index);
+            var frames = Main.Atlas.GetAnimationAtlasData("players", index);
             var charPortrait = new ObjectRect(new ObjectRectConfig {
-                Texture = new TextureInfo(frames.FaceDown[0], TextureType.GameAtlas),
+                Texture = Atlas.Create(frames.FaceDown[0], TextureType.GameAtlas),
                 Width = 50,
                 Height = 50,
                 Anchor = UiAnchor.Middle,

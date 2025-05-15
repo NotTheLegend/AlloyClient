@@ -4,6 +4,7 @@ using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
+using MonoClient.Utils;
 
 namespace MonoClient.Ui.Components.Buttons;
 
@@ -30,8 +31,8 @@ public class MusicButton : Sprite {
 
     public MusicButton(MusicButtonConfig config) {
         _state = Settings.PlayMusic.Value;
-        _musicOn = TextureInfo.FromGameAtlas("lofiInterfaceBig", 3);
-        _musicOff = TextureInfo.FromGameAtlas("lofiInterfaceBig", 4);
+        _musicOn = Atlas.FromGameAtlas("lofiInterfaceBig", 3);
+        _musicOff = Atlas.FromGameAtlas("lofiInterfaceBig", 4);
 
         var iconConfig = new IconButtonConfig { Texture = _state ? _musicOn : _musicOff, Width = config.Width, Height = config.Height, OnClick = OnClick };
         _button = new IconButton(iconConfig);

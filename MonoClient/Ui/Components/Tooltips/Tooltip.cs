@@ -31,8 +31,7 @@ public abstract class Tooltip : Sprite {
     {
         TooltipConfig = new NineSliceConfig
         {
-            SliceData = SliceConfig.TooltipBackgroundSmall,
-            Padding = false,
+            SliceData = SliceLibrary.TooltipBackgroundSmall,
             CutX = 5,
             CutY = 5,
             Width = ToolWidth,

@@ -1,6 +1,4 @@
-﻿using System;
-using Common.Atlas;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
@@ -10,7 +8,6 @@ namespace MonoClient.UiLib.BuiltIn;
 
 public struct ObjectRectConfig {
     public TextureInfo Texture;
-    public bool Padding = true;
     public int X = 0;
     public int Y = 0;
     public int Width = 0;
@@ -26,7 +23,7 @@ public struct ObjectRectConfig {
 }
 
 public class ObjectRect : Sprite {
-    private AtlasData _texture;
+    private AtlasPosition _texture;
     
     private int _width;
     private int _height;
@@ -42,11 +39,8 @@ public class ObjectRect : Sprite {
         SetAnchor(config.Anchor);
         MouseEnabled = config.MouseEnabled;
 
-        _texture = config.Texture.AtlasData;
+        _texture = config.Texture.AtlasPosition;
         TextureId = config.Texture.TextureType;
-        
-        if (!config.Padding)
-            _texture.RemovePadding();
 
         ResizeBackBuffer();
         FillData();
@@ -68,7 +62,7 @@ public class ObjectRect : Sprite {
     }
     
     public void ChangeTexture(TextureInfo info) {
-        _texture = info.AtlasData;
+        _texture = info.AtlasPosition;
         TextureId = info.TextureType;
         FillData();
     }

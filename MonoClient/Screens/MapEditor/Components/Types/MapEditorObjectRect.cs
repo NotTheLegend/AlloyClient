@@ -27,9 +27,7 @@ public class MapEditorObjectRect : Sprite {
         ObjectId = objectId;
         ObjectType = objectType;
         
-        var atlasData = textureInfo.AtlasData;
-        atlasData.RemovePadding();
-        _config.Texture = new TextureInfo(atlasData, textureInfo.TextureType);
+        _config.Texture = textureInfo;
 
         _config.X = x * (_config.Width + padding) + 10;
         _config.Y = searchInputHeight + (y - 1) * (_config.Height + padding) + 10;

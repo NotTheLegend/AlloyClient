@@ -68,7 +68,7 @@ public sealed class ItemTile : Sprite {
         _background = new CutEdgeRect(new CutEdgeConfig { Width = Size, Height = Size, CutX = 4, CutY = 4, Cuts = cut, Color = _bgColor });
         AddChild(_background);
         
-        _slotDetail = new ObjectRect(new ObjectRectConfig { Texture = AssetUtils.GetTextureInfo(0x0096), Width = Size, Height = Size });
+        _slotDetail = new ObjectRect(new ObjectRectConfig { Texture = Atlas.FromGameAtlas(0x0096), Width = Size, Height = Size });
         _slotDetail.Visible = false;
         _slotDetail.ColorTransformation = new ColorTransform(0, 0, 0, 1, 54, 54, 54, 0);
         _slotDetail.SetColorSecondary(0, 0);
@@ -87,7 +87,7 @@ public sealed class ItemTile : Sprite {
             _slotId.Visible = true;
         }
         
-        _sprite = new ObjectRect(new ObjectRectConfig { Texture = AssetUtils.GetTextureInfo(0x0096), Width = Size, Height = Size });
+        _sprite = new ObjectRect(new ObjectRectConfig { Texture = Atlas.FromGameAtlas(0x0096), Width = Size, Height = Size });
         AddChild(_sprite);
         
         _tierText = new SimpleText(new TextConfig { FontSize = 16, FontType = FontType.Bold, Text = "", OutlineThickness = 6 });
@@ -117,14 +117,14 @@ public sealed class ItemTile : Sprite {
         Item = item;
         if (Item != null && Item.ObjectType > 0)
         {
-            _sprite.ChangeTexture(AssetUtils.GetTextureInfo(Item.ObjectType));
+            _sprite.ChangeTexture(Atlas.FromGameAtlas(Item.ObjectType));
             _background.SetColor(IsUsableByPlayer(Item) ? _bgColor : 0x5C1D1Du);
             _slotDetail.Visible = false;
             _slotId.Visible = false;
         }
         else
         {
-            _sprite.ChangeTexture(AssetUtils.GetTextureInfo(0x0096));
+            _sprite.ChangeTexture(Atlas.FromGameAtlas(0x0096));
             _background.SetColor(_bgColor);
             if (SlotType != 0) _slotDetail.Visible = true;
             if (Owner is Player && SlotType == 0) _slotId.Visible = true;

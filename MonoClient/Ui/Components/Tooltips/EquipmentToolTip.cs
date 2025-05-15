@@ -37,7 +37,7 @@ public sealed class EquipmentToolTip : Tooltip
         ushort obj = Item.ObjectType;
         Icon = new ObjectRect(new ObjectRectConfig
         {
-            Texture = AssetUtils.GetTextureInfo(obj <= 0 ? (ushort)0x0096 : obj),
+            Texture = Atlas.FromGameAtlas(obj <= 0 ? (ushort)0x0096 : obj),
             Width = 40,
             Height = 40
         });

@@ -8,6 +8,7 @@ using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
+using MonoClient.Utils;
 
 namespace MonoClient.Screens.Game.Components.Hud.Inventory
 {
@@ -100,9 +101,8 @@ namespace MonoClient.Screens.Game.Components.Hud.Inventory
 
                 invTabButton = new IconButton(new IconButtonConfig
                 {
-                    Texture = TextureInfo.FromGameAtlas("lofiInterfaceBig", 23 + (tab.Key)),
+                    Texture = Atlas.FromGameAtlas("lofiInterfaceBig", 23 + (tab.Key), false),
                     Alpha = 1,
-                    Padding = false,
                     X = X + 6,
                     Y = Y,
                     Width = 24,

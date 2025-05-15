@@ -23,11 +23,11 @@ public class StatusBar : Sprite {
     public StatusBar(int width, int height, uint color, uint backColor, uint outlineColor, string label) {
         SetBaseDimensions(_width = width, _height = height);
 
-        _backgroundBar = new NineSliceRect(new NineSliceConfig { SliceData = SliceConfig.StatusBar, CutX = 10, CutY = 10, Width = _width, Height = _height });
+        _backgroundBar = new NineSliceRect(new NineSliceConfig { SliceData = SliceLibrary.StatusBar, CutX = 10, CutY = 10, Width = _width, Height = _height });
         _backgroundBar.SetColor(backColor);
         AddChild(_backgroundBar);
 
-        _mainBar = new NineSliceRect(new NineSliceConfig { SliceData = SliceConfig.StatusBar, CutX = 10, CutY = 10, Width = _width, Height = _height });
+        _mainBar = new NineSliceRect(new NineSliceConfig { SliceData = SliceLibrary.StatusBar, CutX = 10, CutY = 10, Width = _width, Height = _height });
         _mainBar.SetColor(color);
         AddChild(_mainBar);
 

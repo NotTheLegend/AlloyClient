@@ -34,6 +34,8 @@ public struct InputConfig {
 
 public sealed class TextInput : Sprite {
 
+    public const string BoxLookup = "textBox";
+
     private const int CutX = 2;
     private const int CutY = 2;
 
@@ -94,7 +96,7 @@ public sealed class TextInput : Sprite {
         _caret.Visible = false;
         AddChild(_caret);
         
-        var rectConfig = new NineSliceConfig { Width = _width, Height = (int)(_font.LineHeight * _fontScale) + CutY * 3, SliceData = "textBox", CutX = CutX, CutY = CutY};
+        var rectConfig = new NineSliceConfig { Width = _width, Height = (int)(_font.LineHeight * _fontScale) + CutY * 3, SliceData = BoxLookup, CutX = CutX, CutY = CutY};
         _textBox = new NineSliceRect(rectConfig);
         AddChild(_textBox);
         

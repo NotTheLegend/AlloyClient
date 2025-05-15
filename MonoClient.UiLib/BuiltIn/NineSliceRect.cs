@@ -8,7 +8,6 @@ namespace MonoClient.UiLib.BuiltIn;
 
 public struct NineSliceConfig {
     public required string SliceData;
-    public bool Padding = false;
     public int CutX = 0;
     public int CutY = 0;
     public int X = 0;
@@ -25,7 +24,6 @@ public struct NineSliceConfig {
 
 public sealed class NineSliceRect : Sprite {
     private SliceData _slice;
-    private bool _padding;
     private int _w;
     private int _h;
     
@@ -33,8 +31,7 @@ public sealed class NineSliceRect : Sprite {
     private float _cutY;
 
     public NineSliceRect(NineSliceConfig config) {
-        _slice = SliceDataManager.GetSlice(config.SliceData);
-        _padding = config.Padding;
+        _slice = SliceLookup.GetSlice(config.SliceData);
         X = config.X;
         Y = config.Y;
         _w = config.Width;
@@ -50,15 +47,12 @@ public sealed class NineSliceRect : Sprite {
         
         ResizeBackBuffer();
         Resize(_w, _h);
-        
     }
     
     protected override void ResizeBackBuffer() {
         VertexData = new VertexUi[4];
         Indices = new short[] { 0, 1, 2, 0, 2, 3 };
         var data = _slice.AtlasData;
-        if (!_padding)
-            data.RemovePadding();
         Extra1 = new Vector4(data.U, data.U + data.W, data.V, data.V + data.H);
         base.ResizeBackBuffer();
     }

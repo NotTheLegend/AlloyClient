@@ -15,6 +15,7 @@ using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Extra;
+using MonoClient.Utils;
 using ColorRect = MonoClient.UiLib.BuiltIn.ColorRect;
 using Container = MonoClient.UiLib.BuiltIn.Container;
 
@@ -108,7 +109,7 @@ public class CharacterListScreen : TitleScreenBase {
         AddChild(nameText);
         
         var goldIcon = new ObjectRect(new ObjectRectConfig {
-            Texture = TextureInfo.FromGameAtlas("lofiObj3", 0xE1),
+            Texture = Atlas.FromGameAtlas("lofiObj3", 0xE1),
             X = Settings.DefaultScreenWidth - 15,
             Y = 88,
             Width = 16,
@@ -129,7 +130,7 @@ public class CharacterListScreen : TitleScreenBase {
         AddChild(goldText);
         
         var fameIcon = new ObjectRect(new ObjectRectConfig {
-            Texture = TextureInfo.FromGameAtlas("lofiObj3", 0xE0),
+            Texture = Atlas.FromGameAtlas("lofiObj3", 0xE0),
             X = goldText.X - goldText.Width - 10,
             Y = 88,
             Width = 16,

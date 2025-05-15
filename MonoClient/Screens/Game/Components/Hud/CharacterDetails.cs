@@ -3,6 +3,7 @@ using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
+using MonoClient.Utils;
 
 namespace MonoClient.Screens.Game.Components.Hud;
 
@@ -34,6 +35,6 @@ public sealed class CharacterDetails : Sprite {
 
     private void OnPlayerUpdate(Player player) {
         _name.SetText(player.Name);
-        _skin.ChangeTexture(new TextureInfo(player.TextureData.AnimatedTextures.FaceRight[0], TextureType.GameAtlas));
+        _skin.ChangeTexture(Atlas.Create(player.TextureData.AnimatedTextures.FaceRight[0], TextureType.GameAtlas));
     }
 }

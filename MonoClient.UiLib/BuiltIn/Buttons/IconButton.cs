@@ -1,5 +1,4 @@
 ﻿using System;
-using Common.Atlas;
 using Microsoft.Xna.Framework;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Data;
@@ -11,7 +10,6 @@ namespace MonoClient.UiLib.BuiltIn.Buttons;
 public struct IconButtonConfig {
 
     public TextureInfo Texture;
-    public bool Padding = true;
     public int X = 0;
     public int Y = 0;
     public int Width = 0;
@@ -24,7 +22,7 @@ public struct IconButtonConfig {
 }
 
 public sealed class IconButton : Sprite {
-    private AtlasData _texture;
+    private AtlasPosition _texture;
 
     private uint _activeColor;
     private uint _hoverColor;
@@ -37,7 +35,7 @@ public sealed class IconButton : Sprite {
     private readonly Action _onClick;
 
     public IconButton(IconButtonConfig config) {
-        _texture = config.Texture.AtlasData;
+        _texture = config.Texture.AtlasPosition;
         TextureId = config.Texture.TextureType;
         X = config.X;
         Y = config.Y;
@@ -46,9 +44,6 @@ public sealed class IconButton : Sprite {
         Alpha = config.Alpha;
         SetAnchor(config.Anchor);
         _onClick = config.OnClick;
-        
-        if (!config.Padding)
-            _texture.RemovePadding();
 
         MouseEnabled = true;
         AddEventListener(MouseEvent.LeftDown, OnLeftDown);
@@ -86,7 +81,7 @@ public sealed class IconButton : Sprite {
     }
 
     public void ChangeTexture(TextureInfo info) {
-        _texture = info.AtlasData;
+        _texture = info.AtlasPosition;
         TextureId = info.TextureType;
         FillData();
     }

@@ -42,13 +42,13 @@ public class VerticalScrollBar : Sprite {
         _scrollStep = config.ScrollStep == -1 ? config.Height / 20 : config.ScrollStep;
 
         var scrollBarTexture = new NineSliceRect(new NineSliceConfig {
-            SliceData = SliceConfig.ScrollBarBg, Width = config.Width, Height = config.Height, Anchor = UiAnchor.MiddleTop, MouseEnabled = true
+            SliceData = SliceLibrary.ScrollBarBg, Width = config.Width, Height = config.Height, Anchor = UiAnchor.MiddleTop, MouseEnabled = true
         });
         AddChild(scrollBarTexture);
 
         var handleHeight = CalculateHandleHeight(config.Height, config.TotalContentHeight, config.VisibleContentHeight);
         _scrollBarHandleTexture = new NineSliceRect(new NineSliceConfig {
-            SliceData = SliceConfig.ScrollBar, CutX = 4, CutY = 4, Width = config.Width, Height = handleHeight, Anchor = UiAnchor.MiddleTop, MouseEnabled = true
+            SliceData = SliceLibrary.ScrollBar, CutX = 4, CutY = 4, Width = config.Width, Height = handleHeight, Anchor = UiAnchor.MiddleTop, MouseEnabled = true
         });
         AddChild(_scrollBarHandleTexture);
 

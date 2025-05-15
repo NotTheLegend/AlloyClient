@@ -4,6 +4,7 @@ using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
+using MonoClient.Utils;
 
 namespace MonoClient.Screens.Title.Components.CharacterList;
 
@@ -16,9 +17,9 @@ public class ClassRect : Container {
         CharacterIndex = characterIndex;
         Type = type;
         
-        var frames = UiRender.GameAtlas.GetAnimationAtlasData("players", characterIndex);
+        var frames = Main.Atlas.GetAnimationAtlasData("players", characterIndex);
         var charPortrait = new ObjectRect(new ObjectRectConfig {
-            Texture = new TextureInfo(frames.FaceDown[0], TextureType.GameAtlas),
+            Texture = Atlas.Create(frames.FaceDown[0], TextureType.GameAtlas),
             Width = 160,
             Height = 160,
             Anchor = UiAnchor.Middle,

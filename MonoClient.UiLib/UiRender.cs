@@ -1,28 +1,19 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using Common.Pipeline;
 using Common.Vector;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
-using MonoClient.UiLib.Extra;
 using MonoClient.UiLib.Input;
-using MonoClient.UiLib.Utils;
 
 namespace MonoClient.UiLib;
 
 public class UiSettings {
 
     public required Game Game;
-
-    public required MainAtlas GameAtlas;
-    
-    public required UiAtlas UiAtlas;
 
     public required IntVector2 MinimumScreen;
 
@@ -49,10 +40,6 @@ public static class UiRender {
 
     internal static GraphicsDevice Graphics;
 
-    public static MainAtlas GameAtlas;
-
-    public static UiAtlas UiAtlas;
-
     public static BitmapFamily MyriadPro;
     
     public static Matrix ViewMatrix = new(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, -0.5f, 0f, -1f, 1f, 0.5f, 1f);
@@ -68,8 +55,6 @@ public static class UiRender {
         Game = settings.Game;
         Content = settings.Game.Content;
         Graphics = settings.Game.GraphicsDevice;
-        GameAtlas = settings.GameAtlas;
-        UiAtlas = settings.UiAtlas;
         MinimumScreen = settings.MinimumScreen;
         DefaultScreen = settings.DefaultScreen;
         Stage = stage = new Stage();
