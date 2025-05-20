@@ -278,42 +278,6 @@ public class Entity {
         return true;
     }
 
-    public bool HitTest(Projectile proj) {
-        if (proj.Owner is Player) {
-            var enemyTarget = EntityUtils.FindClosestEnemyInRadius(proj, Map.Entities.Values, 0.5f);
-            if (enemyTarget != null) {
-                enemyTarget.Hp -= proj.Damage;
-                
-                enemyTarget.Effect = new HitEffect(enemyTarget, 0xff0000);
-                NotificationLayer.AddStatusText(enemyTarget, $"-{proj.Damage}", 0xFF0000, 1000, 0);
-                
-                var hit = EnemyHit.CreatePacket();
-                hit.Time = (int)Map.LastGameTime.TotalGameTime.TotalMilliseconds;
-                hit.BulletId = (byte)proj.ObjectId;
-                hit.TargetId = enemyTarget.ObjectId;
-                hit.Killed = enemyTarget.Hp <= proj.Damage;
-
-                Client.QueuePacket(hit);
-                return true;
-            }
-        } 
-        else {
-            var target = EntityUtils.FindClosestPlayerInRadius(proj, Map.Entities.Values, 0.5f);
-            if (target != null) {
-                target.Effect = new HitEffect(target, 0xff0000);
-                NotificationLayer.AddStatusText(target, $"-{proj.Damage}", 0xFF0000, 1000, 0);
-
-                var hit = PlayerHit.CreatePacket();
-                hit.BulletId = (byte)proj.ObjectId;
-                hit.ObjectId = proj.Owner.ObjectId;
-            
-                Client.QueuePacket(hit);
-                return true;
-            }
-        }
-        return false;
-    }
-
     public void OnTickPosition(float x, float y, double tickTime, int tickId, bool isPlayer) {
         if (!Settings.MovementInterpolation && LastTickId < Map.LastTickId && !isPlayer) {
             MoveTo(TickPosition.X, TickPosition.Y);

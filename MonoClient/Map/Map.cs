@@ -26,6 +26,8 @@ public static class Map {
 
     public static GameSprite GameSprite;
 
+    public static double CurrentTime;
+
     public static int Width;
     public static int Height;
     public static string Name;
@@ -73,6 +75,7 @@ public static class Map {
     }
 
     public static void Update(double time, double dt) {
+        CurrentTime = time;
         _particleCount = 0;
         var fullMatrix = Camera.WorldMatrix * Camera.ViewMatrix * Camera.ProjectionMatrix;
 
@@ -208,6 +211,8 @@ public static class Map {
 
         }
     }
+
+    public static MapTile GetTile(Vector2 position) => GetTile((int)position.X, (int)position.Y);
 
     public static MapTile GetTile(int x, int y) {
         if (x < 0 || x > Width || y < 0 || y > Height) {
@@ -355,6 +360,15 @@ public class RenderStorage : Dictionary<ModelType, List<RenderBase>> {
                 break;
         }
     }
+    
+    public void Add(Projectile proj) {
+        var type = proj.RenderBaseType;
+        if (!ContainsKey(type.ModelType)) {
+            base[type.ModelType] = [];
+        }
+
+        base[type.ModelType].Add(type);
+    }
 
     private void Add(RenderBase type) {
         if (type == null) {
@@ -379,6 +393,15 @@ public class RenderStorage : Dictionary<ModelType, List<RenderBase>> {
         if (type is TypeWall w) {
             Remove(w.Top);
         }
+    }
+    
+    public void Remove(Projectile proj) {
+        var type = proj.RenderBaseType;
+        if (!ContainsKey(type.ModelType)) {
+            return;
+        }
+
+        base[type.ModelType].Remove(type);
     }
 
     private void Remove(RenderBase type) {

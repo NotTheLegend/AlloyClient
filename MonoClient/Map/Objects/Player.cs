@@ -409,33 +409,23 @@ public class Player : Entity {
         var props = ObjectLibrary.TypeToObjectProps[itemType];
         
         var projType = ObjectLibrary.IdToObjectType[props.Projectiles[0].ObjectId];
-        var projProps =  ObjectLibrary.TypeToObjectProps[projType];
+        var objProps =  ObjectLibrary.TypeToObjectProps[projType];
+        var projProps = props.Projectiles[0];
 
         for (int i = 0; i < props.NumProjectiles; i++) {
             var arc = MathHelper.ToRadians(props.ArcGap) * (props.NumProjectiles - 1);
             var startAngle = AttackAngle - arc / 2;
-            
             var angle = startAngle + MathHelper.ToRadians(props.ArcGap) * i;
-            var proj = new Projectile {
-                Properties = projProps,
-                ProjDesc = props.Projectiles[0],
-                Angle = angle,
-                StartPosition = Position,
-                StartTime = Timer
-            };
-        
-            proj.Owner = this;
-            proj.Damage = MathUtils.RandomInt(proj.ProjDesc.MinDamage, proj.ProjDesc.MaxDamage);
-        
-            proj.SetObjectId(GetBulletId());
-            proj.SetType(ObjectLibrary.IdToObjectType[props.Projectiles[0].ObjectId]);
-            proj.SetPos(Position.X, Position.Y);
-            proj.SetRotation();
+
+            var bId = GetBulletId();
+            var proj = Projectile.Pool.Pop();
+            var dmg = MathUtils.RandomInt(projProps.MinDamage, projProps.MaxDamage);
+            proj.Reset(bId, dmg, angle, this, objProps, projProps);
             Map.AddProjectile(proj);
             
             var shoot = PlayerShoot.CreatePacket();
             shoot.ContainerType = itemType;
-            shoot.BulletId = (byte)proj.ObjectId;
+            shoot.BulletId = proj.BulletId;
             shoot.Angle = angle;
             shoot.Time = (int)Map.LastGameTime.TotalGameTime.TotalMilliseconds;
             shoot.StartingPos = new Position { X = proj.Position.X, Y = proj.Position.Y };

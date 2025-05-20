@@ -158,7 +158,7 @@ float median(float a, float b, float c) {
 
 float4 GetGameObject(VertexOutput input) {
     float2 uv = map(input.BaseUV, input.UV.xy, input.UV.xy + input.UV.zw);
-    float4 color = tex2D(GameAtlasSample, uv);
+    float4 color = tex2Dgrad(GameAtlasSample, uv, ddx(uv), ddy(uv));
     
     if (input.BaseUV.y > 0.4) {
         color.rgb -= input.Extra.z * 0.241 * (input.BaseUV.y - 0.4);

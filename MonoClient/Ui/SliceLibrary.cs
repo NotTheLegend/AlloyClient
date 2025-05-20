@@ -20,7 +20,7 @@ public static class SliceLibrary {
     public const string TooltipBackgroundSmall = "tooltipBackgroundSmall";
 
     public static void Load() {
-        CreateSlice(TextInput.BoxLookup, 2, 2, "textBox");
+        CreateSlice(TextInput.BoxLookup, 2, 2, "textBox", false);
         CreateSlice(StatusBar, 7, 7, "bar3");
         
         CreateSlice(ScrollBarBg, 4, 4, "ScrollBar/ScrollBarBackground");

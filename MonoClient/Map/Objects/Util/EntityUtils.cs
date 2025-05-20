@@ -63,42 +63,44 @@ public static class EntityUtils {
         return closestEntity;
     }
     
-    public static Entity FindClosestPlayerInRadius(Entity player, IEnumerable<Entity> entities, float radius) {
-        Entity closestEntity = null;
-        var closestDistance = float.MaxValue;
+    public static Entity GetClosestPlayer(Vector2 position, float radius) {
+        var entities = Map.Entities.Values;
+        Entity en = null;
+        var enDist = float.MaxValue;
 
         foreach (var entity in entities) {
-            var distance = CalculateDistance(player.Position, entity.Position);
-            
             if (entity is not Player)
                 continue;
             
-            if (distance <= radius && distance < closestDistance) {
-                closestDistance = distance;
-                closestEntity = entity;  
-            }
+            var dist = CalculateDistance(position, entity.Position);
+            
+            if (dist > radius || dist >= enDist)
+                continue;
+            en = entity;
+            enDist = dist;
         }
-        
-        return closestEntity;
+
+        return en;
     }
     
-    public static Entity FindClosestEnemyInRadius(Entity enemy, IEnumerable<Entity> entities, float radius) {
-        Entity closestEntity = null;
-        var closestDistance = float.MaxValue;
+    public static Entity GetClosestEnemy(Vector2 position, float radius) {
+        var entities = Map.Entities.Values;
+        Entity en = null;
+        var enDist = float.MaxValue;
 
         foreach (var entity in entities) {
-            var distance = CalculateDistance(enemy.Position, entity.Position);
-            
             if (!entity.Properties.IsEnemy)
                 continue;
             
-            if (distance <= radius && distance < closestDistance) {
-                closestDistance = distance;
-                closestEntity = entity;  
-            }
+            var dist = CalculateDistance(position, entity.Position);
+            
+            if (dist > radius || dist >= enDist)
+                continue;
+            en = entity;
+            enDist = dist;
         }
-        
-        return closestEntity;
+
+        return en;
     }
 
     public static bool IsCharacter(Entity entity) => entity.Properties.IsEnemy || entity.Properties.IsAlly || entity.Properties.IsPlayer || entity.Properties.Class == "Character";

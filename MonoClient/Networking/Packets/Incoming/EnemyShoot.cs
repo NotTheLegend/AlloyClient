@@ -48,9 +48,6 @@ public class EnemyShoot : IncomingPacket<EnemyShoot> {
         if (!Map.Entities.TryGetValue(OwnerId, out var en))
             return;
 
-        if (en.Properties.ObjectId == "Pirate")
-            return;
-
         // BulletType can be out of range in properties projectiles because
         // ObjectProperties Projectiles list does not store the ProjectileProperties by id
         // Ex: (Septavius the Ghost God)
@@ -65,34 +62,24 @@ public class EnemyShoot : IncomingPacket<EnemyShoot> {
         
         ushort type;
         ProjectileProperties projDesc;
+        ObjectProperties objDesc;
         // Trying getting from Projectiles list
         try {
             type = ObjectLibrary.IdToObjectType[en.Properties.Projectiles[BulletType].ObjectId];
             projDesc = en.Properties.Projectiles[BulletType];
+            objDesc = ObjectLibrary.TypeToObjectProps[type];
         } 
         // Fallback to dictionary if failed
         catch (Exception e) {
             Logger.Error($"Projectile '{BulletType}' out of range on '{en.Properties.DisplayName}'", "EnemyShoot");
             type = ObjectLibrary.IdToObjectType[en.Properties.ProjectilesDict[BulletType].ObjectId];
             projDesc = en.Properties.ProjectilesDict[BulletType];
+            objDesc = ObjectLibrary.TypeToObjectProps[type];
         }
         
         for (var i = 0; i < NumShots; i++) {
-            var proj = new Projectile {
-                Properties = ObjectLibrary.TypeToObjectProps[type],
-                ProjDesc = projDesc,
-                Angle = Angle + AngleInc * i,
-                StartPosition = en.Position,
-                StartTime = en.Timer
-            };
-            proj.Owner = en;
-            proj.Damage = Damage;
-            
-            proj.SetObjectId(BulletId);
-            proj.SetType(type);
-            proj.SetPos(en.Position.X, en.Position.Y);
-            proj.SetRotation();
-            
+            var proj = Projectile.Pool.Pop();
+            proj.Reset(BulletId, Damage, Angle + AngleInc * i, en, objDesc, projDesc);
             Map.AddProjectile(proj);
         }
 
