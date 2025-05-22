@@ -57,6 +57,7 @@ public sealed class Projectile {
     public RenderBase RenderBaseType;
 
     public void Reset(byte id, int dmg, float angle, Entity entity, ObjectProperties objDesc, ProjectileProperties projDesc) {
+        PendingRemoval = false;
         BulletId = id;
         _damage = dmg;
         _angle = angle;
@@ -69,7 +70,7 @@ public sealed class Projectile {
 
         _startTime = Map.CurrentTime;
         _angleCorrection = _objDesc.AngleCorrection * MathF.PI / 4;
-        _startPosition = entity.Position;
+        Position = _startPosition = entity.Position;
         
         _hitEntities.Clear();
         _effect = null;
@@ -130,12 +131,17 @@ public sealed class Projectile {
     private bool MoveTo(Vector2 pos) {
         var tile = Map.GetTile(pos);
 
-        if (tile == null) {
+        if (tile == null || tile.Type == 0xFF) {
+            //todo hit effect
             return false;
         }
         
-        if (tile.OccupiedObject != null && tile.OccupiedObject.Properties.OccupySquare) {
-            return false;
+        if (tile.OccupiedObject != null) {
+            var obj = tile.OccupiedObject.Properties;
+            if ((!obj.IsEnemy || _damagePlayers) && (obj.EnemyOccupySquare || !_projDesc.PassesCover && obj.OccupySquare)) {
+                //todo hit effect
+                return false;
+            }
         }
 
         Position.X = pos.X;
