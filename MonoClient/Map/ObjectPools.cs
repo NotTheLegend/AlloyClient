@@ -1,6 +1,12 @@
 ﻿using System.Collections.Generic;
+using MonoClient.Objects;
 
 namespace MonoClient;
+
+public static class ObjectPools {
+
+    public static readonly ObjectPool<Projectile> Projectiles = new();
+}
 
 public sealed class ObjectPool<T>(int capacity = 1000) where T : new() {
 

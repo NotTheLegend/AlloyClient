@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoClient.State;
@@ -96,4 +97,12 @@ public static class Camera {
     public static Vector3 WorldToScreen(Vector3 worldPosition, Viewport viewport) {
         return viewport.Project(worldPosition, ProjectionMatrix, ViewMatrix, WorldMatrix);
     }
+}
+
+[StructLayout(LayoutKind.Sequential, Pack = 4)]
+public readonly struct DepthMatrix(Matrix m) {
+    public readonly float M12 = m.M12;
+    public readonly float M22 = m.M22;
+    public readonly float M32 = m.M32;
+    public readonly float M42 = m.M42;
 }

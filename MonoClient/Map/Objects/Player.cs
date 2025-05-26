@@ -418,17 +418,17 @@ public class Player : Entity {
             var angle = startAngle + MathHelper.ToRadians(props.ArcGap) * i;
 
             var bId = GetBulletId();
-            var proj = Projectile.Pool.Pop();
+            var proj = ObjectPools.Projectiles.Pop();
             var dmg = MathUtils.RandomInt(projProps.MinDamage, projProps.MaxDamage);
             proj.Reset(bId, dmg, angle, this, objProps, projProps);
             Map.AddProjectile(proj);
             
             var shoot = PlayerShoot.CreatePacket();
             shoot.ContainerType = itemType;
-            shoot.BulletId = proj.BulletId;
+            shoot.BulletId = bId;
             shoot.Angle = angle;
             shoot.Time = (int)Map.LastGameTime.TotalGameTime.TotalMilliseconds;
-            shoot.StartingPos = new Position { X = proj.Position.X, Y = proj.Position.Y };
+            shoot.StartingPos = new Position { X = Position.X, Y = Position.Y };
             
             
             Client.QueuePacket(shoot);

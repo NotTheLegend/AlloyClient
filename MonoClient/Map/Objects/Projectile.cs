@@ -18,13 +18,13 @@ namespace MonoClient.Objects;
 
 public sealed class Projectile {
 
-    public static readonly ObjectPool<Projectile> Pool = new();
+    private const double HitTestDelayMs = 16;
     
     private readonly float _jitter = Random.Shared.NextSingle() * 0.00002f - 0.00001f;
     
     public bool PendingRemoval;
 
-    public byte BulletId;
+    private byte _bulletId;
 
     private int _damage;
 
@@ -43,8 +43,8 @@ public sealed class Projectile {
     private float _angleCorrection;
 
     private Vector2 _startPosition;
-    
-    public Vector2 Position;
+
+    private Vector2 _position;
     
     public float Rotation;
 
@@ -56,9 +56,11 @@ public sealed class Projectile {
     
     public RenderBase RenderBaseType;
 
+    private double _lastHitTest;
+
     public void Reset(byte id, int dmg, float angle, Entity entity, ObjectProperties objDesc, ProjectileProperties projDesc) {
         PendingRemoval = false;
-        BulletId = id;
+        _bulletId = id;
         _damage = dmg;
         _angle = angle;
         _ownerId = entity.ObjectId;
@@ -69,8 +71,9 @@ public sealed class Projectile {
         Size = _projDesc.Size > 0 ? _projDesc.Size : 100;
 
         _startTime = Map.CurrentTime;
+        _lastHitTest = 0;
         _angleCorrection = _objDesc.AngleCorrection * MathF.PI / 4;
-        Position = _startPosition = entity.Position;
+        _position = _startPosition = entity.Position;
         
         _hitEntities.Clear();
         _effect = null;
@@ -82,7 +85,7 @@ public sealed class Projectile {
         return textureData.HasAnimationData ? textureData.AnimatedTextures.FaceRight[0] : textureData.GetTexture();
     }
 
-    public void Update(double time, double dt) {
+    public void Update(double time, double dt, DepthMatrix matrix) {
         var elapsed = (float)time - (float)_startTime;
 
         if (elapsed > _projDesc.LifetimeMs) {
@@ -90,19 +93,23 @@ public sealed class Projectile {
             return;
         }
         
+        UpdateVisibility(matrix);
+        
         var newPos = PositionAt(elapsed);
 
         // Use smart projectile rotation if the projectile does not have its own rotation speed or the NoRotation tag
         if (_objDesc.Rotation != 0) {
             Rotation = elapsed / _objDesc.Rotation; 
         } else if (!_projDesc.NoRotation) {
-            var direction = newPos - Position;
+            var direction = newPos - _position;
             var angle = MathF.Atan2(direction.Y, direction.X);
             Rotation = angle + Camera.CameraAngle + _angleCorrection;
         }
+
+        // Only do HitTest 60/s instead of 5000+/s lol
+        var doHitTest = time - _lastHitTest >= HitTestDelayMs;
         
-        
-        if (!MoveTo(newPos) || HitTest(time)) {
+        if (!MoveTo(newPos) || (doHitTest && HitTest(time))) {
             SetRemoval();
             return;
         }
@@ -111,20 +118,20 @@ public sealed class Projectile {
         RenderBaseType.SetPosition(newPos.X, newPos.Y);
     }
     
-    public void UpdateVisibility(ref Matrix matrix) {
-        var dx = Position.X - Camera.Position.X;
-        var dy = Position.Y + Camera.Position.Y;
+    private void UpdateVisibility(DepthMatrix matrix) {
+        var dx = _position.X - Camera.Position.X;
+        var dy = _position.Y + Camera.Position.Y;
         var distanceSquared = dx * dx + dy * dy;
         const int playerSightRadiusSquared = Map.TileRenderDistance * Map.TileRenderDistance;
         RenderBaseType.SetVisibility(distanceSquared <= playerSightRadiusSquared);
-        
-        var sort = Vector3.Transform(new Vector3(Position.X, Position.Y, 0), matrix).Y;
+
+        var sort = _position.X * matrix.M12 + _position.Y * matrix.M22 + matrix.M42;
         RenderBaseType.SetDepth(0.5f + 0.4f * sort + _jitter);
     }
 
     private void SetRemoval() {
         PendingRemoval = true;
-        Pool.Push(this);
+        ObjectPools.Projectiles.Push(this);
         Map.EntityStorage.Remove(this);
     }
     
@@ -144,8 +151,8 @@ public sealed class Projectile {
             }
         }
 
-        Position.X = pos.X;
-        Position.Y = pos.Y;
+        _position.X = pos.X;
+        _position.Y = pos.Y;
         
         RenderBaseType.SetPosition(pos.X, pos.Y);
         
@@ -153,9 +160,11 @@ public sealed class Projectile {
     }
     
     private bool HitTest(double time) {
+        _lastHitTest = time;
+        
         if (_damagePlayers) {
 
-            var target = EntityUtils.GetClosestPlayer(Position, 0.5f);
+            var target = EntityUtils.GetClosestPlayer(_position, 0.5f);
 
             if (target == null || _hitEntities.Contains(target.ObjectId))
                 return false;
@@ -164,7 +173,7 @@ public sealed class Projectile {
             NotificationLayer.AddStatusText(target, $"-{_damage}", 0xFF0000, 1000, 0);
             
             var hit = PlayerHit.CreatePacket();
-            hit.BulletId = BulletId;
+            hit.BulletId = _bulletId;
             hit.ObjectId = _ownerId;
             
             Client.QueuePacket(hit);
@@ -176,7 +185,7 @@ public sealed class Projectile {
             return false;
         }
 
-        var enemy = EntityUtils.GetClosestEnemy(Position, 0.5f);
+        var enemy = EntityUtils.GetClosestEnemy(_position, 0.5f);
 
         if (enemy == null || _hitEntities.Contains(enemy.ObjectId))
             return false;
@@ -186,7 +195,7 @@ public sealed class Projectile {
         
         var hit1 = EnemyHit.CreatePacket();
         hit1.Time = (int)time;
-        hit1.BulletId = BulletId;
+        hit1.BulletId = _bulletId;
         hit1.TargetId = enemy.ObjectId;
         hit1.Killed = enemy.Hp <= _damage;
         
@@ -231,7 +240,7 @@ public sealed class Projectile {
 
     private Vector2 ApplyWavyEffect(Vector2 origin, float elapsed) {
         var distance = elapsed * _projDesc.Speed;
-        var phase = BulletId % 2 * MathF.PI;
+        var phase = _bulletId % 2 * MathF.PI;
         
         var period = 6 * MathF.PI;
         var amplitude = MathF.PI / 64;
@@ -246,8 +255,8 @@ public sealed class Projectile {
     private Vector2 ApplyParametricEffect(Vector2 origin, float elapsed) {
         var t = elapsed / _projDesc.LifetimeMs * 2 * MathF.PI;
 
-        var x = MathF.Sin(t) * (BulletId % 2 == 0 ? -1 : 1);
-        var y = MathF.Sin(2 * t) * (BulletId % 4 < 2 ? 1 : -1);
+        var x = MathF.Sin(t) * (_bulletId % 2 == 0 ? -1 : 1);
+        var y = MathF.Sin(2 * t) * (_bulletId % 4 < 2 ? 1 : -1);
 
         origin.X += (x * MathF.Cos(_angle) - y * MathF.Sin(_angle)) * _projDesc.Magnitude;
         origin.Y += (x * MathF.Sin(_angle) + y * MathF.Cos(_angle)) * _projDesc.Magnitude;
@@ -257,7 +266,7 @@ public sealed class Projectile {
     
     private Vector2 ApplyBoomerangEffect(Vector2 origin, float elapsed) {
         var distance = elapsed * _projDesc.Speed;
-        var phase = BulletId % 2 * MathF.PI;
+        var phase = _bulletId % 2 * MathF.PI;
         
         var halfwayDistance = _projDesc.LifetimeMs * _projDesc.Speed / 2;
             
@@ -283,7 +292,7 @@ public sealed class Projectile {
         origin.Y += distance * MathF.Sin(_angle);
         
         if (_projDesc.Amplitude != 0) {
-            var phase = BulletId % 2 * MathF.PI;
+            var phase = _bulletId % 2 * MathF.PI;
             var deflection = _projDesc.Amplitude * MathF.Sin(phase + elapsed / _projDesc.LifetimeMs * _projDesc.Frequency * 2 * MathF.PI);
             origin.X += deflection * MathF.Cos(_angle + MathF.PI / 2);
             origin.Y += deflection * MathF.Sin(_angle + MathF.PI / 2);

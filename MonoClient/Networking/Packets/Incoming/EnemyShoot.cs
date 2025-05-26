@@ -78,7 +78,7 @@ public class EnemyShoot : IncomingPacket<EnemyShoot> {
         }
         
         for (var i = 0; i < NumShots; i++) {
-            var proj = Projectile.Pool.Pop();
+            var proj = ObjectPools.Projectiles.Pop();
             proj.Reset(BulletId, Damage, Angle + AngleInc * i, en, objDesc, projDesc);
             Map.AddProjectile(proj);
         }

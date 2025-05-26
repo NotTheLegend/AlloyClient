@@ -122,11 +122,10 @@ public sealed class CharacterRect : Container {
             var textureData = ObjectLibrary.TypeToTextureData[character.ObjectType];
             var atlasData = textureData.AnimatedTextures.FaceDown[0];
             
-            atlasData.RemovePadding();
             var charPortrait = new ObjectRect(new ObjectRectConfig {
-                Texture = Atlas.Create(atlasData, TextureType.GameAtlas),
-                Width = 40,
-                Height = 40,
+                Texture = Atlas.Create(atlasData, TextureType.GameAtlas, false),
+                Width = 50,
+                Height = 50,
                 Anchor = UiAnchor.Middle,
                 
             });

@@ -78,6 +78,7 @@ public static class Map {
         CurrentTime = time;
         _particleCount = 0;
         var fullMatrix = Camera.WorldMatrix * Camera.ViewMatrix * Camera.ProjectionMatrix;
+        var matrix = new DepthMatrix(fullMatrix);
 
         foreach (var (objectId, entity) in Entities) {
             if (!entity.Update(time, dt)) {
@@ -88,8 +89,7 @@ public static class Map {
         }
 
         foreach (var proj in Projectiles) {
-            proj.Update(time, dt);
-            proj.UpdateVisibility(ref fullMatrix);
+            proj.Update(time, dt, matrix);
         }
 
         Projectiles.RemoveAll(p => p.PendingRemoval);
