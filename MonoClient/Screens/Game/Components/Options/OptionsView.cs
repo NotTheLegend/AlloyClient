@@ -162,6 +162,5 @@ public sealed class OptionsView : Overlay {
     private void OnHome() {
         CloseOverlay();
         Client.Disconnect();
-        ScreenManager.FadeToScreen(new CharacterListScreen(), Easing.SineInOut, 500, 0, () => Client.Disconnect());
     }
 }

@@ -30,10 +30,10 @@ public static partial class ModelData {
     private static MeshData GameObject() {
         var mesh = new MeshData {
             VertexData = [
-                new VertexData(new Vector3(-1f, -1f, 0), new Vector2(0, 0)), // TL
-                new VertexData(new Vector3(1f, -1f, 0), new Vector2(1, 0)), // TR
-                new VertexData(new Vector3(1f, 1f, 0), new Vector2(1, 1)), // BL
-                new VertexData(new Vector3(-1f, 1f, 0), new Vector2(0, 1)) // BR
+                new VertexData(new Vector3(-0.5f, -0.5f, 0), new Vector2(0, 0)), // TL
+                new VertexData(new Vector3(0.5f, -0.5f, 0), new Vector2(1, 0)), // TR
+                new VertexData(new Vector3(0.5f, 0.5f, 0), new Vector2(1, 1)), // BL
+                new VertexData(new Vector3(-0.5f, 0.5f, 0), new Vector2(0, 1)) // BR
             ],
             IndexData = [0, 1, 2, 0, 2, 3],
             ModelType = ModelType.PbObject

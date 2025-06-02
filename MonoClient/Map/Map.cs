@@ -88,11 +88,14 @@ public static class Map {
             entity.UpdateVisibility(ref fullMatrix);
         }
 
-        foreach (var proj in Projectiles) {
-            proj.Update(time, dt, matrix);
+        for (var i = Projectiles.Count - 1; i >= 0; i--) {
+            var proj = Projectiles[i];
+            if (proj.Update(time, dt, matrix))
+                continue;
+            ObjectPools.Projectiles.Push(proj);
+            EntityStorage.Remove(proj);
+            Projectiles.RemoveAt(i);
         }
-
-        Projectiles.RemoveAll(p => p.PendingRemoval);
     }
 
     private static int _lastX = -1;

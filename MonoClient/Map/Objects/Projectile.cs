@@ -21,8 +21,6 @@ public sealed class Projectile {
     private const double HitTestDelayMs = 16;
     
     private readonly float _jitter = Random.Shared.NextSingle() * 0.00002f - 0.00001f;
-    
-    public bool PendingRemoval;
 
     private byte _bulletId;
 
@@ -59,7 +57,6 @@ public sealed class Projectile {
     private double _lastHitTest;
 
     public void Reset(byte id, int dmg, float angle, Entity entity, ObjectProperties objDesc, ProjectileProperties projDesc) {
-        PendingRemoval = false;
         _bulletId = id;
         _damage = dmg;
         _angle = angle;
@@ -77,7 +74,9 @@ public sealed class Projectile {
         
         _hitEntities.Clear();
         _effect = null;
-        RenderBaseType = new TypeProjectile(this);
+        RenderBaseType = new TypeProjectile();
+        RenderBaseType.SetSize(Size);
+        RenderBaseType.SetTexture(GetTexture());
     }
     
     public AtlasData GetTexture() {
@@ -85,12 +84,11 @@ public sealed class Projectile {
         return textureData.HasAnimationData ? textureData.AnimatedTextures.FaceRight[0] : textureData.GetTexture();
     }
 
-    public void Update(double time, double dt, DepthMatrix matrix) {
+    public bool Update(double time, double dt, DepthMatrix matrix) {
         var elapsed = (float)time - (float)_startTime;
 
         if (elapsed > _projDesc.LifetimeMs) {
-            SetRemoval();
-            return;
+            return false;
         }
         
         UpdateVisibility(matrix);
@@ -110,12 +108,13 @@ public sealed class Projectile {
         var doHitTest = time - _lastHitTest >= HitTestDelayMs;
         
         if (!MoveTo(newPos) || (doHitTest && HitTest(time))) {
-            SetRemoval();
-            return;
+            return false;
         }
 
         _effect?.Update(time, dt);
         RenderBaseType.SetPosition(newPos.X, newPos.Y);
+        RenderBaseType.SetRotation(Rotation);
+        return true;
     }
     
     private void UpdateVisibility(DepthMatrix matrix) {
@@ -127,12 +126,6 @@ public sealed class Projectile {
 
         var sort = _position.X * matrix.M12 + _position.Y * matrix.M22 + matrix.M42;
         RenderBaseType.SetDepth(0.5f + 0.4f * sort + _jitter);
-    }
-
-    private void SetRemoval() {
-        PendingRemoval = true;
-        ObjectPools.Projectiles.Push(this);
-        Map.EntityStorage.Remove(this);
     }
     
     private bool MoveTo(Vector2 pos) {

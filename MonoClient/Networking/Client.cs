@@ -4,8 +4,10 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using MonoClient.Display;
 using MonoClient.Networking.Packets;
 using MonoClient.Networking.Packets.Outgoing;
+using MonoClient.Screens.Title;
 using MonoClient.State;
 using MonoClient.Utils;
 
@@ -322,6 +324,7 @@ public static class Client {
         }
 
         Map.Disconnect();
+        ScreenManager.FadeTo(new CharacterListScreen());
     }
 
     private static void SendHello() {

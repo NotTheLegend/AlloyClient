@@ -1,4 +1,5 @@
 ﻿using System;
+using Common;
 using Common.Atlas;
 using Microsoft.Xna.Framework;
 using MonoClient.Assets;
@@ -14,6 +15,10 @@ public abstract class RenderBase : IComparable<RenderBase> {
 
     public bool Visible;
 
+    public float RotationAngle;
+
+    public float Size;
+
     protected internal Entity Entity;
     
     public Vector3 Position = Vector3.Zero;
@@ -26,14 +31,38 @@ public abstract class RenderBase : IComparable<RenderBase> {
     public abstract void SetPosition(float x, float y, float z = 0);
 
     public void SetTexture(AtlasData texture) => SetTexture(texture, false);
-    
-    public abstract void SetTexture(AtlasData texture, bool attackFrame);
+
+    public virtual void SetTexture(AtlasData texture, bool attackFrame) {
+        UV = texture.ToVector4();
+
+        var frameMult = attackFrame ? 2f : 1f;
+        var w = texture.RawW() - AtlasConfig.Padding * 2;
+        var h = texture.RawH() - AtlasConfig.Padding * 2;
+        
+        // this should be padding * 2 but the attack frame doesnt line up unless its 3 for some fucking reason
+        var padW = 1.0f + AtlasConfig.Padding * 3 / texture.RawW();
+        var padH = 1.0f + AtlasConfig.Padding * 3 / texture.RawH();
+        
+        var ratio = w / h / frameMult * MathF.Max(w / frameMult / 8, h / 8);
+
+        var widthScale = 0.75f * ratio * frameMult * padW;
+        var heightScale = 0.75f * ratio * padH;
+        
+        var padX = attackFrame ? widthScale * (0.5f - (AtlasConfig.Padding + w / 4) / texture.RawW()) : 0f;
+        var padY = heightScale * (0.5f - AtlasConfig.Padding / texture.RawH());
+
+        Scale = new Vector4(widthScale, heightScale, padX, -padY);
+    }
 
     public abstract void SetVisibility(bool visible);
 
     public abstract void SetDepth(float depth);
     public abstract void SetName(string name);
     public abstract void SetAlpha(float alpha);
+    
+    public void SetRotation(float rotation) => RotationAngle = rotation;
+
+    public void SetSize(float size) => Size = size;
 
     public abstract void Draw();
     

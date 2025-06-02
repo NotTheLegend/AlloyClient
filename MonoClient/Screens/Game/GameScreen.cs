@@ -78,7 +78,13 @@ public sealed class GameScreen : Screen {
         
         if (time - _lastLogTime > 1000) {
             _lastLogTime = time;
-            Logger.Info($"FPS: {_frames} | Tiles: {Render.LastDrawCountTiles} | Shadows: {Render.LastDrawCountShadows} | DrawnEntities: {Render.LastDrawCountEntities} | DrawnUiElements: {UiRender.LastRenderCount} | DrawnParticles: {Render.LastDrawParticleCount}");
+            Logger.Info($"\n[Frame Stats]\n" +
+                        $"FPS: {_frames}\n" +
+                        $"Tiles: {Render.LastDrawCountTiles}\n" +
+                        $"Shadows: {Render.LastDrawCountShadows}\n" +
+                        $"DrawnEntities: {Render.LastDrawCountEntities}\n" +
+                        $"DrawnUiElements: {UiRender.LastRenderCount}\n" +
+                        $"DrawnParticles: {Render.LastDrawParticleCount}");
             _frames = 0;
         }
         
