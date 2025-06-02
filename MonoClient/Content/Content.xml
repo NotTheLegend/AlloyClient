@@ -1,0 +1,6 @@
+﻿<Content Verbose="False">
+    <Build mode="Copy" type="Folder" ext="*.xml">Xmls</Build>
+    <Build mode="Copy" type="Folder" ext="*.fbx">Objects</Build>
+    <Build mode="Font" type="Folder" ext="*.msdf">Fonts</Build>
+    <Build mode="Copy" type="File">Icon.bmp</Build>
+</Content>

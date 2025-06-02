@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <RollForward>Major</RollForward>
         <PublishReadyToRun>false</PublishReadyToRun>
         <TieredCompilation>false</TieredCompilation>
@@ -12,6 +12,7 @@
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <ApplicationIcon>Icon.ico</ApplicationIcon>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <RunPostBuildEvent>Always</RunPostBuildEvent>
     </PropertyGroup>
     
     <ItemGroup>
@@ -48,6 +49,7 @@
     
     <ItemGroup>
       <ProjectReference Include="..\Common\Common.csproj" />
+      <ProjectReference Include="..\ContentBuilder\ContentBuilder.csproj" />
       <ProjectReference Include="..\MonoClient.UiLib\MonoClient.UiLib.csproj" />
     </ItemGroup>
     
