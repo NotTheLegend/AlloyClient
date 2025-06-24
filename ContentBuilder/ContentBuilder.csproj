@@ -7,6 +7,7 @@
         <Nullable>disable</Nullable>
         <LangVersion>preview</LangVersion>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -25,6 +26,13 @@
       <None Update="msdf-atlas-gen-w64.exe">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
+      <PackageReference Include="StbImageSharp" Version="2.30.15" />
+      <PackageReference Include="StbImageWriteSharp" Version="1.16.7" />
+      <PackageReference Include="StbRectPackSharp" Version="1.0.4" />
     </ItemGroup>
 
 </Project>

@@ -1,0 +1,54 @@
+﻿<Atlas source="Sheets">
+    <Image name="cursors" w="32" h="32">cursors.png</Image>
+    <Image name="tileAlphaBlend" w="8" h="8">AlphaBlendTile.png</Image>
+    <Image name="invisible" w="8" h="8">invisible.png</Image>
+    <Image name="lofiChar8x8" w="8" h="8">lofichar.png</Image>
+    <Image name="lofiChar16x16" w="16" h="16">lofichar.png</Image>
+    <Image name="lofiChar16x8" w="16" h="8">lofichar.png</Image>
+    <Image name="lofiChar216x8" w="16" h="8">lofichar2.png</Image>
+    <Image name="lofiChar216x16" w="16" h="16">lofichar2.png</Image>
+    <Image name="lofiChar28x8" w="8" h="8">lofichar2.png</Image>
+    <Image name="lofiCharBig" w="16" h="16">loficharbig.png</Image>
+    <Image name="lofiEnvironment" w="8" h="8">lofienvironment.png</Image>
+    <Image name="lofiEnvironment2" w="8" h="8">lofienvironment2.png</Image>
+    <Image name="lofiEnvironment3" w="8" h="8">lofienvironment3.png</Image>
+    <Image name="redLootBag" w="8" h="8">redlootbag.png</Image>
+    <Image name="lofiInterfaceBig" w="16" h="8">lofiinterfacebig.png</Image>
+    <Image name="lofiInterface" w="8" h="8">lofiinterface.png</Image>
+    <Image name="lofiInterface2" w="8" h="8">lofiinterface2.png</Image>
+    <Image name="lofiObj" w="8" h="8">lofiobj.png</Image>
+    <Image name="lofiObj2" w="8" h="8">lofiobj2.png</Image>
+    <Image name="lofiObj3" w="8" h="8">lofiobj3.png</Image>
+    <Image name="lofiObj4" w="8" h="8">lofiobj4.png</Image>
+    <Image name="lofiObj5" w="8" h="8">lofiobj5.png</Image>
+    <Image name="lofiObj6" w="8" h="8">lofiobj6.png</Image>
+    <Image name="lofiObjBig" w="16" h="16">lofiobjbig.png</Image>
+    <Image name="lofiObj40x40" w="40" h="40">lofiobj40x40.png</Image>
+    <Image name="lofiProjs" w="8" h="8">lofiprojs.png</Image>
+    <Image name="lofiProjsBig" w="16" h="16">lofiprojsbig.png</Image>
+    <Image name="lofiParts" w="8" h="8">lofiparts.png</Image>
+    
+    <Animated name="chars8x8rBeach" w="8" h="8">chars8x8rbeach.png</Animated>
+    <Animated name="chars8x8dBeach" w="8" h="8">chars8x8dbeach.png</Animated>
+    <Animated name="chars8x8rLow1" w="8" h="8">chars8x8rlow1.png</Animated>
+    <Animated name="chars8x8rLow2" w="8" h="8">chars8x8rlow2.png</Animated>
+    <Animated name="chars8x8rMid" w="8" h="8">chars8x8rmid.png</Animated>
+    <Animated name="chars8x8rMid2" w="8" h="8">chars8x8rmid2.png</Animated>
+    <Animated name="chars8x8rPets1" w="8" h="8">chars8x8rpets1.png</Animated>
+    <Animated name="chars8x8rHigh" w="8" h="8">chars8x8rhigh.png</Animated>
+    <Animated name="chars8x8rHero1" w="8" h="8">chars8x8rhero1.png</Animated>
+    <Animated name="chars8x8rHero2" w="8" h="8">chars8x8rhero2.png</Animated>
+    <Animated name="chars8x8dHero1" w="8" h="8">chars8x8dhero1.png</Animated>
+    <Animated name="chars16x16dMountains1" w="16" h="16">chars16x16dmountains1.png</Animated>
+    <Animated name="chars16x16dMountains2" w="16" h="16">chars16x16dmountains2.png</Animated>
+    <Animated name="chars8x8dEncounters" w="8" h="8">chars8x8dencounters.png</Animated>
+    <Animated name="chars8x8rEncounters" w="8" h="8">chars8x8rencounters.png</Animated>
+    <Animated name="chars16x8dEncounters" w="16" h="8">chars16x8dencounters.png</Animated>
+    <Animated name="chars16x8rEncounters" w="16" h="8">chars16x8rencounters.png</Animated>
+    <Animated name="chars16x16dEncounters" w="16" h="16">chars16x16dencounters.png</Animated>
+    <Animated name="chars16x16dEncounters2" w="16" h="16">chars16x16dencounters2.png</Animated>
+    <Animated name="chars16x16rEncounters" w="16" h="16">chars16x16rencounters.png</Animated>
+    
+    <Animated name="" w="8" h="8" group="Full">players.png</Animated>
+    <Animated name="" w="8" h="8" group="Full">PlayersSkins.png</Animated>
+</Atlas>

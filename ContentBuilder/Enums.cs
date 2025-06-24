@@ -1,14 +1,14 @@
 ﻿namespace ContentBuilder;
 
-public enum Mode {
+public enum Type {
     Error,
     Copy,
     Font,
+    Fbx,
     Atlas
 }
 
-public enum Type {
-    Error,
-    Folder,
-    File
+public enum Grouping {
+    Single = 1,
+    Full = 3
 }

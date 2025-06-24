@@ -1,6 +1,19 @@
 ﻿<Content Verbose="False">
-    <Build mode="Copy" type="Folder" ext="*.xml">Xmls</Build>
-    <Build mode="Copy" type="Folder" ext="*.fbx">Objects</Build>
-    <Build mode="Font" type="Folder" ext="*.msdf">Fonts</Build>
-    <Build mode="Copy" type="File">Icon.bmp</Build>
+    <Builder type="Copy">
+        <Folder ext="*.xml">Xmls</Folder>
+        <File>Icon.bmp</File>
+    </Builder>
+
+    <Builder type="Font">
+        <Folder ext="*.msdf">Fonts</Folder>
+    </Builder>
+
+    <Builder type="Fbx">
+        <Folder ext="*.fbx">Objects</Folder>
+    </Builder>
+    
+    <Builder type="Atlas">
+        <File>Game.atlas</File>
+        <File>Ui.atlas</File>
+    </Builder>
 </Content>

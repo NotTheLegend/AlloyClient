@@ -1,0 +1,19 @@
+﻿<Atlas source="Ui">
+    <Image name="bar1">bar1.png</Image>
+    <Image name="bar2">bar2.png</Image>
+    <Image name="bar3">bar3.png</Image>
+    <Image name="tooltipBackgroundLarge">ToolTip/TooltipBackgroundLarge.png</Image>
+    <Image name="tooltipBackgroundMedium">ToolTip/TooltipBackgroundMedium.png</Image>
+    <Image name="tooltipBackgroundSmall">ToolTip/TooltipBackgroundSmall.png</Image>
+    <Image name="textBox">TextBox.png</Image>
+    <Image name="BlackCircle">BlackCircle.png</Image>
+    <Image name="CharacterList/StarGraphic">CharacterList/StarGraphic.png</Image>
+    <Image name="FameBackground/FameBackground">FameBackground/FameBackground.png</Image>
+    <Image name="KeysBackground">KeysView/KeysView_BackgroundPng.png</Image>
+    <Image name="KeysGreen">KeysView/KeysView_greenKeyPng.png</Image>
+    <Image name="KeysPurple">KeysView/KeysView_purpleKeyPng.png</Image>
+    <Image name="KeysRed">KeysView/KeysView_redKeyPng.png</Image>
+    <Image name="KeysYellow">KeysView/KeysView_yellowKeyPng.png</Image>
+    <Image name="ScrollBar/ScrollBarBackground">ScrollBar/ScrollBarBackground.png</Image>
+    <Image name="ScrollBar/ScrollBarHandle">ScrollBar/ScrollBarHandle.png</Image>
+</Atlas>
