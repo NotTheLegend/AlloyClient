@@ -1,73 +1,69 @@
 ﻿using Common.Atlas;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Common.Pipeline;
+namespace Common.ContentReaders;
 
-public class MainAtlas {
-    public Texture2D Texture;
-    public Dictionary<string, AtlasData[]> AtlasMapStatic;
-    public Dictionary<string, AnimationAtlasData[]> AtlasMapAnimation;
-    public Dictionary<string, Color[]> DominantColors;
+public class Atlas {
+    
+    private readonly Texture2D _texture;
+    private readonly Dictionary<string, AtlasData[]> _atlasMapStatic;
+    private readonly Dictionary<string, AnimationAtlasData[]> _atlasMapAnimation;
+    private readonly Dictionary<string, Color[]> _dominantColors;
 
+    private Atlas(Texture2D texture, Dictionary<string, AtlasData[]> atlasMapStatic, Dictionary<string, AnimationAtlasData[]> atlasMapAnimation, Dictionary<string, Color[]> dominantColors) {
+        _texture = texture;
+        _atlasMapStatic = atlasMapStatic;
+        _atlasMapAnimation = atlasMapAnimation;
+        _dominantColors = dominantColors;
+    }
+
+    public Texture2D GetTexture() => _texture;
+    
     public AtlasData GetAtlasData(string lookup, int index) {
         if (lookup != null) {
-            var b = AtlasMapStatic.TryGetValue(lookup, out var list);
+            var b = _atlasMapStatic.TryGetValue(lookup, out var list);
             if (b && list.Length >= 1 && list.Length > index) {
                 return list[index];
             }
         }
 
-        Console.WriteLine($"Unable to lookup game atlas: {lookup} - {index}");
+        Console.WriteLine($"Unable to lookup atlas: {lookup} - {index}");
         return new AtlasData();
 
     }
 
     public AnimationAtlasData GetAnimationAtlasData(string lookup, int index) {
         if (lookup != null) {
-            var b = AtlasMapAnimation.TryGetValue(lookup, out var list);
+            var b = _atlasMapAnimation.TryGetValue(lookup, out var list);
             if (b && list.Length >= 1 && list.Length > index) {
                 return list[index];
             }
         }
 
-        Console.WriteLine($"Unable to lookup game atlas[AnimationAtlasData]: {lookup} - {index}");
+        Console.WriteLine($"Unable to lookup atlas[AnimationAtlasData]: {lookup} - {index}");
         return new AnimationAtlasData();
     }
 
     public Color GetDominantColor(string lookup, int index) {
         if (lookup != null) {
-            var b = DominantColors.TryGetValue(lookup, out var list);
+            var b = _dominantColors.TryGetValue(lookup, out var list);
             if (b && list.Length >= 1 && list.Length > index) {
                 return list[index];
             }
         }
 
-        Console.WriteLine($"Unable to lookup game atlas[DominantColor]: {lookup} - {index}");
+        Console.WriteLine($"Unable to lookup atlas[DominantColor]: {lookup} - {index}");
         return Color.Black;
     }
-}
 
-public class MainAtlasReader : ContentTypeReader<MainAtlas> {
-    protected override MainAtlas Read(ContentReader reader, MainAtlas existingInstance) {
-        var atlas = new MainAtlas();
-
+    internal static Atlas Read(BinaryReader reader, GraphicsDevice graphics) {
         var width = reader.ReadInt32();
         var height = reader.ReadInt32();
         var imgData = reader.ReadBytes(reader.ReadInt32());
-
-        var readerObj = reader.ContentManager.ServiceProvider.GetService(typeof(IGraphicsDeviceManager));
-
-        if (readerObj == null) {
-            throw new Exception("GraphicsDeviceManager is null.");
-        }
-
-        var graphicsDeviceManager = (GraphicsDeviceManager) readerObj;
-        var graphicsDevice = graphicsDeviceManager.GraphicsDevice;
-        var texture = new Texture2D(graphicsDevice, width, height, false, SurfaceFormat.Color);
+        
+        var texture = new Texture2D(graphics, width, height, false, SurfaceFormat.Color);
         texture.SetData(imgData);
-        atlas.Texture = texture;
 
         var atlasMapStatic = new Dictionary<string, AtlasData[]>();
         var atlasDataMapCount = reader.ReadInt32();
@@ -82,8 +78,6 @@ public class MainAtlasReader : ContentTypeReader<MainAtlas> {
 
             atlasMapStatic[key] = value;
         }
-
-        atlas.AtlasMapStatic = atlasMapStatic;
 
         var atlasMapAnimation = new Dictionary<string, AnimationAtlasData[]>();
         var animationMapCount = reader.ReadInt32();
@@ -124,8 +118,6 @@ public class MainAtlasReader : ContentTypeReader<MainAtlas> {
             atlasMapAnimation[key] = animData;
         }
 
-        atlas.AtlasMapAnimation = atlasMapAnimation;
-
         var dominantColors = new Dictionary<string, Color[]>();
         var dominantColorsCount = reader.ReadInt32();
 
@@ -140,8 +132,6 @@ public class MainAtlasReader : ContentTypeReader<MainAtlas> {
             dominantColors[key] = value;
         }
 
-        atlas.DominantColors = dominantColors;
-
-        return atlas;
+        return new Atlas(texture, atlasMapStatic, atlasMapAnimation, dominantColors);
     }
 }

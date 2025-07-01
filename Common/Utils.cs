@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using Common.Atlas;
 using Common.Vector;
 
 namespace Common;
@@ -21,5 +22,14 @@ public static class Utils {
         }
             
         return change;
+    }
+    
+    public static AtlasData ReadAtlasData(this BinaryReader reader) {
+        return new AtlasData {
+            U = reader.ReadSingle(),
+            V = reader.ReadSingle(),
+            W = reader.ReadSingle(),
+            H = reader.ReadSingle()
+        };
     }
 }

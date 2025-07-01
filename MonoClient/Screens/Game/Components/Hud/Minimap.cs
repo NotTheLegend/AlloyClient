@@ -12,6 +12,7 @@ using MonoClient.UiLib.Extra;
 using MonoClient.UiLib.Rendering;
 using MonoClient.UiLib.Signals;
 using MonoClient.Utils;
+using Texture = MonoClient.Utils.Texture;
 
 namespace MonoClient.Screens.Game.Components.Hud;
 
@@ -52,7 +53,7 @@ public sealed class Minimap : Sprite {
         AddChild(_layer);
 
         _zoomIn = new IconButton(new IconButtonConfig {
-            Texture = Atlas.FromGameAtlas("lofiInterface", 54, false),
+            Texture = Texture.FromGameAtlas("lofiInterface", 54, false),
             X = MapSize,
             Y = 0,
             Width = 24,
@@ -63,7 +64,7 @@ public sealed class Minimap : Sprite {
         AddChild(_zoomIn);
         
         _zoomOut = new IconButton(new IconButtonConfig {
-            Texture = Atlas.FromGameAtlas("lofiInterface", 55, false),
+            Texture = Texture.FromGameAtlas("lofiInterface", 55, false),
             X = MapSize,
             Y = _zoomIn.Height + 4,
             Width = 24,
@@ -74,7 +75,7 @@ public sealed class Minimap : Sprite {
         AddChild(_zoomOut);
 
         _arrow = new ObjectRect(new ObjectRectConfig {
-            Texture = Atlas.FromGameAtlas("lofiInterface", 54, false),
+            Texture = Texture.FromGameAtlas("lofiInterface", 54, false),
             X = MapSize / 2,
             Y = MapSize / 2,
             Width = 9,

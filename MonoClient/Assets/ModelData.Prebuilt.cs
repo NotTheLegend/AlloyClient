@@ -15,13 +15,13 @@ public static partial class ModelData {
 
     private static MeshData FlatSquare() {
         var mesh = new MeshData {
-            VertexData = [
+            VertexBuffer = [
                 new VertexData(new Vector3(0, 0, 0), new Vector2(0, 0)), // TL
                 new VertexData(new Vector3(1, 0, 0), new Vector2(1, 0)), // TR
                 new VertexData(new Vector3(1, 1, 0), new Vector2(1, 1)), // BL
                 new VertexData(new Vector3(0, 1, 0), new Vector2(0, 1)) // BR
             ],
-            IndexData = [0, 1, 2, 0, 2, 3],
+            IndexBuffer = [0, 1, 2, 0, 2, 3],
             ModelType = ModelType.PbTile
         };
         return mesh;
@@ -29,13 +29,13 @@ public static partial class ModelData {
     
     private static MeshData GameObject() {
         var mesh = new MeshData {
-            VertexData = [
+            VertexBuffer = [
                 new VertexData(new Vector3(-0.5f, -0.5f, 0), new Vector2(0, 0)), // TL
                 new VertexData(new Vector3(0.5f, -0.5f, 0), new Vector2(1, 0)), // TR
                 new VertexData(new Vector3(0.5f, 0.5f, 0), new Vector2(1, 1)), // BL
                 new VertexData(new Vector3(-0.5f, 0.5f, 0), new Vector2(0, 1)) // BR
             ],
-            IndexData = [0, 1, 2, 0, 2, 3],
+            IndexBuffer = [0, 1, 2, 0, 2, 3],
             ModelType = ModelType.PbObject
         };
         return mesh;
@@ -43,7 +43,7 @@ public static partial class ModelData {
 
     private static MeshData Wall() {
         var mesh = new MeshData {
-            VertexData = [
+            VertexBuffer = [
                 // Front
                 new VertexData(new Vector3(0, 1, 1), new Vector2(0, 0)), // TL
                 new VertexData(new Vector3(1, 1, 1), new Vector2(1, 0)), // TR
@@ -65,7 +65,7 @@ public static partial class ModelData {
                 new VertexData(new Vector3(1, 0, 0), new Vector2(1, 1)), // BL
                 new VertexData(new Vector3(1, 1, 0), new Vector2(0, 1)) // BR
             ],
-            IndexData = [
+            IndexBuffer = [
                 0, 1, 2, 0, 2, 3, 
                 4, 5, 6, 4, 6, 7,
                 8, 9, 10, 8, 10, 11,
@@ -78,7 +78,7 @@ public static partial class ModelData {
     
     private static MeshData DoubleWall() {
         var mesh = new MeshData {
-            VertexData = [
+            VertexBuffer = [
                 // L Front
                 new VertexData(new Vector3(0, 1, 1), new Vector2(0, 0)), // TL
                 new VertexData(new Vector3(1, 1, 1), new Vector2(1, 0)), // TR
@@ -120,7 +120,7 @@ public static partial class ModelData {
                 new VertexData(new Vector3(1, 0, 1), new Vector2(1, 1)), // BL
                 new VertexData(new Vector3(1, 1, 1), new Vector2(0, 1)) // BR
             ],
-            IndexData = [
+            IndexBuffer = [
                 0, 1, 2, 0, 2, 3, 
                 4, 5, 6, 4, 6, 7,
                 8, 9, 10, 8, 10, 11,

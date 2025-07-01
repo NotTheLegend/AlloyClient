@@ -58,7 +58,7 @@ public class ClassInfo : Container {
         var totalMs = (int)gameTime.TotalGameTime.TotalMilliseconds;
         var frameIndex = 1 + totalMs / duration % 2;
 
-        _characterRect?.ChangeTexture(Atlas.Create(frames.FaceDown[frameIndex], TextureType.GameAtlas));
+        _characterRect?.ChangeTexture(Texture.Create(frames.FaceDown[frameIndex], TextureType.GameAtlas));
     }
 
     private void UpdateInfo(ClassRect classRect) {
@@ -66,7 +66,7 @@ public class ClassInfo : Container {
         
         var frames = Main.Atlas.GetAnimationAtlasData("players", classRect.CharacterIndex);
         _characterRect = new ObjectRect(new ObjectRectConfig {
-            Texture = Atlas.Create(frames.FaceDown[0], TextureType.GameAtlas),
+            Texture = Texture.Create(frames.FaceDown[0], TextureType.GameAtlas),
             Width = 120,
             Height = 120,
             X = _background.Width / 2 - 60,

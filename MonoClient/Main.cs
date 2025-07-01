@@ -1,52 +1,39 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-using Common.Pipeline;
+using System.IO;
+using Common.ContentReaders;
 using Common.Vector;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using MonoClient.AppEngine;
 using MonoClient.Assets;
-using MonoClient.Assets.Libraries;
 using MonoClient.Display;
 using MonoClient.Rendering;
 using MonoClient.Screens;
-using MonoClient.Screens.Game.Components.Hud;
 using MonoClient.State;
 using MonoClient.Ui;
 using MonoClient.UiLib;
 using MonoClient.UiLib.Enums;
-using MonoClient.UiLib.Input;
 using MonoClient.UiLib.Signals;
 using MonoClient.Utils;
 using Easing = MonoClient.UiLib.Extra.Easing;
-using KeyboardInput = MonoClient.UiLib.Input.KeyboardInput;
 
 namespace MonoClient;
 
 public class Main : Game {
     private static readonly Logger Log = new(typeof(Main));
 
-    public static ContentManager ContentManager;
-
     public static GraphicsDeviceManager Graphics;
 
     public static readonly SingleSignal<GraphicsOptions> GraphicsMode = new();
 
     public static Main GameInstance;
-    public static MainAtlas Atlas;
-    public static UiAtlas UiAtlas;
-
-    public static Action ScreenResized;
-    private static int _lastScreenWidth;
-    private static int _lastScreenHeight;
+    public static Atlas Atlas;
+    public static Atlas UiAtlas;
 
     public Main() {
         Graphics = new GraphicsDeviceManager(this);
-
-        ContentManager = Content;
+        
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
 
@@ -67,14 +54,16 @@ public class Main : Game {
 
         Map.GraphicsDevice = Graphics.GraphicsDevice;
 
+        ContentReader.Init(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content"), GraphicsDevice);
+
         base.Initialize();
     }
     
     [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH", MessageId = "type: Microsoft.Xna.Framework.Color[]")]
     [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH", MessageId = "type: System.Byte[]; size: 65MB")]
     protected override void LoadContent() {
-        Atlas = ContentManager.Load<MainAtlas>("atlas");
-        UiAtlas = ContentManager.Load<UiAtlas>("AtlasUi");
+        Atlas = ContentReader.LoadAtlas("Game.atlas");
+        UiAtlas = ContentReader.LoadAtlas("Ui.atlas");
         MinimapTexture.Init(GraphicsDevice, out var mapTexture);
         
         ModelData.Load();
@@ -88,11 +77,13 @@ public class Main : Game {
         //UiRender needs to be loaded first so Render can pull font data from it
         UiRender.ConfigureAndLoad(settings, out var stage);
         
-        UiRender.RegisterTexture(TextureType.GameAtlas, Atlas.Texture);
-        UiRender.RegisterTexture(TextureType.UiAtlas, UiAtlas.Texture);
+        UiRender.RegisterFont(ContentReader.LoadFont("Fonts/MyriadPro/MyriadPro.msdf"));
+        
+        UiRender.RegisterTexture(TextureType.GameAtlas, Atlas.GetTexture());
+        UiRender.RegisterTexture(TextureType.UiAtlas, UiAtlas.GetTexture());
         UiRender.RegisterTexture(TextureType.Minimap, mapTexture);
-        UiRender.RegisterTexture(TextureType.TitleBackground, Content.Load<Texture2D>("Ui/titleView/TitleScreenBackground"));
-        UiRender.RegisterTexture(TextureType.TitleGraphic, Content.Load<Texture2D>("Ui/titleView/TitleScreenGraphic"));
+        UiRender.RegisterTexture(TextureType.TitleBackground, ContentReader.LoadTexture("TitleScreen/TitleScreenBackground.png"));
+        UiRender.RegisterTexture(TextureType.TitleGraphic, ContentReader.LoadTexture("TitleScreen/TitleScreenGraphic.png"));
         
         Render.FirstTimeInit();
         
@@ -110,13 +101,6 @@ public class Main : Game {
 
     protected override void Update(GameTime gameTime) {
         base.Update(gameTime);
-
-        if (_lastScreenWidth != Settings.ScreenWidth || _lastScreenHeight != Settings.ScreenHeight) {
-            _lastScreenWidth = Settings.ScreenWidth;
-            _lastScreenHeight = Settings.ScreenHeight;
-            ScreenResized?.Invoke();
-        }
-        
         DisplayManager.Update(gameTime);
     }
 

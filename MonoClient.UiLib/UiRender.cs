@@ -1,8 +1,7 @@
 ﻿using System;
-using Common.Pipeline;
+using Common.ContentReaders;
 using Common.Vector;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Data;
@@ -36,7 +35,7 @@ public static class UiRender {
 
     internal static Game Game;
 
-    internal static ContentManager Content;
+    //internal static ContentManager Content;
 
     internal static GraphicsDevice Graphics;
 
@@ -53,7 +52,6 @@ public static class UiRender {
         }
         
         Game = settings.Game;
-        Content = settings.Game.Content;
         Graphics = settings.Game.GraphicsDevice;
         MinimumScreen = settings.MinimumScreen;
         DefaultScreen = settings.DefaultScreen;
@@ -64,13 +62,7 @@ public static class UiRender {
 
         Game.Window.ClientSizeChanged += OnResize;
 
-        MyriadPro = new BitmapFamily("Fonts/MyriadPro/MyriadPro");
-
-        UiShader = Content.Load<Effect>("shaders/ShaderUi");
-
-        UiShader.Parameters["PixelRange"].SetValue(MyriadPro.PixelRange);
-        UiShader.Parameters["TextTextureSize"].SetValue(new Vector2(MyriadPro.Atlas.Width, MyriadPro.Atlas.Height));
-        UiShader.Parameters["TextTexture"].SetValue(MyriadPro.Atlas);
+        UiShader = settings.Game.Content.Load<Effect>("shaders/ShaderUi");
 
         Sprite.BuildBuffers(Graphics);
         
@@ -101,8 +93,12 @@ public static class UiRender {
         }
     }
 
-    public static void RegisterFont() {
-        //todo
+    public static void RegisterFont(FontFamily font) {
+        MyriadPro = new BitmapFamily(font);
+        
+        UiShader.Parameters["PixelRange"].SetValue(MyriadPro.PixelRange);
+        UiShader.Parameters["TextTextureSize"].SetValue(new Vector2(MyriadPro.Atlas.Width, MyriadPro.Atlas.Height));
+        UiShader.Parameters["TextTexture"].SetValue(MyriadPro.Atlas);
     }
 
     private static void OnResize(object _, EventArgs __) {

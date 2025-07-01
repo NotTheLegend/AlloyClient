@@ -113,7 +113,7 @@ public static class AtlasBuilder {
     }
 
     private static void Write(Atlas atlas, string file, Paths paths) {
-        var newFile = Path.ChangeExtension(file.Replace(paths.Content, paths.Output), ".bin");
+        var newFile = Path.ChangeExtension(file.Replace(paths.Content, paths.Output), ".atlas");
         Directory.CreateDirectory(Path.GetDirectoryName(newFile)!);
 
         using var stream = File.Create(newFile);

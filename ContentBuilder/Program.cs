@@ -22,4 +22,4 @@ FbxBuilder.Dispose();
 
 //todo jdoc stuff
 //todo redo hash manager to allow parallel file processing for fbx and copy
-//todo dye masks atlas creation
+//todo dye masks

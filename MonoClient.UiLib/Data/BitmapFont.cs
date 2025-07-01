@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Common.Atlas;
-using Common.Pipeline;
+using Common.ContentReaders;
 using Microsoft.Xna.Framework.Graphics;
 using MonoClient.UiLib.Enums;
 
@@ -16,9 +16,7 @@ public class BitmapFamily {
 
     public readonly float PixelRange;
 
-    public BitmapFamily(string fontFamily) {
-        var data = UiRender.Content.Load<FontFamily>(fontFamily);
-
+    public BitmapFamily(FontFamily data) {
         Atlas = data.Atlas;
 
         foreach (var kvp in data.FontData) {

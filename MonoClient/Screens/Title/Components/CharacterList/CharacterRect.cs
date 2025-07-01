@@ -123,7 +123,7 @@ public sealed class CharacterRect : Container {
             var atlasData = textureData.AnimatedTextures.FaceDown[0];
             
             var charPortrait = new ObjectRect(new ObjectRectConfig {
-                Texture = Atlas.Create(atlasData, TextureType.GameAtlas, false),
+                Texture = Texture.Create(atlasData, TextureType.GameAtlas, false),
                 Width = 50,
                 Height = 50,
                 Anchor = UiAnchor.Middle,
@@ -152,7 +152,7 @@ public sealed class CharacterRect : Container {
             var numStars = GetStars(character);
             for (var i = 0; i < NumberStars; i++) {
                 var star = new ObjectRect(new ObjectRectConfig {
-                    Texture = Atlas.FromUiAtlas("CharacterList/StarGraphic"),
+                    Texture = Texture.FromUiAtlas("CharacterList/StarGraphic"),
                     Width = starWidth,
                     Height = starWidth,
                     Anchor = UiAnchor.Middle,
@@ -174,7 +174,7 @@ public sealed class CharacterRect : Container {
             var index = Random.Shared.Next(0, NumberCharacters);
             var frames = Main.Atlas.GetAnimationAtlasData("players", index);
             var charPortrait = new ObjectRect(new ObjectRectConfig {
-                Texture = Atlas.Create(frames.FaceDown[0], TextureType.GameAtlas),
+                Texture = Texture.Create(frames.FaceDown[0], TextureType.GameAtlas),
                 Width = 50,
                 Height = 50,
                 Anchor = UiAnchor.Middle,

@@ -13,7 +13,7 @@
     <Image name="lofiEnvironment2" w="8" h="8">lofienvironment2.png</Image>
     <Image name="lofiEnvironment3" w="8" h="8">lofienvironment3.png</Image>
     <Image name="redLootBag" w="8" h="8">redlootbag.png</Image>
-    <Image name="lofiInterfaceBig" w="16" h="8">lofiinterfacebig.png</Image>
+    <Image name="lofiInterfaceBig" w="16" h="16">lofiinterfacebig.png</Image>
     <Image name="lofiInterface" w="8" h="8">lofiinterface.png</Image>
     <Image name="lofiInterface2" w="8" h="8">lofiinterface2.png</Image>
     <Image name="lofiObj" w="8" h="8">lofiobj.png</Image>
@@ -49,6 +49,6 @@
     <Animated name="chars16x16dEncounters2" w="16" h="16">chars16x16dencounters2.png</Animated>
     <Animated name="chars16x16rEncounters" w="16" h="16">chars16x16rencounters.png</Animated>
     
-    <Animated name="" w="8" h="8" group="Full">players.png</Animated>
-    <Animated name="" w="8" h="8" group="Full">PlayersSkins.png</Animated>
+    <Animated name="players" w="8" h="8" group="Full">players.png</Animated>
+    <Animated name="playerskins" w="8" h="8" group="Full">PlayersSkins.png</Animated>
 </Atlas>

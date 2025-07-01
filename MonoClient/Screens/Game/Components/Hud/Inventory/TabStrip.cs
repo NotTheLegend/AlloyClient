@@ -101,7 +101,7 @@ namespace MonoClient.Screens.Game.Components.Hud.Inventory
 
                 invTabButton = new IconButton(new IconButtonConfig
                 {
-                    Texture = Atlas.FromGameAtlas("lofiInterfaceBig", 23 + (tab.Key), false),
+                    Texture = Texture.FromGameAtlas("lofiInterfaceBig", 23 + (tab.Key), false),
                     Alpha = 1,
                     X = X + 6,
                     Y = Y,

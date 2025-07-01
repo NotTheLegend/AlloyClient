@@ -79,7 +79,7 @@ public class EditorObjectsPanel : Sprite {
         foreach (var groundProp in groundPropLib.Values) {
             var textureData = GroundLibrary.TypeToTextureData[groundProp.ObjectType];
             var atlasData = textureData.EditorTexture ?? textureData.GetTexture();
-            var textureInfo = Atlas.Create(atlasData, TextureType.GameAtlas, false);
+            var textureInfo = Texture.Create(atlasData, TextureType.GameAtlas, false);
             var objectId = groundProp.ObjectId;
             var objectType = groundProp.ObjectType;
             var x = _groundRects.Count % columns;
@@ -96,7 +96,7 @@ public class EditorObjectsPanel : Sprite {
         foreach (var objectProp in objectPropLib.Values) {
             var textureData = ObjectLibrary.TypeToTextureData[objectProp.ObjectType];
             var atlasData = textureData.EditorTexture ?? textureData.GetTexture();
-            var textureInfo = Atlas.Create(atlasData, TextureType.GameAtlas, false);
+            var textureInfo = Texture.Create(atlasData, TextureType.GameAtlas, false);
             var objectId = objectProp.ObjectId;
             var objectType = objectProp.ObjectType;
             var x = _objectRects.Count % columns;

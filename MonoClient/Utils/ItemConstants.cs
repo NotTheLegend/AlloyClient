@@ -38,55 +38,55 @@ public static class ItemConstants {
             case AllType:
                 break;
             case SwordType:
-                return Atlas.FromGameAtlas("lofiObj5", 48);
+                return Texture.FromGameAtlas("lofiObj5", 48);
             case DaggerType:
-                return Atlas.FromGameAtlas("lofiObj5", 96);
+                return Texture.FromGameAtlas("lofiObj5", 96);
             case BowType:
-                return Atlas.FromGameAtlas("lofiObj5", 80);
+                return Texture.FromGameAtlas("lofiObj5", 80);
             case TomeType:
-                return Atlas.FromGameAtlas("lofiObj6", 80);
+                return Texture.FromGameAtlas("lofiObj6", 80);
             case ShieldType:
-                return Atlas.FromGameAtlas("lofiObj6", 112);
+                return Texture.FromGameAtlas("lofiObj6", 112);
             case LeatherType:
-                return Atlas.FromGameAtlas("lofiObj5", 0);
+                return Texture.FromGameAtlas("lofiObj5", 0);
             case PlateType:
-                return Atlas.FromGameAtlas("lofiObj5", 32);
+                return Texture.FromGameAtlas("lofiObj5", 32);
             case WandType:
-                return Atlas.FromGameAtlas("lofiObj5", 64);
+                return Texture.FromGameAtlas("lofiObj5", 64);
             case RingType:
-                return Atlas.FromGameAtlas("lofiObj", 44);
+                return Texture.FromGameAtlas("lofiObj", 44);
             case SpellType:
-                return Atlas.FromGameAtlas("lofiObj6", 64);
+                return Texture.FromGameAtlas("lofiObj6", 64);
             case SealType:
-                return Atlas.FromGameAtlas("lofiObj6", 160);
+                return Texture.FromGameAtlas("lofiObj6", 160);
             case CloakType:
-                return Atlas.FromGameAtlas("lofiObj6", 32);
+                return Texture.FromGameAtlas("lofiObj6", 32);
             case RobeType:
-                return Atlas.FromGameAtlas("lofiObj5", 16);
+                return Texture.FromGameAtlas("lofiObj5", 16);
             case QuiverType:
-                return Atlas.FromGameAtlas("lofiObj6", 48);
+                return Texture.FromGameAtlas("lofiObj6", 48);
             case HelmType:
-                return Atlas.FromGameAtlas("lofiObj6", 96);
+                return Texture.FromGameAtlas("lofiObj6", 96);
             case StaffType:
-                return Atlas.FromGameAtlas("lofiObj5", 112);
+                return Texture.FromGameAtlas("lofiObj5", 112);
             case PoisonType:
-                return Atlas.FromGameAtlas("lofiObj6", 128);
+                return Texture.FromGameAtlas("lofiObj6", 128);
             case SkullType:
-                return Atlas.FromGameAtlas("lofiObj6", 0);
+                return Texture.FromGameAtlas("lofiObj6", 0);
             case TrapType:
-                return Atlas.FromGameAtlas("lofiObj6", 16);
+                return Texture.FromGameAtlas("lofiObj6", 16);
             case OrbType:
-                return Atlas.FromGameAtlas("lofiObj6", 144);
+                return Texture.FromGameAtlas("lofiObj6", 144);
             case PrismType:
-                return Atlas.FromGameAtlas("lofiObj6", 176);
+                return Texture.FromGameAtlas("lofiObj6", 176);
             case ScepterType:
-                return Atlas.FromGameAtlas("lofiObj6", 192);
+                return Texture.FromGameAtlas("lofiObj6", 192);
             case KatanaType:
-                return Atlas.FromGameAtlas("lofiObj3", 540);
+                return Texture.FromGameAtlas("lofiObj3", 540);
             case ShurikenType:
-                return Atlas.FromGameAtlas("lofiObj3", 555);
+                return Texture.FromGameAtlas("lofiObj3", 555);
         }
 
-        return Atlas.FromGameAtlas(0x0096);
+        return Texture.FromGameAtlas(0x0096);
     }
 }

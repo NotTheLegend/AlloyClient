@@ -1,56 +1,27 @@
 ﻿using System.Text.Json;
 using Common.Atlas;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Common.Pipeline;
+namespace Common.ContentReaders;
 
 public class FontFamily {
-    
+
     public readonly Texture2D Atlas;
 
     public readonly Dictionary<string, FontData> FontData;
 
     public float PixelRange;
 
-    public FontFamily(Texture2D atlas, Dictionary<string, FontData> fontData, float pixelRange) {
+    private FontFamily(Texture2D atlas, Dictionary<string, FontData> fontData, float pixelRange) {
         Atlas = atlas;
         FontData = fontData;
         PixelRange = pixelRange;
     }
-}
 
-public sealed class FontData {
-
-    public readonly float LineHeight;
-    public readonly float Ascender;
-    public readonly float Descender;
-
-    public readonly Dictionary<char, FontGlyph> Glyphs;
-    public readonly Dictionary<(char, char), float> Kernings;
-    
-    public FontData(float lineHeight, float ascender, float descender, Dictionary<char, FontGlyph> glyphs, Dictionary<(char, char), float> kernings) {
-        LineHeight = lineHeight;
-        Ascender = ascender;
-        Descender = descender;
-        Glyphs = glyphs;
-        Kernings = kernings;
-    }
-}
-
-public class FontFamilyReader : ContentTypeReader<FontFamily> {
-    protected override FontFamily Read(ContentReader reader, FontFamily existingInstance) {
-        if (existingInstance != null)
-            return existingInstance;
-        
-        var readerObj = reader.ContentManager.ServiceProvider.GetService(typeof(IGraphicsDeviceManager));
-        if (readerObj == null) throw new Exception("GraphicsDeviceManager is null.");
-        var graphicsDevice = ((GraphicsDeviceManager)readerObj).GraphicsDevice;
-
+    internal static FontFamily Read(BinaryReader reader, GraphicsDevice graphics) {
         var png = reader.ReadBytes(reader.ReadInt32());
         using var stream = new MemoryStream(png);
-        var texture = Texture2D.FromStream(graphicsDevice, stream, null);
+        var texture = Texture2D.FromStream(graphics, stream, null);
         
         var fontFamily = new Dictionary<string, FontData>();
         var fontOrder = new string[reader.ReadInt32()];
@@ -111,5 +82,23 @@ public class FontFamilyReader : ContentTypeReader<FontFamily> {
         }
 
         return new FontFamily(texture, fontFamily, pixelRange);
+    }
+}
+
+public sealed class FontData {
+
+    public readonly float LineHeight;
+    public readonly float Ascender;
+    public readonly float Descender;
+
+    public readonly Dictionary<char, FontGlyph> Glyphs;
+    public readonly Dictionary<(char, char), float> Kernings;
+    
+    public FontData(float lineHeight, float ascender, float descender, Dictionary<char, FontGlyph> glyphs, Dictionary<(char, char), float> kernings) {
+        LineHeight = lineHeight;
+        Ascender = ascender;
+        Descender = descender;
+        Glyphs = glyphs;
+        Kernings = kernings;
     }
 }

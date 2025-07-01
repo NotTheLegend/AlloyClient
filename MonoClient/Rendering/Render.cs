@@ -42,28 +42,28 @@ public static partial class Render {
 
     public static void FirstTimeInit() {
         _graphics = Main.Graphics.GraphicsDevice;
-
+        
         var alphas = new Vector4[8];
         for (var i = 0; i < 8; i++) {
-            alphas[i] = Main.Atlas.AtlasMapStatic["tileAlphaBlend"][i].ToVector4(true);
+            alphas[i] = Main.Atlas.GetAtlasData("tileAlphaBlend", i).ToVector4(true);
         }
         
         // Shaders
-        _shaderGround = Main.ContentManager.Load<Effect>("Shaders/ShaderGround");
-        _shaderGround.Parameters["GameTexture"].SetValue(Main.Atlas.Texture);
+        _shaderGround = Main.GameInstance.Content.Load<Effect>("Shaders/ShaderGround");
+        _shaderGround.Parameters["GameTexture"].SetValue(Main.Atlas.GetTexture());
         _shaderGround.Parameters["AlphaBlends"].SetValue(alphas);
 
-        _shaderShadow = Main.ContentManager.Load<Effect>("Shaders/ShaderShadow");
+        _shaderShadow = Main.GameInstance.Content.Load<Effect>("Shaders/ShaderShadow");
         
-        _shaderObject = Main.ContentManager.Load<Effect>("Shaders/ShaderObject");
-        _shaderObject.Parameters["GameTexture"].SetValue(Main.Atlas.Texture);
+        _shaderObject = Main.GameInstance.Content.Load<Effect>("Shaders/ShaderObject");
+        _shaderObject.Parameters["GameTexture"].SetValue(Main.Atlas.GetTexture());
         
         _shaderObject.Parameters["PixelRange"].SetValue(UiRender.MyriadPro.PixelRange);
         _shaderObject.Parameters["TextTextureSize"].SetValue(new Vector2(UiRender.MyriadPro.Atlas.Width, UiRender.MyriadPro.Atlas.Height));
         _shaderObject.Parameters["TextTexture"].SetValue(UiRender.MyriadPro.Atlas);
 
-        _shaderParticle = Main.ContentManager.Load<Effect>("Shaders/ShaderParticle");
-        _shaderParticle.Parameters["GameTexture"].SetValue(Main.Atlas.Texture);
+        _shaderParticle = Main.GameInstance.Content.Load<Effect>("Shaders/ShaderParticle");
+        _shaderParticle.Parameters["GameTexture"].SetValue(Main.Atlas.GetTexture());
         
         // Buffers
         _modelIndexBuffer = new IndexBuffer(_graphics, IndexElementSize.SixteenBits, ModelData.Indices.Length, BufferUsage.WriteOnly);

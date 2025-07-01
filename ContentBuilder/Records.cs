@@ -20,24 +20,20 @@ public record ModelData(List<int> Indices, List<Vector3D> Vertices, List<Vector3
         }
 
         len = Vertices.Count;
+        writer.Write(len);
         for (var i = 0; i < len; i++) {
             writer.Write(Vertices[i].X);
             writer.Write(Vertices[i].Y);
             writer.Write(Vertices[i].Z);
-        }
-
-        len = Normals.Count;
-        for (var i = 0; i < len; i++) {
+            
             writer.Write(Normals[i].X);
             writer.Write(Normals[i].Y);
             writer.Write(Normals[i].Z);
-        }
-
-        len = UV.Count;
-        for (var i = 0; i < len; i++) {
+            
             writer.Write(UV[i].X);
             writer.Write(UV[i].Y);
         }
+        
         writer.Write(HasUv);
     }
 }
