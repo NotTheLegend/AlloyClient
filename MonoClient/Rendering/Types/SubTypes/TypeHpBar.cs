@@ -7,11 +7,11 @@ namespace MonoClient.Rendering.Types.SubTypes;
 
 public class TypeHpBar : SubRenderBase {
     public override float Height {
-        get => 0.06f * 2;
+        get => 0.12f * 2;
     }
 
     private Color _bgColor = ColorUtils.ColorHex(0x111111);
-    private Vector4 _bgScale = new(0.36f, 0.06f, 0, 0);
+    private Vector4 _bgScale = new(0.72f, 0.12f, 0, 0);
 
     private static readonly Color HighFill = ColorUtils.ColorHex(0x10FF00);
     private static readonly Color MedFill = ColorUtils.ColorHex(0xFF8010);
@@ -22,7 +22,7 @@ public class TypeHpBar : SubRenderBase {
         Entity = entity;
 
         UV = new Vector4();
-        Scale = new Vector4(0.34f, 0.04f, 0, 0);
+        Scale = new Vector4(0.68f, 0.08f, 0, 0);
         Rotation = new Vector4(0, 1, 1, -1);
         Extra = new ExtraData(RenderConfig.TypeBar, RenderConfig.NoShade);
     }
@@ -34,8 +34,8 @@ public class TypeHpBar : SubRenderBase {
         
         Color = percent < 0.5f ? percent >= 0.2f ? MedFill : LowFill : HighFill;
         
-        Scale.Z = 0.34f * percent - 0.34f;
-        Scale.X = 0.34f * percent;
+        Scale.Z = 0.68f * percent - 0.68f;
+        Scale.X = 0.68f * percent;
     }
     
     public override void Draw(float yOffset) {

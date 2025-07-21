@@ -78,7 +78,7 @@ public sealed class TypePlayer : RenderBase {
         var f = Entity.Flipped ? 1f : -1f;
         Rotation = new Vector4(s, c, k, f);
         
-        Entity.HeightOffset = -1 * Scale.Y * k + Scale.W * k;
+        Entity.HeightOffset = -0.5f * Scale.Y * k + Scale.W * k;
         
         Render.DrawEntity(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color));
         var y = 0.1f;

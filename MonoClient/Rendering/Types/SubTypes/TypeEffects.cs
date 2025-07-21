@@ -10,10 +10,10 @@ namespace MonoClient.Rendering.Types.SubTypes;
 public class TypeEffects : SubRenderBase {
 
     public override float Height {
-        get => 0.06f * 2;
+        get => 0.12f * 2;
     }
 
-    private const float Size = 0.16f;
+    private const float Size = 0.32f;
     private const float SizeDouble = Size * 2;
 
     public TypeEffects(RenderBase parent, Entity entity) {

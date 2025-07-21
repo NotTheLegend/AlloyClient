@@ -12,7 +12,6 @@
     <Image name="lofiEnvironment" w="8" h="8">lofienvironment.png</Image>
     <Image name="lofiEnvironment2" w="8" h="8">lofienvironment2.png</Image>
     <Image name="lofiEnvironment3" w="8" h="8">lofienvironment3.png</Image>
-    <Image name="redLootBag" w="8" h="8">redlootbag.png</Image>
     <Image name="lofiInterfaceBig" w="16" h="16">lofiinterfacebig.png</Image>
     <Image name="lofiInterface" w="8" h="8">lofiinterface.png</Image>
     <Image name="lofiInterface2" w="8" h="8">lofiinterface2.png</Image>

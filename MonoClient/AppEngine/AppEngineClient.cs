@@ -24,13 +24,11 @@ public static class AppEngineClient {
         Client.DefaultRequestHeaders.Add("x-flash-version", "50,0,1,2");
     }
 
-    public static async Task<string> SendRequest(string endpoint, Dictionary<string, string> data = null,
-        int retries = 0) {
+    public static async Task<string> SendRequest(string endpoint, Dictionary<string, string> data = null, int retries = 0) {
         return await SendClientRequest(Client, endpoint, data, retries);
     }
 
-    private static async Task<string> SendClientRequest(HttpClient client, string endpoint,
-        Dictionary<string, string> data = null, int retries = 0) {
+    private static async Task<string> SendClientRequest(HttpClient client, string endpoint, Dictionary<string, string> data = null, int retries = 0) {
         var cancellationTokenSource = new CancellationTokenSource(Settings.AppEngineTimeout);
         var content = data == null ? null : new FormUrlEncodedContent(data);
 
@@ -40,8 +38,7 @@ public static class AppEngineClient {
             try {
                 var response = await client.PostAsync(endpoint, content, cancellationTokenSource.Token);
                 return await response.Content.ReadAsStringAsync(cancellationTokenSource.Token);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Log.Error($"Attempt {i + 1} failed: {e}");
 
                 if (i != retries) {
