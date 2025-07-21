@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
+using Common;
+using MonoClient;
 using MonoClient.Screens.Title.Components.CharacterList;
 using MonoClient.State;
-using MonoClient.Ui.Components.Panels;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Enums;
-using MonoClient.Utils;
+using OpenTK.Mathematics;
 
 public class CharacterWheel : Container {
     private const int CenterX = Settings.DefaultScreenWidth / 2; 
@@ -77,7 +77,7 @@ public class CharacterWheel : Container {
             
             var distanceFromCenter = Math.Abs(character.Y - baseY + 50f);
             var maxDistance = 40f; 
-            var alpha = MathHelper.Clamp(1f - (distanceFromCenter / maxDistance), 0f, 1f);
+            var alpha = Math.Clamp(1f - (distanceFromCenter / maxDistance), 0f, 1f);
             
             character.Alpha = alpha;
             
@@ -117,9 +117,9 @@ public class CharacterWheel : Container {
         if (!_isAnimating)
             return;
         
-        _animationTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+        _animationTimer += (float)gameTime.TotalMs;
         
-        float t = MathHelper.Clamp(_animationTimer / _animationDuration, 0f, 1f);
+        float t = Math.Clamp(_animationTimer / _animationDuration, 0f, 1f);
         _rotationAngle = MathHelper.Lerp(_startRotationAngle, _targetRotationAngle, t);
         
         UpdateCharacterWheel(0f);

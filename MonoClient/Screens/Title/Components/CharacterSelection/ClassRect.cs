@@ -19,7 +19,7 @@ public class ClassRect : Container {
         
         var frames = Main.Atlas.GetAnimationAtlasData("players", characterIndex);
         var charPortrait = new ObjectRect(new ObjectRectConfig {
-            Texture = Texture.Create(frames.FaceDown[0], TextureType.GameAtlas),
+            Texture = TextureHelper.Create(frames.FaceDown[0], TextureType.GameAtlas),
             Width = 160,
             Height = 160,
             Anchor = UiAnchor.Middle,

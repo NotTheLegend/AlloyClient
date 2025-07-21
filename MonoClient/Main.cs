@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using Common;
 using Common.ContentReaders;
 using Common.Vector;
 
@@ -36,6 +37,8 @@ public class Main {
     public readonly OpenGLContextHandle Context;
 
     public Main() {
+        GameInstance = this;
+        
         var options = new ToolkitOptions();
         Toolkit.Init(options);
         
@@ -75,7 +78,7 @@ public class Main {
     private void LoadContent() {
         Atlas = ContentReader.LoadAtlas("Game.atlas");
         UiAtlas = ContentReader.LoadAtlas("Ui.atlas");
-        MinimapTexture.Init(GraphicsDevice, out var mapTexture);
+        MinimapTexture.Init(out var mapTexture);
         
         ModelData.Load();
 
@@ -144,9 +147,6 @@ public class Main {
     private bool _running = true;
 
     public void Run() {
-
-
-
         var sw = Stopwatch.StartNew();
         var totalMs = 0d;
         
@@ -177,5 +177,10 @@ public class Main {
                 _running = false;
                 break;
         }
+    }
+
+    public void Exit() {
+        Toolkit.Window.Destroy(Window);
+        _running = false;
     }
 }

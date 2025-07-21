@@ -1,6 +1,7 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
+using Common;
 using MonoClient.UiLib.BuiltIn.Buttons;
+using OpenTK.Mathematics;
 
 namespace MonoClient.Ui.Components.Buttons;
 
@@ -19,7 +20,7 @@ public sealed class MenuBarButton : TextButton {
     protected override void OnUpdate(GameTime gameTime) {
         if (!_pulse) return;
         
-        var scale = 1.05f + 0.05f * (float)Math.Sin(gameTime.TotalGameTime.TotalMilliseconds / 200);
+        var scale = 1.05f + 0.05f * (float)Math.Sin(gameTime.TotalMs / 200);
         Scale = new Vector2(scale);
     }
 }

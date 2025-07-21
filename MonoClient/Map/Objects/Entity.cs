@@ -19,6 +19,7 @@ using MonoClient.State.Input;
 using MonoClient.UiLib.Signals;
 using MonoClient.Utils;
 using OpenTK.Mathematics;
+using MathUtils = MonoClient.Utils.MathUtils;
 
 namespace MonoClient.Objects;
 
@@ -503,7 +504,7 @@ public class Entity {
 
     private int GetCharacterFrameIndex(float movementAngle, float cameraAngle, bool localPlayer) {
         Flipped = false;
-        var correctedFacingAngle = MathHelper.WrapAngle(movementAngle - cameraAngle);
+        var correctedFacingAngle = MathUtils.WrapAngle(movementAngle - cameraAngle);
         var rotationAngle = (MathHelper.DegreesToRadians(correctedFacingAngle) + 360) % 360;
 
         if (IsShooting) {

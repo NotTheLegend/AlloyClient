@@ -1,13 +1,11 @@
-using Microsoft.Xna.Framework;
+using Common;
 using MonoClient.Data;
 using MonoClient.Display;
 using MonoClient.Screens.Game;
 using MonoClient.Screens.Title.Components.CharacterList;
-using MonoClient.State;
+using MonoClient.Screens.Title.Components.CharacterSelection;
 using MonoClient.Ui.Components.Dialogs;
 using MonoClient.Ui.Components.Panels;
-using MonoClient.UiLib;
-using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Extra;

@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework;
+using Common;
 using MonoClient.Networking;
 using MonoClient.Networking.Packets.Outgoing;
 using MonoClient.Objects;

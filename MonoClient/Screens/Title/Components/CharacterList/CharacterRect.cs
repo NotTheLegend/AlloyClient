@@ -5,17 +5,11 @@ using MonoClient.Data;
 using MonoClient.Data.XmlModels;
 using MonoClient.Display;
 using MonoClient.Screens.Game;
-using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
-using MonoClient.UiLib.Core;
-using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Extra;
 using MonoClient.Utils;
-using ColorRect = MonoClient.UiLib.BuiltIn.ColorRect;
-using Container = MonoClient.UiLib.BuiltIn.Container;
-using ObjectRect = MonoClient.UiLib.BuiltIn.ObjectRect;
 
 namespace MonoClient.Screens.Title.Components.CharacterList;
 
@@ -122,7 +116,7 @@ public sealed class CharacterRect : Container {
             var atlasData = textureData.AnimatedTextures.FaceDown[0];
             
             var charPortrait = new ObjectRect(new ObjectRectConfig {
-                Texture = Texture.Create(atlasData, TextureType.GameAtlas, false),
+                Texture = TextureHelper.Create(atlasData, TextureType.GameAtlas, false),
                 Width = 50,
                 Height = 50,
                 Anchor = UiAnchor.Middle,
@@ -151,7 +145,7 @@ public sealed class CharacterRect : Container {
             var numStars = GetStars(character);
             for (var i = 0; i < NumberStars; i++) {
                 var star = new ObjectRect(new ObjectRectConfig {
-                    Texture = Texture.FromUiAtlas("CharacterList/StarGraphic"),
+                    Texture = TextureHelper.FromUiAtlas("CharacterList/StarGraphic"),
                     Width = starWidth,
                     Height = starWidth,
                     Anchor = UiAnchor.Middle,
@@ -173,7 +167,7 @@ public sealed class CharacterRect : Container {
             var index = Random.Shared.Next(0, NumberCharacters);
             var frames = Main.Atlas.GetAnimationAtlasData("players", index);
             var charPortrait = new ObjectRect(new ObjectRectConfig {
-                Texture = Texture.Create(frames.FaceDown[0], TextureType.GameAtlas),
+                Texture = TextureHelper.Create(frames.FaceDown[0], TextureType.GameAtlas),
                 Width = 50,
                 Height = 50,
                 Anchor = UiAnchor.Middle,

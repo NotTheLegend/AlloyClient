@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Common;
 using MonoClient.Assets;
 using MonoClient.Networking.Structs.DataObjects;
 using MonoClient.Rendering;
@@ -16,8 +17,6 @@ namespace MonoClient;
 
 public static class Map {
     public const int TileRenderDistance = 20;
-
-    public static GraphicsDevice GraphicsDevice;
 
     public static GameTime LastGameTime;
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Common;
 using MonoClient.State.Input;
 using MonoClient.Ui.Components.Dialogs;
 using MonoClient.UiLib.Core;

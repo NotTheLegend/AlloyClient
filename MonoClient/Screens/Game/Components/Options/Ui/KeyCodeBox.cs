@@ -1,13 +1,12 @@
 ﻿using System;
+using Common;
 using Common.Vector;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using MonoClient.State.Input;
 using MonoClient.State.SettingTypes;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
-using MonoClient.UiLib.Input;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+using MouseButton = MonoClient.State.Input.MouseButton;
 
 namespace MonoClient.Screens.Game.Components.Options.Ui;
 
@@ -76,7 +75,7 @@ public class KeyCodeBox : Sprite {
             return;
         }
 
-        _elapsed += gameTime.ElapsedGameTime.TotalMilliseconds;
+        _elapsed += gameTime.ElapsedMs;
         if (_elapsed > 500) {
             _char.Visible = !_char.Visible;
             _elapsed = 0;
@@ -128,7 +127,7 @@ public class KeyCodeBox : Sprite {
     }
 
     public void SetValue(InputSetting setting) {
-        if (setting.Key != Keys.None) {
+        if (setting.Key != Keys.Unknown) {
             _keyCode = setting.Key;
         }
         else {

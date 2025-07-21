@@ -46,13 +46,13 @@ public static class FameUtils {
     
     public static Sprite StarsToIcon(int numStars) {
         var bg = new ObjectRect(new ObjectRectConfig {
-            Texture = Texture.FromUiAtlas("BlackCircle"),
+            Texture = TextureHelper.FromUiAtlas("BlackCircle"),
             Width = 18,
             Height = 18,
         });
         bg.ColorTransformation = Transforms.HalfTransparent;
         var star = new ObjectRect(new ObjectRectConfig {
-            Texture = Texture.FromUiAtlas("CharacterList/StarGraphic"),
+            Texture = TextureHelper.FromUiAtlas("CharacterList/StarGraphic"),
             Width = 16,
             Height = 16,
             Anchor = UiAnchor.Middle,

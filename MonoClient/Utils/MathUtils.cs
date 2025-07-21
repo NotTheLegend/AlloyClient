@@ -1,5 +1,5 @@
 using System;
-using Microsoft.Xna.Framework;
+using OpenTK.Mathematics;
 
 namespace MonoClient.Utils;
 
@@ -21,6 +21,17 @@ public class MathUtils {
     public static float NormalizeAngle(float angle) {
         while (angle > MathF.PI) angle -= 2 * MathF.PI;
         while (angle < -MathF.PI) angle += 2 * MathF.PI;
+        return angle;
+    }
+
+    public static float WrapAngle(float angle) {
+        if ((angle > -MathHelper.Pi) && (angle <= MathHelper.Pi))
+            return angle;
+        angle %= MathHelper.TwoPi;
+        if (angle <= -MathHelper.Pi)
+            return angle + MathHelper.TwoPi;
+        if (angle > MathHelper.Pi)
+            return angle - MathHelper.TwoPi;
         return angle;
     }
 

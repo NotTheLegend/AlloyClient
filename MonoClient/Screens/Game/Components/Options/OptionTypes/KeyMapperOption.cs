@@ -1,8 +1,7 @@
-﻿using Microsoft.Xna.Framework.Input;
-using MonoClient.Screens.Game.Components.Options.Ui;
+﻿using MonoClient.Screens.Game.Components.Options.Ui;
 using MonoClient.State;
 using MonoClient.State.SettingTypes;
-using MonoClient.UiLib;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace MonoClient.Screens.Game.Components.Options.OptionTypes;
 
@@ -31,7 +30,7 @@ public class KeyMapperOption : Option {
                 continue;
             }
 
-            inputSetting.Key = Keys.None;
+            inputSetting.Key = Keys.Unknown;
         }
         
         OptionsView.RefreshOptions.Dispatch();

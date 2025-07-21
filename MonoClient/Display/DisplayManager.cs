@@ -1,4 +1,5 @@
-﻿using MonoClient.UiLib;
+﻿using Common;
+using MonoClient.UiLib;
 using MonoClient.UiLib.Core;
 
 namespace MonoClient.Display;

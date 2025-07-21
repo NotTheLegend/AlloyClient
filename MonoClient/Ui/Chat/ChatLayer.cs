@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+using Common;
 using MonoClient.UiLib.Core;
 
 namespace MonoClient.Ui.Chat;

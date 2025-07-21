@@ -31,8 +31,8 @@ public class MusicButton : Sprite {
 
     public MusicButton(MusicButtonConfig config) {
         _state = Settings.PlayMusic.Value;
-        _musicOn = Texture.FromGameAtlas("lofiInterfaceBig", 3);
-        _musicOff = Texture.FromGameAtlas("lofiInterfaceBig", 4);
+        _musicOn = TextureHelper.FromGameAtlas("lofiInterfaceBig", 3);
+        _musicOff = TextureHelper.FromGameAtlas("lofiInterfaceBig", 4);
 
         var iconConfig = new IconButtonConfig { Texture = _state ? _musicOn : _musicOff, Width = config.Width, Height = config.Height, OnClick = OnClick };
         _button = new IconButton(iconConfig);

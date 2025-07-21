@@ -1,10 +1,4 @@
-﻿using System;
-using MonoClient.Data;
-using MonoClient.Display;
-using MonoClient.Screens.MapEditor;
-using MonoClient.Screens.Title;
-using MonoClient.Screens.Title.Components.Panels;
-using MonoClient.Screens.Title.ServerListScreen;
+﻿using MonoClient.Display;
 using MonoClient.State;
 using MonoClient.Ui.Components.Buttons;
 using MonoClient.Ui.Components.Graphics;
@@ -12,7 +6,6 @@ using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
-using MonoClient.Utils;
 
 namespace MonoClient.Screens;
 

@@ -5,7 +5,7 @@ using MonoClient.UiLib.Enums;
 
 namespace MonoClient.Utils;
 
-public static class Texture {
+public static class TextureHelper {
     public static TextureInfo FromUiAtlas(string lookup, int index = 0, bool padding = true) {
         var uv = Main.UiAtlas.GetAtlasData(lookup, index);
         if (!padding) uv.RemovePadding();

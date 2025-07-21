@@ -38,55 +38,55 @@ public static class ItemConstants {
             case AllType:
                 break;
             case SwordType:
-                return Texture.FromGameAtlas("lofiObj5", 48);
+                return TextureHelper.FromGameAtlas("lofiObj5", 48);
             case DaggerType:
-                return Texture.FromGameAtlas("lofiObj5", 96);
+                return TextureHelper.FromGameAtlas("lofiObj5", 96);
             case BowType:
-                return Texture.FromGameAtlas("lofiObj5", 80);
+                return TextureHelper.FromGameAtlas("lofiObj5", 80);
             case TomeType:
-                return Texture.FromGameAtlas("lofiObj6", 80);
+                return TextureHelper.FromGameAtlas("lofiObj6", 80);
             case ShieldType:
-                return Texture.FromGameAtlas("lofiObj6", 112);
+                return TextureHelper.FromGameAtlas("lofiObj6", 112);
             case LeatherType:
-                return Texture.FromGameAtlas("lofiObj5", 0);
+                return TextureHelper.FromGameAtlas("lofiObj5", 0);
             case PlateType:
-                return Texture.FromGameAtlas("lofiObj5", 32);
+                return TextureHelper.FromGameAtlas("lofiObj5", 32);
             case WandType:
-                return Texture.FromGameAtlas("lofiObj5", 64);
+                return TextureHelper.FromGameAtlas("lofiObj5", 64);
             case RingType:
-                return Texture.FromGameAtlas("lofiObj", 44);
+                return TextureHelper.FromGameAtlas("lofiObj", 44);
             case SpellType:
-                return Texture.FromGameAtlas("lofiObj6", 64);
+                return TextureHelper.FromGameAtlas("lofiObj6", 64);
             case SealType:
-                return Texture.FromGameAtlas("lofiObj6", 160);
+                return TextureHelper.FromGameAtlas("lofiObj6", 160);
             case CloakType:
-                return Texture.FromGameAtlas("lofiObj6", 32);
+                return TextureHelper.FromGameAtlas("lofiObj6", 32);
             case RobeType:
-                return Texture.FromGameAtlas("lofiObj5", 16);
+                return TextureHelper.FromGameAtlas("lofiObj5", 16);
             case QuiverType:
-                return Texture.FromGameAtlas("lofiObj6", 48);
+                return TextureHelper.FromGameAtlas("lofiObj6", 48);
             case HelmType:
-                return Texture.FromGameAtlas("lofiObj6", 96);
+                return TextureHelper.FromGameAtlas("lofiObj6", 96);
             case StaffType:
-                return Texture.FromGameAtlas("lofiObj5", 112);
+                return TextureHelper.FromGameAtlas("lofiObj5", 112);
             case PoisonType:
-                return Texture.FromGameAtlas("lofiObj6", 128);
+                return TextureHelper.FromGameAtlas("lofiObj6", 128);
             case SkullType:
-                return Texture.FromGameAtlas("lofiObj6", 0);
+                return TextureHelper.FromGameAtlas("lofiObj6", 0);
             case TrapType:
-                return Texture.FromGameAtlas("lofiObj6", 16);
+                return TextureHelper.FromGameAtlas("lofiObj6", 16);
             case OrbType:
-                return Texture.FromGameAtlas("lofiObj6", 144);
+                return TextureHelper.FromGameAtlas("lofiObj6", 144);
             case PrismType:
-                return Texture.FromGameAtlas("lofiObj6", 176);
+                return TextureHelper.FromGameAtlas("lofiObj6", 176);
             case ScepterType:
-                return Texture.FromGameAtlas("lofiObj6", 192);
+                return TextureHelper.FromGameAtlas("lofiObj6", 192);
             case KatanaType:
-                return Texture.FromGameAtlas("lofiObj3", 540);
+                return TextureHelper.FromGameAtlas("lofiObj3", 540);
             case ShurikenType:
-                return Texture.FromGameAtlas("lofiObj3", 555);
+                return TextureHelper.FromGameAtlas("lofiObj3", 555);
         }
 
-        return Texture.FromGameAtlas(0x0096);
+        return TextureHelper.FromGameAtlas(0x0096);
     }
 }

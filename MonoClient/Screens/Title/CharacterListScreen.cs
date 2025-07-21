@@ -109,7 +109,7 @@ public class CharacterListScreen : TitleScreenBase {
         AddChild(nameText);
         
         var goldIcon = new ObjectRect(new ObjectRectConfig {
-            Texture = Texture.FromGameAtlas("lofiObj3", 0xE1),
+            Texture = TextureHelper.FromGameAtlas("lofiObj3", 0xE1),
             X = Settings.DefaultScreenWidth - 15,
             Y = 88,
             Width = 16,
@@ -130,7 +130,7 @@ public class CharacterListScreen : TitleScreenBase {
         AddChild(goldText);
         
         var fameIcon = new ObjectRect(new ObjectRectConfig {
-            Texture = Texture.FromGameAtlas("lofiObj3", 0xE0),
+            Texture = TextureHelper.FromGameAtlas("lofiObj3", 0xE0),
             X = goldText.X - goldText.Width - 10,
             Y = 88,
             Width = 16,

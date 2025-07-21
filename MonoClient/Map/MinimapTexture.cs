@@ -5,7 +5,7 @@ namespace MonoClient;
 
 public static class MinimapTexture {
     
-    private static Texture2D _texture;
+    private static Texture _texture;
     private static Color[] _data;
     
     private static bool _needsUpdate;
@@ -14,8 +14,8 @@ public static class MinimapTexture {
     private static int _maxX;
     private static int _maxY;
 
-    public static void Init(GraphicsDevice graphics, out Texture2D texture) {
-        _texture = new Texture2D(graphics, 4096, 4096);
+    public static void Init(out Texture texture) {
+        _texture = new Texture(, 4096, 4096);
         _data = new Color[4096 * 4096];
 
         _minX = _minY = 4096;

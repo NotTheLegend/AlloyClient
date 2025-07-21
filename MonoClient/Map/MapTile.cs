@@ -7,12 +7,11 @@ using MonoClient.Assets.XmlStructs;
 using MonoClient.Rendering;
 using MonoClient.Rendering.VertexData;
 using MonoClient.Objects;
-using MonoClient.Screens.MapEditor;
 using OpenTK.Mathematics;
 
 namespace MonoClient;
 
-public class MapTile(int x, int y, bool isMapEditor = false) {
+public class MapTile(int x, int y) {
     public readonly int X = x;
     public readonly int Y = y;
 
@@ -65,10 +64,8 @@ public class MapTile(int x, int y, bool isMapEditor = false) {
         _texture.RemovePadding();
         _uv = _texture.ToVector4();
         _blendUV = new Vector2(_uv.X, _uv.Y);
-
-        if (!isMapEditor) {
-            SetMinimapColor(_occupiedObject);
-        }
+        
+        SetMinimapColor(_occupiedObject);
 
         var offx = GroundProperties.XOffset;
         var offy = GroundProperties.YOffset;
@@ -187,14 +184,7 @@ public class MapTile(int x, int y, bool isMapEditor = false) {
     private void UpdateCorners() {
         for (var x = X - 1; x <= X + 1; x++) {
             for (var y = Y - 1; y <= Y + 1; y++) {
-                MapTile tile;
-                if (isMapEditor) {
-                    tile = MapEditorScreen.Instance.GetTile(x, y);
-                }
-                else {
-                    tile = Map.GetTile(x, y);
-                }
-                
+                var tile = Map.GetTile(x, y);
                 tile?.SetCornerBlends();
             }
         }
@@ -256,13 +246,7 @@ public class MapTile(int x, int y, bool isMapEditor = false) {
     }
     
     private bool GetTile(int x, int y, out MapTile mapTile, out int prio) {
-        MapTile tile;
-        if (isMapEditor) {
-            tile = MapEditorScreen.Instance.GetTile(x, y);
-        }
-        else {
-            tile = Map.GetTile(x, y);
-        }
+        var tile = Map.GetTile(x, y);
         
         mapTile = tile;
         prio = tile?.GroundProperties.BlendPriority ?? 0;

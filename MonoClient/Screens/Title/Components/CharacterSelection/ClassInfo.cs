@@ -1,18 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using System.Linq;
+using Common;
 using MonoClient.Assets.Libraries;
-using MonoClient.Objects.Util.ItemDatas;
 using MonoClient.Screens.Game.Components.Hud.Inventory;
+using MonoClient.Screens.Title.Components.CharacterList;
 using MonoClient.State;
-using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
-using MonoClient.UiLib.Core;
-using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
 using MonoClient.Utils;
 
-namespace MonoClient.Screens.Title.Components.CharacterList;
+namespace MonoClient.Screens.Title.Components.CharacterSelection;
 
 public class ClassInfo : Container {
 
@@ -55,10 +51,10 @@ public class ClassInfo : Container {
         var frames = Main.Atlas.GetAnimationAtlasData("players", classRect.CharacterIndex);
         var duration = 250;
         
-        var totalMs = (int)gameTime.TotalGameTime.TotalMilliseconds;
+        var totalMs = (int)gameTime.TotalMs;
         var frameIndex = 1 + totalMs / duration % 2;
 
-        _characterRect?.ChangeTexture(Texture.Create(frames.FaceDown[frameIndex], TextureType.GameAtlas));
+        _characterRect?.ChangeTexture(TextureHelper.Create(frames.FaceDown[frameIndex], TextureType.GameAtlas));
     }
 
     private void UpdateInfo(ClassRect classRect) {
@@ -66,7 +62,7 @@ public class ClassInfo : Container {
         
         var frames = Main.Atlas.GetAnimationAtlasData("players", classRect.CharacterIndex);
         _characterRect = new ObjectRect(new ObjectRectConfig {
-            Texture = Texture.Create(frames.FaceDown[0], TextureType.GameAtlas),
+            Texture = TextureHelper.Create(frames.FaceDown[0], TextureType.GameAtlas),
             Width = 120,
             Height = 120,
             X = _background.Width / 2 - 60,

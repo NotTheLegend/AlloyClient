@@ -8,7 +8,7 @@ namespace MonoClient;
 public static class Camera {
 
     public const int HudOffset = 240;
-    
+
     public static Matrix4 WorldMatrix;
     public static Matrix4 ViewMatrix;
     public static Matrix4 ProjectionMatrix;
@@ -62,7 +62,7 @@ public static class Camera {
         var c = MathF.Cos(CameraAngle);
         var s1 = MathF.Sin(CameraAngle - MathHelper.PiOver2);
 
-        ViewMatrix = Matrix4.CreateLookAt(Position, _lookAt, new Vector3(0f, 1f, 0f));
+        ViewMatrix = CreateLookAt(Position, _lookAt, new Vector3(0f, 1f, 0f));
         ViewMatrix[0, 2] = s;
         ViewMatrix[1, 2] = s1;
         ViewMatrix[2, 2] = -1f;
@@ -75,6 +75,30 @@ public static class Camera {
         BillboardMatrix[1, 1] = c;
 
         VisibleTileRadius = new Vector2((Settings.ScreenWidth - HudOffset) / Settings.CameraZoom, Settings.ScreenHeight / Settings.CameraZoom);
+    }
+    
+    private static Matrix4 CreateLookAt(Vector3 cameraPosition, Vector3 cameraTarget, Vector3 cameraUpVector) {
+        var result = new Matrix4();
+        var vector = Vector3.Normalize(cameraPosition - cameraTarget);
+        var vector2 = Vector3.Normalize(Vector3.Cross(cameraUpVector, vector));
+        var vector3 = Vector3.Cross(vector, vector2);
+        result.M11 = vector2.X;
+        result.M12 = vector3.X;
+        result.M13 = vector.X;
+        result.M14 = 0f;
+        result.M21 = vector2.Y;
+        result.M22 = vector3.Y;
+        result.M23 = vector.Y;
+        result.M24 = 0f;
+        result.M31 = vector2.Z;
+        result.M32 = vector3.Z;
+        result.M33 = vector.Z;
+        result.M34 = 0f;
+        result.M41 = -Vector3.Dot(vector2, cameraPosition);
+        result.M42 = -Vector3.Dot(vector3, cameraPosition);
+        result.M43 = -Vector3.Dot(vector, cameraPosition);
+        result.M44 = 1f;
+        return result;
     }
 
     // Only tested on MapEditor

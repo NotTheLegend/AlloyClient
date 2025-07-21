@@ -1,10 +1,12 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Common;
 using MonoClient.Objects;
 using MonoClient.State;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
 using MonoClient.Utils;
+using OpenTK.Mathematics;
+using MathUtils = MonoClient.Utils.MathUtils;
 
 namespace MonoClient.Ui.Character;
 
@@ -45,7 +47,7 @@ public class CharacterStatusText : Sprite {
     protected override void OnUpdate(GameTime gameTime) {
         if (_owner == null) return;
 
-        var currentTime = gameTime.TotalGameTime.TotalMilliseconds;
+        var currentTime = gameTime.TotalMs;
         
         if (_startTime == 0) {
             _startTime = currentTime + _offsetTime;

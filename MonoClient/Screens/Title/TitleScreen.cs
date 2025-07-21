@@ -1,17 +1,14 @@
 ﻿using MonoClient.Data;
 using MonoClient.Display;
-using MonoClient.Screens.MapEditor;
 using MonoClient.Screens.Title.Components;
 using MonoClient.Screens.Title.Components.Panels;
 using MonoClient.Screens.Title.ServerListScreen;
-using MonoClient.Screens.Title.ServersListScreen;
 using MonoClient.State;
 using MonoClient.Ui.Components.Buttons;
 using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
-using MonoClient.Utils;
 
 namespace MonoClient.Screens.Title;
 
@@ -23,13 +20,8 @@ public class TitleScreen : TitleScreenBase {
     private readonly Container _container = new(new ContainerConfig { Anchor = UiAnchor.MiddleTop });
     
     public TitleScreen() : base(true) {
-        var editor = new MenuBarButton("editor", FontSize, () => ScreenManager.FadeTo(new MapEditorScreen()));
-        editor.SetAnchor(UiAnchor.MiddleLeft);
-        _container.AddChild(editor);
-        
         var servers = new MenuBarButton("servers", FontSize, () => ScreenManager.FadeTo(new ServersTitleScreen()));
         servers.SetAnchor(UiAnchor.MiddleLeft);
-        servers.X = editor.Width + 50;
         _container.AddChild(servers);
         
         var play = new MenuBarButton("play", PlayFontSize, OnPlay, true);

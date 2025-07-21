@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Common;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoClient.Assets;
 using MonoClient.Rendering.VertexData;

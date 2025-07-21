@@ -1,22 +1,17 @@
 ﻿using System;
-using System.Drawing;
+using Common;
 using Common.Vector;
-using Microsoft.Xna.Framework;
 using MonoClient.Display;
 using MonoClient.Networking;
 using MonoClient.Networking.Packets.Outgoing;
 using MonoClient.Networking.Structs.DataObjects;
 using MonoClient.Objects;
 using MonoClient.Objects.Util.ItemDatas;
-using MonoClient.State;
 using MonoClient.Ui.Components.Tooltips;
-using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Extra;
-using MonoClient.UiLib.Input;
-using MonoClient.UiLib.Utils;
 using MonoClient.Utils;
 
 namespace MonoClient.Screens.Game.Components.Hud.Inventory;
@@ -68,7 +63,7 @@ public sealed class ItemTile : Sprite {
         _background = new CutEdgeRect(new CutEdgeConfig { Width = Size, Height = Size, CutX = 4, CutY = 4, Cuts = cut, Color = _bgColor });
         AddChild(_background);
         
-        _slotDetail = new ObjectRect(new ObjectRectConfig { Texture = Texture.FromGameAtlas(0x0096), Width = Size, Height = Size });
+        _slotDetail = new ObjectRect(new ObjectRectConfig { Texture = TextureHelper.FromGameAtlas(0x0096), Width = Size, Height = Size });
         _slotDetail.Visible = false;
         _slotDetail.ColorTransformation = new ColorTransform(0, 0, 0, 1, 54, 54, 54, 0);
         _slotDetail.SetColorSecondary(0, 0);
@@ -87,7 +82,7 @@ public sealed class ItemTile : Sprite {
             _slotId.Visible = true;
         }
         
-        _sprite = new ObjectRect(new ObjectRectConfig { Texture = Texture.FromGameAtlas(0x0096), Width = Size, Height = Size });
+        _sprite = new ObjectRect(new ObjectRectConfig { Texture = TextureHelper.FromGameAtlas(0x0096), Width = Size, Height = Size });
         AddChild(_sprite);
         
         _tierText = new SimpleText(new TextConfig { FontSize = 16, FontType = FontType.Bold, Text = "", OutlineThickness = 6 });
@@ -117,14 +112,14 @@ public sealed class ItemTile : Sprite {
         Item = item;
         if (Item != null && Item.ObjectType > 0)
         {
-            _sprite.ChangeTexture(Texture.FromGameAtlas(Item.ObjectType));
+            _sprite.ChangeTexture(TextureHelper.FromGameAtlas(Item.ObjectType));
             _background.SetColor(IsUsableByPlayer(Item) ? _bgColor : 0x5C1D1Du);
             _slotDetail.Visible = false;
             _slotId.Visible = false;
         }
         else
         {
-            _sprite.ChangeTexture(Texture.FromGameAtlas(0x0096));
+            _sprite.ChangeTexture(TextureHelper.FromGameAtlas(0x0096));
             _background.SetColor(_bgColor);
             if (SlotType != 0) _slotDetail.Visible = true;
             if (Owner is Player && SlotType == 0) _slotId.Visible = true;
@@ -198,7 +193,7 @@ public sealed class ItemTile : Sprite {
             // added basic consume logic, this will be looked at another time i assume
             if(Item.ObjectType == ItemConstants.PotionType || Item.Consumable)
             {
-                int timeStuff = (int)Map.LastGameTime.TotalGameTime.TotalMilliseconds;
+                int timeStuff = (int)Map.LastGameTime.TotalMs;
 
                 useItem(
                     time: timeStuff, 
@@ -301,7 +296,7 @@ public sealed class ItemTile : Sprite {
                 if (!CanSwapItems(this, tile)) break;
 
                 var swap = InvSwap.CreatePacket();
-                swap.Time = (int)Map.LastGameTime.TotalGameTime.TotalMilliseconds;
+                swap.Time = (int)Map.LastGameTime.TotalMs;
                 swap.Position = new Position { X = Map.LocalPlayer.Position.X, Y = Map.LocalPlayer.Position.Y };
             
                 swap.SlotObj1 = new ObjectSlot {

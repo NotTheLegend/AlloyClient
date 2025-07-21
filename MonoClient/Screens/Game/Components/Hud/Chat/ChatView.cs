@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+using Common;
 using MonoClient.Networking;
 using MonoClient.Networking.Packets.Outgoing;
 using MonoClient.State;
@@ -67,7 +67,7 @@ public class ChatView : Sprite {
         }
 
         while (ChatLineQueue.TryDequeue(out var chatLineData)) {
-            _chatContainer.AddChatLine((int) gameTime.TotalGameTime.TotalMilliseconds, chatLineData);
+            _chatContainer.AddChatLine((int) gameTime.TotalMs, chatLineData);
         }
     }
 

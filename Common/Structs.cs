@@ -1,4 +1,4 @@
-﻿namespace MonoClient;
+﻿namespace Common;
 
 public readonly struct GameTime(double total, double elapsed) {
 

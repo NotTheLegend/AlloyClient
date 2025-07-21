@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+using Common;
 using MonoClient.Objects;
 using MonoClient.UiLib.Core;
-using MonoClient.Utils;
 
 namespace MonoClient.Ui.Character;
 

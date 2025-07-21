@@ -5,6 +5,7 @@ using MonoClient.UiLib.Enums;
 using MonoClient.Utils;
 using System;
 using System.Reflection.Metadata.Ecma335;
+using MonoClient.Ui.Components.Elements;
 
 namespace MonoClient.Ui.Components.Tooltips;
 
@@ -37,7 +38,7 @@ public sealed class EquipmentToolTip : Tooltip
         ushort obj = Item.ObjectType;
         Icon = new ObjectRect(new ObjectRectConfig
         {
-            Texture = Texture.FromGameAtlas(obj <= 0 ? (ushort)0x0096 : obj),
+            Texture = TextureHelper.FromGameAtlas(obj <= 0 ? (ushort)0x0096 : obj),
             Width = 40,
             Height = 40
         });
