@@ -1,11 +1,11 @@
 using System;
-using Microsoft.Xna.Framework.Input;
-using MonoClient.State.Input;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+using MouseButton = MonoClient.State.Input.MouseButton;
 
 namespace MonoClient.State.SettingTypes;
 
 public class InputSetting : ISettingType {
-    private Keys _key = Keys.None;
+    private Keys _key = Keys.Unknown;
 
     public Keys Key {
         get => _key;
@@ -21,12 +21,12 @@ public class InputSetting : ISettingType {
         get => _mouse;
         set {
             _mouse = value;
-            _key = Keys.None;
+            _key = Keys.Unknown;
         }
     }
 
     public string Serialize() {
-        if (_key != Keys.None) {
+        if (_key != Keys.Unknown) {
             return $"Keys.{_key.ToString()}";
         }
 

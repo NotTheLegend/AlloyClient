@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using Common;
 using MonoClient.UiLib.Extra;
+using OpenTK.Mathematics;
 
 namespace MonoClient.UiLib.Rendering;
 

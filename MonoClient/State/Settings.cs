@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Xml;
-using Microsoft.Xna.Framework.Input;
-using MonoClient.State.Input;
 using MonoClient.State.SettingTypes;
 using MonoClient.Utils;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+using MouseButton = MonoClient.State.Input.MouseButton;
 
 namespace MonoClient.State;
 
@@ -72,7 +72,7 @@ public static class Settings {
     public static InputSetting AutoFire = new() { Key = Keys.I };
 
     public static InputSetting Chat = new() { Key = Keys.Enter };
-    public static InputSetting ChatCommand = new() { Key = Keys.None };
+    public static InputSetting ChatCommand = new() { Key = Keys.Unknown };
     public static InputSetting TellKey = new() { Key = Keys.Tab };
 
     public static InputSetting Special = new() { Key = Keys.Space };
@@ -83,7 +83,7 @@ public static class Settings {
 
     public static InputSetting ResetCameraAngle = new() { Key = Keys.Z };
 
-    public static InputSetting Focus = new() { Key = Keys.None };
+    public static InputSetting Focus = new() { Key = Keys.Unknown };
 
     public static InputSetting SelectFocus = new() { Key = Keys.Tab };
 
@@ -111,21 +111,21 @@ public static class Settings {
 
     public static InputSetting SwitchTabs = new() { Key = Keys.B };
 
-    public static InputSetting ReconVault = new() { Key = Keys.None };
-    public static InputSetting ReconGuild = new() { Key = Keys.None };
-    public static InputSetting ReconRealm = new() { Key = Keys.None };
-    public static InputSetting ReconGod = new() { Key = Keys.None };
-    public static InputSetting ReconDarkMarket = new() { Key = Keys.None };
-    public static InputSetting ReconMarket = new() { Key = Keys.None };
+    public static InputSetting ReconVault = new() { Key = Keys.Unknown };
+    public static InputSetting ReconGuild = new() { Key = Keys.Unknown };
+    public static InputSetting ReconRealm = new() { Key = Keys.Unknown };
+    public static InputSetting ReconGod = new() { Key = Keys.Unknown };
+    public static InputSetting ReconDarkMarket = new() { Key = Keys.Unknown };
+    public static InputSetting ReconMarket = new() { Key = Keys.Unknown };
 
-    public static InputSetting PartySummon = new() { Key = Keys.None };
-    public static InputSetting PartyAccept = new() { Key = Keys.None };
+    public static InputSetting PartySummon = new() { Key = Keys.Unknown };
+    public static InputSetting PartyAccept = new() { Key = Keys.Unknown };
 
-    public static InputSetting ResetMScale = new() { Key = Keys.None };
+    public static InputSetting ResetMScale = new() { Key = Keys.Unknown };
 
-    public static InputSetting SetBagPriority = new() { Key = Keys.None };
+    public static InputSetting SetBagPriority = new() { Key = Keys.Unknown };
 
-    public static InputSetting HidePetsKey = new() { Key = Keys.None };
+    public static InputSetting HidePetsKey = new() { Key = Keys.Unknown };
 
     public static InputSetting FullscreenKey = new() { Key = Keys.F11 };
 
@@ -251,21 +251,21 @@ public static class Settings {
 
         SwitchTabs.Key = Keys.B;
 
-        ReconVault.Key = Keys.None;
-        ReconGuild.Key = Keys.None;
-        ReconRealm.Key = Keys.None;
-        ReconGod.Key = Keys.None;
-        ReconDarkMarket.Key = Keys.None;
-        ReconMarket.Key = Keys.None;
+        ReconVault.Key = Keys.Unknown;
+        ReconGuild.Key = Keys.Unknown;
+        ReconRealm.Key = Keys.Unknown;
+        ReconGod.Key = Keys.Unknown;
+        ReconDarkMarket.Key = Keys.Unknown;
+        ReconMarket.Key = Keys.Unknown;
 
-        PartySummon.Key = Keys.None;
-        PartyAccept.Key = Keys.None;
+        PartySummon.Key = Keys.Unknown;
+        PartyAccept.Key = Keys.Unknown;
 
-        ResetMScale.Key = Keys.None;
+        ResetMScale.Key = Keys.Unknown;
 
-        SetBagPriority.Key = Keys.None;
+        SetBagPriority.Key = Keys.Unknown;
 
-        HidePetsKey.Key = Keys.None;
+        HidePetsKey.Key = Keys.Unknown;
 
         FullscreenKey.Key = Keys.F11;
 

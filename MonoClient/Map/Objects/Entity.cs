@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Common.Atlas;
-using Microsoft.Xna.Framework;
+using Common;
+using Common.Structs;
 using MonoClient.Assets;
 using MonoClient.Assets.Libraries;
 using MonoClient.Assets.XmlStructs;
-using MonoClient.Networking;
 using MonoClient.Networking.Enums;
-using MonoClient.Networking.Packets.Outgoing;
 using MonoClient.Networking.Structs.DataObjects;
 using MonoClient.Rendering;
 using MonoClient.Rendering.Types;
@@ -18,10 +16,9 @@ using MonoClient.Objects.Util.ItemDatas;
 using MonoClient.ParticleEffects;
 using MonoClient.State;
 using MonoClient.State.Input;
-using MonoClient.Ui.Character;
 using MonoClient.UiLib.Signals;
 using MonoClient.Utils;
-using Newtonsoft.Json;
+using OpenTK.Mathematics;
 
 namespace MonoClient.Objects;
 
@@ -240,14 +237,16 @@ public class Entity {
         return true;
     }
 
-    public void UpdateVisibility(ref Matrix matrix) {
+    public void UpdateVisibility(ref Matrix4 matrix) {
         var dx = Position.X - Camera.Position.X;
         var dy = Position.Y + Camera.Position.Y;
         var distanceSquared = dx * dx + dy * dy;
         const int playerSightRadiusSquared = Map.TileRenderDistance * Map.TileRenderDistance;
         RenderBaseType.SetVisibility(distanceSquared <= playerSightRadiusSquared);
         
-        var sort = Vector3.Transform(new Vector3(Position.X, Position.Y, 0), matrix).Y;
+        //TODO: double check mg to make sure
+        //var sort = Vector3.Transform(new Vector3(Position.X, Position.Y, 0), matrix).Y;
+        var sort = Vector3.TransformPerspective(new Vector3(Position.X, Position.Y, 0), matrix).Y;
         RenderBaseType.SetDepth(0.5f + 0.4f * sort + Jitter);
     }
 
@@ -505,7 +504,7 @@ public class Entity {
     private int GetCharacterFrameIndex(float movementAngle, float cameraAngle, bool localPlayer) {
         Flipped = false;
         var correctedFacingAngle = MathHelper.WrapAngle(movementAngle - cameraAngle);
-        var rotationAngle = (MathHelper.ToDegrees(correctedFacingAngle) + 360) % 360;
+        var rotationAngle = (MathHelper.DegreesToRadians(correctedFacingAngle) + 360) % 360;
 
         if (IsShooting) {
             return GetDirectionFromAttackAngle(AttackAngle, Settings.CameraAngle.Value);

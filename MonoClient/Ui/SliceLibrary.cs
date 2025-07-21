@@ -1,9 +1,9 @@
 ﻿using System;
 using Common;
-using Microsoft.Xna.Framework;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Data;
 using MonoClient.Utils;
+using OpenTK.Mathematics;
 
 namespace MonoClient.Ui;
 

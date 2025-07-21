@@ -1,8 +1,9 @@
 ﻿using System.Xml.Linq;
 using Assimp;
 using Common;
-using Common.Atlas;
+using Common.Structs;
 using StbImageSharp;
+using StbImageWriteSharp;
 
 namespace ContentBuilder;
 
@@ -80,8 +81,12 @@ public record AnimatedSheet(string File, string Lookup, int Width, int Height, G
 public record struct Color(byte R, byte G, byte B, byte A);
 
 public record Atlas(ImageResult Png, Dictionary<string, AtlasData[]> AtlasMapStatic, Dictionary<string, AnimationAtlasData[]> AtlasMapAnimation, Dictionary<string, Color[]> DominantColors) {
+
+    public byte[] File;
+    
     public void Write(BinaryWriter writer) {
-        Png.Write(writer);
+        writer.Write(File.Length);
+        writer.Write(File);
 
         writer.Write(AtlasMapStatic.Count);
 

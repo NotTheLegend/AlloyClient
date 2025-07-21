@@ -1,8 +1,7 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using System.Text.Json;
-using Microsoft.Xna.Framework;
+﻿using System.Text.Json;
+using OpenTK.Mathematics;
 
-namespace Common.Atlas;
+namespace Common.Structs;
 
 public struct FontGlyph {
     public char Character;

@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using MonoClient.Objects;
+﻿using MonoClient.Objects;
+using OpenTK.Mathematics;
 
 namespace MonoClient.ParticleEffects;
 

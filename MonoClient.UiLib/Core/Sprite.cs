@@ -4,13 +4,11 @@ using Common;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Input;
 using Common.Vector;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Extra;
 using MonoClient.UiLib.Rendering;
 using MonoClient.UiLib.Utils;
+using OpenTK.Mathematics;
 
 namespace MonoClient.UiLib.Core;
 

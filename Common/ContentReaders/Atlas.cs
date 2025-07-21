@@ -1,24 +1,22 @@
-﻿using Common.Atlas;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Common.Structs;
 
 namespace Common.ContentReaders;
 
 public class Atlas {
     
-    private readonly Texture2D _texture;
+    private readonly Texture _texture;
     private readonly Dictionary<string, AtlasData[]> _atlasMapStatic;
     private readonly Dictionary<string, AnimationAtlasData[]> _atlasMapAnimation;
     private readonly Dictionary<string, Color[]> _dominantColors;
 
-    private Atlas(Texture2D texture, Dictionary<string, AtlasData[]> atlasMapStatic, Dictionary<string, AnimationAtlasData[]> atlasMapAnimation, Dictionary<string, Color[]> dominantColors) {
+    private Atlas(Texture texture, Dictionary<string, AtlasData[]> atlasMapStatic, Dictionary<string, AnimationAtlasData[]> atlasMapAnimation, Dictionary<string, Color[]> dominantColors) {
         _texture = texture;
         _atlasMapStatic = atlasMapStatic;
         _atlasMapAnimation = atlasMapAnimation;
         _dominantColors = dominantColors;
     }
 
-    public Texture2D GetTexture() => _texture;
+    public Texture GetTexture() => _texture;
     
     public AtlasData GetAtlasData(string lookup, int index) {
         if (lookup != null) {
@@ -54,16 +52,13 @@ public class Atlas {
         }
 
         Console.WriteLine($"Unable to lookup atlas[DominantColor]: {lookup} - {index}");
-        return Color.Black;
+        return new Color(0);
     }
 
-    internal static Atlas Read(BinaryReader reader, GraphicsDevice graphics) {
-        var width = reader.ReadInt32();
-        var height = reader.ReadInt32();
-        var imgData = reader.ReadBytes(reader.ReadInt32());
-        
-        var texture = new Texture2D(graphics, width, height, false, SurfaceFormat.Color);
-        texture.SetData(imgData);
+    internal static Atlas Read(BinaryReader reader) {
+        var png = reader.ReadBytes(reader.ReadInt32());
+        using var stream = new MemoryStream(png);
+        var texture = Texture.FromStream(stream);
 
         var atlasMapStatic = new Dictionary<string, AtlasData[]>();
         var atlasDataMapCount = reader.ReadInt32();

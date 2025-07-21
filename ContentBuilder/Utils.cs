@@ -1,4 +1,4 @@
-﻿using Common.Atlas;
+﻿using Common.Structs;
 using StbImageSharp;
 
 namespace ContentBuilder;

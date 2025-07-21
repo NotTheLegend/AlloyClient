@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Numerics;
 using MonoClient.Objects;
 using MonoClient.Objects.Util;
 using MonoClient.Rendering.VertexData;
 using MonoClient.State;
+using OpenTK.Mathematics;
 
 namespace MonoClient.Rendering.Types.SubTypes;
 
@@ -34,7 +34,7 @@ public class TypeEffects : SubRenderBase {
 
         var pos = Parent.Position;
         
-        var num = (BitOperations.PopCount(effects) - 1) * Size;
+        var num = (System.Numerics.BitOperations.PopCount(effects) - 1) * Size;
         
         var s = MathF.Sin(-Settings.CameraAngle);
         var c = MathF.Cos(-Settings.CameraAngle);

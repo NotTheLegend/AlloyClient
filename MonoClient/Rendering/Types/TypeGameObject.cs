@@ -1,11 +1,10 @@
 ﻿using System;
 using Common;
-using Common.Atlas;
-using Microsoft.Xna.Framework;
 using MonoClient.Assets;
 using MonoClient.Rendering.Types.SubTypes;
 using MonoClient.Rendering.VertexData;
 using MonoClient.Objects;
+using OpenTK.Mathematics;
 
 namespace MonoClient.Rendering.Types;
 

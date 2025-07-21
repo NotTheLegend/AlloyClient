@@ -1,6 +1,6 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
 using MonoClient.UiLib.Enums;
+using OpenTK.Mathematics;
 
 namespace MonoClient.UiLib.Utils;
 

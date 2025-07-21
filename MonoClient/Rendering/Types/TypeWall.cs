@@ -1,4 +1,4 @@
-﻿using Common.Atlas;
+﻿using Common.Structs;
 using MonoClient.Assets;
 using MonoClient.Assets.Libraries;
 using MonoClient.Rendering.VertexData;

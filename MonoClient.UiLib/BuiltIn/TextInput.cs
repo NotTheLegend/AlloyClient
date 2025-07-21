@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Text;
 using Common.Vector;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Rendering;
+using OpenTK.Mathematics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace MonoClient.UiLib.BuiltIn;
 
@@ -129,9 +129,9 @@ public sealed class TextInput : Sprite {
     
     protected override void OnUpdate(GameTime gameTime) {
         if (!_isCaretActive) return;
-        if (gameTime.TotalGameTime.TotalMilliseconds - _lastCaretUpdateTime < 500) return;
-            
-        _lastCaretUpdateTime = gameTime.TotalGameTime.TotalMilliseconds;
+        if (gameTime.TotalMs - _lastCaretUpdateTime < 500) return;
+
+        _lastCaretUpdateTime = gameTime.TotalMs;
         _caret.Visible = !_caret.Visible;
     }
 
@@ -186,7 +186,7 @@ public sealed class TextInput : Sprite {
                     }
 
                     zero.X += glyph.Advance * _fontScale;
-                    zero.X += Extra1.X / _font.OutlineTexel * _fontScale * 2;
+                    zero.X += Extra1.X / _font.PixelRange * _fontScale * 2;
                     idx += 4;
                     OverridePrimCount += 2;
                     continue;

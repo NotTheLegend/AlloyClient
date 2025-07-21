@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoClient.Assets;
 using MonoClient.Networking.Structs.DataObjects;
 using MonoClient.Rendering;
 using MonoClient.Rendering.Types;
 using MonoClient.Objects;
-using MonoClient.ParticleEffects;
 using MonoClient.Rendering.VertexData;
 using MonoClient.Screens.Game.Components;
 using MonoClient.Screens.Game.Components.Hud;
 using MonoClient.UiLib.Signals;
 using MonoClient.Utils;
-using Console = System.Console;
+using OpenTK.Mathematics;
 
 namespace MonoClient;
 

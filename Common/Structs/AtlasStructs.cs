@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using OpenTK.Mathematics;
 
-namespace Common.Atlas;
+namespace Common.Structs;
 
 public struct AtlasData {
     public float U;

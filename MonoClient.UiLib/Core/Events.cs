@@ -1,5 +1,5 @@
 ﻿using Common.Vector;
-using Microsoft.Xna.Framework.Input;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace MonoClient.UiLib.Core;
 

@@ -1,10 +1,10 @@
 ﻿using System;
-using Common.Atlas;
-using Microsoft.Xna.Framework;
+using Common.Structs;
 using MonoClient.Assets;
 using MonoClient.Rendering.VertexData;
 using MonoClient.Objects;
 using MonoClient.Utils;
+using OpenTK.Mathematics;
 
 namespace MonoClient.Rendering.Types;
 
@@ -31,7 +31,7 @@ public sealed class TypeModel3D : RenderBase {
         Entity = entity;
         SetTexture(entity.GetTexture());
 
-        Rotation.X = MathHelper.ToRadians(entity.Properties.Rotation);
+        Rotation.X = MathHelper.DegreesToRadians(entity.Properties.Rotation);
         Extra = new ExtraData(RenderConfig.TypeModel, RenderConfig.NoShade);
     }
     

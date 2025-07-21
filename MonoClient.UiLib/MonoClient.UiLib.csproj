@@ -4,11 +4,9 @@
         <LangVersion>preview</LangVersion>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303">
-            <PrivateAssets>All</PrivateAssets>
-        </PackageReference>
+      <ProjectReference Include="..\Common\Common.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Common\Common.csproj" />
+      <PackageReference Include="OpenTK" Version="5.0.0-pre.14" />
     </ItemGroup>
 </Project>

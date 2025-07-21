@@ -1,7 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using MonoClient.UiLib.Core;
+﻿using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Rendering;
+using OpenTK.Mathematics;
 
 namespace MonoClient.UiLib.BuiltIn;
 

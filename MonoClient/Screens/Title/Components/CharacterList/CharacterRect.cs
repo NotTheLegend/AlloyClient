@@ -1,6 +1,5 @@
 using System;
 using Common;
-using Common.Atlas;
 using MonoClient.Assets.Libraries;
 using MonoClient.Data;
 using MonoClient.Data.XmlModels;

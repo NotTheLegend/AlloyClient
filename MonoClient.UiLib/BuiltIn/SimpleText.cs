@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using MonoClient.UiLib.Core;
+﻿using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Rendering;
+using OpenTK.Mathematics;
 
 namespace MonoClient.UiLib.BuiltIn;
 
@@ -118,7 +117,7 @@ public sealed class SimpleText : Sprite {
                     }
 
                     zero.X += glyph.Advance * scale;
-                    zero.X += _outlineThickness / _font.OutlineTexel * scale * 2;
+                    zero.X += _outlineThickness / _font.PixelRange * scale * 2;
                     break;
             }
             

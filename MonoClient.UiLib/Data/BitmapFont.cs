@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Common.Atlas;
+using Common;
 using Common.ContentReaders;
-using Microsoft.Xna.Framework.Graphics;
+using Common.Structs;
 using MonoClient.UiLib.Enums;
 
 namespace MonoClient.UiLib.Data;
 
 public class BitmapFamily {
 
-    public readonly Texture2D Atlas;
+    public readonly Texture Atlas;
     
     public readonly Dictionary<FontType, BitmapFont> Fonts = [];
 
@@ -24,7 +24,7 @@ public class BitmapFamily {
                 throw new Exception($"No matching FontType value for font id : {kvp.Key}");
             }
             
-            Fonts[type] = new BitmapFont(kvp.Value, Atlas.Width);
+            Fonts[type] = new BitmapFont(kvp.Value, data.PixelRange);
         }
 
         PixelRange = data.PixelRange;
@@ -37,23 +37,23 @@ public class BitmapFont {
     public readonly float LineHeight;
     public readonly float Ascender;
     public readonly float Descender;
-    public readonly float OutlineTexel;
+    public readonly float PixelRange;
 
     public readonly Dictionary<char, FontGlyph> Glyphs;
     public readonly Dictionary<(char, char), float> Kernings;
 
-    public BitmapFont(FontData fontData, int atlasWidth) {
+    public BitmapFont(FontData fontData, float range) {
         LineHeight = fontData.LineHeight;
         Ascender = fontData.Ascender;
         Descender = fontData.Descender;
         Glyphs = fontData.Glyphs;
         Kernings = fontData.Kernings;
-        OutlineTexel = atlasWidth;// ??? tf was i on when i made this, i dont this is right for whatever its used for
+        PixelRange = range;
     }
 
     //todo do this better
     public float ValidateOutlineSize(float size) {
-        return 2 * Math.Max(Math.Min(size, OutlineTexel / 2f), 0f);
+        return 2 * Math.Max(Math.Min(size, PixelRange / 2f), 0f);
     }
 
     public (int, int) GetStartIndex(StringBuilder text, int caretIndex, int maxWidth, float outlineSize, float scale) {
@@ -80,7 +80,6 @@ public class BitmapFont {
                     }
 
                     width += glyph.Advance * scale;
-                    width += outlineSize / OutlineTexel * scale * 2;
                     break;
             }
 
@@ -118,7 +117,6 @@ public class BitmapFont {
                     }
 
                     width += glyph.Advance * scale;
-                    width += outlineSize / OutlineTexel * scale * 2;
                     break;
             }
 

@@ -1,7 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using MonoClient.UiLib.Extra;
+﻿using MonoClient.UiLib.Extra;
 using MonoClient.UiLib.Input;
-using MonoClient.UiLib.Utils;
 
 namespace MonoClient.UiLib.Core;
 

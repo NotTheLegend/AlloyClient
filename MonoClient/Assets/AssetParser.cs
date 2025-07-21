@@ -5,12 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Common;
-using Common.Atlas;
-using Microsoft.Xna.Framework;
+using Common.Structs;
 using MonoClient.Assets.Libraries;
 using MonoClient.Assets.XmlStructs;
-using MonoClient.Objects.Util;
-using MonoClient.Objects.Util.ItemDatas;
 using MonoClient.Utils;
 
 namespace MonoClient.Assets;

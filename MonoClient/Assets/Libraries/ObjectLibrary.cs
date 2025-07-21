@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
-using Microsoft.Xna.Framework.Graphics;
 using MonoClient.Assets.XmlStructs;
-using MonoClient.Objects.Util;
 using MonoClient.Objects.Util.ItemDatas;
 
 namespace MonoClient.Assets.Libraries;

@@ -1,4 +1,4 @@
-﻿using Common.Atlas;
+﻿using Common.Structs;
 using MonoClient.Assets;
 
 namespace MonoClient.Rendering.Types;

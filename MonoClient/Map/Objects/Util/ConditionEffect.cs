@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Common.Atlas;
-using Microsoft.Xna.Framework;
 using MonoClient.Utils;
+using OpenTK.Mathematics;
 
 namespace MonoClient.Objects.Util;
 

@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
+using Common;
 
 namespace MonoClient.Utils;
 

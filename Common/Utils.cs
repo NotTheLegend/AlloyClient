@@ -1,5 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
-using Common.Atlas;
+using Common.Structs;
 using Common.Vector;
 
 namespace Common;

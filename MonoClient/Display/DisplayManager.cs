@@ -1,9 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using MonoClient.Screens;
-using MonoClient.UiLib;
-using MonoClient.UiLib.BuiltIn;
+﻿using MonoClient.UiLib;
 using MonoClient.UiLib.Core;
-using MonoClient.UiLib.Utils;
 
 namespace MonoClient.Display;
 

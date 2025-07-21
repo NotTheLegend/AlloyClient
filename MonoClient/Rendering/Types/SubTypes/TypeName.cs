@@ -1,8 +1,9 @@
-using Microsoft.Xna.Framework;
+using Common;
 using MonoClient.Rendering.VertexData;
 using MonoClient.Objects;
 using MonoClient.UiLib;
 using MonoClient.UiLib.Enums;
+using OpenTK.Mathematics;
 
 namespace MonoClient.Rendering.Types.SubTypes;
 
@@ -62,7 +63,7 @@ public class TypeName : SubRenderBase {
             }
 
             zero.X += glyph.Advance * size;
-            zero.X += 12f / font.OutlineTexel * size * 2f;
+            zero.X += 12f / font.PixelRange * size * 2f;
         }
 
         for (var index = 0; index < _glyphs.Length; index++) {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Microsoft.Xna.Framework;
 using MonoClient.UiLib.Core;
 
 namespace MonoClient.UiLib.Extra;
@@ -29,7 +28,7 @@ public static class GTween {
             var ratio = Easings[tween.Ease](tween.TotalDt / tween.DurationMs);
 
             if (tween.DeltaDelay < tween.DelayMs) {
-                tween.DeltaDelay += gameTime.ElapsedGameTime.TotalMilliseconds;
+                tween.DeltaDelay += gameTime.ElapsedMs;
 
                 if (tween.DeltaDelay >= tween.DelayMs)
                     tween.SetStart();
@@ -43,7 +42,7 @@ public static class GTween {
             }
 
 
-            tween.TotalDt += gameTime.ElapsedGameTime.TotalMilliseconds;
+            tween.TotalDt += gameTime.ElapsedMs;
 
             var value = (tween.End - tween.Start) * ratio + tween.Start;
 

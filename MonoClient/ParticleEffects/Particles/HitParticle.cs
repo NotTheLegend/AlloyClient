@@ -1,7 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-
-namespace MonoClient.ParticleEffects.Particles;
+﻿namespace MonoClient.ParticleEffects.Particles;
 
 public struct HitParticle
 {

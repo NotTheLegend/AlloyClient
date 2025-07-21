@@ -1,7 +1,5 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoClient.Rendering.VertexData;
+﻿using MonoClient.Rendering.VertexData;
+using OpenTK.Mathematics;
 
 namespace MonoClient.Rendering;
 

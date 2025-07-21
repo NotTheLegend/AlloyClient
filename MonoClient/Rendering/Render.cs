@@ -96,7 +96,7 @@ public static partial class Render {
         _shaderGround.Parameters["WorldMatrix"].SetValue(Camera.WorldMatrix);
         _shaderGround.Parameters["ViewMatrix"].SetValue(Camera.ViewMatrix);
         _shaderGround.Parameters["ProjMatrix"].SetValue(Camera.ProjectionMatrix);
-        _shaderGround.Parameters["GameTime"].SetValue((float)(gameTime.TotalGameTime.TotalMilliseconds / 1000.0f));
+        _shaderGround.Parameters["GameTime"].SetValue((float)(gameTime.TotalMs / 1000.0f));
         
         _shaderShadow.Parameters["WorldMatrix"].SetValue(Camera.WorldMatrix);
         _shaderShadow.Parameters["ViewMatrix"].SetValue(Camera.ViewMatrix);

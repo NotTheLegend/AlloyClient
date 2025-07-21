@@ -1,27 +1,26 @@
 ﻿using System.Text.Json;
-using Common.Atlas;
-using Microsoft.Xna.Framework.Graphics;
+using Common.Structs;
 
 namespace Common.ContentReaders;
 
 public class FontFamily {
 
-    public readonly Texture2D Atlas;
+    public readonly Texture Atlas;
 
     public readonly Dictionary<string, FontData> FontData;
 
     public float PixelRange;
 
-    private FontFamily(Texture2D atlas, Dictionary<string, FontData> fontData, float pixelRange) {
+    private FontFamily(Texture atlas, Dictionary<string, FontData> fontData, float pixelRange) {
         Atlas = atlas;
         FontData = fontData;
         PixelRange = pixelRange;
     }
 
-    internal static FontFamily Read(BinaryReader reader, GraphicsDevice graphics) {
+    internal static FontFamily Read(BinaryReader reader) {
         var png = reader.ReadBytes(reader.ReadInt32());
         using var stream = new MemoryStream(png);
-        var texture = Texture2D.FromStream(graphics, stream, null);
+        var texture = Texture.FromStream(stream);
         
         var fontFamily = new Dictionary<string, FontData>();
         var fontOrder = new string[reader.ReadInt32()];

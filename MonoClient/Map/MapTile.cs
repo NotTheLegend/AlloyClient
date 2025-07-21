@@ -1,15 +1,14 @@
 using System;
-using Common.Atlas;
-using Microsoft.Xna.Framework;
+using Common;
+using Common.Structs;
 using MonoClient.Assets;
 using MonoClient.Assets.Libraries;
 using MonoClient.Assets.XmlStructs;
 using MonoClient.Rendering;
 using MonoClient.Rendering.VertexData;
 using MonoClient.Objects;
-using MonoClient.Screens.Game.Components.Hud;
 using MonoClient.Screens.MapEditor;
-using MonoClient.Utils;
+using OpenTK.Mathematics;
 
 namespace MonoClient;
 

@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using MonoClient.Ui.Components.Tooltips;
-using MonoClient.UiLib.BuiltIn;
+﻿using MonoClient.Ui.Components.Tooltips;
 using MonoClient.UiLib.Core;
 
 namespace MonoClient.Display;

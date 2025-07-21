@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using MonoClient.State;
 using MonoClient.State.Input;
 using MonoClient.Ui.Components.Panels;
-using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
-using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Extra;
 using MonoClient.Utils;
 

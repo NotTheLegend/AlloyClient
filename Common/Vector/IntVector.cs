@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 
 namespace Common.Vector;
-
+//TODO: remove, opentk has one
 public struct IntVector2 : IEquatable<IntVector2> {
     
     [DataMember] public int X;

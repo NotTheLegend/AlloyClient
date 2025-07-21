@@ -1,7 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Common;
 using MonoClient.Objects;
 using MonoClient.Rendering.VertexData;
 using MonoClient.Utils;
+using OpenTK.Mathematics;
 
 namespace MonoClient.Rendering.Types.SubTypes;
 

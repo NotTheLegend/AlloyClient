@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using MonoClient.Assets.Libraries;
-using MonoClient.Assets.XmlStructs;
 using MonoClient.Networking;
 using MonoClient.Networking.Enums;
 using MonoClient.Networking.Packets.Outgoing;
 using MonoClient.Networking.Structs.DataObjects;
 using MonoClient.Objects.Enums;
-using MonoClient.Objects.Util.ItemDatas;
 using MonoClient.Rendering;
 using MonoClient.Rendering.Types;
-using MonoClient.Rendering.Types.SubTypes;
 using MonoClient.State;
-using MonoClient.State.Input;
 using MonoClient.Utils;
+using OpenTK.Mathematics;
 
 namespace MonoClient.Objects;
 
@@ -189,11 +184,13 @@ public class Player : Entity {
                         Y = moveSpeed * MathF.Sin(angle + moveVectorAngle)
                     };
 
-                    var slideLen = slideVector.Length();
+                    //TODO: double check monogame to make sure its the same thing
+                    //var slideLen = slideVector.Length();
+                    var slideLen = slideVector.LengthFast;
                     slideVector *= -1 * (Tile.GroundProperties.SlideAmount - 1);
                     MovementVector *= Tile.GroundProperties.SlideAmount;
 
-                    if (MovementVector.Length() < slideLen) {
+                    if (MovementVector.LengthFast < slideLen) {
                         MovementVector += slideVector;
                     }
                 }
@@ -202,7 +199,7 @@ public class Player : Entity {
                     MovementVector.Y = moveSpeed * MathF.Sin(angle + moveVectorAngle);
                 }
             }
-            else if (MovementVector.Length() > 0.00012 && Tile.GroundProperties.SlideAmount > 0) {
+            else if (MovementVector.LengthFast > 0.00012 && Tile.GroundProperties.SlideAmount > 0) {
                 MovementVector *= Tile.GroundProperties.SlideAmount;
             }
             else {
@@ -413,9 +410,9 @@ public class Player : Entity {
         var projProps = props.Projectiles[0];
 
         for (int i = 0; i < props.NumProjectiles; i++) {
-            var arc = MathHelper.ToRadians(props.ArcGap) * (props.NumProjectiles - 1);
+            var arc = MathHelper.DegreesToRadians(props.ArcGap) * (props.NumProjectiles - 1);
             var startAngle = AttackAngle - arc / 2;
-            var angle = startAngle + MathHelper.ToRadians(props.ArcGap) * i;
+            var angle = startAngle + MathHelper.DegreesToRadians(props.ArcGap) * i;
 
             var bId = GetBulletId();
             var proj = ObjectPools.Projectiles.Pop();
@@ -427,7 +424,7 @@ public class Player : Entity {
             shoot.ContainerType = itemType;
             shoot.BulletId = bId;
             shoot.Angle = angle;
-            shoot.Time = (int)Map.LastGameTime.TotalGameTime.TotalMilliseconds;
+            shoot.Time = (int)Map.LastGameTime.TotalMs;
             shoot.StartingPos = new Position { X = Position.X, Y = Position.Y };
             
             

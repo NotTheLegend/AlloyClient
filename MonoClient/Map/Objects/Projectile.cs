@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Common.Atlas;
-using Microsoft.Xna.Framework;
+using Common.Structs;
 using MonoClient.Assets.Libraries;
 using MonoClient.Assets.XmlStructs;
 using MonoClient.Networking;
@@ -10,9 +9,8 @@ using MonoClient.Objects.Util;
 using MonoClient.ParticleEffects;
 using MonoClient.Rendering;
 using MonoClient.Rendering.Types;
-using MonoClient.State;
 using MonoClient.Ui.Character;
-using MonoClient.Utils;
+using OpenTK.Mathematics;
 
 namespace MonoClient.Objects;
 

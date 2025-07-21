@@ -1,28 +1,23 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-
-namespace Common.ContentReaders;
+﻿namespace Common.ContentReaders;
 
 public static class ContentReader {
 
     private static string _folder;
 
-    private static GraphicsDevice _graphics;
-
-    public static void Init(string folder, GraphicsDevice graphics) {
+    public static void Init(string folder) {
         _folder = folder;
-        _graphics = graphics;
     }
     
-    public static Texture2D LoadTexture(string imagePath) => Texture2D.FromFile(_graphics, Path.Combine(_folder, imagePath));
+    public static Texture LoadTexture(string imagePath) => Texture.FromFile(Path.Combine(_folder, imagePath));
 
     public static Atlas LoadAtlas(string path) {
         using var reader = new BinaryReader(new MemoryStream(File.ReadAllBytes(Path.Combine(_folder, path))));
-        return Atlas.Read(reader, _graphics);
+        return Atlas.Read(reader);
     }
 
     public static FontFamily LoadFont(string path) {
         using var reader = new BinaryReader(new MemoryStream(File.ReadAllBytes(Path.Combine(_folder, path))));
-        return FontFamily.Read(reader, _graphics);
+        return FontFamily.Read(reader);
     }
 
 }

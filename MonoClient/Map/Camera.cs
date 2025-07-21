@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoClient.State;
-using MonoClient.UiLib;
+using OpenTK.Mathematics;
 
 namespace MonoClient;
 
@@ -11,11 +9,11 @@ public static class Camera {
 
     public const int HudOffset = 240;
     
-    public static Matrix WorldMatrix;
-    public static Matrix ViewMatrix;
-    public static Matrix ProjectionMatrix;
-    public static Matrix ZoomMatrix;
-    public static Matrix BillboardMatrix;
+    public static Matrix4 WorldMatrix;
+    public static Matrix4 ViewMatrix;
+    public static Matrix4 ProjectionMatrix;
+    public static Matrix4 ZoomMatrix;
+    public static Matrix4 BillboardMatrix;
 
     public static Vector2 VisibleTileRadius;
 
@@ -34,22 +32,22 @@ public static class Camera {
         Position = new Vector3(0f, 0f, 12);
         _lookAt = new Vector3(0f);
 
-        WorldMatrix = Matrix.CreateRotationX(MathHelper.ToRadians(180));
-        ViewMatrix = new Matrix();
-        BillboardMatrix = Matrix.Identity;
+        WorldMatrix = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(180));
+        ViewMatrix = new Matrix4();
+        BillboardMatrix = Matrix4.Identity;
 
         var halfWidth = Settings.DefaultScreenWidth;
         var halfHeight = Settings.DefaultScreenHeight;
         var hudOffset = includeHud ? HudOffset : 0f;
 
-        ProjectionMatrix = Matrix.CreateOrthographicOffCenter(-halfWidth + hudOffset, halfWidth + hudOffset,
+        ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(-halfWidth + hudOffset, halfWidth + hudOffset,
             -halfHeight, halfHeight, -10000f, 10000f);
 
-        ZoomMatrix = Matrix.CreateScale(Settings.CameraZoom);
+        ZoomMatrix = Matrix4.CreateScale(Settings.CameraZoom);
     }
 
     public static void SetZoom(float zoom) {
-        ZoomMatrix = Matrix.CreateScale(zoom);
+        ZoomMatrix = Matrix4.CreateScale(zoom);
     }
 
     public static void Update(float x, float y) {
@@ -64,17 +62,17 @@ public static class Camera {
         var c = MathF.Cos(CameraAngle);
         var s1 = MathF.Sin(CameraAngle - MathHelper.PiOver2);
 
-        ViewMatrix = Matrix.CreateLookAt(Position, _lookAt, new Vector3(0f, 1f, 0f));
-        ViewMatrix[8] = s;
-        ViewMatrix[9] = s1;
-        ViewMatrix[10] = -1f;
-        ViewMatrix *= Matrix.CreateRotationZ(-CameraAngle);
+        ViewMatrix = Matrix4.CreateLookAt(Position, _lookAt, new Vector3(0f, 1f, 0f));
+        ViewMatrix[0, 2] = s;
+        ViewMatrix[1, 2] = s1;
+        ViewMatrix[2, 2] = -1f;
+        ViewMatrix *= Matrix4.CreateRotationZ(-CameraAngle);
         ViewMatrix *= ZoomMatrix;
 
-        BillboardMatrix[0] = c;
-        BillboardMatrix[1] = -s;
-        BillboardMatrix[4] = s;
-        BillboardMatrix[5] = c;
+        BillboardMatrix[0, 0] = c;
+        BillboardMatrix[1, 0] = -s;
+        BillboardMatrix[0, 1] = s;
+        BillboardMatrix[1, 1] = c;
 
         VisibleTileRadius = new Vector2((Settings.ScreenWidth - HudOffset) / Settings.CameraZoom, Settings.ScreenHeight / Settings.CameraZoom);
     }
@@ -100,7 +98,7 @@ public static class Camera {
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 4)]
-public readonly struct DepthMatrix(Matrix m) {
+public readonly struct DepthMatrix(Matrix4 m) {
     public readonly float M12 = m.M12;
     public readonly float M22 = m.M22;
     public readonly float M32 = m.M32;

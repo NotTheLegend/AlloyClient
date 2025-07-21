@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoClient.Rendering.VertexData;
 using MonoClient.Utils;
+using OpenTK.Mathematics;
 
 namespace MonoClient.Assets;
 

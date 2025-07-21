@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Drawing;
+using Common;
 using Common.ContentReaders;
 using Common.Vector;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Input;
+using OpenTK.Mathematics;
 
 namespace MonoClient.UiLib;
 
@@ -41,7 +42,7 @@ public static class UiRender {
 
     public static BitmapFamily MyriadPro;
     
-    public static Matrix ViewMatrix = new(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, -0.5f, 0f, -1f, 1f, 0.5f, 1f);
+    public static Matrix4 ViewMatrix = new(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, -0.5f, 0f, -1f, 1f, 0.5f, 1f);
 
     internal static Effect UiShader;
 
@@ -69,7 +70,7 @@ public static class UiRender {
         OnResize(null, null);
     }
 
-    public static void RegisterTexture(TextureType textureId, Texture2D texture) {
+    public static void RegisterTexture(TextureType textureId, Texture texture) {
         switch (textureId) {
             case TextureType.GameAtlas:
                 UiShader.Parameters["GameAtlasTexture"].SetValue(texture);

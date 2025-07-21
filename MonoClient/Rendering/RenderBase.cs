@@ -1,9 +1,9 @@
 ﻿using System;
 using Common;
-using Common.Atlas;
-using Microsoft.Xna.Framework;
+using Common.Structs;
 using MonoClient.Assets;
 using MonoClient.Objects;
+using OpenTK.Mathematics;
 
 
 namespace MonoClient.Rendering;

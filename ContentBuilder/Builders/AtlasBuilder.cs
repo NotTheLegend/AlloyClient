@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Xml.Linq;
 using Common;
-using Common.Atlas;
+using Common.Structs;
 using StbImageSharp;
 using StbImageWriteSharp;
 using StbRectPackSharp;
@@ -100,14 +100,20 @@ public static class AtlasBuilder {
             }
         }
         
+        // this whole thing is jank and i might deal with it later
+
+        var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"temp/{name}.png");
+        
         var width = png.Width;
         var height = png.Height;
         var comp = (StbImageWriteSharp.ColorComponents) png.Comp;
         var writer = new ImageWriter();
-        using var fileStream = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"temp/{name}.png"), FileMode.Create);
+        using var fileStream = new FileStream(path, FileMode.Create);
         writer.WritePng(png.Data, width, height, comp, fileStream);
 
         stbContext.Dispose();
+
+        atlas.File = File.ReadAllBytes(path);
 
         return atlas;
     }
