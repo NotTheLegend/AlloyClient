@@ -1,5 +1,5 @@
 ﻿using Common.Vector;
-using OpenTK.Windowing.GraphicsLibraryFramework;
+using OpenTK.Platform;
 
 namespace MonoClient.UiLib.Core;
 
@@ -27,7 +27,7 @@ public record Event(string Type, bool Bubbles = false) {
 /// <summary>
 /// Keyboard events are *ONLY* dispatched on stage layer, if listeners are put on any other sprite they will not trigger!
 /// </summary>
-public record KeyboardEvent(string Type, Keys Key, bool Ctrl, bool Shift, bool Alt) : Event(Type, true) {
+public record KeyboardEvent(string Type, Key Key, bool Ctrl, bool Shift, bool Alt) : Event(Type, true) {
     public const string KeyDown = "keyDown";
     public const string KeyUp = "keyUp";
 
@@ -94,7 +94,7 @@ public record MouseEvent(string Type, IntVector2 Coords = new(), float Delta = 0
 /// <summary>
 /// Resize events are *ONLY* dispatched on stage layer, if listeners are put on any other sprite they will not trigger!
 /// </summary>
-public record ResizeEvent(string Type,int X, int Y, int Width, int Height) : Event(Type) {
+public record ResizeEvent(string Type, int Width, int Height) : Event(Type) {
     public const string Resize = "resize";
 
     internal static bool ValidateType(string type) {

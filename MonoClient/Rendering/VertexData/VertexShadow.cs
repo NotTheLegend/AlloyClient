@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Common;
+using Common.Rendering;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
 namespace MonoClient.Rendering.VertexData;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct VertexShadow(Vector3 position, Vector2 scale, Color color) : IVertexType, IEquatable<VertexShadow> {
+public struct VertexShadow(Vector3 position, Vector2 scale, Color color) : IVertexData, IEquatable<VertexShadow> {
     public Vector3 Position = position;
     public Vector2 Scale = scale;
     public Color Color = color;
-
-    public static readonly VertexDeclaration VertexDeclaration = new([
-        new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.TextureCoordinate, 0),
-        new VertexElement(12, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 1),
-        new VertexElement(20, VertexElementFormat.Color, VertexElementUsage.TextureCoordinate, 2)
-    ]);
-
-    VertexDeclaration IVertexType.VertexDeclaration => VertexDeclaration;
+    
+    public static VertexStride VertexStride { get; } = new([
+        new ElementFormat(2, VertexAttribPointerType.Float, FormatType.Vector3),
+        new ElementFormat(3, VertexAttribPointerType.Float, FormatType.Vector2),
+        new ElementFormat(4, VertexAttribPointerType.Int, FormatType.Color),
+    ], true);
 
     public override int GetHashCode() {
         return (Position.GetHashCode() * 397 ^ Scale.GetHashCode()) * 397 ^ Color.GetHashCode();

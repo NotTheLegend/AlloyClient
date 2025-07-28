@@ -1,5 +1,6 @@
 ﻿// MIT License - Copyright (C) The Mono.Xna Team
 
+using System.Runtime.InteropServices;
 using System.Text;
 using OpenTK.Mathematics;
 
@@ -8,6 +9,7 @@ namespace Common;
 /// <summary>
 /// Describes a 32-bit packed color.
 /// </summary>
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct Color : IEquatable<Color> {
     static Color() {
         Transparent = new Color(0);

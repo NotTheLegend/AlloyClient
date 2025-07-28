@@ -1,22 +1,19 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using MonoClient.Display;
 using MonoClient.Networking;
 using MonoClient.Networking.Packets.Outgoing;
-using MonoClient.Objects;
 using MonoClient.Objects.Enums;
-using MonoClient.Objects.Util;
 using MonoClient.Screens.Game.Components.Hud;
-using MonoClient.Screens.Game.Components.Hud.Chat;
 using MonoClient.Screens.Game.Components.Options;
-using MonoClient.Ui.Components.Panels;
 using MonoClient.UiLib.Signals;
 using MonoClient.Utils;
 
 namespace MonoClient.State.Input;
 
 public static class InputHandler {
+
+    private static bool _windowFocus;
+    
     private static bool _autoFire;
     private static bool _uiBlockingInput = false;
 
@@ -37,6 +34,8 @@ public static class InputHandler {
     public static readonly SingleSignal OnChatHistoryUp = new();
     public static readonly SingleSignal OnChatHistoryDown = new();
 
+    public static void SetWindowFocus(bool focus) => _windowFocus = focus;
+
     public static void AddInputBlocker(InputBlockers blocker) {
         _inputBlockers |= blocker;
     }
@@ -46,6 +45,8 @@ public static class InputHandler {
     }
 
     public static void Update(double time, double dt) {
+        if (!_windowFocus) return;
+        
         var state = new StateContainer {
             KeyboardState = Keyboard.GetState(),
             MouseState = Mouse.GetState()
@@ -226,11 +227,11 @@ public static class InputHandler {
     /// </summary>
     /// <param name="state">Mouse and Keyboard state.</param>
     private static void HandleUnblockedInputs(StateContainer state) {
-        if (state.KeyboardState.IsKeyUp(Keys.LeftShift) && HasScrollChanged(state, out var zoomDelta)) {
+        if (state.KeyboardState.IsKeyUp(Key.LeftShift) && HasScrollChanged(state, out var zoomDelta)) {
             Minimap.OnZoom.Dispatch(zoomDelta);
         }
 
-        if (state.KeyboardState.IsKeyDown(Keys.LeftShift) && HasScrollChanged(state, out var delta)) {
+        if (state.KeyboardState.IsKeyDown(Key.LeftShift) && HasScrollChanged(state, out var delta)) {
             Settings.CameraZoom = Math.Clamp(Settings.CameraZoom += Settings.ScaleFactor * delta, Settings.MinCameraZoom, Settings.MaxCameraZoom);
             Logger.Info($"Camera zoom: {Settings.CameraZoom.Value}");
             Camera.SetZoom(Settings.CameraZoom);

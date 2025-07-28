@@ -1,11 +1,11 @@
 ﻿using System;
 using Common;
 using MonoClient.Screens.Game;
-using MonoClient.Screens.MapEditor;
 using MonoClient.State;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Extra;
+using OpenTK.Platform;
 
 namespace MonoClient.Display;
 
@@ -49,7 +49,7 @@ public sealed class ScreenManager : Sprite {
     }
 
     public static void FadeToScreen(Screen screen, Easing ease, int durationMs, uint color, Action onFinish = null) {
-        Main.GraphicsMode.Dispatch(screen is GameScreen or MapEditorScreen ? GraphicsOptions.InGame : GraphicsOptions.TitleScreen);
+        Main.GraphicsMode.Dispatch(screen is GameScreen ? GraphicsOptions.InGame : GraphicsOptions.TitleScreen);
 
         FadeScreen.Visible = true;
         FadeScreen.SetFadeColor(color);
@@ -70,40 +70,15 @@ public sealed class ScreenManager : Sprite {
     }
 
     private void OnKeyUp(KeyboardEvent args) {
-        if ((args.Key == Keys.Enter && args.Alt) || args.Key == Keys.F11)
+        if ((args.Key == Key.Return && args.Alt) || args.Key == Key.F11)
             ToggleFullscreen();
     }
 
     private static void ToggleFullscreen() {
-        Main.Graphics.IsFullScreen = !Main.Graphics.IsFullScreen;
-        Main.Graphics.HardwareModeSwitch = !Main.Graphics.IsFullScreen;
-
-        int width, height;
-        if (Main.Graphics.IsFullScreen) {
-            width = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            height = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-        } else {
-            width = Settings.NonFullscreenWidth;
-            height = Settings.NonFullscreenHeight;
-        }
-
-        Main.Graphics.PreferredBackBufferWidth = width;
-        Main.Graphics.PreferredBackBufferHeight = height;
-        Main.Graphics.ApplyChanges();
-
-        Settings.Fullscreen = Main.Graphics.IsFullScreen;
-        Settings.SetWindowSize(width, height);
-        Settings.SaveSettings();
+        Main.GameInstance.ToggleFullScreen();
     }
 
     private void OnResize(ResizeEvent args) {
-        Main.Graphics.PreferredBackBufferWidth = args.Width;
-        Main.Graphics.PreferredBackBufferHeight = args.Height;
-        Main.Graphics.ApplyChanges();
-
-        //Main.GameInstance.Window.Position = new Point(args.X, args.Y);
-
-        Settings.Fullscreen = Main.Graphics.IsFullScreen;
         Settings.SetWindowSize(args.Width, args.Height);
         Settings.SaveSettings();
     }

@@ -12,3 +12,6 @@
 - move z jitter into RenderBase class
 - update current input handler to work like flash, mostly just for mouse input hierarchy
 - improve interaction panel hotkey logic ei have panels override a blank function for logic
+
+# Rendering Todo
+- switch to dsa calls

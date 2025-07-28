@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using Common.Rendering;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
 namespace MonoClient.Rendering.VertexData;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct VertexBase(Vector3 position, Vector2 textureCoordinate) : IVertexType, IEquatable<VertexBase> {
+public struct VertexBase(Vector3 position, Vector2 textureCoordinate) : IVertexData, IEquatable<VertexBase> {
     public Vector3 Position = position;
     public Vector2 UV = textureCoordinate;
 
-    public static readonly VertexDeclaration VertexDeclaration = new([
-        new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0),
-        new VertexElement(12, VertexElementFormat.Vector2, VertexElementUsage.BlendWeight, 0)
+    public static VertexStride VertexStride { get; } = new([
+        new ElementFormat(0, VertexAttribPointerType.Float, FormatType.Vector3),
+        new ElementFormat(1, VertexAttribPointerType.Float, FormatType.Vector2)
     ]);
 
-    VertexDeclaration IVertexType.VertexDeclaration => VertexDeclaration;
-
     public override int GetHashCode() {
-        return Position.GetHashCode() * 397 ^ UV.GetHashCode();
+        return HashCode.Combine(Position, UV);
     }
 
     public override string ToString() {

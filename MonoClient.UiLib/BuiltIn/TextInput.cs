@@ -7,6 +7,7 @@ using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Rendering;
 using OpenTK.Mathematics;
+using OpenTK.Platform;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace MonoClient.UiLib.BuiltIn;
@@ -242,8 +243,9 @@ public sealed class TextInput : Sprite {
     }
 
     //Todo: maybe improve this logic, tis a mess
+    //TODO: this needs to redone now :/
     internal void OnTextInput(TextInputEventArgs e) {
-        if (e.Key == Keys.Back && _inputText.Length > 0 && _caretIndex == -1) {
+        /*if (e.Key == Keys.Back && _inputText.Length > 0 && _caretIndex == -1) {
             _inputText.Remove(_inputText.Length - 1, 1);
             FillData();
             return;
@@ -282,7 +284,7 @@ public sealed class TextInput : Sprite {
             _caretIndex++;
         }
         
-        FillData();
+        FillData();*/
     }
     
     public void Focus() {

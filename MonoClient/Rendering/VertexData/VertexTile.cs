@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using Common.Rendering;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
 namespace MonoClient.Rendering.VertexData;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct VertexTile(Vector4 posOffset, Vector4 uv, Vector4 animate, Vector4 blendLeftRight, Vector4 blendTopBottom, Vector4 cornerBottom, Vector4 cornerTop) : IVertexType, IEquatable<VertexTile> {
+public struct VertexTile(Vector4 posOffset, Vector4 uv, Vector4 animate, Vector4 blendLeftRight, Vector4 blendTopBottom, Vector4 cornerBottom, Vector4 cornerTop) : IVertexData, IEquatable<VertexTile> {
 
     public Vector4 Position = posOffset;
     public Vector4 UV = uv;
@@ -14,18 +16,16 @@ public struct VertexTile(Vector4 posOffset, Vector4 uv, Vector4 animate, Vector4
     public Vector4 BlendTopBottom = blendTopBottom;
     public Vector4 CornerBottom = cornerBottom;
     public Vector4 CornerTop = cornerTop;
-
-    public static readonly VertexDeclaration VertexDeclaration = new([
-        new VertexElement(0, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 0),
-        new VertexElement(16, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 1),
-        new VertexElement(32, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 2),
-        new VertexElement(48, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 3),
-        new VertexElement(64, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 4),
-        new VertexElement(80, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 5),
-        new VertexElement(96, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 6)
+    
+    public static VertexStride VertexStride { get; } = new([
+        new ElementFormat(0, VertexAttribPointerType.Float, FormatType.Vector4),
+        new ElementFormat(1, VertexAttribPointerType.Float, FormatType.Vector4),
+        new ElementFormat(2, VertexAttribPointerType.Float, FormatType.Vector4),
+        new ElementFormat(3, VertexAttribPointerType.Float, FormatType.Vector4),
+        new ElementFormat(4, VertexAttribPointerType.Float, FormatType.Vector4),
+        new ElementFormat(5, VertexAttribPointerType.Float, FormatType.Vector4),
+        new ElementFormat(6, VertexAttribPointerType.Float, FormatType.Vector4),
     ]);
-
-    VertexDeclaration IVertexType.VertexDeclaration => VertexDeclaration;
 
     public override int GetHashCode() {
         return (((((Position.GetHashCode() * 397 ^ UV.GetHashCode())

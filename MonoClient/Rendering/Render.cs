@@ -1,9 +1,11 @@
 ﻿using Common;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using Common.ContentReaders;
+using Common.Rendering;
 using MonoClient.Assets;
 using MonoClient.Rendering.VertexData;
 using MonoClient.UiLib;
+using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 
 namespace MonoClient.Rendering;
 
@@ -12,105 +14,109 @@ public static partial class Render {
     private const int BufferSize = 1000;
     private const int TileBufferSize = (int) (Map.TileRenderDistance * Map.TileRenderDistance * MathHelper.Pi);
     
-    private static GraphicsDevice _graphics;
-    
     // Shaders
-    private static Effect _shaderGround;
-    private static Effect _shaderShadow;
-    private static Effect _shaderObject;
-    private static Effect _shaderParticle;
+    private static Shader _shaderGround;
+    private static Shader _shaderShadow;
+    private static Shader _shaderObject;
+    private static Shader _shaderParticle;
 
     // Buffers
     private static IndexBuffer _modelIndexBuffer;
-    private static VertexBuffer _modelVertexBuffer;
-    private static VertexBufferBinding _modelVertexBinding;
+    private static VertexBuffer<VertexBase> _modelVertexBuffer;
 
+    private static int _tileVao;
     private static VertexTile[] _tileData;
-    private static DynamicVertexBuffer _tileDataBuffer;
-    private static VertexBufferBinding _tileDataBinding;
+    private static VertexBuffer<VertexTile> _tileDataBuffer;
     
-    private static VertexTile[] _editorTileData;
-    private static DynamicVertexBuffer _editorTileDataBuffer;
-    private static VertexBufferBinding _editorTileDataBinding;
-    
+    private static int _shadowVao;
     private static VertexShadow[] _shadowData;
-    private static DynamicVertexBuffer _shadowDataBuffer;
-    private static VertexBufferBinding _shadowDataBinding;
+    private static VertexBuffer<VertexShadow> _shadowDataBuffer;
     
+    private static int _entityVao;
     private static VertexObject[] _entityData;
-    private static DynamicVertexBuffer _entityDataBuffer;
-    private static VertexBufferBinding _entityDataBinding;
+    private static VertexBuffer<VertexObject> _entityDataBuffer;
+    
 
     public static void FirstTimeInit() {
-        _graphics = Main.Graphics.GraphicsDevice;
-        
-        var alphas = new Vector4[8];
+       var alphas = new Vector4[8];
         for (var i = 0; i < 8; i++) {
             alphas[i] = Main.Atlas.GetAtlasData("tileAlphaBlend", i).ToVector4(true);
         }
         
         // Shaders
-        _shaderGround = Main.GameInstance.Content.Load<Effect>("Shaders/ShaderGround");
-        _shaderGround.Parameters["GameTexture"].SetValue(Main.Atlas.GetTexture());
-        _shaderGround.Parameters["AlphaBlends"].SetValue(alphas);
+        _shaderGround = ContentReader.LoadShader("Shaders/ShaderGround");
+        _shaderGround.Apply();
+        _shaderGround.SetValue("AlphaBlends", alphas);
+        _shaderGround.SetValue("GameTexture", Main.Atlas.GetTexture());
 
-        _shaderShadow = Main.GameInstance.Content.Load<Effect>("Shaders/ShaderShadow");
+        _shaderShadow = ContentReader.LoadShader("Shaders/ShaderShadow");
         
-        _shaderObject = Main.GameInstance.Content.Load<Effect>("Shaders/ShaderObject");
-        _shaderObject.Parameters["GameTexture"].SetValue(Main.Atlas.GetTexture());
+        _shaderObject = ContentReader.LoadShader("Shaders/ShaderObject");
+        _shaderObject.Apply();
+        _shaderObject.SetValue("GameTexture", Main.Atlas.GetTexture());
         
-        _shaderObject.Parameters["PixelRange"].SetValue(UiRender.MyriadPro.PixelRange);
-        _shaderObject.Parameters["TextTextureSize"].SetValue(new Vector2(UiRender.MyriadPro.Atlas.Width, UiRender.MyriadPro.Atlas.Height));
-        _shaderObject.Parameters["TextTexture"].SetValue(UiRender.MyriadPro.Atlas);
+        _shaderObject.SetValue("PixelRange", UiRender.MyriadPro.PixelRange);
+        _shaderObject.SetValue("TextTextureSize", new Vector2(UiRender.MyriadPro.Atlas.Width, UiRender.MyriadPro.Atlas.Height));
+        _shaderObject.SetValue("TextTexture", UiRender.MyriadPro.Atlas);
 
-        _shaderParticle = Main.GameInstance.Content.Load<Effect>("Shaders/ShaderParticle");
-        _shaderParticle.Parameters["GameTexture"].SetValue(Main.Atlas.GetTexture());
+        _shaderParticle = ContentReader.LoadShader("Shaders/ShaderParticle");
+        _shaderParticle.Apply();
+        _shaderParticle.SetValue("GameTexture", Main.Atlas.GetTexture());
         
         // Buffers
-        _modelIndexBuffer = new IndexBuffer(_graphics, IndexElementSize.SixteenBits, ModelData.Indices.Length, BufferUsage.WriteOnly);
+        _modelIndexBuffer = new IndexBuffer(ModelData.Indices.Length, BufferUsage.StaticDraw);
         _modelIndexBuffer.SetData(ModelData.Indices);
 
-        _modelVertexBuffer = new VertexBuffer(_graphics, VertexBase.VertexDeclaration, ModelData.Vertices.Length, BufferUsage.WriteOnly);
+        _modelVertexBuffer = new VertexBuffer<VertexBase>(VertexBase.VertexStride, ModelData.Vertices.Length, BufferUsage.StaticDraw);
         _modelVertexBuffer.SetData(ModelData.Vertices);
-        _modelVertexBinding = new VertexBufferBinding(_modelVertexBuffer);
         
+        _tileVao = GL.GenVertexArray();
         _tileData = new VertexTile[TileBufferSize];
-        _tileDataBuffer = new DynamicVertexBuffer(_graphics, VertexTile.VertexDeclaration, _tileData.Length, BufferUsage.WriteOnly);
-        _tileDataBinding = new VertexBufferBinding(_tileDataBuffer, 0, 1);
+        _tileDataBuffer = new VertexBuffer<VertexTile>(VertexTile.VertexStride, _tileData.Length, BufferUsage.DynamicDraw);
+        _tileDataBuffer.Bind();
+        _modelIndexBuffer.Bind();
+        _modelVertexBuffer.Bind();
         
-        _editorTileData = new VertexTile[BufferSize];
-        _editorTileDataBuffer = new DynamicVertexBuffer(_graphics, VertexTile.VertexDeclaration, _editorTileData.Length, BufferUsage.WriteOnly);
-        _editorTileDataBinding = new VertexBufferBinding(_editorTileDataBuffer, 0, 1);
-
+        _shadowVao = GL.GenVertexArray();
         _shadowData = new VertexShadow[BufferSize];
-        _shadowDataBuffer = new DynamicVertexBuffer(_graphics, VertexShadow.VertexDeclaration, BufferSize, BufferUsage.WriteOnly);
-        _shadowDataBinding = new VertexBufferBinding(_shadowDataBuffer, 0, 1);
+        _shadowDataBuffer = new VertexBuffer<VertexShadow>(VertexShadow.VertexStride, BufferSize, BufferUsage.DynamicDraw);
+        _shadowDataBuffer.Bind();
+        _modelIndexBuffer.Bind();
+        _modelVertexBuffer.Bind();
         
+        GL.BindVertexArray(_entityVao = GL.GenVertexArray());
         _entityData = new VertexObject[BufferSize];
-        _entityDataBuffer = new DynamicVertexBuffer(_graphics, VertexObject.VertexDeclaration, BufferSize, BufferUsage.WriteOnly);
-        _entityDataBinding = new VertexBufferBinding(_entityDataBuffer, 0, 1);
+        _entityDataBuffer = new VertexBuffer<VertexObject>(VertexObject.VertexStride, BufferSize, BufferUsage.DynamicDraw);
+        _entityDataBuffer.Bind();
+        _modelIndexBuffer.Bind();
+        _modelVertexBuffer.Bind();
+        
         
         BuildParticleBuffers();
     }
     
     public static void SetShaderParams(GameTime gameTime) {
-        _shaderGround.Parameters["WorldMatrix"].SetValue(Camera.WorldMatrix);
-        _shaderGround.Parameters["ViewMatrix"].SetValue(Camera.ViewMatrix);
-        _shaderGround.Parameters["ProjMatrix"].SetValue(Camera.ProjectionMatrix);
-        _shaderGround.Parameters["GameTime"].SetValue((float)(gameTime.TotalMs / 1000.0f));
+        _shaderGround.Apply();
+        _shaderGround.SetValue("WorldMatrix", Camera.WorldMatrix);
+        _shaderGround.SetValue("ViewMatrix", Camera.ViewMatrix);
+        _shaderGround.SetValue("ProjMatrix", Camera.ProjectionMatrix);
+        _shaderGround.SetValue("GameTime", (float)(gameTime.TotalMs / 1000.0f));
         
-        _shaderShadow.Parameters["WorldMatrix"].SetValue(Camera.WorldMatrix);
-        _shaderShadow.Parameters["ViewMatrix"].SetValue(Camera.ViewMatrix);
-        _shaderShadow.Parameters["ProjMatrix"].SetValue(Camera.ProjectionMatrix);
+        _shaderShadow.Apply();
+        _shaderShadow.SetValue("WorldMatrix", Camera.WorldMatrix);
+        _shaderShadow.SetValue("ViewMatrix", Camera.ViewMatrix);
+        _shaderShadow.SetValue("ProjMatrix", Camera.ProjectionMatrix);
         
-        _shaderObject.Parameters["WorldMatrix"].SetValue(Camera.WorldMatrix);
-        _shaderObject.Parameters["ViewMatrix"].SetValue(Camera.ViewMatrix);
-        _shaderObject.Parameters["ProjMatrix"].SetValue(Camera.ProjectionMatrix);
-        _shaderObject.Parameters["BillMatrix"].SetValue(Camera.BillboardMatrix);
+        _shaderObject.Apply();
+        _shaderObject.SetValue("WorldMatrix", Camera.WorldMatrix);
+        _shaderObject.SetValue("ViewMatrix", Camera.ViewMatrix);
+        _shaderObject.SetValue("ProjMatrix", Camera.ProjectionMatrix);
+        _shaderObject.SetValue("BillMatrix", Camera.BillboardMatrix);
         
-        _shaderParticle.Parameters["WorldMatrix"].SetValue(Camera.WorldMatrix);
-        _shaderParticle.Parameters["ViewMatrix"].SetValue(Camera.ViewMatrix);
-        _shaderParticle.Parameters["ProjMatrix"].SetValue(Camera.ProjectionMatrix);
-        _shaderParticle.Parameters["BillMatrix"].SetValue(Camera.BillboardMatrix);
+        _shaderParticle.Apply();
+        _shaderParticle.SetValue("WorldMatrix", Camera.WorldMatrix);
+        _shaderParticle.SetValue("ViewMatrix", Camera.ViewMatrix);
+        _shaderParticle.SetValue("ProjMatrix", Camera.ProjectionMatrix);
+        _shaderParticle.SetValue("BillMatrix", Camera.BillboardMatrix);
     }
 }

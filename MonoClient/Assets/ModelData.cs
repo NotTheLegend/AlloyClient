@@ -66,10 +66,10 @@ public static partial class ModelData {
     public static readonly Dictionary<ModelType, ModelInfo> ModelRenderInfo = [];
 
     public static VertexBase[] Vertices;
-    public static short[] Indices;
+    public static ushort[] Indices;
 
     private static readonly List<VertexBase> TempVertices = [];
-    private static readonly List<short> TempIndices = [];
+    private static readonly List<ushort> TempIndices = [];
 
     public static void Load() {
         LoadPrebuilt();
@@ -101,7 +101,7 @@ public static partial class ModelData {
         var vertexOffset = TempVertices.Count;
         
         foreach (var index in mesh.IndexBuffer) {
-            TempIndices.Add((short)(vertexOffset + index));
+            TempIndices.Add((ushort)(vertexOffset + index));
         }
         
         foreach (var vertex in mesh.VertexBuffer) {
@@ -111,9 +111,9 @@ public static partial class ModelData {
         ModelRenderInfo[mesh.ModelType] = new ModelInfo(indexOffset, count);
     }
     
-    private struct MeshData(VertexData[] vertexBuffer, short[] indexBuffer, ModelType modelType, bool hasUV) {
+    private struct MeshData(VertexData[] vertexBuffer, ushort[] indexBuffer, ModelType modelType, bool hasUV) {
         public VertexData[] VertexBuffer = vertexBuffer;
-        public short[] IndexBuffer = indexBuffer;
+        public ushort[] IndexBuffer = indexBuffer;
         public ModelType ModelType = modelType;
         public readonly bool HasUV = hasUV;
 
@@ -121,10 +121,10 @@ public static partial class ModelData {
             using var reader = new BinaryReader(new MemoryStream(fileData));
 
             var len = reader.ReadInt32();
-            var indices = new short[len];
+            var indices = new ushort[len];
 
             for (var i = 0; i < len; i++) {
-                indices[i] = (short)reader.ReadInt32();
+                indices[i] = (ushort)reader.ReadInt32();
             }
 
             len = reader.ReadInt32();

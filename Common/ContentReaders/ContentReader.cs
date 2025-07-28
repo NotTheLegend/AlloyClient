@@ -1,4 +1,6 @@
-﻿namespace Common.ContentReaders;
+﻿using Common.Rendering;
+
+namespace Common.ContentReaders;
 
 public static class ContentReader {
 
@@ -18,6 +20,10 @@ public static class ContentReader {
     public static FontFamily LoadFont(string path) {
         using var reader = new BinaryReader(new MemoryStream(File.ReadAllBytes(Path.Combine(_folder, path))));
         return FontFamily.Read(reader);
+    }
+
+    public static Shader LoadShader(string path) {
+        return Shader.Create(Path.Combine(_folder, path));
     }
 
 }

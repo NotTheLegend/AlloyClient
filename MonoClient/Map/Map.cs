@@ -11,6 +11,7 @@ using MonoClient.Screens.Game.Components;
 using MonoClient.Screens.Game.Components.Hud;
 using MonoClient.UiLib.Signals;
 using MonoClient.Utils;
+using OpenTK.Graphics.OpenGLES2;
 using OpenTK.Mathematics;
 
 namespace MonoClient;
@@ -99,7 +100,8 @@ public static class Map {
 
     public static void Draw(GameTime gameTime) {
         lock (DrawLock) {
-            GraphicsDevice.DepthStencilState = DepthStencilState.None;
+            GL.Disable(EnableCap.DepthTest);
+            GL.Disable(EnableCap.StencilTest);
 
             if (LocalPlayer == null) {
                 return;
@@ -164,7 +166,7 @@ public static class Map {
 
             #endregion
 
-            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            GL.Enable(EnableCap.DepthTest);
 
             #region Particles
             

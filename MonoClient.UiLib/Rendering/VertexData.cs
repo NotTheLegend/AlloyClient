@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Common;
+using Common.Rendering;
 using MonoClient.UiLib.Extra;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
 namespace MonoClient.UiLib.Rendering;
@@ -38,7 +40,7 @@ public struct VertexUi {
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-internal struct VertexDataUi : IVertexType, IEquatable<VertexDataUi> {
+internal struct VertexDataUi : IVertexData, IEquatable<VertexDataUi> {
     public Vector2 Position;
     public Color Color;
     public Color ColorOverride;
@@ -48,17 +50,6 @@ internal struct VertexDataUi : IVertexType, IEquatable<VertexDataUi> {
     public Vector4 Extra1;
     public Vector4 Extra2;
     public Vector4 ColorTransform;
-
-    public static readonly VertexDeclaration VertexDeclaration = new(
-        new VertexElement(0, VertexElementFormat.Vector2, VertexElementUsage.Position, 0),
-        new VertexElement(8, VertexElementFormat.Color, VertexElementUsage.Color, 0),
-        new VertexElement(12, VertexElementFormat.Color, VertexElementUsage.Color, 1),
-        new VertexElement(16, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0),
-        new VertexElement(24, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 1),
-        new VertexElement(32, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 2),
-        new VertexElement(48, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 3),
-        new VertexElement(64, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 4),
-        new VertexElement(80, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 5));
 
     public VertexDataUi(Vector2 position, Color color, Color colorOverride, Vector2 info, Vector2 uvCoords, Vector4 scissor, Vector4 extra1, Vector4 extra2, ColorTransform colorTransform) {
         Position = position;
@@ -71,8 +62,17 @@ internal struct VertexDataUi : IVertexType, IEquatable<VertexDataUi> {
         Extra2 = extra2;
         ColorTransform = colorTransform.GetTransformData();
     }
-
-    VertexDeclaration IVertexType.VertexDeclaration => VertexDeclaration;
+    
+    public static VertexStride VertexStride { get; } = new([
+        new ElementFormat(0, VertexAttribPointerType.Float, FormatType.Vector2),
+        new ElementFormat(1, VertexAttribPointerType.Int, FormatType.Color),
+        new ElementFormat(2, VertexAttribPointerType.Int, FormatType.Color),
+        new ElementFormat(3, VertexAttribPointerType.Float, FormatType.Vector2),
+        new ElementFormat(4, VertexAttribPointerType.Float, FormatType.Vector4),
+        new ElementFormat(5, VertexAttribPointerType.Float, FormatType.Vector4),
+        new ElementFormat(6, VertexAttribPointerType.Float, FormatType.Vector4),
+        new ElementFormat(7, VertexAttribPointerType.Float, FormatType.Vector4)
+    ]);
 
     public override int GetHashCode() {
         return (((((((Position.GetHashCode() 

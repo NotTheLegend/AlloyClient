@@ -1,6 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System;
 using MonoClient.Assets;
 using MonoClient.Rendering.VertexData;
+using OpenTK.Graphics.OpenGL;
 
 namespace MonoClient.Rendering;
 
@@ -10,7 +11,6 @@ public static partial class Render {
     public static int LastDrawCountEntities;
 
     private static int _tileCount;
-    private static int _editorTileCount;
     private static int _shadowCount;
     private static int _entityCount;
     private static ModelType _entityModel;
@@ -35,46 +35,10 @@ public static partial class Render {
         LastDrawCountTiles = _tileCount;
 
         var info = ModelData.ModelRenderInfo[ModelType.PbTile];
-        _shaderGround.CurrentTechnique.Passes[0].Apply();
-        _graphics.Indices = _modelIndexBuffer;
-        _graphics.SetVertexBuffers(_modelVertexBinding, _tileDataBinding);
-        _graphics.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, info.IndexOffset, info.PrimitiveCount, _tileCount);
-    }
-
-    #endregion
-
-    #region MapEditorTile
-
-    public static void StartDrawEditorTile() {
-        LastDrawCountTiles = 0;
-        _editorTileCount = 0;
-
-        _shaderGround.CurrentTechnique.Passes[0].Apply();
-        _graphics.Indices = _modelIndexBuffer;
-        _graphics.SetVertexBuffers(_modelVertexBinding, _editorTileDataBinding);
-    }
-
-    public static void DrawEditorTile(VertexTile data) {
-        _editorTileData[_editorTileCount] = data;
-        _editorTileCount++;
-
-        if (_editorTileCount == BufferSize) {
-            FlushBufferEditorTile();
-        }
-    }
-
-    public static void FlushBufferEditorTile() {
-        if (_editorTileCount < 1) {
-            return;
-        }
-
-        LastDrawCountTiles += _editorTileCount;
-
-        _editorTileDataBuffer.SetData(_editorTileData, 0, _editorTileCount);
-
-        var info = ModelData.ModelRenderInfo[ModelType.PbTile];
-        _graphics.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, info.IndexOffset, info.PrimitiveCount, _editorTileCount);
-        _editorTileCount = 0;
+        _shaderGround.Apply();
+        GL.BindVertexArray(_tileVao);
+        //TODO: i think this is right, but i could be way off
+        GL.DrawElementsInstanced(PrimitiveType.Triangles, info.PrimitiveCount * 3, DrawElementsType.UnsignedShort, info.IndexOffset * 2, _tileCount);
     }
 
     #endregion
@@ -85,9 +49,8 @@ public static partial class Render {
         LastDrawCountShadows = 0;
         _shadowCount = 0;
 
-        _shaderShadow.CurrentTechnique.Passes[0].Apply();
-        _graphics.Indices = _modelIndexBuffer;
-        _graphics.SetVertexBuffers(_modelVertexBinding, _shadowDataBinding);
+        _shaderShadow.Apply();
+        GL.BindVertexArray(_shadowVao);
     }
 
     public static void DrawShadow(VertexShadow shadow) {
@@ -107,7 +70,7 @@ public static partial class Render {
         _shadowDataBuffer.SetData(_shadowData, 0, _shadowCount);
 
         var info = ModelData.ModelRenderInfo[ModelType.PbObject];
-        _graphics.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, info.IndexOffset, info.PrimitiveCount, _shadowCount);
+        GL.DrawElementsInstanced(PrimitiveType.Triangles, info.PrimitiveCount * 3, DrawElementsType.UnsignedShort, info.IndexOffset * 2, _shadowCount);
 
         LastDrawCountShadows += _shadowCount;
         _shadowCount = 0;
@@ -120,9 +83,9 @@ public static partial class Render {
     public static void StartDrawEntity() {
         LastDrawCountEntities = 0;
         _entityCount = 0;
-        _shaderObject.CurrentTechnique.Passes[0].Apply();
-        _graphics.Indices = _modelIndexBuffer;
-        _graphics.SetVertexBuffers(_modelVertexBinding, _entityDataBinding);
+        
+        _shaderObject.Apply();
+        GL.BindVertexArray(_entityVao);
     }
 
     public static void SetEntityModel(ModelType model) => _entityModel = model;
@@ -144,7 +107,7 @@ public static partial class Render {
         _entityDataBuffer.SetData(_entityData, 0, _entityCount);
 
         var info = ModelData.ModelRenderInfo[_entityModel];
-        _graphics.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, info.IndexOffset, info.PrimitiveCount, _entityCount);
+        GL.DrawElementsInstanced(PrimitiveType.Triangles, info.PrimitiveCount * 3, DrawElementsType.UnsignedShort, info.IndexOffset * 2, _entityCount);
         _entityCount = 0;
     }
 

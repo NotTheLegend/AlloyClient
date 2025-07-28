@@ -27,9 +27,7 @@ public sealed class GameScreen : Screen {
         var time = gameTime.TotalMs;
         var dt = gameTime.ElapsedMs;
         
-        if (Main.GameInstance.IsActive) {
-            InputHandler.Update(time, dt);
-        }
+        InputHandler.Update(time, dt);
         
         Map.Update(time, dt);
         PartyData.Update(time);

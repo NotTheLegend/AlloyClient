@@ -1,29 +1,29 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Common;
+using Common.Rendering;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
 namespace MonoClient.Rendering.VertexData;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct VertexObject(Vector3 position, Vector4 uv, Vector4 scale, Vector4 rotation, Vector4 extra, Color color) : IVertexType, IEquatable<VertexObject> {
+public struct VertexObject(Vector3 position, Vector4 uv, Vector4 scale, Vector4 rotation, Vector4 extra, Color color) : IVertexData, IEquatable<VertexObject> {
     public Vector3 Position = position;
     public Vector4 UV = uv;
     public Vector4 Scale = scale;
     public Vector4 Rotation = rotation;
     public Vector4 Extra = extra;
     public Color Color = color;
-
-    public static readonly VertexDeclaration VertexDeclaration = new([
-        new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.TextureCoordinate, 0),
-        new VertexElement(12, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 1),
-        new VertexElement(28, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 2),
-        new VertexElement(44, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 3),
-        new VertexElement(60, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 4),
-        new VertexElement(76, VertexElementFormat.Color, VertexElementUsage.Color, 0),
-    ]);
-
-    VertexDeclaration IVertexType.VertexDeclaration => VertexDeclaration;
+    
+    public static VertexStride VertexStride { get; } = new([
+        new ElementFormat(2, VertexAttribPointerType.Float, FormatType.Vector3),
+        new ElementFormat(3, VertexAttribPointerType.Float, FormatType.Vector4),
+        new ElementFormat(4, VertexAttribPointerType.Float, FormatType.Vector4),
+        new ElementFormat(5, VertexAttribPointerType.Float, FormatType.Vector4),
+        new ElementFormat(6, VertexAttribPointerType.Float, FormatType.Vector4),
+        new ElementFormat(7, VertexAttribPointerType.Int, FormatType.Color)
+    ], true);
 
     public override int GetHashCode() {
         return ((((Position.GetHashCode() * 397 ^ UV.GetHashCode())

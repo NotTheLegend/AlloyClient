@@ -1,7 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using MonoClient.UiLib.BuiltIn;
+﻿using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
+using OpenTK.Platform;
 
 namespace MonoClient.UiLib.Input;
 
@@ -9,50 +8,40 @@ public static class KeyboardInput {
     
     private static InternalKeyboardState _internalState;
 
-    private static Game _game;
-
     private static Stage _stage;
     
-    public static bool IsKeyDown(Keys key) {
+    public static bool IsKeyDown(Key key) {
         return _internalState.IsKeyDown(key);
     }
     
-    public static bool IsKeyUp(Keys key) {
+    public static bool IsKeyUp(Key key) {
         return _internalState.IsKeyUp(key);
     }
 
-    public static bool IsShiftDown() => IsKeyDown(Keys.LeftShift) || IsKeyDown(Keys.RightShift);
+    public static bool IsShiftDown() => IsKeyDown(Key.LeftShift) || IsKeyDown(Key.RightShift);
     
-    public static bool IsAltDown() => IsKeyDown(Keys.LeftAlt) || IsKeyDown(Keys.RightAlt);
+    public static bool IsAltDown() => IsKeyDown(Key.LeftAlt) || IsKeyDown(Key.RightAlt);
     
-    public static bool IsCtrlDown() => IsKeyDown(Keys.LeftControl) || IsKeyDown(Keys.RightControl);
+    public static bool IsCtrlDown() => IsKeyDown(Key.LeftControl) || IsKeyDown(Key.RightControl);
 
-    internal static void Register(Game game, Stage stage) {
-        if (_game != null) return;
-        
-        game.Window.KeyDown += OnKeyDown;
-        game.Window.KeyUp += OnKeyUp;
-        game.Window.TextInput += OnTextInput;
-
-        _game = game;
+    internal static void Register(Stage stage) {
         _stage = stage;
         _internalState = new InternalKeyboardState();
     }
 
-    private static void OnKeyDown(object _, InputKeyEventArgs args) {
-        if (!_game.IsActive || _internalState.IsKeyDown(args.Key)) return;
+    internal static void SetKeyDown(KeyDownEventArgs args) {
+        if (_internalState.IsKeyDown(args.Key)) return;
         _internalState.SetKey(args.Key);
         _stage.DispatchEvent(new KeyboardEvent(KeyboardEvent.KeyDown, args.Key, IsCtrlDown(), IsShiftDown(), IsAltDown()));
     }
 
-    private static void OnKeyUp(object _, InputKeyEventArgs args) {
-        if (!_game.IsActive || _internalState.IsKeyUp(args.Key)) return;
+    internal static void SetKeyUp(KeyUpEventArgs args) {
+        if (_internalState.IsKeyUp(args.Key)) return;
         _internalState.ClearKey(args.Key);
         _stage.DispatchEvent(new KeyboardEvent(KeyboardEvent.KeyUp, args.Key, IsCtrlDown(), IsShiftDown(), IsAltDown()));
     }
 
-    private static void OnTextInput(object _, TextInputEventArgs args) {
-        if (!_game.IsActive) return;
+    internal static void OnTextInput(TextInputEventArgs args) {
         TextInput.ActiveInput?.OnTextInput(args);
     }
 }
@@ -67,7 +56,7 @@ internal struct InternalKeyboardState {
     private uint _keys6;
     private uint _keys7;
 
-    private bool GetKey(Keys key) {
+    private bool GetKey(Key key) {
         var num1 = 1u << ((int) key & 31 & 31);
         var num2 = ((int) key >> 5) switch {
             0 => _keys0,
@@ -84,7 +73,7 @@ internal struct InternalKeyboardState {
         return (num2 & num1) > 0U;
     }
 
-    internal void SetKey(Keys key) {
+    internal void SetKey(Key key) {
         var num = 1u << ((int) key & 31 & 31);
         switch ((int) key >> 5) {
             case 0: _keys0 |= num;
@@ -106,7 +95,7 @@ internal struct InternalKeyboardState {
         }
     }
     
-    internal void ClearKey(Keys key)
+    internal void ClearKey(Key key)
     {
         var num = 1U << ((int)key & 31 & 31);
         switch ((int) key >> 5)
@@ -130,9 +119,9 @@ internal struct InternalKeyboardState {
         }
     }
 
-    public bool IsKeyDown(Keys key) => GetKey(key);
+    public bool IsKeyDown(Key key) => GetKey(key);
 
-    public bool IsKeyUp(Keys key) => !GetKey(key);
+    public bool IsKeyUp(Key key) => !GetKey(key);
 
     public int GetPressedKeyCount() {
         return CountBits(_keys0) + CountBits(_keys1) + CountBits(_keys2) + CountBits(_keys3) + CountBits(_keys4) + CountBits(_keys5) + CountBits(_keys6) + CountBits(_keys7);

@@ -12,8 +12,8 @@ public partial class Sprite {
         if (HighestSprite == LastSpriteHovered) 
             return;
         
-        HighestSprite?.DispatchEvent(new MouseEvent(MouseEvent.MouseOver, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetScrollDelta(), 1), -1), KeyboardInput.IsShiftDown(), KeyboardInput.IsCtrlDown(), KeyboardInput.IsAltDown()));
-        LastSpriteHovered?.DispatchEvent(new MouseEvent(MouseEvent.MouseOut, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetScrollDelta(), 1), -1), KeyboardInput.IsShiftDown(), KeyboardInput.IsCtrlDown(), KeyboardInput.IsAltDown()));
+        HighestSprite?.DispatchEvent(new MouseEvent(MouseEvent.MouseOver, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetVerticalScrollDelta(), 1), -1), KeyboardInput.IsShiftDown(), KeyboardInput.IsCtrlDown(), KeyboardInput.IsAltDown()));
+        LastSpriteHovered?.DispatchEvent(new MouseEvent(MouseEvent.MouseOut, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetVerticalScrollDelta(), 1), -1), KeyboardInput.IsShiftDown(), KeyboardInput.IsCtrlDown(), KeyboardInput.IsAltDown()));
         LastSpriteHovered = HighestSprite;
     }
 

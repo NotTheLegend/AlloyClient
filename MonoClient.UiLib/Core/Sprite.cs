@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Common;
+using Common.Rendering;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Input;
 using Common.Vector;
@@ -8,7 +9,9 @@ using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Extra;
 using MonoClient.UiLib.Rendering;
 using MonoClient.UiLib.Utils;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using OpenTK.Platform;
 
 namespace MonoClient.UiLib.Core;
 
@@ -35,7 +38,7 @@ public partial class Sprite : EventManager {
                 
                 if (_autoResize != null) {
                     field.AddEventListener(ResizeEvent.Resize, _autoResize);
-                    _autoResize(new ResizeEvent(ResizeEvent.Resize, -1, -1, field.StageWidth, field.StageHeight));
+                    _autoResize(new ResizeEvent(ResizeEvent.Resize, field.StageWidth, field.StageHeight));
                 }
                 
                 DispatchEvent(new Event(Event.AddedToStage));
@@ -217,22 +220,29 @@ public partial class Sprite : EventManager {
     
     private static int _drawCount;
 
+    private static int _vao;
+
     private static short _indexCount;
-    private static short[] _indices;
-    private static DynamicIndexBuffer _indexBuffer;
+    private static ushort[] _indices;
+    private static IndexBuffer _indexBuffer;
 
     private static int _vertexCount;
     private static VertexDataUi[] _vertices;
-    private static DynamicVertexBuffer _vertexBuffer;
+    private static VertexBuffer<VertexDataUi> _vertexBuffer;
 
     #endregion
 
-    internal static void BuildBuffers(GraphicsDevice graphics) {
-        _indices = new short[IndexBuffer];
-        _indexBuffer = new DynamicIndexBuffer(graphics, IndexElementSize.SixteenBits, IndexBuffer, BufferUsage.WriteOnly);
+    internal static void BuildBuffers() {
+        _vao = GL.GenVertexArray();
+        GL.BindVertexArray(_vao);
+        
+        _indices = new ushort[IndexBuffer];
+        _indexBuffer = new IndexBuffer(IndexBuffer, BufferUsage.DynamicDraw);
+        _indexBuffer.Bind();
 
         _vertices = new VertexDataUi[VertexBuffer];
-        _vertexBuffer = new DynamicVertexBuffer(graphics, VertexDataUi.VertexDeclaration, VertexBuffer, BufferUsage.WriteOnly);
+        _vertexBuffer = new VertexBuffer<VertexDataUi>(VertexDataUi.VertexStride, VertexBuffer, BufferUsage.DynamicDraw);
+        _vertexBuffer.Bind();
     }
 
     private void UpdateBounds() {
@@ -422,9 +432,10 @@ public partial class Sprite : EventManager {
     }
 
     internal void InternalUpdateLoop(GameTime gameTime) {
-        if (_lockMouse && MouseInput.GetMousePosition().Clamp(new IntVector2(0), UiRender.Screen, out var pos)) {
-            Mouse.SetPosition(pos.X, pos.Y);
-        }
+        //TODO: didnt see an easy way to replace this, figure out what to do
+        //if (_lockMouse && MouseInput.GetMousePosition().Clamp(new IntVector2(0), UiRender.Screen, out var pos)) {
+        //    Mouse.SetPosition(pos.X, pos.Y);
+        //}
         
         Update(gameTime);
 
@@ -448,7 +459,7 @@ public partial class Sprite : EventManager {
         var numVertices = 0;
         for (var i = 0; i < count; i++) {
             var index = Indices[i];
-            _indices[_indexCount + i] = (short)(_vertexCount + index);
+            _indices[_indexCount + i] = (ushort)(_vertexCount + index);
 
             if (index > numVertices)
                 numVertices = index;// Get highest vertex index
@@ -468,10 +479,11 @@ public partial class Sprite : EventManager {
     }
 
     internal void InternalDrawLoop() {
-        UiRender.Graphics.DepthStencilState = DepthStencilState.None;
-        UiRender.Graphics.Indices = _indexBuffer;
-        UiRender.Graphics.SetVertexBuffer(_vertexBuffer);
-        UiRender.UiShader.CurrentTechnique.Passes[0].Apply();
+        GL.BindVertexArray(_vao);
+        GL.Disable(EnableCap.DepthTest);
+        GL.Disable(EnableCap.StencilTest);
+        
+        UiRender.UiShader.Apply();
         
         Draw();
         
@@ -484,7 +496,7 @@ public partial class Sprite : EventManager {
         _indexBuffer.SetData(_indices, 0, _indexCount);
         _vertexBuffer.SetData(_vertices, 0, _vertexCount);
         
-        UiRender.Graphics.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, _indexCount / 3);
+        GL.DrawElements(PrimitiveType.Triangles, _indexCount / 3, DrawElementsType.UnsignedShort, 0);
 
         _indexCount = 0;
         _vertexCount = 0;

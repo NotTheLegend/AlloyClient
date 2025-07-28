@@ -1,52 +1,88 @@
 ﻿using System;
 using System.Collections.Generic;
 using Common.Vector;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using MonoClient.UiLib.Core;
+using OpenTK.Mathematics;
+using OpenTK.Platform;
 
 namespace MonoClient.UiLib.Input;
 
 internal static class MouseInput {
-    
-    private static Game _game;
 
     private static readonly string[] EventTypes = [
-        MouseEvent.LeftDown, MouseEvent.MiddleDown, MouseEvent.RightDown, 
-        MouseEvent.LeftUp, MouseEvent.MiddleUp, MouseEvent.RightUp, 
-        MouseEvent.MouseMove, MouseEvent.Scroll];
-    
+        MouseEvent.LeftDown, MouseEvent.MiddleDown, MouseEvent.RightDown,
+        MouseEvent.LeftUp, MouseEvent.MiddleUp, MouseEvent.RightUp,
+        MouseEvent.MouseMove, MouseEvent.Scroll
+    ];
+
     internal static readonly Queue<string> Events = [];
-    
-    private static MouseState _prevInput;
-    private static MouseState _currInput;
 
-    internal static void Register(Game game) {
-        if (_game != null) return;
-
-        _game = game;
-    }
+    private static MouseButtonFlags _prevMouseState;
+    private static MouseButtonFlags _mouseState;
+    private static Vector2 _scrollDelta;
+    private static Vector2 _mousePosition;
 
     internal static void Update() {
-        if (!_game.IsActive)
-            return;
-
-        _prevInput = _currInput;
-        _currInput = Mouse.GetState();
-
-        if (_currInput.X < 0 || _currInput.X > UiRender.Screen.X || _currInput.Y < 0 || _currInput.Y > UiRender.Screen.Y)
-            return;
-
-        foreach (var type in EventTypes) {
-            if (CheckEvent(type)) {
-                Events.Enqueue(type);
-            }
-        }
+        _prevMouseState = _mouseState;
     }
 
-    internal static float GetScrollDelta() => _currInput.ScrollWheelValue - _prevInput.ScrollWheelValue;
-    
-    internal static IntVector2 GetMousePosition() => new(_currInput.X, _currInput.Y);
+    internal static void SetKeyDown(MouseButton button) {
+        var me = ButtonToEvent(button, true);
+
+        if (me == "") return;
+        
+        _mouseState |= ButtonToFlag(button);
+        Events.Enqueue(me);
+    }
+
+    internal static void SetKeyUp(MouseButton button) {
+        var me = ButtonToEvent(button, false);
+
+        if (me == "") return;
+        
+        _mouseState &= ~ButtonToFlag(button);
+        Events.Enqueue(me);
+    }
+
+    internal static void SetScrollDelta(Vector2 delta) {
+        _scrollDelta = delta;
+        Events.Enqueue(MouseEvent.Scroll);
+    }
+
+    internal static void SetMousePosition(Vector2 pos) {
+        _mousePosition = pos;
+        Events.Enqueue(MouseEvent.MouseMove);
+    }
+
+    internal static float GetVerticalScrollDelta() => _scrollDelta.Y;
+
+    internal static float GetHorizontalScrollDelta() => _scrollDelta.X;
+
+    internal static IntVector2 GetMousePosition() => new((int) _mousePosition.X, (int)_mousePosition.Y);
+
+    private static string ButtonToEvent(MouseButton button, bool down) => button switch {
+        MouseButton.Button1 => down ? MouseEvent.LeftDown : MouseEvent.LeftUp,
+        MouseButton.Button2 => down ? MouseEvent.RightDown : MouseEvent.RightUp,
+        MouseButton.Button3 => down ? MouseEvent.MiddleDown : MouseEvent.MiddleUp,
+        MouseButton.Button4 => "",
+        MouseButton.Button5 => "",
+        MouseButton.Button6 => "",
+        MouseButton.Button7 => "",
+        MouseButton.Button8 => "", //TODO: extra mouse buttons
+
+    };
+
+    private static MouseButtonFlags ButtonToFlag(MouseButton button) => button switch {
+        MouseButton.Button1 => MouseButtonFlags.Button1,
+        MouseButton.Button2 => MouseButtonFlags.Button2,
+        MouseButton.Button3 => MouseButtonFlags.Button3,
+        MouseButton.Button4 => MouseButtonFlags.Button4,
+        MouseButton.Button5 => MouseButtonFlags.Button5,
+        MouseButton.Button6 => MouseButtonFlags.Button6,
+        MouseButton.Button7 => MouseButtonFlags.Button7,
+        MouseButton.Button8 => MouseButtonFlags.Button8,
+    };
+
 
     internal static bool CheckEvent(string type) {
         return type switch {
@@ -56,27 +92,25 @@ internal static class MouseInput {
             MouseEvent.LeftUp => WasButtonUp(MouseEvent.LeftClick),
             MouseEvent.MiddleUp => WasButtonUp(MouseEvent.MiddleClick),
             MouseEvent.RightUp => WasButtonUp(MouseEvent.RightClick),
-            MouseEvent.Scroll => _currInput.ScrollWheelValue != _prevInput.ScrollWheelValue,
-            MouseEvent.MouseMove => _currInput.Position != _prevInput.Position,
             _ => throw new NotSupportedException()
         };
     }
-    
+
     private static bool WasButtonDown(string eventId) {
-        return GetMouseButtonState(_currInput, eventId, ButtonState.Pressed) && GetMouseButtonState(_prevInput, eventId, ButtonState.Released);
-    }
-    
-    private static bool WasButtonUp(string eventId) {
-        return GetMouseButtonState(_currInput, eventId, ButtonState.Released) && GetMouseButtonState(_prevInput, eventId, ButtonState.Pressed);
+        return GetMouseButtonState(_mouseState, eventId) && !GetMouseButtonState(_prevMouseState, eventId);
     }
 
-    private static bool GetMouseButtonState(MouseState input, string eventId, ButtonState state) {
+    private static bool WasButtonUp(string eventId) {
+        return GetMouseButtonState(_mouseState, eventId) && !GetMouseButtonState(_prevMouseState, eventId);
+    }
+
+    private static bool GetMouseButtonState(MouseButtonFlags input, string eventId) {
         return eventId switch {
-            MouseEvent.LeftClick => input.LeftButton == state,
-            MouseEvent.MiddleClick => input.MiddleButton == state,
-            MouseEvent.RightClick => input.RightButton == state,
+            MouseEvent.LeftClick => (input & MouseButtonFlags.Button1) != 0,
+            MouseEvent.MiddleClick => (input & MouseButtonFlags.Button3) != 0,
+            MouseEvent.RightClick => (input & MouseButtonFlags.Button2) != 0,
             _ => throw new ArgumentOutOfRangeException(nameof(eventId), eventId, null)
         };
-        
+
     }
 }

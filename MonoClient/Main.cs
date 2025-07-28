@@ -11,6 +11,7 @@ using MonoClient.Display;
 using MonoClient.Rendering;
 using MonoClient.Screens;
 using MonoClient.State;
+using MonoClient.State.Input;
 using MonoClient.Ui;
 using MonoClient.UiLib;
 using MonoClient.UiLib.Enums;
@@ -63,6 +64,7 @@ public class Main {
     private void Initialize() {
         Toolkit.Window.SetClientSize(Window, new Vector2i(Settings.ScreenWidth, Settings.ScreenHeight));
         Toolkit.Window.SetTitle(Window, "RealmTk");
+        Toolkit.Window.SetMinClientSize(Window, 800, 600);
 
         var mode = Settings.Fullscreen ? WindowMode.WindowedFullscreen : WindowMode.Normal;
         Toolkit.Window.SetMode(Window, mode);
@@ -83,9 +85,8 @@ public class Main {
         ModelData.Load();
 
         var settings = new UiSettings {
-            Game = this,
-            MinimumScreen = new IntVector2(800, 600),
-            DefaultScreen = new IntVector2(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight)
+            DefaultScreen = new Vector2i(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight),
+            Screen = new Vector2i(Settings.ScreenWidth, Settings.ScreenHeight)
         };
 
         //UiRender needs to be loaded first so Render can pull font data from it
@@ -115,6 +116,12 @@ public class Main {
     private void Draw(GameTime gameTime) {
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         DisplayManager.Draw(gameTime);
+    }
+
+    public void ToggleFullScreen() {
+        Settings.Fullscreen = !Settings.Fullscreen;
+        var mode = Settings.Fullscreen ? WindowMode.WindowedFullscreen : WindowMode.Normal;
+        Toolkit.Window.SetMode(Window, mode);
     }
 
     /*private void SetGraphicOptions(GraphicsOptions mode) {
@@ -175,6 +182,9 @@ public class Main {
             case CloseEventArgs:
                 Toolkit.Window.Destroy(Window);
                 _running = false;
+                break;
+            case FocusEventArgs e:
+                InputHandler.SetWindowFocus(e.GotFocus);
                 break;
         }
     }

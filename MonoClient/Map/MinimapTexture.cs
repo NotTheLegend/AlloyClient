@@ -1,5 +1,6 @@
 ﻿using System;
 using Common;
+using OpenTK.Mathematics;
 
 namespace MonoClient;
 
@@ -15,7 +16,7 @@ public static class MinimapTexture {
     private static int _maxY;
 
     public static void Init(out Texture texture) {
-        _texture = new Texture(, 4096, 4096);
+        _texture = Texture.Create(new ReadOnlySpan<Color>(_data), 4096, 4096);
         _data = new Color[4096 * 4096];
 
         _minX = _minY = 4096;
@@ -28,7 +29,7 @@ public static class MinimapTexture {
             _data[i] = Color.Black;
         }
 
-        _texture.SetData(_data, 0, 4096 * 4096);
+        _texture.SetData(_data, 4096, 4096);
     }
     
     public static void UncoverTile(int x, int y, Color color) {
@@ -56,7 +57,7 @@ public static class MinimapTexture {
             idx++;
         }
 
-        _texture.SetData(0, new Rectangle(_minX, _minY, w, h), newData, 0, newData.Length);
+        _texture.SetData(new ReadOnlySpan<Color>(newData), new Vector4i(_minX, _minY, w, h));
 
         _needsUpdate = false;
         _minX = _minY = 4096;
