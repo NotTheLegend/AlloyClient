@@ -1,34 +1,31 @@
 ﻿using System.Collections.Generic;
 using MonoClient.Display;
 using MonoClient.Networking;
-using MonoClient.Networking.Packets.Outgoing;
-using MonoClient.Screens.Title;
 using MonoClient.State;
-using MonoClient.State.Input;
 using MonoClient.Ui.Components.Buttons;
 using MonoClient.Ui.Components.Panels;
-using MonoClient.UiLib;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
-using MonoClient.UiLib.Extra;
 using MonoClient.UiLib.Signals;
 
 namespace MonoClient.Screens.Game.Components.Options;
 
 public sealed class OptionsView : Overlay {
 
-    public static OptionsView Panel
-    {
-        get
-        {
-            if (_panel == null)
-                _panel = new OptionsView();
-            return _panel;
+    private static bool _open;
+    
+    public static void Toggle() {
+        if (_open) {
+            OverlayManager.CloseOverlay();
+            _open = false;
+        } else {
+            OverlayManager.Enqueue(new OptionsView());
+            _open = true;
         }
     }
-    private static OptionsView _panel;
+    
     public const string ControlsTab = "Controls";
     public const string HotkeysTab = "Hot Keys";
     public const string ChatTab = "Chat";
@@ -40,7 +37,7 @@ public sealed class OptionsView : Overlay {
     
     private readonly Dictionary<string, OptionTabView> _tabViews = [];
 
-    public static readonly SingleSignal RefreshOptions = new ();
+    public static readonly SingleSignal RefreshOptions = new ();//TODO: holds refs, redo
 
     private TextButton _selectedTab;
 

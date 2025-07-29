@@ -2,7 +2,6 @@ using Common;
 using MonoClient.Networking;
 using MonoClient.Networking.Packets.Outgoing;
 using MonoClient.Objects;
-using MonoClient.State.Input;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.BuiltIn.Buttons;
 using MonoClient.UiLib.Enums;
@@ -22,7 +21,6 @@ public class PortalPanel : Panel {
     public PortalPanel(Entity entity) {
         _portal = entity;
         _locked = entity.Properties.LockedPortal;
-        InputHandler.OnInteract.Set(EnterPortal);
 
         var txt = _portal.Properties.DisplayName;
 
@@ -56,7 +54,7 @@ public class PortalPanel : Panel {
         _enterButton = new TextButton(new TextButtonConfig {
             Text = "Enter",
             FontSize = 20,
-            OnClicked = EnterPortal,
+            OnClicked = OnInteractKey,
             FontType = FontType.Bold,
             X = Width / 2,
             Y = name.Height + 50,
@@ -65,7 +63,7 @@ public class PortalPanel : Panel {
         AddChild(_enterButton);
     }
 
-    private void EnterPortal() {
+    protected override void OnInteractKey() {
         var pkt = UsePortal.CreatePacket();
         pkt.ObjectId = _portal.ObjectId;
         Client.QueuePacket(pkt);

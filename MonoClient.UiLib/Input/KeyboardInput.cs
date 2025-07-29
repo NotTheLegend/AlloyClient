@@ -32,13 +32,13 @@ public static class KeyboardInput {
     internal static void SetKeyDown(KeyDownEventArgs args) {
         if (_internalState.IsKeyDown(args.Key)) return;
         _internalState.SetKey(args.Key);
-        _stage.DispatchEvent(new KeyboardEvent(KeyboardEvent.KeyDown, args.Key, IsCtrlDown(), IsShiftDown(), IsAltDown()));
+        _stage.DispatchEvent(new KeyboardEvent(KeyboardEvent.KeyDown, args.Key, args.Scancode, IsCtrlDown(), IsShiftDown(), IsAltDown()));
     }
 
     internal static void SetKeyUp(KeyUpEventArgs args) {
         if (_internalState.IsKeyUp(args.Key)) return;
         _internalState.ClearKey(args.Key);
-        _stage.DispatchEvent(new KeyboardEvent(KeyboardEvent.KeyUp, args.Key, IsCtrlDown(), IsShiftDown(), IsAltDown()));
+        _stage.DispatchEvent(new KeyboardEvent(KeyboardEvent.KeyUp, args.Key, args.Scancode, IsCtrlDown(), IsShiftDown(), IsAltDown()));
     }
 
     internal static void OnTextInput(TextInputEventArgs args) {

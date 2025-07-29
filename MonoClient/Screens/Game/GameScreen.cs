@@ -4,7 +4,6 @@ using MonoClient.Networking;
 using MonoClient.Rendering;
 using MonoClient.Screens.Game.Components;
 using MonoClient.State;
-using MonoClient.State.Input;
 using MonoClient.UiLib;
 using MonoClient.Utils;
 
@@ -26,8 +25,6 @@ public sealed class GameScreen : Screen {
     public override void Update(GameTime gameTime) {
         var time = gameTime.TotalMs;
         var dt = gameTime.ElapsedMs;
-        
-        InputHandler.Update(time, dt);
         
         Map.Update(time, dt);
         PartyData.Update(time);

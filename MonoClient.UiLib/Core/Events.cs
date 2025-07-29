@@ -27,7 +27,7 @@ public record Event(string Type, bool Bubbles = false) {
 /// <summary>
 /// Keyboard events are *ONLY* dispatched on stage layer, if listeners are put on any other sprite they will not trigger!
 /// </summary>
-public record KeyboardEvent(string Type, Key Key, bool Ctrl, bool Shift, bool Alt) : Event(Type, true) {
+public record KeyboardEvent(string Type, Key Key, Scancode Code, bool Ctrl, bool Shift, bool Alt) : Event(Type, true) {
     public const string KeyDown = "keyDown";
     public const string KeyUp = "keyUp";
 
@@ -53,7 +53,8 @@ public record MouseEvent(string Type, IntVector2 Coords = new(), float Delta = 0
     public const string MiddleUp = "middleUp";
     public const string RightUp = "rightUp";
     public const string MouseMove = "mouseMove";
-    public const string Scroll = "scroll";
+    public const string ScrollVertical = "scrollVertical";
+    public const string ScrollHorizontal = "scrollHorizontal";
     
     internal static bool ValidateType(string type) {
         return type switch {
@@ -69,7 +70,8 @@ public record MouseEvent(string Type, IntVector2 Coords = new(), float Delta = 0
             MiddleUp => true,
             RightUp => true,
             MouseMove => true,
-            Scroll => true,
+            ScrollVertical => true,
+            ScrollHorizontal => true,
             _ => false
         };
     }
@@ -85,7 +87,8 @@ public record MouseEvent(string Type, IntVector2 Coords = new(), float Delta = 0
             LeftUp => true,
             MiddleUp => true,
             RightUp => true,
-            Scroll => true,
+            ScrollVertical => true,
+            ScrollHorizontal => true,
             _ => false
         };
     }

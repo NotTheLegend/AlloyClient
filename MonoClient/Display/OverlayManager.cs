@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Common;
+using MonoClient.Screens.Game.Components;
 using MonoClient.State;
-using MonoClient.State.Input;
 using MonoClient.Ui.Components.Panels;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
@@ -56,7 +55,8 @@ public sealed class OverlayManager : Sprite {
 
         _current = panel;
         _state = OverlayState.Active;
-        InputHandler.AddInputBlocker(InputBlockers.Panel);
+        UserInput.SetManualFocus(false);
+        Map.GameSprite.UserInput.ClearInput();
 
         if (dimTween) {
             AddChild(Overlay);
@@ -83,7 +83,7 @@ public sealed class OverlayManager : Sprite {
                 RemoveChild(_current);
                 _current = null;
                 _state = OverlayState.None;
-                InputHandler.RemoveInputBlocker(InputBlockers.Panel);
+                UserInput.SetManualFocus(true);
             }));
         }
     }

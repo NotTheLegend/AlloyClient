@@ -57,7 +57,7 @@ public class VerticalScrollBar : Sprite {
         _scrollBarHandleTexture.AddEventListener(MouseEvent.LeftDown, OnHandleDown);
         //todo mousemove?
         //_scrollBarHandleTexture.AddEventListener(MouseEvent.MouseMove, OnMouseMove);
-        clipRect.AddEventListener(MouseEvent.Scroll, Scroll);
+        clipRect.AddEventListener(MouseEvent.ScrollVertical, Scroll);
 
         MouseEnabled = true;
     }

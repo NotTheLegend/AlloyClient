@@ -70,6 +70,8 @@ public static class Client {
 
     public static ConnectionState State;
 
+    public static bool IsReconnecting;
+
     public static readonly SocketSendState SendState = new();
 
     private static readonly byte[] _readBuffer = new byte[RECV_BUFFER_SIZE];

@@ -3,11 +3,11 @@ using Common;
 using MonoClient.Networking;
 using MonoClient.Networking.Packets.Outgoing;
 using MonoClient.State;
-using MonoClient.State.Input;
 using MonoClient.Ui.Chat;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
+using MonoClient.UiLib.Signals;
 
 namespace MonoClient.Screens.Game.Components.Hud.Chat;
 
@@ -15,6 +15,12 @@ namespace MonoClient.Screens.Game.Components.Hud.Chat;
 // Scroll up/down chat history
 
 public class ChatView : Sprite {
+
+    public static readonly Signal OnChatKey = new();
+    public static readonly Signal<string> OnChatOpen = new();
+    public static readonly Signal OnChatHistoryUp = new();
+    public static readonly Signal OnChatHistoryDown = new();
+    
     public static int MaxWidth { get; private set; } = Settings.DefaultScreenWidth / 2;
 
     private static readonly Queue<ChatLineData> ChatLineQueue = new();
@@ -54,10 +60,22 @@ public class ChatView : Sprite {
         _chatBox.Y = _chatContainer.Height;
         _chatBox.Visible = false;
 
-        InputHandler.OnChatKey.Set(OnChatKey);
-        InputHandler.OnChatOpen.Set(OnChatOpen);
-        InputHandler.OnChatHistoryUp.Set(_chatContainer.PageUp);
-        InputHandler.OnChatHistoryDown.Set(_chatContainer.PageDown);
+        AddEventListener(Event.AddedToStage, AddHandlers);
+        AddEventListener(Event.RemovedToStage, RemoveHandlers);
+    }
+
+    private void AddHandlers() {
+        OnChatKey.Add(HandleChatKey);
+        OnChatOpen.Add(HandleChatOpen);
+        OnChatHistoryUp.Add(_chatContainer.PageUp);
+        OnChatHistoryDown.Add(_chatContainer.PageDown);
+    }
+
+    private void RemoveHandlers() {
+        OnChatKey.Remove(HandleChatKey);
+        OnChatOpen.Remove(HandleChatOpen);
+        OnChatHistoryUp.Remove(_chatContainer.PageUp);
+        OnChatHistoryDown.Remove(_chatContainer.PageDown);
     }
 
     protected override void OnUpdate(GameTime gameTime) {
@@ -72,16 +90,17 @@ public class ChatView : Sprite {
     }
 
     private void OnChatFocus() {
-        InputHandler.AddInputBlocker(InputBlockers.Chat);
+        UserInput.SetManualFocus(false);
+        Map.GameSprite.UserInput.ClearMovement();
         _inFocus = true;
     }
 
     private void OnChatUnFocus() {
-        InputHandler.RemoveInputBlocker(InputBlockers.Chat);
+        UserInput.SetManualFocus(true);
         _inFocus = false;
     }
 
-    private void OnChatKey() {
+    private void HandleChatKey() {
         if (_inFocus) {
             var msg = _chatBox.Text;
             if (!string.IsNullOrEmpty(msg)) {
@@ -100,7 +119,7 @@ public class ChatView : Sprite {
         }
     }
 
-    private void OnChatOpen(string text) {
+    private void HandleChatOpen(string text) {
         if (_chatBox.Text != "") return;
         
         if (text == "/tell " && !string.IsNullOrEmpty(_recentTeller))

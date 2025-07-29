@@ -4,14 +4,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Common;
 using Common.ContentReaders;
-using Common.Vector;
 
 using MonoClient.Assets;
 using MonoClient.Display;
 using MonoClient.Rendering;
 using MonoClient.Screens;
+using MonoClient.Screens.Game.Components;
 using MonoClient.State;
-using MonoClient.State.Input;
 using MonoClient.Ui;
 using MonoClient.UiLib;
 using MonoClient.UiLib.Enums;
@@ -184,7 +183,13 @@ public class Main {
                 _running = false;
                 break;
             case FocusEventArgs e:
-                InputHandler.SetWindowFocus(e.GotFocus);
+                UserInput.SetWindowFocus(e.GotFocus);
+                break;
+            case WindowResizeEventArgs e:
+                Camera.SetViewPort(e.NewClientSize);
+                break;
+            case MouseMoveEventArgs e:
+                UserInput.SetMousePosition(e.ClientPosition);
                 break;
         }
     }

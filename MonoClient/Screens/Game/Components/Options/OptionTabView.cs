@@ -95,7 +95,6 @@ public class OptionTabView : Container {
         _options.Add(new KeyMapperOption(Settings.PerformanceStats, "Toggle Performance Stats", "This key will toggle a display of fps and memory usage"));
         _options.Add(new KeyMapperOption(Settings.CenterPlayerKey, "Toggle Centering of Player", "This key will toggle the position between centered and offset"));
         _options.Add(new KeyMapperOption(Settings.Interact, "Interact/Buy", "This key will allow you to enter a portal or buy an item without using your mouse."));
-        _options.Add(new KeyMapperOption(Settings.Focus, "Focus/Crouch", "Toggles your speed to 15. To use held focus find the option in the Extra tab."));
     }
 
     private void AddHotkeysOptions() {
@@ -110,25 +109,12 @@ public class OptionTabView : Container {
         _options.Add(new KeyMapperOption(Settings.InvSeven, "Use Inventory Slot 7", "Use item in inventory slot 7"));
         _options.Add(new KeyMapperOption(Settings.InvEight, "Use Inventory Slot 8", "Use item in inventory slot 8"));
         _options.Add(new KeyMapperOption(Settings.Escape, "Escape To Nexus", "This key will instantly escape you to the Nexus"));
-        _options.Add(new KeyMapperOption(Settings.MenuButton, "Show Options", "This key will bring up the options screen"));
+        _options.Add(new KeyMapperOption(Settings.Options, "Show Options", "This key will bring up the options screen"));//TODO: force this to be disabled to prevent changing it
         _options.Add(new KeyMapperOption(Settings.SwitchTabs, "Switch Tabs", "This key will switch from available tabs"));
-        _options.Add(new ChoiceOption<bool>(Settings.InventorySwap, OnOffLabels, OnOffValues, "Switch item to/from backpack",
-            "Hold the Ctrl key and click on an item to swap it between your inventory and your backpack."));
-        _options.Add(new KeyMapperOption(Settings.ReconVault, "Vault", "Connects you to Vault."));
-        _options.Add(new KeyMapperOption(Settings.ReconGuild, "Guild Hall", "Connects you to Guild Hall."));
-        _options.Add(new KeyMapperOption(Settings.ReconRealm, "Realm", "Connects you to Realm."));
-        _options.Add(new KeyMapperOption(Settings.ReconGod, "God Lands", "Teleports you to God Lands."));
-        _options.Add(new KeyMapperOption(Settings.ReconDarkMarket, "Black Market", "Connects you to the Black Market."));
-        _options.Add(new KeyMapperOption(Settings.ReconMarket, "Marketplace", "Connects you to the Marketplace."));
-        _options.Add(new KeyMapperOption(Settings.PartySummon, "Party Summon", "Hotkey to automatically summon your party."));
-        _options.Add(new KeyMapperOption(Settings.PartyAccept, "Party Accept", "Hotkey to automatically accept a party summon."));
+        _options.Add(new ChoiceOption<bool>(Settings.InventorySwap, OnOffLabels, OnOffValues, "Switch item to/from backpack", "Hold the Ctrl key and click on an item to swap it between your inventory and your backpack."));
         _options.Add(new KeyMapperOption(Settings.ResetMScale, "Reset Map Scale", "Resets your map scale to default."));
         _options.Add(new KeyMapperOption(Settings.SetBagPriority, "Bag priority", "Toggle whether to make bags easier to interact with or not."));
         _options.Add(new KeyMapperOption(Settings.FullscreenKey, "Fullscreen", "Toggles fullscreen mode."));
-        _options.Add(new KeyMapperOption(Settings.ItemScreenshotKey, "Item Screenshot", "Makes a screenshot of the currently displayed item tooltip and saves it as a .png"));
-        _options.Add(new KeyMapperOption(Settings.ScreenshotModeKey, "Item Screenshot",
-            "Removes the HUD and hides all popups which allows you to take a better screenshot. (Do a quick Shift+Scroll after enabling to fix the camera angle)"));
-        _options.Add(new KeyMapperOption(Settings.FreeRoamKey, "Free Roam", "Your movement keys will control the position of the camera instead of your character."));
     }
 
     private void AddChatOptions() {

@@ -1,8 +1,5 @@
-﻿using System;
-using MonoClient.Data;
+﻿using MonoClient.Data;
 using MonoClient.Networking.Packets.Outgoing;
-using MonoClient.State.Input;
-using MonoClient.Utils;
 
 namespace MonoClient.Networking.Packets.Incoming;
 
@@ -50,8 +47,8 @@ public class MapInfo : IncomingPacket<MapInfo> {
             AllowPlayerTeleport, ShowDisplays);
 
         LoadOrCreate();
-        
-        InputHandler.Reconnecting = false;
+
+        Client.IsReconnecting = false;
     }
 
     private static void LoadOrCreate() {

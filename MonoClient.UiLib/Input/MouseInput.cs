@@ -12,7 +12,7 @@ internal static class MouseInput {
     private static readonly string[] EventTypes = [
         MouseEvent.LeftDown, MouseEvent.MiddleDown, MouseEvent.RightDown,
         MouseEvent.LeftUp, MouseEvent.MiddleUp, MouseEvent.RightUp,
-        MouseEvent.MouseMove, MouseEvent.Scroll
+        MouseEvent.MouseMove, MouseEvent.ScrollVertical, MouseEvent.ScrollHorizontal
     ];
 
     internal static readonly Queue<string> Events = [];
@@ -46,7 +46,8 @@ internal static class MouseInput {
 
     internal static void SetScrollDelta(Vector2 delta) {
         _scrollDelta = delta;
-        Events.Enqueue(MouseEvent.Scroll);
+        if (_scrollDelta.X != 0) Events.Enqueue(MouseEvent.ScrollHorizontal);
+        if (_scrollDelta.Y != 0) Events.Enqueue(MouseEvent.ScrollVertical);
     }
 
     internal static void SetMousePosition(Vector2 pos) {

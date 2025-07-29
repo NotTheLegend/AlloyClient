@@ -15,7 +15,6 @@ using MonoClient.Objects.Util;
 using MonoClient.Objects.Util.ItemDatas;
 using MonoClient.ParticleEffects;
 using MonoClient.State;
-using MonoClient.State.Input;
 using MonoClient.UiLib.Signals;
 using MonoClient.Utils;
 using OpenTK.Mathematics;
@@ -511,7 +510,7 @@ public class Entity {
             return GetDirectionFromAttackAngle(AttackAngle, Settings.CameraAngle.Value);
         }
         
-        if (LocalFaceDirection != FaceDirection.None && !InputHandler.Moving) {
+        if (LocalFaceDirection != FaceDirection.None) {
             switch (LocalFaceDirection) {
                 case FaceDirection.Right:
                     return 0;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using MonoClient.State;
+using MonoClient.Utils;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
@@ -9,6 +10,8 @@ namespace MonoClient;
 public static class Camera {
 
     public const int HudOffset = 240;
+
+    public static Vector2i Viewport;
 
     public static Matrix4 WorldMatrix;
     public static Matrix4 ViewMatrix;
@@ -50,6 +53,8 @@ public static class Camera {
     public static void SetZoom(float zoom) {
         ZoomMatrix = Matrix4.CreateScale(zoom);
     }
+
+    public static void SetViewPort(Vector2i view) => Viewport = view;
 
     public static void Update(float x, float y) {
         CameraAngle = -Settings.CameraAngle;
@@ -103,11 +108,18 @@ public static class Camera {
     }
 
     // Only tested on MapEditor
-    public static Vector3 ScreenToWorld(Vector2 mousePosition, Viewport viewport) {
-        var near = new Vector3(mousePosition, 0);
-        var far = new Vector3(mousePosition, 1);
-        near = viewport.Unproject(near, ProjectionMatrix, ViewMatrix, WorldMatrix);
-        far = viewport.Unproject(far, ProjectionMatrix, ViewMatrix, WorldMatrix);
+    public static Vector3 ScreenToWorld(Vector2 mouse) {
+        
+        var mat = Matrix4.Invert(WorldMatrix * ViewMatrix * ProjectionMatrix);
+        
+        var x = MathUtils.Map(mouse.X, 0, Viewport.X, -1, 1);
+        var y = MathUtils.Map(mouse.Y, 0, Viewport.Y, -1, 1);
+        
+        var near = new Vector3(x, y, 0);
+        var far = new Vector3(x, y, 1);
+        
+        near = Vector3.TransformPosition(near, mat);
+        far = Vector3.TransformPosition(far, mat);
 
         var direction = far - near;
         direction.Normalize();
@@ -117,9 +129,9 @@ public static class Camera {
         return pos;
     }
 
-    public static Vector3 WorldToScreen(Vector3 worldPosition, Viewport viewport) {
-        return viewport.Project(worldPosition, ProjectionMatrix, ViewMatrix, WorldMatrix);
-    }
+    //public static Vector3 WorldToScreen(Vector3 worldPosition, Viewport viewport) {
+    //    return viewport.Project(worldPosition, ProjectionMatrix, ViewMatrix, WorldMatrix);
+    //}
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 4)]

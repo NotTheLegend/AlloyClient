@@ -1,6 +1,7 @@
 ﻿using MonoClient.Screens.Game.Components.Options.Ui;
 using MonoClient.State;
 using MonoClient.State.SettingTypes;
+using OpenTK.Platform;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace MonoClient.Screens.Game.Components.Options.OptionTypes;
@@ -30,7 +31,7 @@ public class KeyMapperOption : Option {
                 continue;
             }
 
-            inputSetting.Key = Keys.Unknown;
+            inputSetting.Set(Scancode.Unknown);
         }
         
         OptionsView.RefreshOptions.Dispatch();

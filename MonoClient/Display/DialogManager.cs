@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Common;
-using MonoClient.State.Input;
 using MonoClient.Ui.Components.Dialogs;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Extra;
@@ -26,7 +25,6 @@ public sealed class DialogManager : Sprite {
         _current.Alpha = 0f;
         AddChild(_current);
         GTween.Add(Tween.New(_current, Easing.SineInOut, 250, 1f, EaseType.Alpha));
-        InputHandler.AddInputBlocker(InputBlockers.Dialog);
         return true;
     }
 
@@ -35,7 +33,6 @@ public sealed class DialogManager : Sprite {
         GTween.Add(Tween.New(_current, Easing.SineInOut, 250, 0f, EaseType.Alpha, onFinish: () => {
             RemoveChild(_current);
             _current = null;
-            InputHandler.RemoveInputBlocker(InputBlockers.Dialog);
         }));
     }
 
