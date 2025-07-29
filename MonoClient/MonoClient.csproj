@@ -9,7 +9,6 @@
 
         <EnablePreviewFeatures>true</EnablePreviewFeatures>
 
-        <ApplicationManifest>app.manifest</ApplicationManifest>
         <ApplicationIcon>Icon.ico</ApplicationIcon>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <RunPostBuildEvent>Always</RunPostBuildEvent>
