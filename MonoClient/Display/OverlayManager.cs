@@ -56,7 +56,7 @@ public sealed class OverlayManager : Sprite {
         _current = panel;
         _state = OverlayState.Active;
         UserInput.SetManualFocus(false);
-        Map.GameSprite.UserInput.ClearInput();
+        Map.GameSprite?.UserInput.ClearInput();
 
         if (dimTween) {
             AddChild(Overlay);

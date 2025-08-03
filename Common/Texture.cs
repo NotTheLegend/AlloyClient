@@ -20,7 +20,7 @@ public sealed class Texture {
         Handle = handle;
         Width = width;
         Height = height;
-        
+        //TODO: add param for filters, and stuff
         GL.ActiveTexture(IntToTexUnit(_textureCount));
         GL.BindTexture(TextureTarget.Texture2d, Handle);
         TextureSlot = _textureCount;
@@ -40,15 +40,18 @@ public sealed class Texture {
     public static Texture FromStream(Stream stream) {
         var handle = GL.GenTexture();
         GL.BindTexture(TextureTarget.Texture2d, handle);
-
+        
         using var img = StbImage.Load(stream, StbiImageFormat.Rgba);
         
         GL.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, img.Width, img.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, img.ImagePointer);
+        GL.GenerateMipmap(TextureTarget.Texture2d);
+        
         return new Texture(handle, img.Width, img.Height);
     }
 
     public static Texture FromFile(string file) {
-        return FromStream(File.Open(file, FileMode.Open));
+        using var stream = File.Open(file, FileMode.Open);
+        return FromStream(stream);
     }
 
     public static Texture Create(ReadOnlySpan<Color> data, int width, int height) {
@@ -56,6 +59,7 @@ public sealed class Texture {
         GL.BindTexture(TextureTarget.Texture2d, handle);
         
         GL.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, data);
+        GL.GenerateMipmap(TextureTarget.Texture2d);
         return new Texture(handle, width, height);
     }
 

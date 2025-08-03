@@ -479,11 +479,10 @@ public partial class Sprite : EventManager {
     }
 
     internal void InternalDrawLoop() {
+        UiRender.UiShader.Apply();
         GL.BindVertexArray(_vao);
         GL.Disable(EnableCap.DepthTest);
         GL.Disable(EnableCap.StencilTest);
-        
-        UiRender.UiShader.Apply();
         
         Draw();
         
@@ -496,7 +495,7 @@ public partial class Sprite : EventManager {
         _indexBuffer.SetData(_indices, 0, _indexCount);
         _vertexBuffer.SetData(_vertices, 0, _vertexCount);
         
-        GL.DrawElements(PrimitiveType.Triangles, _indexCount / 3, DrawElementsType.UnsignedShort, 0);
+        GL.DrawElements(PrimitiveType.Triangles, _indexCount, DrawElementsType.UnsignedShort, 0);
 
         _indexCount = 0;
         _vertexCount = 0;

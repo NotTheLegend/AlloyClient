@@ -37,71 +37,74 @@ public static class Settings {
     public const int MinCameraZoom = 24;
     public const int MaxCameraZoom = 400;
     
+    // ReSharper disable FieldCanBeMadeReadOnly.Global
+#pragma warning disable CA2211
     #region HOTKEYS
     
-    public static readonly InputSetting Options = new();
+    public static InputSetting Options = new();
+
     
     // Movement
-    public static readonly InputSetting MoveUp = new();
-    public static readonly InputSetting MoveDown = new();
-    public static readonly InputSetting MoveLeft = new();
-    public static readonly InputSetting MoveRight = new();
+    public static InputSetting MoveUp = new();
+    public static InputSetting MoveDown = new();
+    public static InputSetting MoveLeft = new();
+    public static InputSetting MoveRight = new();
 
     // Camera
-    public static readonly InputSetting RotateLeft = new();
-    public static readonly InputSetting RotateRight = new();
-    public static readonly InputSetting ResetCameraAngle = new();
-    public static readonly InputSetting CenterPlayerKey = new();
+    public static  InputSetting RotateLeft = new();
+    public static InputSetting RotateRight = new();
+    public static InputSetting ResetCameraAngle = new();
+    public static InputSetting CenterPlayerKey = new();
 
     // Key 
-    public static readonly InputSetting AutoFire = new();
-    public static readonly InputSetting Special = new();
-    public static readonly InputSetting Interact = new();
-    public static readonly InputSetting Escape = new();
+    public static InputSetting AutoFire = new();
+    public static InputSetting Special = new();
+    public static InputSetting Interact = new();
+    public static  InputSetting Escape = new();
 
     // Chat
-    public static readonly InputSetting Chat = new();
-    public static readonly InputSetting ChatCommand = new();
-    public static readonly InputSetting TellKey = new();
-    public static readonly InputSetting GuildChat = new();
-    public static readonly InputSetting PartyChat = new();
-    public static readonly InputSetting ChatHistoryUp = new();
-    public static readonly InputSetting ChatHistoryDown = new();
+    public static InputSetting Chat = new();
+    public static InputSetting ChatCommand = new();
+    public static InputSetting TellKey = new();
+    public static InputSetting GuildChat = new();
+    public static InputSetting PartyChat = new();
+    public static InputSetting ChatHistoryUp = new();
+    public static InputSetting ChatHistoryDown = new();
 
     // Inventory
-    public static readonly InputSetting HealthPotion = new();
-    public static readonly InputSetting MagicPotion = new();
-    public static readonly InputSetting InvOne = new();
-    public static readonly InputSetting InvTwo = new();
-    public static readonly InputSetting InvThree = new();
-    public static readonly InputSetting InvFour = new();
-    public static readonly InputSetting InvFive = new();
-    public static readonly InputSetting InvSix = new();
-    public static readonly InputSetting InvSeven = new();
-    public static readonly InputSetting InvEight = new();
+    public static InputSetting HealthPotion = new();
+    public static InputSetting MagicPotion = new();
+    public static InputSetting InvOne = new();
+    public static InputSetting InvTwo = new();
+    public static InputSetting InvThree = new();
+    public static InputSetting InvFour = new();
+    public static InputSetting InvFive = new();
+    public static InputSetting InvSix = new();
+    public static InputSetting InvSeven = new();
+    public static InputSetting InvEight = new();
     
     // Misc
-    public static readonly InputSetting PerformanceStats = new();
-    public static readonly InputSetting SwitchTabs = new();
-    public static readonly InputSetting ResetMScale = new();
-    public static readonly InputSetting SetBagPriority = new();
-    public static readonly InputSetting FullscreenKey = new();
+    public static InputSetting PerformanceStats = new();
+    public static InputSetting SwitchTabs = new();
+    public static InputSetting ResetMScale = new();
+    public static InputSetting SetBagPriority = new();
+    public static InputSetting FullscreenKey = new();
     
     #endregion
 
     #region VALUES
 
-    public static readonly ValueSetting<PacketLogLevel> PacketLogging = PacketLogLevel.Off;
+    public static ValueSetting<PacketLogLevel> PacketLogging = PacketLogLevel.Off;
 
-    public static readonly ValueSetting<bool> MovementInterpolation = true;
+    public static ValueSetting<bool> MovementInterpolation = true;
 
     public static ValueSetting<float> CameraAngle = 0f;
     public static ValueSetting<float> CameraZoom = 40;
 
-    public static readonly ValueSetting<float> RotateSpeed = 0.003f;
+    public static ValueSetting<float> RotateSpeed = 0.003f;
 
-    public static readonly ValueSetting<int> FpsCap = -1;
-    public static readonly ValueSetting<bool> VSync = false;
+    public static ValueSetting<int> FpsCap = -1;
+    public static ValueSetting<bool> VSync = false;
     public static ValueSetting<bool> Fullscreen = true;
 
     public static ValueSetting<int> ScreenWidth = DefaultScreenWidth;
@@ -109,40 +112,43 @@ public static class Settings {
     public static ValueSetting<int> NonFullscreenWidth = DefaultScreenWidth;
     public static ValueSetting<int> NonFullscreenHeight = DefaultScreenHeight;
 
-    public static readonly ValueSetting<float> MusicVolume = 0.5f;
-    public static readonly ValueSetting<float> SfxVolume = 0.5f;
-    public static readonly ValueSetting<float> WeaponSfxVolume = 0.5f;
-    public static readonly ValueSetting<float> LootSfxVolume = 0.5f;
+    public static ValueSetting<float> MusicVolume = 0.5f;
+    public static ValueSetting<float> SfxVolume = 0.5f;
+    public static ValueSetting<float> WeaponSfxVolume = 0.5f;
+    public static ValueSetting<float> LootSfxVolume = 0.5f;
 
     public static ValueSetting<bool> PlayMusic = true;
-    public static readonly ValueSetting<bool> PlaySfx = true;
-    public static readonly ValueSetting<bool> PlayWeaponSfx = true;
-    public static readonly ValueSetting<bool> PlayLootSfx = true;
+    public static ValueSetting<bool> PlaySfx = true;
+    public static ValueSetting<bool> PlayWeaponSfx = true;
+    public static ValueSetting<bool> PlayLootSfx = true;
 
-    public static readonly ValueSetting<bool> ToggleLeftToMax = true;
-    public static readonly ValueSetting<bool> ToggleBarText = true;
+    public static ValueSetting<bool> ToggleLeftToMax = true;
+    public static ValueSetting<bool> ToggleBarText = true;
 
-    public static readonly ValueSetting<bool> AllowRotation = true;
+    public static ValueSetting<bool> AllowRotation = true;
 
-    public static readonly ValueSetting<bool> InventorySwap = true;
+    public static ValueSetting<bool> InventorySwap = true;
 
-    public static readonly ValueSetting<int> ChatInclude = 0;
-    public static readonly ValueSetting<bool> ChatVisible = true;
-    public static readonly ValueSetting<float> ChatScaling = 0f;
-    public static readonly ValueSetting<int> ChatHideList = 0;
+    public static ValueSetting<int> ChatInclude = 0;
+    public static ValueSetting<bool> ChatVisible = true;
+    public static ValueSetting<float> ChatScaling = 0f;
+    public static ValueSetting<int> ChatHideList = 0;
 
-    public static readonly ValueSetting<bool> EyeCandyParticles = true;
-    public static readonly ValueSetting<bool> ReducedParticles = false;
+    public static ValueSetting<bool> EyeCandyParticles = true;
+    public static ValueSetting<bool> ReducedParticles = false;
 
-    public static readonly ValueSetting<int> MaxRenderDistance = 20;
+    public static ValueSetting<int> MaxRenderDistance = 20;
 
-    public static readonly ValueSetting<float> MScale = 1;
+    public static ValueSetting<float> MScale = 1;
 
-    public static readonly ValueSetting<bool> CenterPlayer = true;
+    public static ValueSetting<bool> CenterPlayer = true;
 
-    public static readonly ValueSetting<ushort> SelectedGameServerPort = GameServerPort;
+    public static ValueSetting<ushort> SelectedGameServerPort = GameServerPort;
     
     #endregion
+    
+    // ReSharper restore FieldCanBeMadeReadOnly.Global
+#pragma warning restore CA2211
 
     private static readonly Dictionary<string, ISettingType> SettingTypes = [];
     public static readonly List<InputSetting> Inputs = [];

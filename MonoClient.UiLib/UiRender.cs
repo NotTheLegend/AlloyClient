@@ -53,7 +53,7 @@ public static class UiRender {
         
         EventQueue.EventRaised += HandleEvents;
 
-        UiShader = ContentReader.LoadShader("shaders/ShaderUi");
+        UiShader = ContentReader.LoadShader("shaders/Ui");
 
         Sprite.BuildBuffers();
         

@@ -12,21 +12,23 @@ public sealed class Shader {
     }
 
     public static Shader Create(string path) {
-        var vs = File.ReadAllText(path + ".vs");
-        var fs = File.ReadAllText(path + ".fs");
+        var p1 = path + ".vert";
+        var p2 = path + ".frag";
+        var vs = File.ReadAllText(p1);
+        var fs = File.ReadAllText(p2);
         
         var vertexHandle = GL.CreateShader(ShaderType.VertexShader);
         GL.ShaderSource(vertexHandle, vs);
-        CompileShader(vertexHandle);
+        CompileShader(vertexHandle, p1);
         
         var fragmentHandle = GL.CreateShader(ShaderType.FragmentShader);
         GL.ShaderSource(fragmentHandle, fs);
-        CompileShader(fragmentHandle);
+        CompileShader(fragmentHandle, p2);
         
         var handle = GL.CreateProgram();
         GL.AttachShader(handle, vertexHandle);
         GL.AttachShader(handle, fragmentHandle);
-        GL.LinkProgram(handle);
+        LinkProgram(handle);
         
         GL.DetachShader(handle, vertexHandle);
         GL.DetachShader(handle, fragmentHandle);
@@ -58,7 +60,7 @@ public sealed class Shader {
         GL.Uniform1i(GL.GetUniformLocation(_handle, uniform), texture.TextureSlot);
     }
     
-    private static void CompileShader(int shader)
+    private static void CompileShader(int shader, string path)
     {
         GL.CompileShader(shader);
 
@@ -66,7 +68,18 @@ public sealed class Shader {
         if (code != (int)All.True)
         {
             GL.GetShaderInfoLog(shader, out var infoLog);
-            throw new Exception($"Error compiling shader.{Environment.NewLine}{infoLog}");
+            throw new Exception($"Error compiling shader {path}.{Environment.NewLine}{infoLog}");
+        }
+    }
+    
+    private static void LinkProgram(int handle) {
+        GL.LinkProgram(handle);
+
+        GL.GetProgrami(handle, ProgramProperty.LinkStatus, out int code);
+
+        if (code != (int)All.True) {
+            GL.GetProgramInfoLog(handle, out var info);
+            throw new Exception($"Error linking shader.{Environment.NewLine}{info}");
         }
     }
 }

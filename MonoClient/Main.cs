@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Runtime.InteropServices;
 using Common;
 using Common.ContentReaders;
 
@@ -48,6 +49,12 @@ public class Main {
         
         Toolkit.OpenGL.SetCurrentContext(Context);
         GLLoader.LoadBindings(Toolkit.OpenGL.GetBindingsContext(Context));
+        
+        GLDebugProc debugMessageDelegate = OnDebugMessage;
+        GL.DebugMessageCallback(debugMessageDelegate, nint.Zero);
+        GL.DebugMessageControl(DebugSource.DebugSourceApi, DebugType.DebugTypeOther, DebugSeverity.DontCare, 1, [131185], false);
+        GL.Enable(EnableCap.DebugOutput);
+        GL.Enable(EnableCap.DebugOutputSynchronous);
 
         EventQueue.EventRaised += HandleEvents;
         
@@ -57,7 +64,6 @@ public class Main {
         
         Initialize();
         LoadContent();
-        Run();
     }
 
     private void Initialize() {
@@ -66,10 +72,12 @@ public class Main {
         Toolkit.Window.SetMinClientSize(Window, 800, 600);
 
         var mode = Settings.Fullscreen ? WindowMode.WindowedFullscreen : WindowMode.Normal;
-        Toolkit.Window.SetMode(Window, mode);
+        Toolkit.Window.SetMode(Window, WindowMode.Normal);
         
-        GL.ClearColor(0f, 0f, 0f, 1.0f);
+        GL.ClearColor(0.2f, 0.3f, 0.4f, 1.0f);
         
+        GL.Enable(EnableCap.Blend);
+        GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusDstAlpha);
 
         ContentReader.Init(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content"));
     }
@@ -100,12 +108,13 @@ public class Main {
         UiRender.RegisterTexture(TextureType.TitleGraphic, ContentReader.LoadTexture("TitleScreen/TitleScreenGraphic.png"));
         
         Render.FirstTimeInit();
-        
+
         SliceLibrary.Load();
         
         DisplayManager.Init(stage);
 
-        ScreenManager.FadeToScreen(new LoadingScreen(), Easing.SineInOut, 1000, 0x0);
+        //ScreenManager.FadeToScreen(new LoadingScreen(), Easing.SineInOut, 1000, 0x0);
+        ScreenManager.SetScreen(new TestScreen());
     }
 
     private void Update(GameTime gameTime) {
@@ -113,8 +122,9 @@ public class Main {
     }
 
     private void Draw(GameTime gameTime) {
-        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+        GL.Clear(ClearBufferMask.ColorBufferBit);
         DisplayManager.Draw(gameTime);
+        Toolkit.OpenGL.SwapBuffers(Context);
     }
 
     public void ToggleFullScreen() {
@@ -160,7 +170,7 @@ public class Main {
             var elapsedMs = sw.Elapsed.TotalMilliseconds;
             
             //TODO: replace 0 with framerate settings
-            if (elapsedMs > 0) continue;
+            if (elapsedMs < 0) continue;
             
             Toolkit.Window.ProcessEvents(false);
             
@@ -197,5 +207,10 @@ public class Main {
     public void Exit() {
         Toolkit.Window.Destroy(Window);
         _running = false;
+    }
+    
+    public void OnDebugMessage(DebugSource source, DebugType type, uint id, DebugSeverity severity, int length, nint pmessage, nint userParam) {
+        var message = Marshal.PtrToStringAnsi(pmessage, length);
+        Console.WriteLine("[{0} source={1} type={2} id={3}] {4}", severity, source, type, id, message);
     }
 }

@@ -18,14 +18,14 @@ public struct VertexTile(Vector4 posOffset, Vector4 uv, Vector4 animate, Vector4
     public Vector4 CornerTop = cornerTop;
     
     public static VertexStride VertexStride { get; } = new([
-        new ElementFormat(0, VertexAttribPointerType.Float, FormatType.Vector4),
-        new ElementFormat(1, VertexAttribPointerType.Float, FormatType.Vector4),
         new ElementFormat(2, VertexAttribPointerType.Float, FormatType.Vector4),
         new ElementFormat(3, VertexAttribPointerType.Float, FormatType.Vector4),
         new ElementFormat(4, VertexAttribPointerType.Float, FormatType.Vector4),
         new ElementFormat(5, VertexAttribPointerType.Float, FormatType.Vector4),
         new ElementFormat(6, VertexAttribPointerType.Float, FormatType.Vector4),
-    ]);
+        new ElementFormat(7, VertexAttribPointerType.Float, FormatType.Vector4),
+        new ElementFormat(8, VertexAttribPointerType.Float, FormatType.Vector4),
+    ], true);
 
     public override int GetHashCode() {
         return (((((Position.GetHashCode() * 397 ^ UV.GetHashCode())

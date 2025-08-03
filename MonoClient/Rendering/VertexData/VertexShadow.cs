@@ -11,12 +11,12 @@ namespace MonoClient.Rendering.VertexData;
 public struct VertexShadow(Vector3 position, Vector2 scale, Color color) : IVertexData, IEquatable<VertexShadow> {
     public Vector3 Position = position;
     public Vector2 Scale = scale;
-    public Color Color = color;
+    public uint Color = color.PackedValue;
     
     public static VertexStride VertexStride { get; } = new([
         new ElementFormat(2, VertexAttribPointerType.Float, FormatType.Vector3),
         new ElementFormat(3, VertexAttribPointerType.Float, FormatType.Vector2),
-        new ElementFormat(4, VertexAttribPointerType.Int, FormatType.Color),
+        new ElementFormat(4, VertexAttribPointerType.UnsignedInt, FormatType.Color),
     ], true);
 
     public override int GetHashCode() {

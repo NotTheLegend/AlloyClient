@@ -12,6 +12,7 @@
         <ApplicationIcon>Icon.ico</ApplicationIcon>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <RunPostBuildEvent>Always</RunPostBuildEvent>
+		<DisableFastUpToDateCheck>True</DisableFastUpToDateCheck>
     </PropertyGroup>
     
     <ItemGroup>
@@ -24,17 +25,7 @@
     </ItemGroup>
     
     <ItemGroup>
-        <None Remove="app.manifest" />
         <None Remove="MonoClient.csproj.DotSettings" />
-        <None Update="Content\Fonts\MyriadPro\MyriadPro.otf">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="Content\Fonts\MyriadPro\MyriadProBold.otf">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-		<None Update="Content\Fonts\MyriadPro\MyriadProBolder.otf">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
     </ItemGroup>
     
     <ItemGroup>

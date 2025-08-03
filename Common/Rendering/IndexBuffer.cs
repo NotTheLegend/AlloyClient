@@ -21,8 +21,8 @@ public sealed unsafe class IndexBuffer {
             throw new Exception("Data larger than buffer");
         }
         
-        GL.BindBuffer(BufferTarget.ArrayBuffer, _ebo);
-        GL.BufferSubData(BufferTarget.ArrayBuffer, start, sizeof(ushort) * count, data);
+        GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
+        GL.BufferSubData(BufferTarget.ElementArrayBuffer, start, sizeof(ushort) * count, data);
     }
     
     public void SetData(ushort[] data) {
@@ -30,8 +30,8 @@ public sealed unsafe class IndexBuffer {
             throw new Exception("Data larger than buffer");
         }
         
-        GL.BindBuffer(BufferTarget.ArrayBuffer, _ebo);
-        GL.BufferSubData(BufferTarget.ArrayBuffer, 0, sizeof(ushort) * data.Length, data);
+        GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
+        GL.BufferSubData(BufferTarget.ElementArrayBuffer, 0, sizeof(ushort) * data.Length, data);
     }
 
     public void Bind() {

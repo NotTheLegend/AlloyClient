@@ -19,7 +19,7 @@ public class TestScreen : Screen {
     public TestScreen() {
         var background = new ScreenGraphic();
         AddChild(background);
-        
+        /*
         var editor = new MenuBarButton("editor", FontSize, () => { });
         editor.SetAnchor(UiAnchor.MiddleLeft);
         _container.AddChild(editor);
@@ -47,11 +47,12 @@ public class TestScreen : Screen {
         _container.X = Settings.DefaultScreenWidth/ 2;
         _container.Y = Settings.DefaultScreenHeight - 90;
         AddChild(_container);
+        */
         
         SetAutoResize(OnResize);
     }
 
-    private void OnResize(ResizeEvent args) {
+    protected override void OnResize(ResizeEvent args) {
         _container.Scale = UiRender.ScreenScale;
         _container.X = Stage.StageWidth / 2;
         _container.Y = Stage.StageHeight - (int)(90 * UiRender.ScreenScale.Y);

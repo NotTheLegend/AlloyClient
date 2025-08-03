@@ -42,8 +42,8 @@ public struct VertexUi {
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 internal struct VertexDataUi : IVertexData, IEquatable<VertexDataUi> {
     public Vector2 Position;
-    public Color Color;
-    public Color ColorOverride;
+    public uint Color;
+    public uint ColorOverride;
     public Vector2 Info;
     public Vector2 UVCoords;
     public Vector4 Scissor;
@@ -53,8 +53,8 @@ internal struct VertexDataUi : IVertexData, IEquatable<VertexDataUi> {
 
     public VertexDataUi(Vector2 position, Color color, Color colorOverride, Vector2 info, Vector2 uvCoords, Vector4 scissor, Vector4 extra1, Vector4 extra2, ColorTransform colorTransform) {
         Position = position;
-        Color = color;
-        ColorOverride = colorOverride;
+        Color = color.PackedValue;
+        ColorOverride = colorOverride.PackedValue;
         Info = info;
         UVCoords = uvCoords;
         Scissor = scissor;
@@ -65,13 +65,14 @@ internal struct VertexDataUi : IVertexData, IEquatable<VertexDataUi> {
     
     public static VertexStride VertexStride { get; } = new([
         new ElementFormat(0, VertexAttribPointerType.Float, FormatType.Vector2),
-        new ElementFormat(1, VertexAttribPointerType.Int, FormatType.Color),
-        new ElementFormat(2, VertexAttribPointerType.Int, FormatType.Color),
+        new ElementFormat(1, VertexAttribPointerType.UnsignedInt, FormatType.Color),
+        new ElementFormat(2, VertexAttribPointerType.UnsignedInt, FormatType.Color),
         new ElementFormat(3, VertexAttribPointerType.Float, FormatType.Vector2),
-        new ElementFormat(4, VertexAttribPointerType.Float, FormatType.Vector4),
+        new ElementFormat(4, VertexAttribPointerType.Float, FormatType.Vector2),
         new ElementFormat(5, VertexAttribPointerType.Float, FormatType.Vector4),
         new ElementFormat(6, VertexAttribPointerType.Float, FormatType.Vector4),
-        new ElementFormat(7, VertexAttribPointerType.Float, FormatType.Vector4)
+        new ElementFormat(7, VertexAttribPointerType.Float, FormatType.Vector4),
+        new ElementFormat(8, VertexAttribPointerType.Float, FormatType.Vector4)
     ]);
 
     public override int GetHashCode() {

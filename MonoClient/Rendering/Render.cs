@@ -44,14 +44,14 @@ public static partial class Render {
         }
         
         // Shaders
-        _shaderGround = ContentReader.LoadShader("Shaders/ShaderGround");
+        _shaderGround = ContentReader.LoadShader("Shaders/Ground");
         _shaderGround.Apply();
         _shaderGround.SetValue("AlphaBlends", alphas);
         _shaderGround.SetValue("GameTexture", Main.Atlas.GetTexture());
 
-        _shaderShadow = ContentReader.LoadShader("Shaders/ShaderShadow");
+        _shaderShadow = ContentReader.LoadShader("Shaders/Shadow");
         
-        _shaderObject = ContentReader.LoadShader("Shaders/ShaderObject");
+        _shaderObject = ContentReader.LoadShader("Shaders/Object");
         _shaderObject.Apply();
         _shaderObject.SetValue("GameTexture", Main.Atlas.GetTexture());
         
@@ -59,17 +59,19 @@ public static partial class Render {
         _shaderObject.SetValue("TextTextureSize", new Vector2(UiRender.MyriadPro.Atlas.Width, UiRender.MyriadPro.Atlas.Height));
         _shaderObject.SetValue("TextTexture", UiRender.MyriadPro.Atlas);
 
-        _shaderParticle = ContentReader.LoadShader("Shaders/ShaderParticle");
+        _shaderParticle = ContentReader.LoadShader("Shaders/Particle");
         _shaderParticle.Apply();
         _shaderParticle.SetValue("GameTexture", Main.Atlas.GetTexture());
-        
+
         // Buffers
         _modelIndexBuffer = new IndexBuffer(ModelData.Indices.Length, BufferUsage.StaticDraw);
+        _modelIndexBuffer.Bind();
         _modelIndexBuffer.SetData(ModelData.Indices);
 
         _modelVertexBuffer = new VertexBuffer<VertexBase>(VertexBase.VertexStride, ModelData.Vertices.Length, BufferUsage.StaticDraw);
+        _modelVertexBuffer.Bind();
         _modelVertexBuffer.SetData(ModelData.Vertices);
-        
+
         _tileVao = GL.GenVertexArray();
         _tileData = new VertexTile[TileBufferSize];
         _tileDataBuffer = new VertexBuffer<VertexTile>(VertexTile.VertexStride, _tileData.Length, BufferUsage.DynamicDraw);
@@ -83,14 +85,13 @@ public static partial class Render {
         _shadowDataBuffer.Bind();
         _modelIndexBuffer.Bind();
         _modelVertexBuffer.Bind();
-        
+ 
         GL.BindVertexArray(_entityVao = GL.GenVertexArray());
         _entityData = new VertexObject[BufferSize];
         _entityDataBuffer = new VertexBuffer<VertexObject>(VertexObject.VertexStride, BufferSize, BufferUsage.DynamicDraw);
         _entityDataBuffer.Bind();
         _modelIndexBuffer.Bind();
         _modelVertexBuffer.Bind();
-        
         
         BuildParticleBuffers();
     }

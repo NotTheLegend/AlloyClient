@@ -108,9 +108,10 @@ public static class AtlasBuilder {
         var height = png.Height;
         var comp = (StbImageWriteSharp.ColorComponents) png.Comp;
         var writer = new ImageWriter();
-        using var fileStream = new FileStream(path, FileMode.Create);
-        writer.WritePng(png.Data, width, height, comp, fileStream);
-
+        using (var fileStream = new FileStream(path, FileMode.Create)) {
+            writer.WritePng(png.Data, width, height, comp, fileStream);
+        }
+        
         stbContext.Dispose();
 
         atlas.File = File.ReadAllBytes(path);
