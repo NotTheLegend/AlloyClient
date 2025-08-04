@@ -22,7 +22,7 @@ public class UiSettings {
 
 public static class UiRender {
 
-    internal static bool IsFocused;
+    internal static bool IsFocused = true;
 
     internal static Stage Stage;
     

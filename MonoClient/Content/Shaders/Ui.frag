@@ -225,7 +225,7 @@ void main() {
     vec4 add = floor(input.ColorTransform / 1000.0);
     vec4 mult = input.ColorTransform - add * 1000.0;
 
-    pixel = clamp(pixel, vec4(0, 0, 0, 0), vec4(1, 1, 1, 1));
+    pixel = clamp(pixel, vec4(0.0), vec4(1.0));
 
     pixel = mult * pixel;
     pixel += add / 255.0;

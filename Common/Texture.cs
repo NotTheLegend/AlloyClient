@@ -16,15 +16,12 @@ public sealed class Texture {
     
     public readonly int Height;
     
-    public Texture(int handle, int width, int height) {
+    private Texture(int handle, int slot, int width, int height) {
         Handle = handle;
+        TextureSlot = slot;
         Width = width;
         Height = height;
         //TODO: add param for filters, and stuff
-        GL.ActiveTexture(IntToTexUnit(_textureCount));
-        GL.BindTexture(TextureTarget.Texture2d, Handle);
-        TextureSlot = _textureCount;
-        _textureCount++;
     }
 
     public void SetData(ReadOnlySpan<Color> data, Vector4i rect) {
@@ -38,15 +35,14 @@ public sealed class Texture {
     }
 
     public static Texture FromStream(Stream stream) {
-        var handle = GL.GenTexture();
-        GL.BindTexture(TextureTarget.Texture2d, handle);
+        var (handle, slot) = CreateHandle();
         
         using var img = StbImage.Load(stream, StbiImageFormat.Rgba);
         
         GL.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, img.Width, img.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, img.ImagePointer);
         GL.GenerateMipmap(TextureTarget.Texture2d);
         
-        return new Texture(handle, img.Width, img.Height);
+        return new Texture(handle, slot, img.Width, img.Height);
     }
 
     public static Texture FromFile(string file) {
@@ -55,12 +51,23 @@ public sealed class Texture {
     }
 
     public static Texture Create(ReadOnlySpan<Color> data, int width, int height) {
-        var handle = GL.GenTexture();
-        GL.BindTexture(TextureTarget.Texture2d, handle);
+        var (handle, slot) = CreateHandle();
         
         GL.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, data);
         GL.GenerateMipmap(TextureTarget.Texture2d);
-        return new Texture(handle, width, height);
+        return new Texture(handle, slot, width, height);
+    }
+
+    private static (int, int) CreateHandle() {
+        var handle = GL.GenTexture();
+        var slot = _textureCount;
+        
+        GL.ActiveTexture(IntToTexUnit(slot));
+        GL.BindTexture(TextureTarget.Texture2d, handle);
+        
+        _textureCount++;
+        
+        return (handle, slot);
     }
 
     private static TextureUnit IntToTexUnit(int value) => value switch {

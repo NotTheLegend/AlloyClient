@@ -17,7 +17,17 @@ public class TestScreen : Screen {
     private readonly Container _container = new(new ContainerConfig { Anchor = UiAnchor.MiddleTop });
     
     public TestScreen() {
-        var background = new ScreenGraphic();
+        //var background = new ScreenGraphic();
+        var background = new ColorRect(new ColorRectConfig {
+            Width = 1280,
+            Height = 720,
+            Anchor = UiAnchor.LeftTop,
+            MouseEnabled = false
+        });
+        background.Color.PackedValue = 0xFFFFFFFF;
+        //background.SetColor(0xFF0000);
+        //background.SetColor(0x00FF00, 1);
+        //background.SetColor(0x0000FF);
         AddChild(background);
         /*
         var editor = new MenuBarButton("editor", FontSize, () => { });
@@ -49,7 +59,7 @@ public class TestScreen : Screen {
         AddChild(_container);
         */
         
-        SetAutoResize(OnResize);
+        //SetAutoResize(OnResize);
     }
 
     protected override void OnResize(ResizeEvent args) {

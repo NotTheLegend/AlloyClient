@@ -233,16 +233,19 @@ public partial class Sprite : EventManager {
     #endregion
 
     internal static void BuildBuffers() {
+        _indices = new ushort[IndexBuffer];
+        _indexBuffer = new IndexBuffer(IndexBuffer, BufferUsage.DynamicDraw);
+        
+        _vertices = new VertexDataUi[VertexBuffer];
+        _vertexBuffer = new VertexBuffer<VertexDataUi>(VertexDataUi.VertexStride, VertexBuffer, BufferUsage.DynamicDraw);
+        
         _vao = GL.GenVertexArray();
         GL.BindVertexArray(_vao);
         
-        _indices = new ushort[IndexBuffer];
-        _indexBuffer = new IndexBuffer(IndexBuffer, BufferUsage.DynamicDraw);
-        _indexBuffer.Bind();
-
-        _vertices = new VertexDataUi[VertexBuffer];
-        _vertexBuffer = new VertexBuffer<VertexDataUi>(VertexDataUi.VertexStride, VertexBuffer, BufferUsage.DynamicDraw);
         _vertexBuffer.Bind();
+        _indexBuffer.Bind();
+        
+        GL.BindVertexArray(0);
     }
 
     private void UpdateBounds() {
@@ -479,8 +482,9 @@ public partial class Sprite : EventManager {
     }
 
     internal void InternalDrawLoop() {
-        UiRender.UiShader.Apply();
         GL.BindVertexArray(_vao);
+        UiRender.UiShader.Apply();
+        
         GL.Disable(EnableCap.DepthTest);
         GL.Disable(EnableCap.StencilTest);
         
@@ -492,8 +496,9 @@ public partial class Sprite : EventManager {
     private static void FlushRenderBuffer() {
         if (_indexCount == 0) return;
         
-        _indexBuffer.SetData(_indices, 0, _indexCount);
         _vertexBuffer.SetData(_vertices, 0, _vertexCount);
+        _indexBuffer.SetData(_indices, 0, _indexCount);
+        
         
         GL.DrawElements(PrimitiveType.Triangles, _indexCount, DrawElementsType.UnsignedShort, 0);
 

@@ -67,6 +67,7 @@ public class Main {
     }
 
     private void Initialize() {
+        GL.Viewport(0, 0, 1280, 720);//TODO: WTF
         Toolkit.Window.SetClientSize(Window, new Vector2i(Settings.ScreenWidth, Settings.ScreenHeight));
         Toolkit.Window.SetTitle(Window, "RealmTk");
         Toolkit.Window.SetMinClientSize(Window, 800, 600);
@@ -82,8 +83,7 @@ public class Main {
         ContentReader.Init(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content"));
     }
     
-    [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH", MessageId = "type: Microsoft.Xna.Framework.Color[]")]
-    [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH", MessageId = "type: System.Byte[]; size: 65MB")]
+    [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH")]
     private void LoadContent() {
         Atlas = ContentReader.LoadAtlas("Game.atlas");
         UiAtlas = ContentReader.LoadAtlas("Ui.atlas");
@@ -112,9 +112,11 @@ public class Main {
         SliceLibrary.Load();
         
         DisplayManager.Init(stage);
+        
+        
 
-        //ScreenManager.FadeToScreen(new LoadingScreen(), Easing.SineInOut, 1000, 0x0);
-        ScreenManager.SetScreen(new TestScreen());
+        ScreenManager.FadeToScreen(new LoadingScreen(), Easing.SineInOut, 1000, 0x0);
+        //ScreenManager.SetScreen(new TestScreen());
     }
 
     private void Update(GameTime gameTime) {
@@ -122,9 +124,7 @@ public class Main {
     }
 
     private void Draw(GameTime gameTime) {
-        GL.Clear(ClearBufferMask.ColorBufferBit);
         DisplayManager.Draw(gameTime);
-        Toolkit.OpenGL.SwapBuffers(Context);
     }
 
     public void ToggleFullScreen() {
@@ -172,15 +172,21 @@ public class Main {
             //TODO: replace 0 with framerate settings
             if (elapsedMs < 0) continue;
             
+            sw.Restart();
+            
             Toolkit.Window.ProcessEvents(false);
             
             if (!_running) break;
 
             totalMs += elapsedMs;
             
-            
             Update(new GameTime(totalMs, elapsedMs));
+            
+            GL.Clear(ClearBufferMask.ColorBufferBit);
+            
             Draw(new GameTime(totalMs, elapsedMs));
+            
+            Toolkit.OpenGL.SwapBuffers(Context);
 
             OpenTK.Core.Utils.AccurateSleep(0, 1);
         }
@@ -197,6 +203,7 @@ public class Main {
                 break;
             case WindowResizeEventArgs e:
                 Camera.SetViewPort(e.NewClientSize);
+                GL.Viewport(0, 0, e.NewClientSize.X, e.NewClientSize.Y);
                 break;
             case MouseMoveEventArgs e:
                 UserInput.SetMousePosition(e.ClientPosition);

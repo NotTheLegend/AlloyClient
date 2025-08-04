@@ -22,7 +22,22 @@ public readonly struct VertexStride {
             var e = Layout[i];
             
             GL.EnableVertexAttribArray(e.Location);
-            GL.VertexAttribPointer(e.Location, (int)e.Format, e.Type, false, Stride, offset);
+
+            switch (e.Type) {
+                case VertexAttribPointerType.Byte:
+                case VertexAttribPointerType.UnsignedByte:
+                case VertexAttribPointerType.Short:
+                case VertexAttribPointerType.UnsignedShort:
+                case VertexAttribPointerType.Int:
+                case VertexAttribPointerType.UnsignedInt:
+                    GL.VertexAttribIPointer(e.Location, (int)e.Format, (VertexAttribIType) e.Type, Stride, offset);
+                    break;
+                default:
+                    GL.VertexAttribPointer(e.Location, (int)e.Format, e.Type, false, Stride, offset);
+                    break;
+            }
+            
+            
             
             if (Instanced)
                 GL.VertexAttribDivisor(e.Location, 1);
