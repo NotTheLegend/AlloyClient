@@ -188,7 +188,6 @@ public sealed class TextInput : Sprite {
                     }
 
                     zero.X += glyph.Advance * _fontScale;
-                    zero.X += Extra1.X / _font.PixelRange * _fontScale * 2;
                     idx += 4;
                     OverridePrimCount += 2;
                     continue;

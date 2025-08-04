@@ -34,26 +34,28 @@ public sealed class Texture {
         GL.TexSubImage2D(TextureTarget.Texture2d, 0, 0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, data);
     }
 
-    public static Texture FromStream(Stream stream) {
+    public static Texture FromStream(Stream stream, TextureFilter filter) {
         var (handle, slot) = CreateHandle();
         
         using var img = StbImage.Load(stream, StbiImageFormat.Rgba);
         
         GL.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, img.Width, img.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, img.ImagePointer);
+        SetFilters(filter);
         GL.GenerateMipmap(TextureTarget.Texture2d);
         
         return new Texture(handle, slot, img.Width, img.Height);
     }
 
-    public static Texture FromFile(string file) {
+    public static Texture FromFile(string file, TextureFilter filter) {
         using var stream = File.Open(file, FileMode.Open);
-        return FromStream(stream);
+        return FromStream(stream, filter);
     }
 
-    public static Texture Create(ReadOnlySpan<Color> data, int width, int height) {
+    public static Texture Create(ReadOnlySpan<Color> data, int width, int height, TextureFilter filter) {
         var (handle, slot) = CreateHandle();
         
         GL.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, data);
+        SetFilters(filter);
         GL.GenerateMipmap(TextureTarget.Texture2d);
         return new Texture(handle, slot, width, height);
     }
@@ -68,6 +70,11 @@ public sealed class Texture {
         _textureCount++;
         
         return (handle, slot);
+    }
+
+    private static void SetFilters(TextureFilter filter) {
+        GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, filter.MagFilter);
+        GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, filter.MinFilter);
     }
 
     private static TextureUnit IntToTexUnit(int value) => value switch {
@@ -110,4 +117,33 @@ public sealed class Texture {
         _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
     };
 
+}
+
+public readonly struct TextureFilter {
+    
+    public static readonly TextureFilter Nearest = new (All.Nearest, All.Nearest);
+    
+    public static readonly TextureFilter Linear = new (All.Linear, All.Linear);
+
+    public readonly int MagFilter;
+
+    public readonly int MinFilter;
+
+    private TextureFilter(All mag, All min) {
+        Check(mag);
+        Check(min);
+        
+        MagFilter = (int)mag;
+        MinFilter = (int)min;
+    }
+    
+    private static void Check(All val) {
+        switch (val) {
+            case All.Nearest:
+            case All.Linear:
+                break;
+            default:
+                throw new Exception("Not a valid texture filter");
+        }
+    }
 }

@@ -16,7 +16,7 @@ public static class MinimapTexture {
     private static int _maxY;
 
     public static void Init(out Texture texture) {
-        _texture = Texture.Create(new ReadOnlySpan<Color>(_data), 4096, 4096);
+        _texture = Texture.Create(new ReadOnlySpan<Color>(_data), 4096, 4096, TextureFilter.Nearest);
         _data = new Color[4096 * 4096];
 
         _minX = _minY = 4096;

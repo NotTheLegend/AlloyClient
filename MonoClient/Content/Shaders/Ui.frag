@@ -1,4 +1,4 @@
-﻿#version 330 core
+﻿#version 330
 
 in VS_OUT {
     vec4 Position1;

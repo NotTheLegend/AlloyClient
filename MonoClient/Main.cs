@@ -75,10 +75,10 @@ public class Main {
         var mode = Settings.Fullscreen ? WindowMode.WindowedFullscreen : WindowMode.Normal;
         Toolkit.Window.SetMode(Window, WindowMode.Normal);
         
-        GL.ClearColor(0.2f, 0.3f, 0.4f, 1.0f);
+        GL.ClearColor(0f, 0f, 0f, 1.0f);
         
         GL.Enable(EnableCap.Blend);
-        GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusDstAlpha);
+        GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
         ContentReader.Init(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content"));
     }
@@ -104,8 +104,8 @@ public class Main {
         UiRender.RegisterTexture(TextureType.GameAtlas, Atlas.GetTexture());
         UiRender.RegisterTexture(TextureType.UiAtlas, UiAtlas.GetTexture());
         UiRender.RegisterTexture(TextureType.Minimap, mapTexture);
-        UiRender.RegisterTexture(TextureType.TitleBackground, ContentReader.LoadTexture("TitleScreen/TitleScreenBackground.png"));
-        UiRender.RegisterTexture(TextureType.TitleGraphic, ContentReader.LoadTexture("TitleScreen/TitleScreenGraphic.png"));
+        UiRender.RegisterTexture(TextureType.TitleBackground, ContentReader.LoadTexture("TitleScreen/TitleScreenBackground.png", TextureFilter.Nearest));
+        UiRender.RegisterTexture(TextureType.TitleGraphic, ContentReader.LoadTexture("TitleScreen/TitleScreenGraphic.png", TextureFilter.Nearest));
         
         Render.FirstTimeInit();
 

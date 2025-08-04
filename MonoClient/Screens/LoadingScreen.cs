@@ -26,6 +26,7 @@ public class LoadingScreen : Screen {
             Text = "Loading...",
             FontSize = 40,
             FontType = FontType.Bold,
+            OutlineThickness = 4,
             X = Settings.DefaultScreenWidth / 2,
             Y = Settings.DefaultScreenHeight - 90,
             Color = 0xFFFFFF,

@@ -20,8 +20,13 @@ public class TitleScreen : TitleScreenBase {
     private readonly Container _container = new(new ContainerConfig { Anchor = UiAnchor.MiddleTop });
     
     public TitleScreen() : base(true) {
+        var editor = new MenuBarButton("editor", FontSize, () => { });
+        editor.SetAnchor(UiAnchor.MiddleLeft);
+        _container.AddChild(editor);
+        
         var servers = new MenuBarButton("servers", FontSize, () => ScreenManager.FadeTo(new ServersTitleScreen()));
         servers.SetAnchor(UiAnchor.MiddleLeft);
+        servers.X = editor.Width + 50;
         _container.AddChild(servers);
         
         var play = new MenuBarButton("play", PlayFontSize, OnPlay, true);

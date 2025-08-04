@@ -117,7 +117,6 @@ public sealed class SimpleText : Sprite {
                     }
 
                     zero.X += glyph.Advance * scale;
-                    zero.X += _outlineThickness / _font.PixelRange * scale * 2;
                     break;
             }
             

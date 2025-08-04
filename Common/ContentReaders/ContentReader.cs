@@ -10,7 +10,7 @@ public static class ContentReader {
         _folder = folder;
     }
     
-    public static Texture LoadTexture(string imagePath) => Texture.FromFile(Path.Combine(_folder, imagePath));
+    public static Texture LoadTexture(string imagePath, TextureFilter filter) => Texture.FromFile(Path.Combine(_folder, imagePath), filter);
 
     public static Atlas LoadAtlas(string path) {
         using var reader = new BinaryReader(new MemoryStream(File.ReadAllBytes(Path.Combine(_folder, path))));

@@ -20,7 +20,7 @@ public class FontFamily {
     internal static FontFamily Read(BinaryReader reader) {
         var png = reader.ReadBytes(reader.ReadInt32());
         using var stream = new MemoryStream(png);
-        var texture = Texture.FromStream(stream);
+        var texture = Texture.FromStream(stream, TextureFilter.Linear);
         
         var fontFamily = new Dictionary<string, FontData>();
         var fontOrder = new string[reader.ReadInt32()];
