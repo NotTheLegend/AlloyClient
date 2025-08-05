@@ -35,6 +35,11 @@ public sealed class UserInput : Sprite {
     private int _moveUp;
 
     public UserInput() {
+        AddEventListener(Event.AddedToStage, AddedToStage);
+        AddEventListener(Event.RemovedFromStage, RemovedFromStage);
+    }
+
+    private void AddedToStage() {
         Stage.AddEventListener(KeyboardEvent.KeyDown, OnKeyDown);
         Stage.AddEventListener(KeyboardEvent.KeyUp, OnKeyUp);
         
@@ -42,6 +47,16 @@ public sealed class UserInput : Sprite {
         Stage.AddEventListener(MouseEvent.LeftUp, OnLeftUp);
         Stage.AddEventListener(MouseEvent.ScrollVertical, OnScroll);
         Stage.AddEventListener(MouseEvent.MiddleClick, OnMiddleClick);
+    }
+    
+    private void RemovedFromStage() {
+        Stage.RemoveEventListener(KeyboardEvent.KeyDown, OnKeyDown);
+        Stage.RemoveEventListener(KeyboardEvent.KeyUp, OnKeyUp);
+        
+        Stage.RemoveEventListener(MouseEvent.LeftDown,OnLeftDown);
+        Stage.RemoveEventListener(MouseEvent.LeftUp, OnLeftUp);
+        Stage.RemoveEventListener(MouseEvent.ScrollVertical, OnScroll);
+        Stage.RemoveEventListener(MouseEvent.MiddleClick, OnMiddleClick);
     }
     
     public static void SetMousePosition(Vector2 pos) => _mousePosition = pos;

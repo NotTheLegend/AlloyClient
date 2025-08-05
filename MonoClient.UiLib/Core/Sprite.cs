@@ -26,7 +26,7 @@ public partial class Sprite : EventManager {
                 return;
 
             if (value == null) {
-                DispatchEvent(new Event(Event.RemovedToStage));
+                DispatchEvent(new Event(Event.RemovedFromStage));
                 
                 if (_autoResize != null) {
                     field.RemoveEventListener(ResizeEvent.Resize, _autoResize);

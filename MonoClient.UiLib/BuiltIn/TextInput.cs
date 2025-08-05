@@ -242,21 +242,45 @@ public sealed class TextInput : Sprite {
     }
 
     //Todo: maybe improve this logic, tis a mess
-    //TODO: this needs to redone now :/
+    //FIXME: TextInput doesnt emit delete key, gotta add event logic for that :/
     internal void OnTextInput(TextInputEventArgs e) {
-        /*if (e.Key == Keys.Back && _inputText.Length > 0 && _caretIndex == -1) {
-            _inputText.Remove(_inputText.Length - 1, 1);
-            FillData();
+        var text = e.Text;
+        
+        if (string.IsNullOrEmpty(text)) return;
+        if (text.Length != 1) return;// this will hide enter key but we dont careeeeeee
+        
+        var c = char.Parse(text);
+        var backspace = c == '\b';
+
+        if (char.IsControl(c) && !backspace) return;
+
+        if (backspace && _inputText.Length > 0) {
+            if (_caretIndex == -1) {
+                _inputText.Remove(_inputText.Length - 1, 1);
+                FillData();
+            } else if (_caretIndex > 0) {
+                _caretIndex--;
+                _inputText.Remove(_caretIndex, 1);
+                FillData();
+            }
             return;
         }
         
-        if (e.Key == Keys.Back && _inputText.Length > 0 && _caretIndex > 0) {
-            _caretIndex--;
-            _inputText.Remove(_caretIndex, 1);
-            FillData();
-            return;
+        if (_inputText.Length == _maxCharacters) return;
+        if (!_font.Glyphs.ContainsKey(c)) return;
+        if (char.IsWhiteSpace(c) && c != ' ') return;
+        //TODO: probably add a regex validator or something too
+        
+        if (_caretIndex == -1) {
+            _inputText.Append(c);
+        } else {
+            _inputText.Insert(_caretIndex, c);
+            _caretIndex++;
         }
         
+        FillData();
+
+        /*
         if (e.Key == Keys.Delete && _caretIndex < _inputText.Length && _caretIndex >= 0) {
             _inputText.Remove(_caretIndex, 1);
             FillData();
@@ -264,26 +288,7 @@ public sealed class TextInput : Sprite {
                 _caretIndex = -1;
             return;
         }
-
-        if (_inputText.Length == _maxCharacters) {
-            return;
-        }
-
-        if (char.IsWhiteSpace(e.Character) && e.Character != ' ') {
-            return;
-        }
-        
-        // TODO: probably add a regex validator or something
-        
-        if (_caretIndex == -1) {
-            _inputText.Append(e.Character);
-        }
-        else {
-            _inputText.Insert(_caretIndex, e.Character);
-            _caretIndex++;
-        }
-        
-        FillData();*/
+        */
     }
     
     public void Focus() {

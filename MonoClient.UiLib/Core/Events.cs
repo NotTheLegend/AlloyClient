@@ -21,7 +21,7 @@ public record Event(string Type, bool Bubbles = false) {
     public void StopImmediatePropagation() => ImmediateStop = true;
     
     public const string AddedToStage = "addedToStage";
-    public const string RemovedToStage = "removedToStage";
+    public const string RemovedFromStage = "removedFromStage";
 }
 
 /// <summary>

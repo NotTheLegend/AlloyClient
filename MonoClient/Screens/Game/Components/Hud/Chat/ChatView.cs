@@ -61,7 +61,7 @@ public class ChatView : Sprite {
         _chatBox.Visible = false;
 
         AddEventListener(Event.AddedToStage, AddHandlers);
-        AddEventListener(Event.RemovedToStage, RemoveHandlers);
+        AddEventListener(Event.RemovedFromStage, RemoveHandlers);
     }
 
     private void AddHandlers() {

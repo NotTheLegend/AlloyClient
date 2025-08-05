@@ -10,7 +10,7 @@ public abstract class Panel : Sprite {
     protected Panel() {
         SetBaseDimensions(218, 110);
         AddEventListener(Event.AddedToStage, () => { OnInteract.Add(OnInteractKey); });
-        AddEventListener(Event.RemovedToStage, () => { OnInteract.Remove(OnInteractKey); });
+        AddEventListener(Event.RemovedFromStage, () => { OnInteract.Remove(OnInteractKey); });
     }
 
     protected virtual void OnInteractKey() {
