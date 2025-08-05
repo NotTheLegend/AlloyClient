@@ -69,15 +69,15 @@ public static class Camera {
         var s1 = MathF.Sin(CameraAngle - MathHelper.PiOver2);
 
         ViewMatrix = CreateLookAt(Position, _lookAt, new Vector3(0f, 1f, 0f));
-        ViewMatrix[0, 2] = s;
-        ViewMatrix[1, 2] = s1;
+        ViewMatrix[2, 0] = s;
+        ViewMatrix[2, 1] = s1;
         ViewMatrix[2, 2] = -1f;
         ViewMatrix *= Matrix4.CreateRotationZ(-CameraAngle);
         ViewMatrix *= ZoomMatrix;
 
         BillboardMatrix[0, 0] = c;
-        BillboardMatrix[1, 0] = -s;
-        BillboardMatrix[0, 1] = s;
+        BillboardMatrix[0, 1] = -s;
+        BillboardMatrix[1, 0] = s;
         BillboardMatrix[1, 1] = c;
 
         VisibleTileRadius = new Vector2((Settings.ScreenWidth - HudOffset) / Settings.CameraZoom, Settings.ScreenHeight / Settings.CameraZoom);
