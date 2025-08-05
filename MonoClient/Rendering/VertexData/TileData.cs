@@ -7,7 +7,7 @@ using OpenTK.Mathematics;
 namespace MonoClient.Rendering.VertexData;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct VertexTile(Vector4 posOffset, Vector4 uv, Vector4 animate, Vector4 blendLeftRight, Vector4 blendTopBottom, Vector4 cornerBottom, Vector4 cornerTop) : IVertexData, IEquatable<VertexTile> {
+public struct TileData(Vector4 posOffset, Vector4 uv, Vector4 animate, Vector4 blendLeftRight, Vector4 blendTopBottom, Vector4 cornerBottom, Vector4 cornerTop) : IBufferData, IEquatable<TileData> {
 
     public Vector4 Position = posOffset;
     public Vector4 UV = uv;
@@ -17,15 +17,7 @@ public struct VertexTile(Vector4 posOffset, Vector4 uv, Vector4 animate, Vector4
     public Vector4 CornerBottom = cornerBottom;
     public Vector4 CornerTop = cornerTop;
     
-    public static VertexStride VertexStride { get; } = new([
-        new ElementFormat(2, VertexAttribPointerType.Float, FormatType.Vector4),
-        new ElementFormat(3, VertexAttribPointerType.Float, FormatType.Vector4),
-        new ElementFormat(4, VertexAttribPointerType.Float, FormatType.Vector4),
-        new ElementFormat(5, VertexAttribPointerType.Float, FormatType.Vector4),
-        new ElementFormat(6, VertexAttribPointerType.Float, FormatType.Vector4),
-        new ElementFormat(7, VertexAttribPointerType.Float, FormatType.Vector4),
-        new ElementFormat(8, VertexAttribPointerType.Float, FormatType.Vector4),
-    ], true);
+    public static unsafe int Size { get; } = sizeof(TileData);
 
     public override int GetHashCode() {
         return (((((Position.GetHashCode() * 397 ^ UV.GetHashCode())
@@ -40,7 +32,7 @@ public struct VertexTile(Vector4 posOffset, Vector4 uv, Vector4 animate, Vector4
         return "{{TextureCoordinate:" + UV + "}}";
     }
 
-    public static bool operator ==(VertexTile left, VertexTile right) {
+    public static bool operator ==(TileData left, TileData right) {
         return left.UV == right.UV &&
                left.Position == right.Position &&
                left.Animate == right.Animate &&
@@ -50,15 +42,15 @@ public struct VertexTile(Vector4 posOffset, Vector4 uv, Vector4 animate, Vector4
                left.CornerTop == right.CornerTop;
     }
 
-    public static bool operator !=(VertexTile left, VertexTile right) {
+    public static bool operator !=(TileData left, TileData right) {
         return !(left == right);
     }
 
     public override bool Equals(object obj) {
-        return obj != null && !(obj.GetType() != GetType()) && this == (VertexTile)obj;
+        return obj != null && !(obj.GetType() != GetType()) && this == (TileData)obj;
     }
 
-    public bool Equals(VertexTile other) {
+    public bool Equals(TileData other) {
         return Position.Equals(other.Position) && UV.Equals(other.UV) && Animate.Equals(other.Animate) && 
                BlendLeftRight.Equals(other.BlendLeftRight) && BlendTopBottom.Equals(other.BlendTopBottom) && 
                CornerBottom.Equals(other.CornerBottom) && CornerTop.Equals(other.CornerTop);

@@ -15,3 +15,6 @@
 
 # Rendering Todo
 - switch to dsa calls
+
+# Bugs
+- chat key softlocks you lmao

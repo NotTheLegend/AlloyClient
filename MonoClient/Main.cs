@@ -61,9 +61,14 @@ public class Main {
         //vsync control, 0 = off, 1 = on
         Toolkit.OpenGL.SetSwapInterval(0);
         
-        
         Initialize();
         LoadContent();
+        return;
+        
+        void OnDebugMessage(DebugSource source, DebugType type, uint id, DebugSeverity severity, int length, nint pmessage, nint userParam) {
+            var message = Marshal.PtrToStringAnsi(pmessage, length);
+            Console.WriteLine("[{0} source={1} type={2} id={3}] {4}", severity, source, type, id, message);
+        }
     }
 
     private void Initialize() {
@@ -214,10 +219,5 @@ public class Main {
     public void Exit() {
         Toolkit.Window.Destroy(Window);
         _running = false;
-    }
-    
-    public void OnDebugMessage(DebugSource source, DebugType type, uint id, DebugSeverity severity, int length, nint pmessage, nint userParam) {
-        var message = Marshal.PtrToStringAnsi(pmessage, length);
-        Console.WriteLine("[{0} source={1} type={2} id={3}] {4}", severity, source, type, id, message);
     }
 }

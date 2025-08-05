@@ -1,11 +1,9 @@
-﻿#version 330
+﻿#version 450 core
 
 out vec4 FragColor;
 
-in VS {
-    vec2 BaseUV;
-    flat uint Color;
-} input;
+in vec2 BaseUV;
+in flat uint Color;
 
 // ABGR
 vec3 unpackColor(uint color) {
@@ -17,9 +15,10 @@ vec3 unpackColor(uint color) {
 }
 
 void main() {
-    float dx = 0.5 - input.BaseUV.x, dy = 0.5 - input.BaseUV.y;
+    float dx = 0.5 - BaseUV.x, dy = 0.5 - BaseUV.y;
     float dist = dx * dx + dy * dy;
     float distFromCenter = 0.25 - dist;
-    FragColor = vec4(unpackColor(input.Color), distFromCenter * 1.5);
+    
+    FragColor = vec4(unpackColor(Color), distFromCenter * 1.5);
 }
 

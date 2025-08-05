@@ -1,5 +1,4 @@
-﻿using System;
-using MonoClient.Assets;
+﻿using MonoClient.Assets;
 using MonoClient.Rendering.VertexData;
 using OpenTK.Graphics.OpenGL;
 
@@ -17,28 +16,29 @@ public static partial class Render {
 
     #region Render Tile
 
-    public static void StartDrawTile() {
+    public static void StartNewDrawTile() {
         LastDrawCountTiles = 0;
         _tileCount = 0;
     }
 
-    public static void DrawTile(VertexTile data) {
+    public static void DrawNewTile(TileData data) {
         _tileData[_tileCount] = data;
         _tileCount++;
     }
 
-    public static void EndDrawTile() {
-        _tileDataBuffer.SetData(_tileData);
+    public static void EndNewDrawTile() {
+        _tileBuffer.SetDataOnce(_tileData);
     }
 
-    public static void FlushBufferTile() {
+    public static void DrawTiles() {
         LastDrawCountTiles = _tileCount;
-
-        var info = ModelData.ModelRenderInfo[ModelType.PbTile];
+        
+        GL.BindVertexArray(_defaultVao);
+        
         _shaderGround.Apply();
-        GL.BindVertexArray(_tileVao);
-        //TODO: i think this is right, but i could be way off
-        GL.DrawElementsInstanced(PrimitiveType.Triangles, info.PrimitiveCount * 3, DrawElementsType.UnsignedShort, info.IndexOffset * 2, _tileCount);
+        _tileBuffer.BindToIndex(0);
+        
+        GL.DrawArrays(PrimitiveType.Triangles, 0, _tileCount * 6);
     }
 
     #endregion
@@ -49,11 +49,12 @@ public static partial class Render {
         LastDrawCountShadows = 0;
         _shadowCount = 0;
 
+        GL.BindVertexArray(_defaultVao);
+        _shadowBuffer.BindToIndex(0);
         _shaderShadow.Apply();
-        GL.BindVertexArray(_shadowVao);
     }
 
-    public static void DrawShadow(VertexShadow shadow) {
+    public static void DrawShadow(ShadowData shadow) {
         _shadowData[_shadowCount] = shadow;
         _shadowCount++;
 
@@ -62,15 +63,21 @@ public static partial class Render {
         }
     }
 
-    public static void FlushBufferShadow() {
-        if (_shadowCount == 0) {
-            return;
-        }
+    private static void FlushBufferShadow() {
+        _shadowBuffer.SetData(_shadowData, 0, _shadowCount);
+        
+        GL.DrawArrays(PrimitiveType.Triangles, 0, _shadowCount * 6);
+        
+        LastDrawCountShadows += _shadowCount;
+        _shadowCount = 0;
+    }
 
-        _shadowDataBuffer.SetData(_shadowData, 0, _shadowCount);
+    public static void EndShadowDraw() {
+        if (_shadowCount == 0) return;
 
-        var info = ModelData.ModelRenderInfo[ModelType.PbObject];
-        GL.DrawElementsInstanced(PrimitiveType.Triangles, info.PrimitiveCount * 3, DrawElementsType.UnsignedShort, info.IndexOffset * 2, _shadowCount);
+        _shadowBuffer.SetDataOnce(_shadowData, 0, _shadowCount);
+        
+        GL.DrawArrays(PrimitiveType.Triangles, 0, _shadowCount * 6);
 
         LastDrawCountShadows += _shadowCount;
         _shadowCount = 0;

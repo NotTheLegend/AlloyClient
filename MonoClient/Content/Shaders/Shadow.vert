@@ -1,26 +1,54 @@
-﻿#version 330
+﻿#version 450 core
 
 uniform mat4x4 WorldMatrix;
 uniform mat4x4 ViewMatrix;
 uniform mat4x4 ProjMatrix;
 
-layout(location = 0) in vec3 BasePosition;
-layout(location = 1) in vec2 BaseUV;
-layout(location = 2) in vec3 Position;
-layout(location = 3) in vec2 Scale;
-layout(location = 4) in uint Color;
+const vec2 shadowPos[6] = vec2[6](
+    vec2(-0.5, 0.5),
+    vec2(0.5, 0.5),
+    vec2(-0.5, -0.5),
+    vec2(-0.5, -0.5),
+    vec2(0.5, 0.5),
+    vec2(0.5, -0.5)
+);
 
-out VS {
-    vec2 BaseUV;
-    flat uint Color;
-} output;
+const vec2 shadowUV[6] = vec2[6](
+    vec2(0.0, 1.0),
+    vec2(1.0, 1.0),
+    vec2(0.0, 0.0),
+    vec2(0.0, 0.0),
+    vec2(1.0, 1.0),
+    vec2(1.0, 0.0)
+);
+
+struct InstanceData {
+    vec4 Position;
+    vec2 Scale;
+    uint Color;
+    float Padding;
+};
+
+layout(std140, binding = 0) readonly buffer InstanceBuffer {
+    InstanceData data[];
+} instanceBuffer;
+
+out vec2 BaseUV;
+out flat uint Color;
 
 void main() {
-    vec3 pos = BasePosition;
-    pos.xy *= Scale;
-    pos.xyz += Position.xyz;
+    int instanceId = gl_VertexID / 6;
+    int verId = gl_VertexID % 6;
     
-    gl_Position = vec4(pos, 1.0) * WorldMatrix * ViewMatrix * ProjMatrix;
-    output.BaseUV = BaseUV;
-    output.Color = Color;
+    InstanceData data = instanceBuffer.data[instanceId];
+    
+    vec2 pos = shadowPos[verId];
+    pos.x *= data.Scale.x;
+    pos.y *= data.Scale.y;
+    pos.xy += data.Position.xy;
+    
+    gl_Position = vec4(pos.xy, data.Position.z, 1.0) * WorldMatrix * ViewMatrix * ProjMatrix;
+    
+    BaseUV = shadowUV[verId];
+    Color = data.Color;
 }

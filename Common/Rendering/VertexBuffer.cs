@@ -2,9 +2,7 @@
 
 namespace Common.Rendering;
 
-public interface IVertexData {
-    public static VertexStride VertexStride { get; }
-}
+public interface IVertexData;
 
 public sealed unsafe class VertexBuffer<T> where T : unmanaged, IVertexData {
 

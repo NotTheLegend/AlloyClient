@@ -48,7 +48,7 @@ public class MapTile(int x, int y) {
     }
 
     public void DrawTile() {
-        Render.DrawTile(new VertexTile(_positionOffset, _uv, _animate, _blendLeftRight, _blendTopBottom, _cornerBottom, _cornerTop));
+        Render.DrawNewTile(new TileData(_positionOffset, _uv, _animate, _blendLeftRight, _blendTopBottom, _cornerBottom, _cornerTop));
     }
 
     public void SetType(ushort type) {

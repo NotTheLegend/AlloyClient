@@ -83,6 +83,6 @@ public sealed class TypeGameObject : RenderBase {
 
     public override void DrawShadow() {
         if (Entity.Size == 0) return;
-        Render.DrawShadow(new VertexShadow(Position, new Vector2(0.5f, 0.25f), Color.Black));
+        Render.DrawShadow(new ShadowData(Position, new Vector2(1f, 0.5f), Color.Black));
     }
 }

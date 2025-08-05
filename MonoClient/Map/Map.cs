@@ -117,7 +117,7 @@ public static class Map {
                 _lastX = (int) LocalPlayer.Position.X;
                 _lastY = (int) LocalPlayer.Position.Y;
 
-                Render.StartDrawTile();
+                Render.StartNewDrawTile();
 
                 for (var x = -TileRenderDistance; x < TileRenderDistance; x++) {
                     for (var y = -TileRenderDistance; y < TileRenderDistance; y++) {
@@ -129,12 +129,13 @@ public static class Map {
                     }
                 }
 
-                Render.EndDrawTile();
+                Render.EndNewDrawTile();
             }
 
-            Render.FlushBufferTile();
+            Render.DrawTiles();
 
             #endregion
+            
 
             #region GroundObjects
 
@@ -161,10 +162,12 @@ public static class Map {
                     type.DrawShadow();
                 }
 
-                Render.FlushBufferShadow();
+                Render.EndShadowDraw();
             }
 
             #endregion
+
+            return;
 
             GL.Enable(EnableCap.DepthTest);
 

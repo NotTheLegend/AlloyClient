@@ -20,17 +20,17 @@ public static partial class Render {
     private static Shader _shaderObject;
     private static Shader _shaderParticle;
 
+    private static int _defaultVao;
+
     // Buffers
     private static IndexBuffer _modelIndexBuffer;
     private static VertexBuffer<VertexBase> _modelVertexBuffer;
-
-    private static int _tileVao;
-    private static VertexTile[] _tileData;
-    private static VertexBuffer<VertexTile> _tileDataBuffer;
     
-    private static int _shadowVao;
-    private static VertexShadow[] _shadowData;
-    private static VertexBuffer<VertexShadow> _shadowDataBuffer;
+    private static TileData[] _tileData;
+    private static StorageBuffer<TileData> _tileBuffer;
+    
+    private static ShadowData[] _shadowData;
+    private static StorageBuffer<ShadowData> _shadowBuffer;
     
     private static int _entityVao;
     private static VertexObject[] _entityData;
@@ -62,6 +62,17 @@ public static partial class Render {
         _shaderParticle = ContentReader.LoadShader("Shaders/Particle");
         _shaderParticle.Apply();
         _shaderParticle.SetValue("GameTexture", Main.Atlas.GetTexture());
+        
+        _defaultVao = GL.GenVertexArray();
+        
+        _tileData = new TileData[TileBufferSize];
+        _tileBuffer = new StorageBuffer<TileData>(TileData.Size, _tileData.Length, BufferUsage.DynamicDraw);
+
+        _shadowData = new ShadowData[BufferSize];
+        _shadowBuffer = new StorageBuffer<ShadowData>(ShadowData.Size, _shadowData.Length, BufferUsage.DynamicDraw);
+        
+        
+        return;
 
         // Buffers
         _modelIndexBuffer = new IndexBuffer(ModelData.Indices.Length, BufferUsage.StaticDraw);
@@ -71,20 +82,6 @@ public static partial class Render {
         _modelVertexBuffer = new VertexBuffer<VertexBase>(VertexBase.VertexStride, ModelData.Vertices.Length, BufferUsage.StaticDraw);
         _modelVertexBuffer.Bind();
         _modelVertexBuffer.SetData(ModelData.Vertices);
-
-        _tileVao = GL.GenVertexArray();
-        _tileData = new VertexTile[TileBufferSize];
-        _tileDataBuffer = new VertexBuffer<VertexTile>(VertexTile.VertexStride, _tileData.Length, BufferUsage.DynamicDraw);
-        _tileDataBuffer.Bind();
-        _modelIndexBuffer.Bind();
-        _modelVertexBuffer.Bind();
-        
-        _shadowVao = GL.GenVertexArray();
-        _shadowData = new VertexShadow[BufferSize];
-        _shadowDataBuffer = new VertexBuffer<VertexShadow>(VertexShadow.VertexStride, BufferSize, BufferUsage.DynamicDraw);
-        _shadowDataBuffer.Bind();
-        _modelIndexBuffer.Bind();
-        _modelVertexBuffer.Bind();
  
         GL.BindVertexArray(_entityVao = GL.GenVertexArray());
         _entityData = new VertexObject[BufferSize];

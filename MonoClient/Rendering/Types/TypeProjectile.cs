@@ -50,6 +50,6 @@ public sealed class TypeProjectile : RenderBase {
     }
 
     public override void DrawShadow() {
-        Render.DrawShadow(new VertexShadow(Position, new Vector2(0.5f, 0.25f), Color.Black));
+        Render.DrawShadow(new ShadowData(Position, new Vector2(0.5f, 0.25f), Color.Black));
     }
 }
