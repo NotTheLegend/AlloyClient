@@ -3,6 +3,7 @@
 uniform mat4x4 WorldMatrix;
 uniform mat4x4 ViewMatrix;
 uniform mat4x4 ProjMatrix;
+uniform mat4x4 BillMatrix;
 
 const vec2 shadowPos[6] = vec2[6](
     vec2(-0.5, 0.5),
@@ -42,12 +43,10 @@ void main() {
     
     InstanceData data = instanceBuffer.data[instanceId];
     
-    vec2 pos = shadowPos[verId];
-    pos.x *= data.Scale.x;
-    pos.y *= data.Scale.y;
-    pos.xy += data.Position.xy;
+    vec4 pos = vec4(shadowPos[verId] * data.Scale, 0, 1) * BillMatrix;
+    pos.xyz += data.Position.xyz;
     
-    gl_Position = vec4(pos.xy, data.Position.z, 1.0) * WorldMatrix * ViewMatrix * ProjMatrix;
+    gl_Position = pos * WorldMatrix * ViewMatrix * ProjMatrix;
     
     BaseUV = shadowUV[verId];
     Color = data.Color;

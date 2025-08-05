@@ -102,6 +102,7 @@ public static partial class Render {
         _shaderShadow.SetValue("WorldMatrix", Camera.WorldMatrix);
         _shaderShadow.SetValue("ViewMatrix", Camera.ViewMatrix);
         _shaderShadow.SetValue("ProjMatrix", Camera.ProjectionMatrix);
+        _shaderShadow.SetValue("BillMatrix", Camera.BillboardMatrix);
         
         _shaderObject.Apply();
         _shaderObject.SetValue("WorldMatrix", Camera.WorldMatrix);

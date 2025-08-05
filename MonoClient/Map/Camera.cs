@@ -75,6 +75,7 @@ public static class Camera {
         ViewMatrix *= Matrix4.CreateRotationZ(-CameraAngle);
         ViewMatrix *= ZoomMatrix;
 
+        //TODO: make bb mat a 2x2 instead of 4x4 
         BillboardMatrix[0, 0] = c;
         BillboardMatrix[0, 1] = -s;
         BillboardMatrix[1, 0] = s;
