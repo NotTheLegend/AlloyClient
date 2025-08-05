@@ -1,30 +1,54 @@
-﻿#version 330
+﻿#version 450 core
 
 uniform mat4x4 WorldMatrix;
 uniform mat4x4 ViewMatrix;
 uniform mat4x4 ProjMatrix;
 uniform mat4x4 BillMatrix;
 
-layout(location = 0) in vec3 BasePosition;
-layout(location = 1) in vec2 BaseUV;
-layout(location = 2) in vec3 Position;
-layout(location = 3) in vec4 Color;
+const vec2 particlePos[6] = vec2[6](
+    vec2(-0.1, 0.1),
+    vec2(0.1, 0.1),
+    vec2(-0.1, -0.1),
+    vec2(-0.1, -0.1),
+    vec2(0.1, 0.1),
+    vec2(0.1, -0.1)
+);
 
-out VS {
-    vec2 BaseUV;
+const vec2 particleUV[6] = vec2[6](
+    vec2(0.0, 1.0),
+    vec2(1.0, 1.0),
+    vec2(0.0, 0.0),
+    vec2(0.0, 0.0),
+    vec2(1.0, 1.0),
+    vec2(1.0, 0.0)
+);
+
+struct InstanceData {
+    vec4 Position;
     vec4 Color;
-    float Depth;
-} output;
+};
+
+layout(std140, binding = 0) readonly buffer InstanceBuffer {
+    InstanceData data[];
+} instanceBuffer;
+
+out vec2 BaseUV;
+out vec4 Color;
+out float Depth;
 
 void main() {
-    mat4x4 billboard = BillMatrix;
-    billboard[0][3] = Position.x;
-    billboard[1][3] = Position.y;
-    billboard[2][3] = Position.z;
+    int instanceId = gl_VertexID / 6;
+    int verId = gl_VertexID % 6;
+    
+    InstanceData data = instanceBuffer.data[instanceId];
+    
+    vec4 pos = vec4(particlePos[verId], 0, 1.0) * BillMatrix;
+    pos.xyz += data.Position.xyz;
 
-    gl_Position = vec4(BasePosition, 1.0) * billboard * WorldMatrix * ViewMatrix * ProjMatrix;
-    output.BaseUV = BaseUV;
-    output.Color = Color;
-    vec4 depth = vec4(Position.xy, 0, 1) * WorldMatrix * ViewMatrix * ProjMatrix;
-    output.Depth = 0.5f + 0.4f * depth.y;
+    gl_Position = pos * WorldMatrix * ViewMatrix * ProjMatrix;
+    BaseUV = particleUV[verId];
+    Color = data.Color;
+    
+    vec4 depth = vec4(data.Position.xy, 0, 1) * WorldMatrix * ViewMatrix * ProjMatrix;
+    Depth = 0.5f + 0.4f * depth.y;
 }

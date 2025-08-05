@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Common.Rendering;
-using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
 namespace MonoClient.Rendering.VertexData;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct VertexParticle(Vector3 position, Vector4 color) : IVertexData, IEquatable<VertexParticle> {
-    public Vector3 Position = position;
+public struct ParticleData(Vector3 position, Vector4 color) : IBufferData, IEquatable<ParticleData> {
+    public Vector4 Position = new Vector4(position, 0);
     public Vector4 Color = color;
     
-    public static VertexStride VertexStride { get; } = new([
-        new ElementFormat(2, VertexAttribPointerType.Float, FormatType.Vector3),
-        new ElementFormat(3, VertexAttribPointerType.Float, FormatType.Vector4)
-    ], true);
+    public static unsafe int Size { get; } = sizeof(ParticleData);
 
     public override int GetHashCode() {
         return Position.GetHashCode() * 397 ^ Color.GetHashCode();
@@ -24,19 +20,19 @@ public struct VertexParticle(Vector3 position, Vector4 color) : IVertexData, IEq
         return "{{Position:" + Position + " TextureCoordinate:" + Color + "}}";
     }
 
-    public static bool operator ==(VertexParticle left, VertexParticle right) {
+    public static bool operator ==(ParticleData left, ParticleData right) {
         return left.Position == right.Position && left.Color == right.Color;
     }
 
-    public static bool operator !=(VertexParticle left, VertexParticle right) {
+    public static bool operator !=(ParticleData left, ParticleData right) {
         return !(left == right);
     }
 
     public override bool Equals(object obj) {
-        return obj != null && !(obj.GetType() != GetType()) && this == (VertexParticle)obj;
+        return obj != null && !(obj.GetType() != GetType()) && this == (ParticleData)obj;
     }
 
-    public bool Equals(VertexParticle other) {
+    public bool Equals(ParticleData other) {
         return Position.Equals(other.Position) && Color.Equals(other.Color);
     }
 }

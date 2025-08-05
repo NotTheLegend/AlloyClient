@@ -71,7 +71,7 @@ public static partial class Render {
         _shadowData = new ShadowData[BufferSize];
         _shadowBuffer = new StorageBuffer<ShadowData>(ShadowData.Size, _shadowData.Length, BufferUsage.DynamicDraw);
         
-        
+        BuildParticleBuffers();
         return;
 
         // Buffers
@@ -89,8 +89,6 @@ public static partial class Render {
         _entityDataBuffer.Bind();
         _modelIndexBuffer.Bind();
         _modelVertexBuffer.Bind();
-        
-        BuildParticleBuffers();
     }
     
     public static void SetShaderParams(GameTime gameTime) {

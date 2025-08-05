@@ -53,7 +53,7 @@ public static class Map {
     private static readonly object DrawLock = new();
 
     private static int _particleCount;
-    private static readonly VertexParticle[] Particles = new VertexParticle[30000];
+    private static readonly ParticleData[] Particles = new ParticleData[30000];
 
     public static void InitMap(int width, int height, string name, string display, int diff, uint seed, int background, bool allowTp, bool showDisplays) {
         Width = width;
@@ -101,7 +101,6 @@ public static class Map {
     public static void Draw(GameTime gameTime) {
         lock (DrawLock) {
             GL.Disable(EnableCap.DepthTest);
-            GL.Disable(EnableCap.StencilTest);
 
             if (LocalPlayer == null) {
                 return;
@@ -167,9 +166,9 @@ public static class Map {
 
             #endregion
 
-            return;
+            //return;
 
-            GL.Enable(EnableCap.DepthTest);
+            //GL.Enable(EnableCap.DepthTest);
 
             #region Particles
             
@@ -177,6 +176,8 @@ public static class Map {
 
             #endregion
 
+            return;
+            
             #region Entities
 
             Render.StartDrawEntity();
@@ -284,7 +285,7 @@ public static class Map {
         EntityStorage.Add(proj);
     }
 
-    public static void AddParticles(VertexParticle[] particles, int count) {
+    public static void AddParticles(ParticleData[] particles, int count) {
         if (_particleCount + count > Particles.Length)
             count = Particles.Length - _particleCount;
 

@@ -10,7 +10,7 @@ public class HitEffect : ParticleEffect
 {
     private const int Buffer = 10;
     private readonly HitParticle[] _data = new HitParticle[Buffer];
-    private readonly VertexParticle[] _particles = new VertexParticle[Buffer];
+    private readonly ParticleData[] _particles = new ParticleData[Buffer];
     
     private readonly Entity _parent;
 
@@ -38,7 +38,7 @@ public class HitEffect : ParticleEffect
             var dy = (float)(Random.Shared.NextDouble() * 2 - 1);
 
             _data[_count] = new HitParticle(dx, dy);
-            _particles[_count] = new VertexParticle(new Vector3(_parent.Position.X, _parent.Position.Y, 0.5f), _color);
+            _particles[_count] = new ParticleData(new Vector3(_parent.Position.X, _parent.Position.Y, 0.5f), _color);
 
             _count++;
         }

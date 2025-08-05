@@ -171,6 +171,8 @@ public class Main {
         var sw = Stopwatch.StartNew();
         var totalMs = 0d;
         
+        GL.Disable(EnableCap.StencilTest);
+        
         while (true) {
             var elapsedMs = sw.Elapsed.TotalMilliseconds;
             
@@ -187,7 +189,7 @@ public class Main {
             
             Update(new GameTime(totalMs, elapsedMs));
             
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             
             Draw(new GameTime(totalMs, elapsedMs));
             

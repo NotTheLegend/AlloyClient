@@ -1,24 +1,22 @@
-﻿#version 330
+﻿#version 450 core
 
 uniform sampler2D atlas;
 
 out vec4 FragColor;
 
-in VS {
-    vec2 BaseUV;
-    vec4 Color;
-    float Depth;
-} input;
+in vec2 BaseUV;
+in vec4 Color;
+in float Depth;
 
 void main() {
-    gl_FragDepth = input.Depth;
+    gl_FragDepth = Depth;
     
-    if (input.BaseUV.x < 0.1 || input.BaseUV.x > 0.9 || input.BaseUV.y < 0.1 || input.BaseUV.y > 0.9) {
+    if (BaseUV.x < 0.1 || BaseUV.x > 0.9 || BaseUV.y < 0.1 || BaseUV.y > 0.9) {
         FragColor = vec4(0, 0, 0, 1);
-    } else if (input.Color.w > -1) {
-        FragColor = texture(atlas, input.Color.xy);
+    } else if (Color.w > -1) {
+        FragColor = texture(atlas, Color.xy);
     } else {
-        FragColor = vec4(input.Color.xyz, 1);
+        FragColor = vec4(Color.xyz, 1);
     }
 }
 

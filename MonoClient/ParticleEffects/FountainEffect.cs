@@ -11,7 +11,7 @@ public class FountainEffect : ParticleEffect {
     private const int Buffer = 50;
 
     private int _count;
-    private readonly VertexParticle[] _particles = new VertexParticle[Buffer];
+    private readonly ParticleData[] _particles = new ParticleData[Buffer];
     private readonly FountainParticle[] _data = new FountainParticle[Buffer];
 
     private readonly Entity _parent;
@@ -35,7 +35,7 @@ public class FountainEffect : ParticleEffect {
             if (_count == Buffer) break;
             
             _data[_count] = new FountainParticle(time);
-            _particles[_count] = new VertexParticle(SetStartPosition(_data[_count], time), _color);
+            _particles[_count] = new ParticleData(SetStartPosition(_data[_count], time), _color);
             
             _count++;
         }
