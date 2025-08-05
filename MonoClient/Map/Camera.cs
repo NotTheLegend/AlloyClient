@@ -113,7 +113,7 @@ public static class Camera {
         var mat = Matrix4.Invert(WorldMatrix * ViewMatrix * ProjectionMatrix);
         
         var x = MathUtils.Map(mouse.X, 0, Viewport.X, -1, 1);
-        var y = MathUtils.Map(mouse.Y, 0, Viewport.Y, -1, 1);
+        var y = MathUtils.Map(mouse.Y, Viewport.Y, 0, -1, 1);
         
         var near = new Vector3(x, y, 0);
         var far = new Vector3(x, y, 1);
