@@ -5,17 +5,17 @@ uniform mat4 ViewMatrix;
 uniform mat4 ProjMatrix;
 uniform mat4 BillMatrix;
 
-layout (location = 0) in vec4 Position;
+layout (location = 0) in vec3 Position;
 layout (location = 1) in vec2 BaseUV;
 
-layout (location = 2) in vec4 iPosition;
+layout (location = 2) in vec3 iPosition;
 layout (location = 3) in vec4 iUV;
 layout (location = 4) in vec4 iScale;
 layout (location = 5) in vec4 iRotation;
 layout (location = 6) in vec4 iExtra;
 layout (location = 7) in vec4 iColor;
-layout (location = 8) in vec4 iMask1;
-layout (location = 9) in vec4 iMask2;
+//layout (location = 8) in vec4 iMask1;
+//layout (location = 9) in vec4 iMask2;
 
 out VS_OUT {
     vec2 BaseUV;
@@ -33,48 +33,41 @@ const float TypeWall = 2.0;
 const float TypeText = 3.0;
 const float TypeBar = 4.0;
 
-vec4 GetPosition(vec4 position, vec4 dataPosition, vec4 dataScale, vec4 dataRotation, vec4 dataExtra) {
+vec4 GetPosition(vec3 position, vec3 dataPosition, vec4 dataScale, vec4 rot, vec4 dataExtra) {
     float id = dataExtra.x;
     if (id == TypeGameObject || id == TypeText || id == TypeBar) {
+        vec4 pos = vec4(0);
+        
         position.xy *= dataScale.xy;
-        vec4 rot = dataRotation;
+        
         mat4 rotate = mat4(
-        rot.y * rot.z, -rot.x * rot.z, 0, 0,
-        rot.x * rot.z, rot.y * rot.z, 0, 0,
-        0, 0, 1, 0,
-        dataScale.z * rot.z * -rot.w, dataScale.w * rot.z, 0, 1
-        );//TODO matrix constructor needs to be swapped to column order
-        mat4 billboard = BillMatrix;
-        billboard[3][0] = dataPosition.x;
-        billboard[3][1] = dataPosition.y;
-        billboard[3][2] = dataPosition.z;
+            rot.y * rot.z, rot.x * rot.z, 0, dataScale.z * rot.z * -rot.w,
+            -rot.x * rot.z, rot.y * rot.z, 0, dataScale.w * rot.z,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        );
+        
+        pos = vec4(position, 1) * rotate * BillMatrix;
+        pos.xyz += dataPosition;
 
-        return rotate * position * billboard;
+        return pos;
     } else if (id == TypeModel){
-        float s = sin(dataRotation.x);
-        float c = cos(dataRotation.x);
-
-        mat4 rotate = mat4(
-        c, s, 0, 0,
-        -s, c, 0, 0,
-        0, 0, 1, 0,
-        dataPosition.x, dataPosition.y, dataPosition.z, 1
-        );//TODO matrix constructor needs to be swapped to column order
-        return rotate * position;
-    } else if (id == 2) {
-        mat4 rm = mat4(
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        dataPosition.x - 0.5, dataPosition.y - 0.5, dataPosition.z, 1
-        );//TODO matrix constructor needs to be swapped to column order
+        float s = sin(rot.x);
+        float c = cos(rot.x);
+        
+        mat2 rot = mat2(c, -s, s, c);
+        
+        vec4 pos = vec4(position.xy * rot, position.z, 1);
+        pos.xyz += dataPosition;
+        return pos;
+    } else if (id == TypeWall) {
         position.xyz += dataPosition.xyz;
         position.xy -= 0.5;
 
-        return position;
+        return vec4(position, 1);
     } else {
         position.xyz += dataPosition.xyz;
-        return position;
+        return vec4(position, 1);
     }
 }
 
@@ -93,7 +86,7 @@ void main() {
     output.UV = iUV;
     output.Extra = iExtra;
     output.Color = iColor;
-    output.Mask1 = iMask1;
-    output.Mask2 = iMask2;
+    //output.Mask1 = iMask1;
+    //output.Mask2 = iMask2;
     output.Depth = iExtra.y;
 }

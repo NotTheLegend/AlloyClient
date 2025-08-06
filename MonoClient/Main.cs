@@ -172,6 +172,7 @@ public class Main {
         var totalMs = 0d;
         
         GL.Disable(EnableCap.StencilTest);
+        GL.CullFace(TriangleFace.Front);
         
         while (true) {
             var elapsedMs = sw.Elapsed.TotalMilliseconds;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Common;
 using MonoClient.Assets;
 using MonoClient.Networking.Structs.DataObjects;
@@ -50,7 +51,7 @@ public static class Map {
 
     public static Signal<Player> OnPlayerUpdate = new();
 
-    private static readonly object DrawLock = new();
+    private static readonly Lock DrawLock = new();
 
     private static int _particleCount;
     private static readonly ParticleData[] Particles = new ParticleData[30000];
@@ -99,122 +100,121 @@ public static class Map {
     private static int _lastY = -1;
 
     public static void Draw(GameTime gameTime) {
-        lock (DrawLock) {
-            GL.Disable(EnableCap.DepthTest);
+        if (LocalPlayer == null) return;
+        using (DrawLock.EnterScope()) ;
 
-            if (LocalPlayer == null) {
-                return;
-            }
+        GL.Disable(EnableCap.DepthTest);
+        GL.Disable(EnableCap.CullFace);
 
-            LastGameTime = gameTime;
+        LastGameTime = gameTime;
 
-            Render.SetShaderParams(gameTime);
+        Render.SetShaderParams(gameTime);
 
-            #region Tile
+        #region Tile
 
-            if ((int) LocalPlayer.Position.X != _lastX || (int) LocalPlayer.Position.Y != _lastY) {
-                _lastX = (int) LocalPlayer.Position.X;
-                _lastY = (int) LocalPlayer.Position.Y;
-
-                Render.StartNewDrawTile();
-
-                for (var x = -TileRenderDistance; x < TileRenderDistance; x++) {
-                    for (var y = -TileRenderDistance; y < TileRenderDistance; y++) {
-                        if (x * x + y * y >= TileRenderDistance * TileRenderDistance) continue;
-
-                        var tile = GetTile(x + (int) LocalPlayer.Position.X, y + (int) LocalPlayer.Position.Y);
-                        if (tile != null && tile.Type != 0xFF)
-                            tile.DrawTile();
-                    }
-                }
-
-                Render.EndNewDrawTile();
-            }
-
-            Render.DrawTiles();
-
-            #endregion
+        if ((int) LocalPlayer.Position.X != _lastX || (int) LocalPlayer.Position.Y != _lastY) {
+            _lastX = (int) LocalPlayer.Position.X;
+            _lastY = (int) LocalPlayer.Position.Y;
             
+            Render.StartNewDrawTile();
 
-            #region GroundObjects
+            for (var x = -TileRenderDistance; x < TileRenderDistance; x++) {
+                for (var y = -TileRenderDistance; y < TileRenderDistance; y++) {
+                    if (x * x + y * y >= TileRenderDistance * TileRenderDistance) continue;
 
-            /*if (EntityStorage.TryGetValue(ModelType.PbTile, out var ground)) {
-                Render.StartDrawEntity();
-                Render.SetEntityModel(ModelType.PbTile);
-
-                foreach (var type in ground) {
-                    if (type.Visible)
-                        type.Draw();
+                    var tile = GetTile(x + (int) LocalPlayer.Position.X, y + (int) LocalPlayer.Position.Y);
+                    if (tile != null && tile.Type != 0xFF)
+                        tile.DrawTile();
                 }
-
-                Render.FlushBufferEntity();
-            }*/
-
-            #endregion
-
-            #region Shadows
-
-            if (EntityStorage.TryGetValue(ModelType.PbObject, out var go)) {
-                Render.StartDrawShadow();
-
-                foreach (var type in go) {
-                    type.DrawShadow();
-                }
-
-                Render.EndShadowDraw();
             }
 
-            #endregion
-
-            //return;
-
-            //GL.Enable(EnableCap.DepthTest);
-
-            #region Particles
-            
-            Render.DrawParticles(Particles, _particleCount);
-
-            #endregion
-
-            return;
-            
-            #region Entities
-
-            Render.StartDrawEntity();
-
-            foreach (var kvp in EntityStorage) {
-                if (kvp.Key == ModelType.Null || kvp.Key == ModelType.PbObject) continue;
-                
-                Render.SetEntityModel(kvp.Key);
-
-                foreach (var entity in kvp.Value) {
-                    if (entity.Visible) {
-                        entity.Draw();
-                        Render.LastDrawCountEntities++;
-                    }
-                        
-                }
-
-                Render.FlushBufferEntity();
-            }
-            
-            if (EntityStorage.TryGetValue(ModelType.PbObject, out var entities)) {
-                Render.SetEntityModel(ModelType.PbObject);
-                entities.Sort();
-
-                foreach (var type in entities) {
-                    if (type.Visible) {
-                        type.Draw();
-                        Render.LastDrawCountEntities++;
-                    }
-                }
-
-                Render.FlushBufferEntity();
-            }
-
-            #endregion
-
+            Render.EndNewDrawTile();
         }
+
+        Render.DrawTiles();
+
+        #endregion
+
+        //TODO: use tile shader for these
+        #region GroundObjects
+
+        /*if (EntityStorage.TryGetValue(ModelType.PbTile, out var ground)) {
+            Render.StartDrawEntity();
+            Render.SetEntityModel(ModelType.PbTile);
+
+            foreach (var type in ground) {
+                if (type.Visible)
+                    type.Draw();
+            }
+
+            Render.FlushBufferEntity();
+        }*/
+        
+        
+
+        #endregion
+
+        #region Shadows
+
+        if (EntityStorage.TryGetValue(ModelType.PbObject, out var go)) {
+            Render.StartDrawShadow();
+
+            foreach (var type in go) {
+                type.DrawShadow();
+            }
+
+            Render.EndShadowDraw();
+        }
+
+        #endregion
+
+        GL.Enable(EnableCap.DepthTest);
+
+        #region Particles
+
+        Render.DrawParticles(Particles, _particleCount);
+
+        #endregion
+        
+        GL.Enable(EnableCap.CullFace);
+
+        #region Entities
+
+        Render.StartDrawEntity();
+
+        foreach (var kvp in EntityStorage) {
+            if (kvp.Key == ModelType.Null || kvp.Key == ModelType.PbObject) continue;
+
+            Render.SetEntityModel(kvp.Key);
+
+            foreach (var entity in kvp.Value) {
+                if (entity.Visible) {
+                    entity.Draw();
+                    Render.LastDrawCountEntities++;
+                }
+
+            }
+
+            Render.FlushBufferEntity();
+        }
+
+        if (EntityStorage.TryGetValue(ModelType.PbObject, out var entities)) {
+            Render.SetEntityModel(ModelType.PbObject);
+            entities.Sort();
+
+            foreach (var type in entities) {
+                if (type.Visible) {
+                    type.Draw();
+                    Render.LastDrawCountEntities++;
+                }
+            }
+
+            Render.FlushBufferEntity();
+        }
+
+        #endregion
+
+
     }
 
     public static MapTile GetTile(Vector2 position) => GetTile((int)position.X, (int)position.Y);

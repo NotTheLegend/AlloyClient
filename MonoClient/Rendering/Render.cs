@@ -71,24 +71,19 @@ public static partial class Render {
         _shadowData = new ShadowData[BufferSize];
         _shadowBuffer = new StorageBuffer<ShadowData>(ShadowData.Size, _shadowData.Length, BufferUsage.DynamicDraw);
         
-        BuildParticleBuffers();
-        return;
-
-        // Buffers
-        _modelIndexBuffer = new IndexBuffer(ModelData.Indices.Length, BufferUsage.StaticDraw);
-        _modelIndexBuffer.Bind();
-        _modelIndexBuffer.SetData(ModelData.Indices);
-
-        _modelVertexBuffer = new VertexBuffer<VertexBase>(VertexBase.VertexStride, ModelData.Vertices.Length, BufferUsage.StaticDraw);
-        _modelVertexBuffer.Bind();
-        _modelVertexBuffer.SetData(ModelData.Vertices);
- 
         GL.BindVertexArray(_entityVao = GL.GenVertexArray());
+        _modelIndexBuffer = new IndexBuffer(ModelData.Indices.Length, BufferUsage.StaticDraw);
+        _modelVertexBuffer = new VertexBuffer<VertexBase>(VertexBase.VertexStride, ModelData.Vertices.Length, BufferUsage.StaticDraw);
         _entityData = new VertexObject[BufferSize];
         _entityDataBuffer = new VertexBuffer<VertexObject>(VertexObject.VertexStride, BufferSize, BufferUsage.DynamicDraw);
         _entityDataBuffer.Bind();
         _modelIndexBuffer.Bind();
         _modelVertexBuffer.Bind();
+        
+        _modelIndexBuffer.SetData(ModelData.Indices);
+        _modelVertexBuffer.SetData(ModelData.Vertices);
+        
+        BuildParticleBuffers();
     }
     
     public static void SetShaderParams(GameTime gameTime) {
