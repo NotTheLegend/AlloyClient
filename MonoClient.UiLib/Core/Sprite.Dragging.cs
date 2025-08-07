@@ -1,6 +1,6 @@
 ﻿using System;
-using Common.Vector;
 using MonoClient.UiLib.Input;
+using OpenTK.Mathematics;
 
 namespace MonoClient.UiLib.Core;
 
@@ -14,7 +14,7 @@ public partial class Sprite {
     
     private bool _isDragging;
     
-    private IntVector2 _dragOffset;
+    private Vector2i _dragOffset;
 
     
 
@@ -30,7 +30,7 @@ public partial class Sprite {
         pos.X -= _trueX;
         pos.Y -= _trueY;
 
-        _dragOffset = new IntVector2((int)(pos.X / _trueScale.X), (int)(pos.Y / _trueScale.Y));
+        _dragOffset = new Vector2i((int)(pos.X / _trueScale.X), (int)(pos.Y / _trueScale.Y));
         
         _dragSprite = this;
         _isDragging = true;
@@ -65,7 +65,7 @@ public partial class Sprite {
         _dropType = null;
     }
 
-    private void DropCheck(IntVector2 pos, ref Sprite target) {
+    private void DropCheck(Vector2i pos, ref Sprite target) {
         if (!Visible || !IsInBounds(pos) || this == _dragSprite)
             return;
         

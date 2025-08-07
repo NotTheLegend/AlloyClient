@@ -1,6 +1,5 @@
 ﻿using System;
 using Common;
-using Common.Vector;
 using MonoClient.Display;
 using MonoClient.Networking;
 using MonoClient.Networking.Packets.Outgoing;
@@ -13,6 +12,7 @@ using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Extra;
 using MonoClient.Utils;
+using OpenTK.Mathematics;
 
 namespace MonoClient.Screens.Game.Components.Hud.Inventory;
 
@@ -37,7 +37,7 @@ public sealed class ItemTile : Sprite {
     
     private EquipmentToolTip _tooltip;
 
-    private IntVector2 _dragStart;
+    private Vector2i _dragStart;
     private bool _checkForDrag;
     private bool _dragging;
     private uint _bgColor;

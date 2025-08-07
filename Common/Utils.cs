@@ -1,13 +1,13 @@
 ﻿using System.Runtime.CompilerServices;
 using Common.Structs;
-using Common.Vector;
+using OpenTK.Mathematics;
 
 namespace Common;
 
 public static class Utils {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Clamp(this IntVector2 vector, IntVector2 min, IntVector2 max, out IntVector2 pos) {
+    public static bool Clamp(this Vector2i vector, Vector2i min, Vector2i max, out Vector2i pos) {
         var change = false;
         pos = vector;
 
@@ -23,6 +23,8 @@ public static class Utils {
             
         return change;
     }
+
+    public static (int, int) ToPair(this Vector2i vector) => (vector.X, vector.Y);
     
     public static AtlasData ReadAtlasData(this BinaryReader reader) {
         return new AtlasData {

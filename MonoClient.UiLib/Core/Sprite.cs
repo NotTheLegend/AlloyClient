@@ -4,14 +4,12 @@ using Common;
 using Common.Rendering;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Input;
-using Common.Vector;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Extra;
 using MonoClient.UiLib.Rendering;
 using MonoClient.UiLib.Utils;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using OpenTK.Platform;
 
 namespace MonoClient.UiLib.Core;
 
@@ -124,7 +122,7 @@ public partial class Sprite : EventManager {
 
     public int OverridePrimCount = -1;
 
-    internal IntVector2 Radii;
+    internal Vector2i Radii;
     
     #region VertexData
     
@@ -637,9 +635,9 @@ public partial class Sprite : EventManager {
     
     public void SetHitboxType(HitboxType hitbox) => HitboxType = hitbox;
 
-    public IntVector2 GetRelativeMousePosition() {
+    public Vector2i GetRelativeMousePosition() {
         var pos = MouseInput.GetMousePosition();
-        return new IntVector2(pos.X - _trueX, pos.Y - _trueY);
+        return new Vector2i(pos.X - _trueX, pos.Y - _trueY);
     }
     
     private struct Bounds {

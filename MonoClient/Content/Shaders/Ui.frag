@@ -191,6 +191,8 @@ vec4 RenderEllipse() {
 void main() {
     vec4 pixel = vec4(0);
     
+    
+    //TODO: replace pos1 with gl_FragCoord and send screen coords in scissor instead
     if (input.Position1.x < input.Scissor.x || input.Position1.x > input.Scissor.z || input.Position1.y < input.Scissor.w || input.Position1.y > input.Scissor.y) {
         discard;
     }

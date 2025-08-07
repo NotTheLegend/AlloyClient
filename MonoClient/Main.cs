@@ -37,6 +37,8 @@ public class Main {
     public readonly WindowHandle Window;
     public readonly OpenGLContextHandle Context;
 
+    private double _targetFrameTime;
+
     public Main() {
         GameInstance = this;
         
@@ -49,47 +51,30 @@ public class Main {
         
         Toolkit.OpenGL.SetCurrentContext(Context);
         GLLoader.LoadBindings(Toolkit.OpenGL.GetBindingsContext(Context));
-        
-        GLDebugProc debugMessageDelegate = OnDebugMessage;
-        GL.DebugMessageCallback(debugMessageDelegate, nint.Zero);
-        GL.DebugMessageControl(DebugSource.DebugSourceApi, DebugType.DebugTypeOther, DebugSeverity.DontCare, 1, [131185], false);
-        GL.Enable(EnableCap.DebugOutput);
-        GL.Enable(EnableCap.DebugOutputSynchronous);
+
+        EnableDebugOutput();
 
         EventQueue.EventRaised += HandleEvents;
         
-        //vsync control, 0 = off, 1 = on
-        Toolkit.OpenGL.SetSwapInterval(0);
-        
         Initialize();
         LoadContent();
-        return;
-        
-        void OnDebugMessage(DebugSource source, DebugType type, uint id, DebugSeverity severity, int length, nint pmessage, nint userParam) {
-            var message = Marshal.PtrToStringAnsi(pmessage, length);
-            Console.WriteLine("[{0} source={1} type={2} id={3}] {4}", severity, source, type, id, message);
-        }
     }
 
     private void Initialize() {
-        GL.Viewport(0, 0, 1280, 720);//TODO: WTF
+        GL.Viewport(0, 0, Settings.ScreenWidth, Settings.ScreenHeight);
         Toolkit.Window.SetClientSize(Window, new Vector2i(Settings.ScreenWidth, Settings.ScreenHeight));
         Toolkit.Window.SetTitle(Window, "RealmTk");
         Toolkit.Window.SetMinClientSize(Window, 800, 600);
 
         var mode = Settings.Fullscreen ? WindowMode.WindowedFullscreen : WindowMode.Normal;
-        Toolkit.Window.SetMode(Window, WindowMode.Normal);
+        Toolkit.Window.SetMode(Window, mode);
         
-        GL.ClearColor(0f, 0f, 0f, 1.0f);
-        
-        GL.Enable(EnableCap.Blend);
-        GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-
-        ContentReader.Init(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content"));
+        GraphicsMode.Set(SetGraphicOptions);
     }
     
     [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH")]
     private void LoadContent() {
+        ContentReader.Init(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content"));
         Atlas = ContentReader.LoadAtlas("Game.atlas");
         UiAtlas = ContentReader.LoadAtlas("Ui.atlas");
         MinimapTexture.Init(out var mapTexture);
@@ -103,9 +88,7 @@ public class Main {
 
         //UiRender needs to be loaded first so Render can pull font data from it
         UiRender.ConfigureAndLoad(settings, out var stage);
-        
         UiRender.RegisterFont(ContentReader.LoadFont("Fonts/MyriadPro/MyriadPro.msdf"));
-        
         UiRender.RegisterTexture(TextureType.GameAtlas, Atlas.GetTexture());
         UiRender.RegisterTexture(TextureType.UiAtlas, UiAtlas.GetTexture());
         UiRender.RegisterTexture(TextureType.Minimap, mapTexture);
@@ -138,32 +121,26 @@ public class Main {
         Toolkit.Window.SetMode(Window, mode);
     }
 
-    /*private void SetGraphicOptions(GraphicsOptions mode) {
+    private void SetGraphicOptions(GraphicsOptions mode) {
         switch (mode) {
             case GraphicsOptions.TitleScreen:
-                IsFixedTimeStep = true;
-                TargetElapsedTime = TimeSpan.FromMilliseconds(1000f / 60);
-                InactiveSleepTime = TimeSpan.FromMilliseconds(1000f / 60);
-                Graphics.SynchronizeWithVerticalRetrace = true;
+                _targetFrameTime = 1000d / 60;
                 break;
             case GraphicsOptions.InGame when Settings.VSync:
-                Graphics.SynchronizeWithVerticalRetrace = true;
+                Toolkit.OpenGL.SetSwapInterval(1);
                 break;
             case GraphicsOptions.InGame when Settings.FpsCap > 0:
-                IsFixedTimeStep = true;
-                TargetElapsedTime = TimeSpan.FromMilliseconds(1000f / Settings.FpsCap.Value);
-                Graphics.SynchronizeWithVerticalRetrace = false;
+                Toolkit.OpenGL.SetSwapInterval(0);
+                _targetFrameTime = 1000d / Settings.FpsCap.Value;
                 break;
             case GraphicsOptions.InGame:
-                IsFixedTimeStep = false;
-                Graphics.SynchronizeWithVerticalRetrace = false;
+                Toolkit.OpenGL.SetSwapInterval(0);
                 break;
             default:
                 throw new Exception();
             
         }
-        Graphics.ApplyChanges();
-    }*/
+    }
     
     private bool _running = true;
 
@@ -171,14 +148,18 @@ public class Main {
         var sw = Stopwatch.StartNew();
         var totalMs = 0d;
         
+        GL.ClearColor(0f, 0f, 0f, 1.0f);
+        
         GL.Disable(EnableCap.StencilTest);
         GL.CullFace(TriangleFace.Front);
+        
+        GL.Enable(EnableCap.Blend);
+        GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
         
         while (true) {
             var elapsedMs = sw.Elapsed.TotalMilliseconds;
             
-            //TODO: replace 0 with framerate settings
-            if (elapsedMs < 0) continue;
+            if (elapsedMs < _targetFrameTime) continue;
             
             sw.Restart();
             
@@ -195,8 +176,9 @@ public class Main {
             Draw(new GameTime(totalMs, elapsedMs));
             
             Toolkit.OpenGL.SwapBuffers(Context);
-
-            OpenTK.Core.Utils.AccurateSleep(0, 1);
+            
+            var timeToNextUpdate = _targetFrameTime - elapsedMs * 1000d;
+            if (timeToNextUpdate > 0) OpenTK.Core.Utils.AccurateSleep(0, 1);
         }
     }
     
@@ -209,18 +191,25 @@ public class Main {
             case FocusEventArgs e:
                 UserInput.SetWindowFocus(e.GotFocus);
                 break;
-            case WindowResizeEventArgs e:
-                Camera.SetViewPort(e.NewClientSize);
-                GL.Viewport(0, 0, e.NewClientSize.X, e.NewClientSize.Y);
-                break;
-            case MouseMoveEventArgs e:
-                UserInput.SetMousePosition(e.ClientPosition);
-                break;
         }
     }
 
     public void Exit() {
         Toolkit.Window.Destroy(Window);
         _running = false;
+    }
+    
+    [Conditional("DEBUG")]
+    private void EnableDebugOutput() {
+        GL.DebugMessageCallback(OnDebugMessage, nint.Zero);
+        GL.DebugMessageControl(DebugSource.DebugSourceApi, DebugType.DebugTypeOther, DebugSeverity.DontCare, 1, [131185], false);
+        GL.Enable(EnableCap.DebugOutput);
+        GL.Enable(EnableCap.DebugOutputSynchronous);
+        return;
+        
+        void OnDebugMessage(DebugSource source, DebugType type, uint id, DebugSeverity severity, int length, nint pmessage, nint userParam) {
+            var message = Marshal.PtrToStringAnsi(pmessage, length);
+            Console.WriteLine("[{0} source={1} type={2} id={3}] {4}", severity, source, type, id, message);
+        }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Common.Vector;
 using MonoClient.UiLib.Core;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
@@ -59,7 +58,7 @@ internal static class MouseInput {
 
     internal static float GetHorizontalScrollDelta() => _scrollDelta.X;
 
-    internal static IntVector2 GetMousePosition() => new((int) _mousePosition.X, (int)_mousePosition.Y);
+    internal static Vector2i GetMousePosition() => new((int) _mousePosition.X, (int)_mousePosition.Y);
 
     private static string ButtonToEvent(MouseButton button, bool down) => button switch {
         MouseButton.Button1 => down ? MouseEvent.LeftDown : MouseEvent.LeftUp,

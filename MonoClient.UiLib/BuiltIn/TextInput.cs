@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Text;
 using Common;
-using Common.Vector;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;
 using MonoClient.UiLib.Rendering;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace MonoClient.UiLib.BuiltIn;
 
@@ -66,7 +64,7 @@ public sealed class TextInput : Sprite {
     private double _lastCaretUpdateTime;
     private int _startIndex;
 
-    private IntVector2 _mousePosition;
+    private Vector2i _mousePosition;
 
     public TextInput(InputConfig config) {
         X = config.X;
@@ -200,7 +198,7 @@ public sealed class TextInput : Sprite {
         }
     }
 
-    protected override bool CustomHitbox(IntVector2 pos) {
+    protected override bool CustomHitbox(Vector2i pos) {
         var hit = pos.X > 0 && pos.X < _textBox.Width && pos.Y > 0 && pos.Y < _textBox.Height;
 
         UnFocusOnClick = !hit && ActiveInput == this;

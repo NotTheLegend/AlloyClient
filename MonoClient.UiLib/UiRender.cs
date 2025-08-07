@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Drawing;
 using Common;
 using Common.ContentReaders;
 using Common.Rendering;
-using Common.Vector;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Data;
 using MonoClient.UiLib.Enums;

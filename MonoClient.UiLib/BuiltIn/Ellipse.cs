@@ -1,5 +1,4 @@
 ﻿using MonoClient.UiLib.Enums;
-using Common.Vector;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Rendering;
 using OpenTK.Mathematics;
@@ -55,7 +54,7 @@ public sealed class Ellipse : Sprite {
     
     private void FillData() {
         var (rx, ry) = (_dX / 2, _dY / 2);
-        Radii = new IntVector2(rx, ry);
+        Radii = new Vector2i(rx, ry);
         Extra1.X = rx + _oSize;
         Extra1.Y = ry + _oSize;
         Extra1.Z = _oSize;

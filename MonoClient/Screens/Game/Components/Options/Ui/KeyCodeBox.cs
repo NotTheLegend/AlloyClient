@@ -1,10 +1,10 @@
 ﻿using System;
 using Common;
-using Common.Vector;
 using MonoClient.State.SettingTypes;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
+using OpenTK.Mathematics;
 using OpenTK.Platform;
 
 namespace MonoClient.Screens.Game.Components.Options.Ui;
@@ -71,7 +71,7 @@ public class KeyCodeBox : Sprite {
         }
     }
 
-    protected override bool CustomHitbox(IntVector2 pos) {
+    protected override bool CustomHitbox(Vector2i pos) {
         if (_inputMode) {
             return true;
         }

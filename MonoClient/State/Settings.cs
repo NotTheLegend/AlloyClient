@@ -105,7 +105,7 @@ public static class Settings {
 
     public static ValueSetting<int> FpsCap = -1;
     public static ValueSetting<bool> VSync = false;
-    public static ValueSetting<bool> Fullscreen = true;
+    public static ValueSetting<bool> Fullscreen = false;
 
     public static ValueSetting<int> ScreenWidth = DefaultScreenWidth;
     public static ValueSetting<int> ScreenHeight = DefaultScreenHeight;
@@ -218,7 +218,7 @@ public static class Settings {
 
         FpsCap.SetValue(-1);
         VSync.SetValue(false);
-        Fullscreen.SetValue(true);
+        Fullscreen.SetValue(false);
 
         MusicVolume.SetValue(0.5f);
         SfxVolume.SetValue(0.5f);

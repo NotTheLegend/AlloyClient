@@ -47,6 +47,7 @@ public sealed class UserInput : Sprite {
         Stage.AddEventListener(MouseEvent.LeftUp, OnLeftUp);
         Stage.AddEventListener(MouseEvent.ScrollVertical, OnScroll);
         Stage.AddEventListener(MouseEvent.MiddleClick, OnMiddleClick);
+        Stage.AddEventListener(MouseEvent.MouseMove, OnMouseMove);
     }
     
     private void RemovedFromStage() {
@@ -57,9 +58,8 @@ public sealed class UserInput : Sprite {
         Stage.RemoveEventListener(MouseEvent.LeftUp, OnLeftUp);
         Stage.RemoveEventListener(MouseEvent.ScrollVertical, OnScroll);
         Stage.RemoveEventListener(MouseEvent.MiddleClick, OnMiddleClick);
+        Stage.RemoveEventListener(MouseEvent.MouseMove, OnMouseMove);
     }
-    
-    public static void SetMousePosition(Vector2 pos) => _mousePosition = pos;
     
     public static void SetWindowFocus(bool focus) => _windowFocus = focus;
 
@@ -70,6 +70,8 @@ public sealed class UserInput : Sprite {
     private void OnLeftDown() => _mouseDown = true;
     
     private void OnLeftUp() => _mouseDown = false;
+    
+    private void OnMouseMove(MouseEvent args) => _mousePosition = new Vector2(args.Coords.X, args.Coords.Y);
 
     public void ClearInput() {
         ClearMovement();

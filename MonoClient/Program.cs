@@ -7,17 +7,16 @@ namespace MonoClient;
 public static class Program {
     private static readonly Logger Log = new(typeof(Program));
 
-    public static Main Game { get; private set; }
-
     public static void Main() {
         Log.Info("Starting Game...");
-        Game = new Main();
         
         AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 
         Settings.LoadSettings();
-        Game.Run();
+        
+        var game = new Main();
+        game.Run();
     }
     
     private static void OnProcessExit(object sender, EventArgs e) {

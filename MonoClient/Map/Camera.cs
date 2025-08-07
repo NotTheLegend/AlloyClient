@@ -40,8 +40,8 @@ public static class Camera {
         ViewMatrix = new Matrix4();
         BillboardMatrix = Matrix4.Identity;
 
-        var halfWidth = Settings.DefaultScreenWidth;
-        var halfHeight = Settings.DefaultScreenHeight;
+        var halfWidth = Settings.ScreenWidth.Value;
+        var halfHeight = Settings.ScreenHeight.Value;
         var hudOffset = includeHud ? HudOffset : 0f;
 
         ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(-halfWidth + hudOffset, halfWidth + hudOffset,
@@ -54,7 +54,13 @@ public static class Camera {
         ZoomMatrix = Matrix4.CreateScale(zoom);
     }
 
-    public static void SetViewPort(Vector2i view) => Viewport = view;
+    public static void UpdateViewPort() {
+        var w = Settings.ScreenWidth.Value;
+        var h = Settings.ScreenHeight.Value;
+        
+        GL.Viewport(0, 0, w, h);
+        ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(-w + HudOffset, w + HudOffset, -h, h, -10000f, 10000f);
+    }
 
     public static void Update(float x, float y) {
         CameraAngle = -Settings.CameraAngle;

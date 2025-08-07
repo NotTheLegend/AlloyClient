@@ -1,4 +1,4 @@
-﻿using Common.Vector;
+﻿using OpenTK.Mathematics;
 using OpenTK.Platform;
 
 namespace MonoClient.UiLib.Core;
@@ -40,7 +40,7 @@ public record KeyboardEvent(string Type, Key Key, Scancode Code, bool Ctrl, bool
     }
 }
 
-public record MouseEvent(string Type, IntVector2 Coords = new(), float Delta = 0f, bool ShiftKey = false, bool CtrlKey = false, bool AltKey = false) : Event(Type, true) {
+public record MouseEvent(string Type, Vector2i Coords = new(), float Delta = 0f, bool ShiftKey = false, bool CtrlKey = false, bool AltKey = false) : Event(Type, true) {
     public const string LeftClick = "leftClick";
     public const string MiddleClick = "middleClick";
     public const string RightClick = "rightClick";
