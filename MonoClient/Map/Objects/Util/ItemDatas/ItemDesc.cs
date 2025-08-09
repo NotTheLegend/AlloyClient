@@ -185,6 +185,7 @@ public class ItemDesc : ItemData {
         Potion = xml.GetValue<bool>("Potion");
         Usable = xml.GetValue<bool>("Usable");
         Reusable = xml.GetValue<bool>("Reusable");
+        RateOfFire = xml.GetValue<float>("RateOfFire", 1f);
         Resurrects = xml.GetValue<bool>("Resurrects");
         Tier = xml.GetValue<int>("Tier", -1);
         BagType = xml.GetValue<int>("BagType");

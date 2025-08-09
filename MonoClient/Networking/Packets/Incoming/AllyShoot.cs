@@ -27,7 +27,6 @@ public class AllyShoot : IncomingPacket<AllyShoot> {
     }
 
     public override string ToString() {
-        return
-            $"OwnerId: {OwnerId}, BulletId: {BulletId}, ContainerType: {ContainerType}, Angle: {Angle}";
+        return $"OwnerId: {OwnerId}, BulletId: {BulletId}, ContainerType: {ContainerType}, Angle: {Angle}";
     }
 }

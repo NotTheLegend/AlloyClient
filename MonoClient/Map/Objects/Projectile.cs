@@ -65,7 +65,7 @@ public sealed class Projectile {
 
         Size = _projDesc.Size > 0 ? _projDesc.Size : 100;
 
-        _startTime = Map.CurrentTime;
+        _startTime = Main.GameTime.TotalMs;
         _lastHitTest = 0;
         _angleCorrection = _objDesc.AngleCorrection * MathF.PI / 4;
         _position = _startPosition = entity.Position;

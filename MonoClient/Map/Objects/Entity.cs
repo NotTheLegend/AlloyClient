@@ -25,12 +25,12 @@ namespace MonoClient.Objects;
 public class Entity {
     private static readonly Logger Log = new(nameof(Entity));
 
-    public const float AttackPeriod = 100;
+    public const float AttackPeriod = 300;
 
     public int ObjectId;
     public ushort Type;
     
-    public Signal<int> InventoryUpdate = new();
+    public readonly Signal<int> InventoryUpdate = new();
 
     public float HeightOffset;
     public Vector2 Position;
@@ -46,6 +46,9 @@ public class Entity {
 
     public MapTile Tile;
     public ObjectProperties Properties;
+    
+    public double AttackStart;
+    public float AttackAngle;
 
     #region StatData
 
@@ -53,10 +56,6 @@ public class Entity {
 
     public int Texture1Id;
     public int Texture2Id;
-
-    public int AttackStart;
-    public float AttackAngle;
-    public bool IsShooting;
 
     public int GlowColor;
 
@@ -222,7 +221,7 @@ public class Entity {
 
         Timer = (int)time;
 
-        if (IsShooting || Timer < AttackStart + AttackPeriod) {
+        if (Timer < AttackStart + AttackPeriod) {
             AnimationType = AnimationType.Attack;
         }
 
@@ -413,8 +412,25 @@ public class Entity {
         return Texture;
     }
 
-    public void SetAttack(int containerType, float angleInc) {
-        AttackStart = Timer;
+    public void SetAttack(int containerType, float attackAngle) {
+        AttackStart = Main.GameTime.TotalMs;
+        AttackAngle = attackAngle;
+    }
+    
+    public virtual AtlasData GetTexture(double time) {
+        var texture = new AtlasData();
+        var action = AnimationType.Stand;
+        if (TextureData.HasAnimationData) {
+            var idx = 0d;
+            if (time < AttackStart + AttackPeriod) {
+                action = AnimationType.Attack;
+                idx = (time - AttackStart) % AttackPeriod / AttackPeriod;
+            } else if (MovementVector != Vector2.Zero) {
+                action = AnimationType.Walk;
+            }
+        }
+
+        return texture;
     }
 
     // we should move this shit somewhere else too
@@ -465,17 +481,17 @@ public class Entity {
 
                 if (this is Player player) {
                     if (player.Timer < player.AttackStart + player.AttackPeriod) {
-                        timer = (player.Timer - player.AttackStart) % player.AttackPeriod / player.AttackPeriod;
+                        //timer = (player.Timer - player.AttackStart) % player.AttackPeriod / player.AttackPeriod;
                     }
-                    else
-                        player.IsShooting = false;
+                    //else
+                        //player.IsShooting = false;
                 }
                 else {
                     if (Timer < AttackStart + AttackPeriod) {
-                        timer = (Timer - AttackStart) % AttackPeriod / AttackPeriod;
+                        //timer = (Timer - AttackStart) % AttackPeriod / AttackPeriod;
                     }
-                    else
-                        IsShooting = false;
+                    //else
+                        //IsShooting = false;
                 }
 
                 if (AnimationTimer.ElapsedMilliseconds > timer * 1000) {
@@ -506,9 +522,9 @@ public class Entity {
         var correctedFacingAngle = MathUtils.WrapAngle(movementAngle - cameraAngle);
         var rotationAngle = (MathHelper.DegreesToRadians(correctedFacingAngle) + 360) % 360;
 
-        if (IsShooting) {
-            return GetDirectionFromAttackAngle(AttackAngle, Settings.CameraAngle.Value);
-        }
+        //if (IsShooting) {
+        //    return GetDirectionFromAttackAngle(AttackAngle, Settings.CameraAngle.Value);
+        //}
         
         if (LocalFaceDirection != FaceDirection.None) {
             switch (LocalFaceDirection) {

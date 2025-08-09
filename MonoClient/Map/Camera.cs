@@ -24,7 +24,6 @@ public static class Camera {
     public static float CameraAngle;
 
     public static Vector3 Position;
-    private static Vector3 _lookAt;
 
     static Camera() {
         Reset();
@@ -34,7 +33,6 @@ public static class Camera {
         CameraAngle = 0f;
 
         Position = new Vector3(0f, 0f, 12);
-        _lookAt = new Vector3(0f);
 
         WorldMatrix = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(180));
         ViewMatrix = new Matrix4();
@@ -44,6 +42,7 @@ public static class Camera {
         var halfHeight = Settings.ScreenHeight.Value;
         var hudOffset = includeHud ? HudOffset : 0f;
 
+        Viewport = new Vector2i(halfWidth, halfHeight);
         ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(-halfWidth + hudOffset, halfWidth + hudOffset,
             -halfHeight, halfHeight, -10000f, 10000f);
 
@@ -57,6 +56,8 @@ public static class Camera {
     public static void UpdateViewPort() {
         var w = Settings.ScreenWidth.Value;
         var h = Settings.ScreenHeight.Value;
+
+        Viewport = new Vector2i(w, h);
         
         GL.Viewport(0, 0, w, h);
         ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(-w + HudOffset, w + HudOffset, -h, h, -10000f, 10000f);
@@ -67,17 +68,15 @@ public static class Camera {
 
         Position.X = x;
         Position.Y = -y;
-        _lookAt.X = x;
-        _lookAt.Y = -y;
 
         var s = MathF.Sin(CameraAngle);
         var c = MathF.Cos(CameraAngle);
         var s1 = MathF.Sin(CameraAngle - MathHelper.PiOver2);
 
-        ViewMatrix = CreateLookAt(Position, _lookAt, new Vector3(0f, 1f, 0f));
-        ViewMatrix[2, 0] = s;
-        ViewMatrix[2, 1] = s1;
-        ViewMatrix[2, 2] = -1f;
+        ViewMatrix = Matrix4.Identity;
+        ViewMatrix.Row2 = new Vector4(s, s1, -1, 0);
+        ViewMatrix.Row3 = new Vector4(-x, y, -12, 1);
+
         ViewMatrix *= Matrix4.CreateRotationZ(-CameraAngle);
         ViewMatrix *= ZoomMatrix;
 
@@ -88,30 +87,6 @@ public static class Camera {
         BillboardMatrix[1, 1] = c;
 
         VisibleTileRadius = new Vector2((Settings.ScreenWidth - HudOffset) / Settings.CameraZoom, Settings.ScreenHeight / Settings.CameraZoom);
-    }
-    
-    private static Matrix4 CreateLookAt(Vector3 cameraPosition, Vector3 cameraTarget, Vector3 cameraUpVector) {
-        var result = new Matrix4();
-        var vector = Vector3.Normalize(cameraPosition - cameraTarget);
-        var vector2 = Vector3.Normalize(Vector3.Cross(cameraUpVector, vector));
-        var vector3 = Vector3.Cross(vector, vector2);
-        result.M11 = vector2.X;
-        result.M12 = vector3.X;
-        result.M13 = vector.X;
-        result.M14 = 0f;
-        result.M21 = vector2.Y;
-        result.M22 = vector3.Y;
-        result.M23 = vector.Y;
-        result.M24 = 0f;
-        result.M31 = vector2.Z;
-        result.M32 = vector3.Z;
-        result.M33 = vector.Z;
-        result.M34 = 0f;
-        result.M41 = -Vector3.Dot(vector2, cameraPosition);
-        result.M42 = -Vector3.Dot(vector3, cameraPosition);
-        result.M43 = -Vector3.Dot(vector, cameraPosition);
-        result.M44 = 1f;
-        return result;
     }
 
     // Only tested on MapEditor

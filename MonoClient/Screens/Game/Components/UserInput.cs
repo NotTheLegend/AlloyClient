@@ -89,18 +89,16 @@ public sealed class UserInput : Sprite {
     }
 
     protected override void OnUpdate(GameTime gameTime) {
-        if (IsInputDisabled() || !(_mouseDown || _autoFire))
+        if (IsInputDisabled() || !(_mouseDown || _autoFire) || Map.LocalPlayer == null)
             return;
-        
-        Map.LocalPlayer.IsShooting = true;
         
         var pos = Camera.ScreenToWorld(_mousePosition);
 
         var dX = pos.X - Map.LocalPlayer.Position.X;
         var dY = pos.Y - Map.LocalPlayer.Position.Y;
-
-        Map.LocalPlayer.AttackAngle = MathF.Atan2(dY, dX);
-        Map.LocalPlayer.Shoot(0f);//TODO: ???
+        var angle = MathF.Atan2(dY, dX);
+        
+        Map.LocalPlayer.Shoot(angle, gameTime);
     }
 
     private void SetPlayerMovement() {

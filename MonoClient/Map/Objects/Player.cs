@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Common;
 using MonoClient.Assets.Libraries;
 using MonoClient.Networking;
 using MonoClient.Networking.Enums;
 using MonoClient.Networking.Packets.Outgoing;
 using MonoClient.Networking.Structs.DataObjects;
 using MonoClient.Objects.Enums;
+using MonoClient.Objects.Util;
 using MonoClient.Rendering;
 using MonoClient.Rendering.Types;
 using MonoClient.State;
@@ -59,19 +61,9 @@ public class Player : Entity {
     public int DexterityBoost;
     public int VitalityBoost;
     public int WisdomBoost;
-
-    public int RandomDex;
-    public float AttackPeriod;
-    public int AttackStart;
-
-    public int DamageReduction;
-    public int DamageIncrease;
-    public int AttackSpeedIncrease;
-    public int CriticalChance;
-    public int CriticalMultiplier;
-    public int DodgeChance;
-    public int ManaRegenBoost;
-    public int ShieldRechargeTime;
+    
+    public double AttackPeriod;
+    public double AttackStart;
 
     public int AccountId;
 
@@ -86,8 +78,6 @@ public class Player : Entity {
     public int CurrentFame;
     public int FameGoal;
 
-    public int Souls;
-
     public bool NameChosen;
 
     public string Guild;
@@ -100,45 +90,12 @@ public class Player : Entity {
 
     public ushort Skin;
 
-    public int Rage;
-
     public int PartyId;
 
     public int LdBoosted;
     public int LdBoostAmount;
 
     public int XpBoostTime;
-
-    public int SkillXpBoostTime;
-    public int SkillXpBoostAmount;
-
-    public int DeathBoostTime;
-    public int DeathBoost;
-
-    public int SkillPoints;
-
-    public int WargEntity;
-
-    public int SkillExp;
-    public int SkillExpGoal;
-    public int SkillLevel;
-
-    public int MpCostMult;
-
-    public int PotionShards;
-
-    public int ShieldPoints;
-    public int MaxShieldPoints;
-
-    public int MadnessBuildup;
-
-    public int LootBoost;
-
-    public int TrackerId;
-    public int TrackerDmg;
-
-    public int DashAmount;
-    public int DashTime;
 
     public bool HasBackPack;
 
@@ -164,16 +121,15 @@ public class Player : Entity {
         return new TypePlayer(this);
     }
 
-    public override bool Update(double time, double dt) {
-        if (ObjectId == Map.LocalPlayerId) {
-            var angle = Settings.CameraAngle;
+    private void HandleRelativeMovement(double time, double dt) {
+        float angle = Settings.CameraAngle;
 
-            if (Rotate != 0) {
-                angle = (float) (angle + dt * Settings.RotateSpeed * Rotate);
-                Settings.CameraAngle = (angle % MathHelper.TwoPi + MathHelper.TwoPi) % MathHelper.TwoPi;
-            }
-
-            var moveSpeed = GetMoveSpeed();
+        if (Rotate != 0) {
+            angle = (float) (angle + dt * Settings.RotateSpeed * Rotate);
+            Settings.CameraAngle = (angle % MathHelper.TwoPi + MathHelper.TwoPi) % MathHelper.TwoPi;
+        }
+        
+        var moveSpeed = GetMoveSpeed();
             var moveVectorAngle = MathF.Atan2(RelativeMoveVector.Y, RelativeMoveVector.X);
 
             // TODO: Madness debuffs and dashes
@@ -215,7 +171,7 @@ public class Player : Entity {
 
             Timer = (int) time;
 
-            if (IsShooting || Timer < AttackStart + AttackPeriod) {
+            if (Timer < AttackStart + AttackPeriod) {
                 AnimationType = AnimationType.Attack;
             }
 
@@ -225,8 +181,13 @@ public class Player : Entity {
 
             WalkTo((float) (Position.X + dt * MovementVector.X), (float) (Position.Y + dt * MovementVector.Y));
             RenderBaseType.SetPosition(Position.X, Position.Y, Z);
-        }
-        else if (!base.Update(time, dt)) {
+        
+    }
+
+    public override bool Update(double time, double dt) {
+        if (ObjectId == Map.LocalPlayerId) {
+            HandleRelativeMovement(time, dt);
+        } else if (!base.Update(time, dt)) {
             return false;
         }
         Effect?.Update(time, dt);
@@ -253,7 +214,7 @@ public class Player : Entity {
                     Speed = stat.Value;
                     break;
                 case StatsType.Dexterity:
-                    SetDexterity(stat.Value);
+                    Dexterity = stat.Value;
                     break;
                 case StatsType.Vitality:
                     Vitality = stat.Value;
@@ -358,52 +319,38 @@ public class Player : Entity {
     }
 
     private float AttackFrequency() {
-        var attFreq = MinAttackFreq + GetDexterity() / 75f * (MaxAttackFreq - MinAttackFreq);
-        attFreq += attFreq * (AttackSpeedIncrease / 100f);
+        if (HasConditionEffect(ConditionEffects.Dazed)) {
+            return MinAttackFreq;
+        }
+        
+        var attFreq = MinAttackFreq + Dexterity / 75f * (MaxAttackFreq - MinAttackFreq);
+
+        if (HasConditionEffect(ConditionEffects.Berserk))
+            attFreq *= 1.25f;
+        
         return attFreq;
     }
 
-    private void SetDexterity(int value) {
-        RandomDex = MathUtils.RandomInt(1000, 2500);
-        Dexterity = RandomDex + value;
-    }
-
-    private int GetDexterity() {
-        return Dexterity - RandomDex;
-    }
-
-    public void Shoot(float attackAngle) {
-        if (Map.LocalPlayer == null) {
-            return;
-        }
-
-        /*var itemData:ItemData = Equipment[0];
-        if (!itemData) {
-            return;
-        }
-
-
-        var rateOfFire:Number = itemData.RateOfFire;
-        if (itemData.Reforge && itemData.Reforge.ItemType == "Weapon") {
-            RateOfFire += itemData.getStatChange(RateOfFire, "RateofFire");
-        }*/
-
-        AttackPeriod = 1 / AttackFrequency() * (1 / 1f);
-
-        if (Timer < AttackStart + AttackPeriod) {
-            return;
-        }
-
-        //this.attackAngle_ = attackAngle;
-        AttackStart = Timer;
-        IsShooting = true;
-
-        // i cant drag items without it trying to get me to shoot. 
-        if (Equipment[0] == null)
+    public void Shoot(float attackAngle, GameTime gameTime) {
+        if (HasConditionEffect(ConditionEffects.Stunned) || HasConditionEffect(ConditionEffects.Paused))
             return;
         
-        var itemType = Equipment[0].ObjectType;
-        var props = ObjectLibrary.TypeToObjectProps[itemType];
+        var item = Equipment[0];
+
+        if (item == null)
+            return;
+
+        var temp = AttackFrequency();
+        
+        AttackPeriod = 1 / temp * (1 / item.RateOfFire);
+
+        if (gameTime.TotalMs < AttackStart + AttackPeriod)
+            return;
+
+        AttackAngle = attackAngle;
+        AttackStart = gameTime.TotalMs;
+        
+        var props = ObjectLibrary.TypeToObjectProps[item.ObjectType];
         
         var projType = ObjectLibrary.IdToObjectType[props.Projectiles[0].ObjectId];
         var objProps =  ObjectLibrary.TypeToObjectProps[projType];
@@ -421,12 +368,11 @@ public class Player : Entity {
             Map.AddProjectile(proj);
             
             var shoot = PlayerShoot.CreatePacket();
-            shoot.ContainerType = itemType;
+            shoot.ContainerType = item.ObjectType;
             shoot.BulletId = bId;
             shoot.Angle = angle;
-            shoot.Time = (int)Map.LastGameTime.TotalMs;
+            shoot.Time = (int)gameTime.TotalMs;
             shoot.StartingPos = new Position { X = Position.X, Y = Position.Y };
-            
             
             Client.QueuePacket(shoot);
         }

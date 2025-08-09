@@ -168,6 +168,8 @@ public class Main {
             if (!_running) break;
 
             totalMs += elapsedMs;
+
+            GameTime = new GameTime(totalMs, elapsedMs);
             
             Update(new GameTime(totalMs, elapsedMs));
             
@@ -198,6 +200,8 @@ public class Main {
         Toolkit.Window.Destroy(Window);
         _running = false;
     }
+    
+    public static GameTime GameTime { get; private set; }
     
     [Conditional("DEBUG")]
     private void EnableDebugOutput() {

@@ -84,8 +84,6 @@ public class EnemyShoot : IncomingPacket<EnemyShoot> {
         }
 
         en.SetAttack(OwnerId, Angle + AngleInc * (NumShots - 1) / 2);
-        en.AnimationType = AnimationType.Attack;
-        en.IsShooting = true;
     }
 
     public override string ToString() {
