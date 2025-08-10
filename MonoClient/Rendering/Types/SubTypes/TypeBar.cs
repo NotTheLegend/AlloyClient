@@ -12,7 +12,7 @@ public class TypeBar : SubRenderBase {
         get => 0.12f * 2;
     }
 
-    private Color _bgColor = ColorUtils.ColorHex(0x111111);
+    private Color _bgColor = Color.FromHexRGB(0x111111);
     private Vector4 _bgScale = new Vector4(0.72f, 0.12f, 0, 0);
 
     public TypeBar(RenderBase parent, Entity entity, Color color) {

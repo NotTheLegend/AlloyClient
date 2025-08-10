@@ -43,8 +43,8 @@ public sealed class MinimapLayer : Container {
         if (_count >= MaxEntities) return;
 
         const float size = 3.25f;
-        
-        var color = rgb.ToColor();
+
+        var color = Color.FromHexRGB(rgb);
         VertexData[_count * 4 + 0] = new VertexUi(new Vector2(pos.X - size, pos.Y - size), color);
         VertexData[_count * 4 + 1] = new VertexUi(new Vector2(pos.X + size, pos.Y - size), color);
         VertexData[_count * 4 + 2] = new VertexUi(new Vector2(pos.X + size, pos.Y + size), color);

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using MonoClient.Assets.XmlStructs;
 using MonoClient.Objects;
-using MonoClient.Objects.Util.ItemDatas;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
@@ -50,10 +50,10 @@ public sealed class EquippedGrid : Sprite {
     public void UpdateAbilitySlot() {
         var slot = _tileSlots[1];
 
-        if (slot.Item == null || slot.Item.ObjectType == 0)
+        if (slot.ItemDesc == null || slot.ItemDesc.ObjectType == 0)
             return;
 
-        var noMana = Map.LocalPlayer.Mp < slot.Item.MpCost;
+        var noMana = Map.LocalPlayer.Mp < slot.ItemDesc.MpCost;
         //todo: silence check
         
         slot.SetDim(noMana);

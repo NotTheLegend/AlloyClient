@@ -1,11 +1,11 @@
 ﻿using System;
 using Common;
+using MonoClient.Assets.XmlStructs;
 using MonoClient.Display;
 using MonoClient.Networking;
 using MonoClient.Networking.Packets.Outgoing;
 using MonoClient.Networking.Structs.DataObjects;
 using MonoClient.Objects;
-using MonoClient.Objects.Util.ItemDatas;
 using MonoClient.Ui.Components.Tooltips;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
@@ -30,7 +30,7 @@ public sealed class ItemTile : Sprite {
 
     public readonly Entity Owner;
     
-    public ItemDesc Item;
+    public ItemDesc ItemDesc;
 
     private readonly ObjectRect _sprite;
     private readonly SimpleText _tierText;
@@ -107,13 +107,13 @@ public sealed class ItemTile : Sprite {
         _sprite.AddEventListener(MouseEvent.MouseOut, OnMouseOut);
     }
 
-    public void SetItem(ItemDesc item)
+    public void SetItem(ItemDesc itemDesc)
     {
-        Item = item;
-        if (Item != null && Item.ObjectType > 0)
+        ItemDesc = itemDesc;
+        if (ItemDesc != null && ItemDesc.ObjectType > 0)
         {
-            _sprite.ChangeTexture(TextureHelper.FromGameAtlas(Item.ObjectType));
-            _background.SetColor(IsUsableByPlayer(Item) ? _bgColor : 0x5C1D1Du);
+            _sprite.ChangeTexture(TextureHelper.FromGameAtlas(ItemDesc.ObjectType));
+            _background.SetColor(IsUsableByPlayer(ItemDesc) ? _bgColor : 0x5C1D1Du);
             _slotDetail.Visible = false;
             _slotId.Visible = false;
         }
@@ -138,15 +138,15 @@ public sealed class ItemTile : Sprite {
     }
 
     private void UpdateTierTag() {
-        if (Item == null || Item.Consumable || Item.SlotType == 10) {
+        if (ItemDesc == null || ItemDesc.Consumable || ItemDesc.SlotType == 10) {
             _tierText.Visible = false;
             return;
         }
         
         var color = 0xFFFFFFu;
-        var tag = $"T{Item.Tier}";
+        var tag = $"T{ItemDesc.Tier}";
 
-        if (Item.Tier == -1) {
+        if (ItemDesc.Tier == -1) {
             color = 0x8A2BE2;
             tag = "UT";
         }
@@ -164,20 +164,20 @@ public sealed class ItemTile : Sprite {
     }
     
     private void OnMouseOver() {
-        if (Item == null || _dragging) return;
-        _tooltip = new EquipmentToolTip(Item);
+        if (ItemDesc == null || _dragging) return;
+        _tooltip = new EquipmentToolTip(ItemDesc);
         TooltipManager.AddTooltip(_tooltip);
     }
 
     private void OnMouseOut() {
-        if (Item == null || _tooltip == null || _dragging) return;
+        if (ItemDesc == null || _tooltip == null || _dragging) return;
         TooltipManager.RemoveTooltip(_tooltip);
         _tooltip = null;
         _pendingDouble = false;
     }
     
     private void OnMouseDown(MouseEvent args) {
-        if (Item == null) return;
+        if (ItemDesc == null) return;
         
         _dragStart = GetRelativeMousePosition();
         _checkForDrag = true;
@@ -191,7 +191,7 @@ public sealed class ItemTile : Sprite {
             _pendingDouble = false;
             
             // added basic consume logic, this will be looked at another time i assume
-            if(Item.ObjectType == ItemConstants.PotionType || Item.Consumable)
+            if(ItemDesc.ObjectType == ItemConstants.PotionType || ItemDesc.Consumable)
             {
                 int timeStuff = (int)Map.LastGameTime.TotalMs;
 
@@ -199,7 +199,7 @@ public sealed class ItemTile : Sprite {
                     time: timeStuff, 
                     objectId: Owner.ObjectId, 
                     slotId: SlotId,
-                    objectType: Item.ObjectType, 
+                    objectType: ItemDesc.ObjectType, 
                     itemUsePosX: Owner.Position.X,
                     itemUsePosY: Owner.Position.Y,
                     useType: (byte)UseType.START_USE
@@ -302,19 +302,19 @@ public sealed class ItemTile : Sprite {
                 swap.SlotObj1 = new ObjectSlot {
                     ObjectId = Owner.ObjectId,
                     SlotId = SlotId,
-                    ObjectType = Item.ObjectType
+                    ObjectType = ItemDesc.ObjectType
                 };
                 swap.SlotObj2 = new ObjectSlot {    
                     ObjectId = tile.Owner.ObjectId,
                     SlotId = tile.SlotId,
-                    ObjectType = tile.Item?.ObjectType ?? 0
+                    ObjectType = tile.ItemDesc?.ObjectType ?? 0
                 };
                 Client.QueuePacket(swap);
             
-                (tile.Item, Item) = (Item, tile.Item);
+                (tile.ItemDesc, ItemDesc) = (ItemDesc, tile.ItemDesc);
                 
-                SetItem(Item);
-                tile.SetItem(tile.Item);
+                SetItem(ItemDesc);
+                tile.SetItem(tile.ItemDesc);
                 break; // swap
             case InventoryGrid grid:
                 break; // add to first free slot
@@ -323,7 +323,7 @@ public sealed class ItemTile : Sprite {
                 drop.SlotObject = new ObjectSlot {
                     ObjectId = Owner.ObjectId,
                     SlotId = SlotId,
-                    ObjectType = Item.ObjectType
+                    ObjectType = ItemDesc.ObjectType
                 };
                 
                 Client.QueuePacket(drop);
@@ -332,25 +332,25 @@ public sealed class ItemTile : Sprite {
                 break; // drop
             default:
                 //reset tile
-                SetItem(Item);
+                SetItem(ItemDesc);
                 break;
             
         }
     }
 
     private static bool CanSwapItems(ItemTile source, ItemTile target) {
-        return source.CanHoldItem(target.Item) && target.CanHoldItem(source.Item);
+        return source.CanHoldItem(target.ItemDesc) && target.CanHoldItem(source.ItemDesc);
     }
 
-    private bool CanHoldItem(ItemDesc item) {
-        return (item?.ObjectType ?? 0) == 0 || SlotType == 0 || SlotType == item.SlotType;
+    private bool CanHoldItem(ItemDesc itemDesc) {
+        return (itemDesc?.ObjectType ?? 0) == 0 || SlotType == 0 || SlotType == itemDesc.SlotType;
     }
 
-    private static bool IsUsableByPlayer(ItemDesc item) {
-        if (Map.LocalPlayer == null || item == null) return true;
-        if (item.ObjectType == 0) return false;
+    private static bool IsUsableByPlayer(ItemDesc itemDesc) {
+        if (Map.LocalPlayer == null || itemDesc == null) return true;
+        if (itemDesc.ObjectType == 0) return false;
 
-        var slotType = item.SlotType;
+        var slotType = itemDesc.SlotType;
 
         if (slotType == ItemConstants.PotionType)
             return true;

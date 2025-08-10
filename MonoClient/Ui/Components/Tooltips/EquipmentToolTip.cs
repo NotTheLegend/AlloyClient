@@ -1,17 +1,16 @@
-using MonoClient.Objects.Util.ItemDatas;
 using MonoClient.Objects.Util;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Enums;
 using MonoClient.Utils;
 using System;
-using System.Reflection.Metadata.Ecma335;
+using MonoClient.Assets.XmlStructs;
 using MonoClient.Ui.Components.Elements;
 
 namespace MonoClient.Ui.Components.Tooltips;
 
 public sealed class EquipmentToolTip : Tooltip 
 {
-    private ItemDesc Item;
+    private ItemDesc _itemDesc;
 
     private ObjectRect Icon;
     private TierText TierTag;
@@ -21,9 +20,9 @@ public sealed class EquipmentToolTip : Tooltip
     private SimpleText DamageText;
     private SimpleText StatsText;
     private string statsText;
-    public EquipmentToolTip(ItemDesc item) : base(220, 100)
+    public EquipmentToolTip(ItemDesc itemDesc) : base(220, 100)
     {
-        Item = item;
+        _itemDesc = itemDesc;
         AddIcon();
         AddTitle();
         AddTierTag();
@@ -35,7 +34,7 @@ public sealed class EquipmentToolTip : Tooltip
 
     private void AddIcon()
     {
-        ushort obj = Item.ObjectType;
+        ushort obj = _itemDesc.ObjectType;
         Icon = new ObjectRect(new ObjectRectConfig
         {
             Texture = TextureHelper.FromGameAtlas(obj <= 0 ? (ushort)0x0096 : obj),
@@ -47,35 +46,35 @@ public sealed class EquipmentToolTip : Tooltip
 
     private void AddTitle()
     {
-        TitleText = new SimpleText(SimpleConfig(Item.ObjectId, 16, FontType.Bold, maxWidth: 204));
+        TitleText = new SimpleText(SimpleConfig(_itemDesc.ObjectId, 16, FontType.Bold, maxWidth: 204));
         TitleText.SetAnchor(UiAnchor.MiddleLeft);
         AddChild(TitleText);
     }
 
     private void AddTierTag()
     {
-        if(Item.Consumable || Item.SlotType == 10)
+        if(_itemDesc.Consumable || _itemDesc.SlotType == 10)
         {
             return; 
         }
 
-        TierTag = new TierText(Item);
+        TierTag = new TierText(_itemDesc);
         TierTag.SetAnchor(UiAnchor.MiddleRight);
         AddChild(TierTag);
     }
     
     private void AddDescription()
     {
-        DescText = new SimpleText(SimpleConfig(Item.Description, 14, FontType.Normal, 0xaaaaaa, 0x0, 0.5f, 204));
+        DescText = new SimpleText(SimpleConfig(_itemDesc.Description, 14, FontType.Normal, 0xaaaaaa, 0x0, 0.5f, 204));
         AddChild(DescText);
     }
 
     private void AddStatBonus() //Yes this is kinda awful, im going to do make tooltips soon
     {
         statsText = "";
-        if (Item.StatBoosts != null)
+        if (_itemDesc.StatBoosts != null)
         {
-            foreach (var stat in Item.StatBoosts)
+            foreach (var stat in _itemDesc.StatBoosts)
             {
                 /*Logger.Debug(stat.ToString());
                 Logger.Debug(stat.Amount.ToString());
@@ -83,19 +82,19 @@ public sealed class EquipmentToolTip : Tooltip
                 statsText += $"\n{StatsUtil.FromId(stat.Stat)}: {stat.Amount}";
             }
         }
-        if (Item.Activate != null)
+        /*if (Item.Activate != null)
         {
             foreach (var Activate in Item.Activate)
             {
-                /*Logger.Debug(stat.ToString());
-                Logger.Debug(stat.Amount.ToString());
-                Logger.Debug(stat.Stat.ToString());*/
+                //Logger.Debug(stat.ToString());
+                //Logger.Debug(stat.Amount.ToString());
+                //Logger.Debug(stat.Stat.ToString());
                 statsText += $"\n{Activate.EffectName}: {Activate.DurationMS}";
             }
-        }
-        if (Item.FameBonus != 0)
+        }*/
+        if (_itemDesc.FameBonus != 0)
         {
-            statsText += $"\nFame: {Item.FameBonus}%";
+            statsText += $"\nFame: {_itemDesc.FameBonus}%";
         }
         if (statsText != "")
         {

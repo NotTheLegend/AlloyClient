@@ -7117,7 +7117,7 @@
         <BagType>2</BagType>
         <FameBonus>4</FameBonus>
         <MpCost>80</MpCost>
-        <Activate radius="9" totalDamage="500" duration="15" color="8fa547">PoisonGrenade</Activate>
+        <Activate radius="9" totalDamage="500" duration="15" color="0x8fa547">PoisonGrenade</Activate>
     </Object>
     <Object type="0xc6c" id="Backpack">
 		<Class>Equipment</Class>

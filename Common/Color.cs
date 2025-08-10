@@ -155,6 +155,14 @@ public struct Color : IEquatable<Color> {
         Yellow = new Color(0xff00ffff);
         YellowGreen = new Color(0xff32cd9a);
     }
+    
+    public static Color FromHexRGB(uint rgb, float alpha = 1.0f) {
+        var r = (byte)(rgb >> 16);
+        var g = (byte)(rgb >> 8);
+        var b = (byte)rgb;
+        var a = (byte)(Math.Max(Math.Min(alpha, 1f), 0f) * byte.MaxValue);
+        return new Color((uint)(a << 24 | b << 16 | g << 8 | r));
+    }
 
     /// <summary>
     /// Gets or sets packed value of this <see cref="Color"/>.

@@ -35,7 +35,7 @@ public sealed class TypePlayer : RenderBase {
         
         _typeName = new TypeName(this, player);
         _hpBar = new TypeHpBar(this, player);
-        _mpBar = new TypeBar(this, player, ColorUtils.ColorHex(0x6084E0));
+        _mpBar = new TypeBar(this, player, Color.FromHexRGB(0x6084E0));
         _effects = new TypeEffects(this, player);
     }
     

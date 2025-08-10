@@ -94,7 +94,7 @@ public class ClassInfo : Container {
         _background.AddChild(_characterRect);
         _background.AddChild(_className);
 
-        var startingItems = new [] { ObjectLibrary.CreateItem(props.Equipment[0] ?? 0),ObjectLibrary.CreateItem(props.Equipment[1] ?? 0),ObjectLibrary.CreateItem(props.Equipment[2] ?? 0),ObjectLibrary.CreateItem(props.Equipment[3] ?? 0),};
+        var startingItems = new [] { ObjectLibrary.GetItem(props.Equipment[0] ?? 0),ObjectLibrary.GetItem(props.Equipment[1] ?? 0),ObjectLibrary.GetItem(props.Equipment[2] ?? 0),ObjectLibrary.GetItem(props.Equipment[3] ?? 0),};
         var equipped = new EquippedGrid(startingItems, props.SlotTypes);
         equipped.X = _characterRect.X - 52;
         equipped.Y = 200;

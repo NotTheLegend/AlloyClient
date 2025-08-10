@@ -32,8 +32,7 @@ public static class AssetParser {
 
     private static async Task ParseObjects() {
         var xmlFiles = Directory.GetFiles("Content/Xmls", "*.xml");
-        var excludedFiles = new[]
-            { "Ground.xml", "Particles.xml", "Regions.xml", "PotionStorageUpgradeItems.xml", "TutorialScript.xml" };
+        var excludedFiles = new[] { "Ground.xml", "Regions.xml", "TutorialScript.xml" };
 
         foreach (var xmlFile in xmlFiles.Where(file => !excludedFiles.Contains(Path.GetFileName(file))).ToArray()) {
             var path = await File.ReadAllTextAsync(xmlFile);
@@ -56,7 +55,7 @@ public static class AssetParser {
                 }
 
                 if (gameObject.HasElement("Item")) {
-                    ObjectLibrary.ItemXmls[props.ObjectType] = gameObject;
+                    ObjectLibrary.TypeToItem[props.ObjectType] = new ItemDesc(props.ObjectType, gameObject);
                 }
             }
         }

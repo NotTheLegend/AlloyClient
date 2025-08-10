@@ -1,5 +1,5 @@
 using Common;
-using MonoClient.Objects.Util.ItemDatas;
+using MonoClient.Assets.XmlStructs;
 using MonoClient.UiLib.BuiltIn;
 using MonoClient.UiLib.Core;
 using MonoClient.UiLib.Enums;
@@ -18,19 +18,7 @@ public class TierText : Sprite
         {
             c = Color.Purple;
             text = "UT";
-        }
-        else if (desc.Legendary)
-        {
-            c = Color.Gold;
-            text = "LG";
-        }
-        else if (desc.Demonic)
-        {
-            c = Color.Crimson;
-            text = "DC";
-        }
-        else
-            text = "T" + desc.Tier;
+        } else text = "T" + desc.Tier;
         
         Tag = new SimpleText(new TextConfig()
         {

@@ -11,12 +11,12 @@ public class TypeHpBar : SubRenderBase {
         get => 0.12f * 2;
     }
 
-    private Color _bgColor = ColorUtils.ColorHex(0x111111);
+    private Color _bgColor = Color.FromHexRGB(0x111111);
     private Vector4 _bgScale = new(0.72f, 0.12f, 0, 0);
 
-    private static readonly Color HighFill = ColorUtils.ColorHex(0x10FF00);
-    private static readonly Color MedFill = ColorUtils.ColorHex(0xFF8010);
-    private static readonly Color LowFill = ColorUtils.ColorHex(0xE01010);
+    private static readonly Color HighFill = Color.FromHexRGB(0x10FF00);
+    private static readonly Color MedFill = Color.FromHexRGB(0xFF8010);
+    private static readonly Color LowFill = Color.FromHexRGB(0xE01010);
 
     public TypeHpBar(RenderBase parent, Entity entity) {
         Parent = parent;

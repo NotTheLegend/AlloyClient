@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using MonoClient.Objects;
-using MonoClient.Objects.Util;
-using MonoClient.Objects.Util.ItemDatas;
-using MonoClient.UiLib.Core;
+﻿using MonoClient.UiLib.Core;
 
 namespace MonoClient.Screens.Game.Components.Hud.Inventory;
 

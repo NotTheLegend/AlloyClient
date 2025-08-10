@@ -12,12 +12,12 @@ using MonoClient.Rendering;
 using MonoClient.Rendering.Types;
 using MonoClient.Objects.Enums;
 using MonoClient.Objects.Util;
-using MonoClient.Objects.Util.ItemDatas;
 using MonoClient.ParticleEffects;
 using MonoClient.State;
 using MonoClient.UiLib.Signals;
 using MonoClient.Utils;
 using OpenTK.Mathematics;
+using ItemDesc = MonoClient.Assets.XmlStructs.ItemDesc;
 using MathUtils = MonoClient.Utils.MathUtils;
 
 namespace MonoClient.Objects;
@@ -327,9 +327,8 @@ public class Entity {
                     var index = stat.Type - StatsType.Inventory0;
                     if (stat.Value == -1) {
                         Equipment[index] = null;
-                    }
-                    else if (Equipment[index] == null || (Equipment[index] != null && stat.Value != ((ItemDesc) Equipment[index]).ObjectType)) {
-                        Equipment[index] = ObjectLibrary.CreateItem((ushort)stat.Value);
+                    } else if (Equipment[index] == null || (Equipment[index] != null && stat.Value != Equipment[index].ObjectType)) {
+                        Equipment[index] = ObjectLibrary.TypeToItem[(ushort)stat.Value];
                     }
                     InventoryUpdate.Dispatch(index);
                     break;
@@ -375,9 +374,8 @@ public class Entity {
                     index = 12 + stat.Type - StatsType.BackPack0;
                     if (stat.Value == -1) {
                         Equipment[index] = null;
-                    }
-                    else if (Equipment[index] == null || (Equipment[index] != null && stat.Value != ((ItemDesc) Equipment[index]).ObjectType)) {
-                        Equipment[index] = ObjectLibrary.CreateItem((ushort)stat.Value);
+                    } else if (Equipment[index] == null || (Equipment[index] != null && stat.Value != Equipment[index].ObjectType)) {
+                        Equipment[index] = ObjectLibrary.TypeToItem[(ushort)stat.Value];
                     }
                     InventoryUpdate.Dispatch(index);
                     break;
