@@ -83,7 +83,7 @@ public sealed class Projectile {
     }
 
     public bool Update(double time, double dt, DepthMatrix matrix) {
-        var elapsed = (float)time - (float)_startTime;
+        var elapsed = (float)(time - _startTime);
 
         if (elapsed > _projDesc.LifetimeMs) {
             return false;
@@ -99,7 +99,7 @@ public sealed class Projectile {
         } else if (!_projDesc.NoRotation) {
             var direction = newPos - _position;
             var angle = MathF.Atan2(direction.Y, direction.X);
-            Rotation = angle + Camera.CameraAngle + _angleCorrection;
+            Rotation = angle + MathHelper.PiOver2 + Camera.CameraAngle + _angleCorrection;
         }
 
         // Only do HitTest 60/s instead of 5000+/s lol
