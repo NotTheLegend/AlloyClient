@@ -1,5 +1,0 @@
-﻿namespace MonoClient.Screens.Game.Components.Hud.Panels;
-
-public sealed class PartyPanel : Panel {
-    
-}
