@@ -41,23 +41,23 @@ public sealed class Shader {
     public void Apply() => GL.UseProgram(_handle);
 
     public void SetValue(string uniform, Matrix4 matrix) {
-        GL.UniformMatrix4f(GL.GetUniformLocation(_handle, uniform), 1, true, in matrix);
+        GL.ProgramUniformMatrix4f(_handle, GL.GetUniformLocation(_handle, uniform), 1, true, in matrix);
     }
     
     public void SetValue(string uniform, float value) {
-        GL.Uniform1f(GL.GetUniformLocation(_handle, uniform), value);
+        GL.ProgramUniform1f(_handle, GL.GetUniformLocation(_handle, uniform), value);
     }
     
     public void SetValue(string uniform, Vector2 value) {
-        GL.Uniform2f(GL.GetUniformLocation(_handle, uniform),1, in value);
+        GL.ProgramUniform2f(_handle, GL.GetUniformLocation(_handle, uniform),1, in value);
     }
     
     public void SetValue(string uniform, Vector4[] value) {
-        GL.Uniform4f(GL.GetUniformLocation(_handle, uniform), value.Length, new ReadOnlySpan<Vector4>(value));
+        GL.ProgramUniform4f(_handle, GL.GetUniformLocation(_handle, uniform), value.Length, new ReadOnlySpan<Vector4>(value));
     }
     
     public void SetValue(string uniform, Texture texture) {
-        GL.Uniform1i(GL.GetUniformLocation(_handle, uniform), texture.TextureSlot);
+        GL.ProgramUniform1i(_handle, GL.GetUniformLocation(_handle, uniform), texture.TextureSlot);
     }
     
     private static void CompileShader(int shader, string path)

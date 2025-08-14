@@ -27,10 +27,7 @@ struct InstanceData {
     vec4 Position;
     vec4 UV;
     vec4 Animate;
-    vec4 BlendLeftRight;
-    vec4 BlendTopBottom;
-    vec4 CornerBottom;
-    vec4 CornerTop;
+    vec4 Mask;
 };
 
 layout(std140, binding = 0) readonly buffer InstanceBuffer {

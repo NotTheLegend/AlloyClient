@@ -59,7 +59,6 @@ public static class UiRender {
     }
 
     public static void RegisterTexture(TextureType textureId, Texture texture) {
-        UiShader.Apply();
         switch (textureId) {
             case TextureType.GameAtlas:
                 UiShader.SetValue("GameAtlasTexture", texture);
@@ -86,7 +85,6 @@ public static class UiRender {
     public static void RegisterFont(FontFamily font) {
         MyriadPro = new BitmapFamily(font);
         
-        UiShader.Apply();
         UiShader.SetValue("PixelRange", MyriadPro.PixelRange);
         UiShader.SetValue("TextTextureSize", new Vector2(MyriadPro.Atlas.Width, MyriadPro.Atlas.Height));
         UiShader.SetValue("TextTexture", MyriadPro.Atlas);

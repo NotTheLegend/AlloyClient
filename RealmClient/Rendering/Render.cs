@@ -12,7 +12,7 @@ namespace RealmClient.Rendering;
 public static partial class Render {
     
     private const int BufferSize = 1000;
-    private const int TileBufferSize = (int) (Map.TileRenderDistance * Map.TileRenderDistance * MathHelper.Pi);
+    private const int TileBufferSize = (int) (Map.TileRenderDistance * Map.TileRenderDistance * MathHelper.Pi) * 4;
     
     // Shaders
     private static Shader _shaderGround;
@@ -38,21 +38,13 @@ public static partial class Render {
     
 
     public static void FirstTimeInit() {
-       var alphas = new Vector4[8];
-        for (var i = 0; i < 8; i++) {
-            alphas[i] = Main.Atlas.GetAtlasData("tileAlphaBlend", i).ToVector4(true);
-        }
-        
         // Shaders
         _shaderGround = ContentReader.LoadShader("Shaders/Ground");
-        _shaderGround.Apply();
-        _shaderGround.SetValue("AlphaBlends", alphas);
         _shaderGround.SetValue("GameTexture", Main.Atlas.GetTexture());
 
         _shaderShadow = ContentReader.LoadShader("Shaders/Shadow");
         
         _shaderObject = ContentReader.LoadShader("Shaders/Object");
-        _shaderObject.Apply();
         _shaderObject.SetValue("GameTexture", Main.Atlas.GetTexture());
         
         _shaderObject.SetValue("PixelRange", UiRender.MyriadPro.PixelRange);
@@ -60,7 +52,6 @@ public static partial class Render {
         _shaderObject.SetValue("TextTexture", UiRender.MyriadPro.Atlas);
 
         _shaderParticle = ContentReader.LoadShader("Shaders/Particle");
-        _shaderParticle.Apply();
         _shaderParticle.SetValue("GameTexture", Main.Atlas.GetTexture());
         
         _defaultVao = GL.GenVertexArray();
@@ -87,25 +78,21 @@ public static partial class Render {
     }
     
     public static void SetShaderParams(GameTime gameTime) {
-        _shaderGround.Apply();
         _shaderGround.SetValue("WorldMatrix", Camera.WorldMatrix);
         _shaderGround.SetValue("ViewMatrix", Camera.ViewMatrix);
         _shaderGround.SetValue("ProjMatrix", Camera.ProjectionMatrix);
         _shaderGround.SetValue("GameTime", (float)(gameTime.TotalMs / 1000.0f));
         
-        _shaderShadow.Apply();
         _shaderShadow.SetValue("WorldMatrix", Camera.WorldMatrix);
         _shaderShadow.SetValue("ViewMatrix", Camera.ViewMatrix);
         _shaderShadow.SetValue("ProjMatrix", Camera.ProjectionMatrix);
         _shaderShadow.SetValue("BillMatrix", Camera.BillboardMatrix);
         
-        _shaderObject.Apply();
         _shaderObject.SetValue("WorldMatrix", Camera.WorldMatrix);
         _shaderObject.SetValue("ViewMatrix", Camera.ViewMatrix);
         _shaderObject.SetValue("ProjMatrix", Camera.ProjectionMatrix);
         _shaderObject.SetValue("BillMatrix", Camera.BillboardMatrix);
         
-        _shaderParticle.Apply();
         _shaderParticle.SetValue("WorldMatrix", Camera.WorldMatrix);
         _shaderParticle.SetValue("ViewMatrix", Camera.ViewMatrix);
         _shaderParticle.SetValue("ProjMatrix", Camera.ProjectionMatrix);

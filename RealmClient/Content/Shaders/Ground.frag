@@ -4,10 +4,7 @@ struct InstanceData {
     vec4 Position;
     vec4 UV;
     vec4 Animate;
-    vec4 BlendLeftRight;
-    vec4 BlendTopBottom;
-    vec4 CornerBottom;
-    vec4 CornerTop;
+    vec4 Mask;
 };
 
 layout(std140, binding = 0) readonly buffer InstanceBuffer {
@@ -41,75 +38,13 @@ void main() {
     vec2 ogCoords = map(coreUV, data.UV.xy, data.UV.xy + data.UV.zw);
     vec4 ogColor = texture(GameTexture, ogCoords);
     vec4 color = ogColor;
-
-    vec2 uv = data.UV.zw;
-    float highAlpha = 0;
-    vec4 uva = vec4(0);
-    float alpha = 0;
-    vec2 uvb = vec2(0);
-
-    uvb = data.BlendLeftRight.xy;
-    uva = AlphaBlends[0];
-    alpha = texture(GameTexture, map(baseUV, uva.xy, uva.xy + uva.zw)).a;
-    if (uvb.x >= 0 && alpha > 0.0 && alpha > highAlpha) {
-        highAlpha = alpha;
-        color = mix(ogColor, texture(GameTexture, map(coreUV, uvb.xy, uvb.xy + uv)), highAlpha);
-    }
-
-    uvb = data.BlendLeftRight.zw;
-    uva = AlphaBlends[1];
-    alpha = texture(GameTexture, map(baseUV, uva.xy, uva.xy + uva.zw)).a;
-    if (uvb.x >= 0 && alpha > 0.0 && alpha > highAlpha) {
-        highAlpha = alpha;
-        color = mix(ogColor, texture(GameTexture, map(coreUV, uvb.xy, uvb.xy + uv)), highAlpha);
-    }
-
-    uvb = data.BlendTopBottom.zw;
-    uva = AlphaBlends[2];
-    alpha = texture(GameTexture, map(baseUV, uva.xy, uva.xy + uva.zw)).a;
-    if (uvb.x >= 0 && alpha > 0.0 && alpha > highAlpha) {
-        highAlpha = alpha;
-        color = mix(ogColor, texture(GameTexture, map(coreUV, uvb.xy, uvb.xy + uv)), highAlpha);
-    }
-
-    uvb = data.BlendTopBottom.xy;
-    uva = AlphaBlends[3];
-    alpha = texture(GameTexture, map(baseUV, uva.xy, uva.xy + uva.zw)).a;
-    if (uvb.x >= 0 && alpha > 0.0 && alpha > highAlpha) {
-        highAlpha = alpha;
-        color = mix(ogColor, texture(GameTexture, map(coreUV, uvb.xy, uvb.xy + uv)), highAlpha);
-    }
-
-    uvb = data.CornerBottom.xy;
-    uva = AlphaBlends[4];
-    alpha = texture(GameTexture, map(baseUV, uva.xy, uva.xy + uva.zw)).a;
-    if (uvb.x >= 0 && alpha > 0.0 && alpha > highAlpha) {
-        highAlpha = alpha;
-        color = mix(ogColor, texture(GameTexture, map(coreUV, uvb.xy, uvb.xy + uv)), highAlpha);
-    }
-
-    uvb = data.CornerBottom.zw;
-    uva = AlphaBlends[5];
-    alpha = texture(GameTexture, map(baseUV, uva.xy, uva.xy + uva.zw)).a;
-    if (uvb.x >= 0 && alpha > 0.0 && alpha > highAlpha) {
-        highAlpha = alpha;
-        color = mix(ogColor, texture(GameTexture, map(coreUV, uvb.xy, uvb.xy + uv)), highAlpha);
-    }
-
-    uvb = data.CornerTop.xy;
-    uva = AlphaBlends[6];
-    alpha = texture(GameTexture, map(baseUV, uva.xy, uva.xy + uva.zw)).a;
-    if (uvb.x >= 0 && alpha > 0.0 && alpha > highAlpha) {
-        highAlpha = alpha;
-        color = mix(ogColor, texture(GameTexture, map(coreUV, uvb.xy, uvb.xy + uv)), highAlpha);
-    }
-
-    uvb = data.CornerTop.zw;
-    uva = AlphaBlends[7];
-    alpha = texture(GameTexture, map(baseUV, uva.xy, uva.xy + uva.zw)).a;
-    if (uvb.x >= 0 && alpha > 0.0 && alpha > highAlpha) {
-        highAlpha = alpha;
-        color = mix(ogColor, texture(GameTexture, map(coreUV, uvb.xy, uvb.xy + uv)), highAlpha);
+    
+    if (data.Mask.x > -1.0){
+        vec2 maskCoords = map(baseUV, data.Mask.xy, data.Mask.xy + data.Mask.zw);
+        float alpha = texture(GameTexture, maskCoords).a;
+        if (alpha == 0)
+            discard;
+        color.a = alpha;
     }
 
     FragColor = color;

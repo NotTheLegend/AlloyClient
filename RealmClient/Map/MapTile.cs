@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Common;
 using Common.Structs;
 using OpenTK.Mathematics;
@@ -12,30 +14,38 @@ using RealmClient.Rendering.VertexData;
 namespace RealmClient;
 
 public class MapTile(int x, int y) {
+
+    private const ushort DefaultTile = 0xff;
+    
+    private static readonly Vector4[] BlendMasks = Main.Atlas.GetAtlasData("tileAlphaBlend").Select(x => x.ToVector4(true)).ToArray();
+    
+    private enum BlendInfo : byte {
+        Left,
+        Right,
+        Top,
+        Bottom,
+        BottomLeft,
+        BottomRight,
+        TopLeft,
+        TopRight,
+    }
+    
     public readonly int X = x;
     public readonly int Y = y;
 
-    public ushort Type = 0xFF;
-    public GroundProperties GroundProperties = GroundLibrary.TypeToGroundProps[0xFF];
-    public TextureData TextureData = GroundLibrary.TypeToTextureData[0xFF];
+    public ushort Type = DefaultTile;
+    public GroundProperties GroundProperties = GroundLibrary.TypeToGroundProps[DefaultTile];
+    public TextureData TextureData = GroundLibrary.TypeToTextureData[DefaultTile];
 
     public Entity OccupiedObject { 
         get;
         set => SetMinimapColor(field = value);
     }
 
-    private AtlasData _texture;
-    private Color _color;
-    private Vector2 _blendUV;
+    private readonly SortedList<BlendInfo, TileData> _blends = new(8);
 
-    // Shader data
-    private Vector4 _positionOffset;
-    private Vector4 _uv;
-    private Vector4 _animate;
-    private Vector4 _blendTopBottom = new(-1f);
-    private Vector4 _blendLeftRight = new(-1f);
-    private Vector4 _cornerBottom = new(-1);
-    private Vector4 _cornerTop = new(-1);
+    private Color _color;
+    private TileData _data;
 
     private void SetMinimapColor(Entity entity) {
         if (entity != null && entity.Properties.Static && entity.Properties.OccupySquare && !entity.Properties.NoMiniMap) {
@@ -46,7 +56,10 @@ public class MapTile(int x, int y) {
     }
 
     public void DrawTile() {
-        Render.DrawNewTile(new TileData(_positionOffset, _uv, _animate, _blendLeftRight, _blendTopBottom, _cornerBottom, _cornerTop));
+        Render.DrawNewTile(_data);
+        foreach (var data in _blends) {
+            Render.DrawNewTile(data.Value);
+        }
     }
 
     public void SetType(ushort type) {
@@ -54,10 +67,7 @@ public class MapTile(int x, int y) {
         GroundProperties = GroundLibrary.TypeToGroundProps[type];
         TextureData = GroundLibrary.TypeToTextureData[type];
 
-        _texture = TextureData.GetTexture(out _color, true);
-        _texture.RemovePadding();
-        _uv = _texture.ToVector4();
-        _blendUV = new Vector2(_uv.X, _uv.Y);
+        var texture = TextureData.GetTexture(out _color, true);
         
         SetMinimapColor(OccupiedObject);
 
@@ -65,23 +75,24 @@ public class MapTile(int x, int y) {
         var offy = GroundProperties.YOffset;
 
         if (GroundProperties.RandomOffset) {
-            offx = (int)(Random.Shared.NextSingle() * _texture.RawW()) / (float)_texture.RawW();
-            offy = (int)(Random.Shared.NextSingle() * _texture.RawH()) / (float)_texture.RawH();
+            offx = (int)(Random.Shared.NextSingle() * texture.RawW()) / (float)texture.RawW();
+            offy = (int)(Random.Shared.NextSingle() * texture.RawH()) / (float)texture.RawH();
         }
-        
-        _positionOffset = new Vector4(X, Y, offx, offy);
-        
-        var animate = GroundProperties.Animate;
-        switch (animate.Type) {
+
+        var animate = new Vector4(0);
+        var animateProp = GroundProperties.Animate;
+        switch (animateProp.Type) {
             case GroundAnimate.State.Wave:
-                _animate.X = animate.DeltaX;
-                _animate.Y = animate.DeltaY;
+                animate.X = animateProp.DeltaX;
+                animate.Y = animateProp.DeltaY;
                 break;
             case GroundAnimate.State.Flow:
-                _animate.Z = animate.DeltaX;
-                _animate.W = animate.DeltaY;
+                animate.Z = animateProp.DeltaX;
+                animate.W = animateProp.DeltaY;
                 break;
         }
+
+        _data = new TileData(new Vector4(X, Y, offx, offy), texture.ToVector4(true), animate, new Vector4(-1));
 
         SetEdgeBlends();
         UpdateCorners();
@@ -97,80 +108,88 @@ public class MapTile(int x, int y) {
         // Top
         if (GetTile(X, Y - 1, out var tile, out var tilePrio)) {
             if (tilePrio > currPrio) {
-                _blendTopBottom.X = tile._blendUV.X;
-                _blendTopBottom.Y = tile._blendUV.Y;
-                tile._blendTopBottom.Z = -1;
-                tile._blendTopBottom.W = -1;
+                var data = tile._data;
+                data.Position.X = X;
+                data.Position.Y = Y;
+                data.Mask = BlendMasks[3];
+                _blends[BlendInfo.Top] = data;
+                tile._blends.Remove(BlendInfo.Bottom);
             } else if (currPrio > tilePrio) {
-                _blendTopBottom.X = -1;
-                _blendTopBottom.Y = -1;
-                tile._blendTopBottom.Z = _blendUV.X;
-                tile._blendTopBottom.W = _blendUV.Y;
+                _blends.Remove(BlendInfo.Top);
+                var data = _data;
+                data.Position.X = tile.X;
+                data.Position.Y = tile.Y;
+                data.Mask = BlendMasks[2];
+                tile._blends[BlendInfo.Bottom] = data;
             } else {
-                _blendTopBottom.X = -1;
-                _blendTopBottom.Y = -1;
-                tile._blendTopBottom.Z = -1;
-                tile._blendTopBottom.W = -1;
+                _blends.Remove(BlendInfo.Top);
+                tile._blends.Remove(BlendInfo.Bottom);
             }
         }
         
         // Right
         if (GetTile(X + 1, Y, out tile, out tilePrio)) {
             if (tilePrio > currPrio) {
-                _blendLeftRight.Z = tile._blendUV.X;
-                _blendLeftRight.W = tile._blendUV.Y;
-                tile._blendLeftRight.X = -1;
-                tile._blendLeftRight.Y = -1;
+                var data = tile._data;
+                data.Position.X = X;
+                data.Position.Y = Y;
+                data.Mask = BlendMasks[1];
+                _blends[BlendInfo.Right] = data;
+                tile._blends.Remove(BlendInfo.Left);
             } else if (currPrio > tilePrio) {
-                _blendLeftRight.Z = -1;
-                _blendLeftRight.W = -1;
-                tile._blendLeftRight.X = _blendUV.X;
-                tile._blendLeftRight.Y = _blendUV.Y;
+                _blends.Remove(BlendInfo.Right);
+                var data = _data;
+                data.Position.X = tile.X;
+                data.Position.Y = tile.Y;
+                data.Mask = BlendMasks[0];
+                tile._blends[BlendInfo.Left] = data;
             } else {
-                _blendLeftRight.Z = -1;
-                _blendLeftRight.W = -1;
-                tile._blendLeftRight.X = -1;
-                tile._blendLeftRight.Y = -1;
+                _blends.Remove(BlendInfo.Right);
+                tile._blends.Remove(BlendInfo.Left);
             }
         }
         
         // Bottom
         if (GetTile(X, Y + 1, out tile, out tilePrio)) {
             if (tilePrio > currPrio) {
-                _blendTopBottom.Z = tile._blendUV.X;
-                _blendTopBottom.W = tile._blendUV.Y;
-                tile._blendTopBottom.X = -1;
-                tile._blendTopBottom.Y = -1;
+                var data = tile._data;
+                data.Position.X = X;
+                data.Position.Y = Y;
+                data.Mask = BlendMasks[2];
+                _blends[BlendInfo.Bottom] = data;
+                tile._blends.Remove(BlendInfo.Top);
             } else if (currPrio > tilePrio) {
-                _blendTopBottom.Z = -1;
-                _blendTopBottom.W = -1;
-                tile._blendTopBottom.X = _blendUV.X;
-                tile._blendTopBottom.Y = _blendUV.Y;
+                _blends.Remove(BlendInfo.Bottom);
+                var data = _data;
+                data.Position.X = tile.X;
+                data.Position.Y = tile.Y;
+                data.Mask = BlendMasks[3];
+                tile._blends[BlendInfo.Top] = data;
             } else {
-                _blendTopBottom.Z = -1;
-                _blendTopBottom.W = -1;
-                tile._blendTopBottom.X = -1;
-                tile._blendTopBottom.Y = -1;
+                _blends.Remove(BlendInfo.Bottom);
+                tile._blends.Remove(BlendInfo.Top);
             }
         }
         
         // Left
         if (GetTile(X - 1, Y, out tile, out tilePrio)) {
             if (tilePrio > currPrio) {
-                _blendLeftRight.X = tile._blendUV.X;
-                _blendLeftRight.Y = tile._blendUV.Y;
-                tile._blendLeftRight.Z = -1;
-                tile._blendLeftRight.W = -1;
+                var data = tile._data;
+                data.Position.X = X;
+                data.Position.Y = Y;
+                data.Mask = BlendMasks[0];
+                _blends[BlendInfo.Left] = data;
+                tile._blends.Remove(BlendInfo.Right);
             } else if (currPrio > tilePrio) {
-                _blendLeftRight.X = -1;
-                _blendLeftRight.Y = -1;
-                tile._blendLeftRight.Z = _blendUV.X;
-                tile._blendLeftRight.W = _blendUV.Y;
+                _blends.Remove(BlendInfo.Left);
+                var data = _data;
+                data.Position.X = tile.X;
+                data.Position.Y = tile.Y;
+                data.Mask = BlendMasks[1];
+                tile._blends[BlendInfo.Right] = data;
             } else {
-                _blendLeftRight.X = -1;
-                _blendLeftRight.Y = -1;
-                tile._blendLeftRight.Z = -1;
-                tile._blendLeftRight.W = -1;
+                _blends.Remove(BlendInfo.Left);
+                tile._blends.Remove(BlendInfo.Right);
             }
         }
     }
@@ -179,67 +198,68 @@ public class MapTile(int x, int y) {
         for (var x = X - 1; x <= X + 1; x++) {
             for (var y = Y - 1; y <= Y + 1; y++) {
                 var tile = Map.GetTile(x, y);
-                tile?.SetCornerBlends();
+                tile?.SetCornerBlendsNew();
             }
         }
     }
-
-    private void SetCornerBlends() {
+    
+    private void SetCornerBlendsNew() {
         var currPrio = GroundProperties.BlendPriority;
         
         // Bottom Right
-        if (GetTile(X + 1, Y + 1, out var tile, out var tilePrio) && GetTile(X + 1, Y, out var t1, out _) && GetTile(X, Y + 1, out var t2, out _)) {
-            if (currPrio < tilePrio && CompareBlend(t1._blendTopBottom.Z, t2._blendLeftRight.Z) && CompareBlend(t1._blendTopBottom.W, t2._blendLeftRight.W)) {
-                _cornerBottom.X = tile._blendUV.X;
-                _cornerBottom.Y = tile._blendUV.Y;
+        if (GetTile(X + 1, Y + 1, out _, out var tilePrio) && GetTile(X + 1, Y, out var t1, out _) && GetTile(X, Y + 1, out var t2, out _)) {
+            if (currPrio < tilePrio && t1._blends.TryGetValue(BlendInfo.Bottom, out var b1) && t2._blends.TryGetValue(BlendInfo.Right, out var b2) && b1.UV == b2.UV) {
+                var data = b1;
+                data.Position.X = X;
+                data.Position.Y = Y;
+                data.Mask = BlendMasks[4];
+                _blends[BlendInfo.BottomRight] = data;
             } else {
-                _cornerBottom.X = -1;
-                _cornerBottom.Y = -1;
+                _blends.Remove(BlendInfo.BottomRight);
             }
         }
         
         // Bottom Left
-        if (GetTile(X - 1, Y + 1, out tile, out tilePrio) && GetTile(X - 1, Y, out t1, out _) && GetTile(X, Y + 1, out t2, out _)) {
-            if (currPrio < tilePrio && CompareBlend(t1._blendTopBottom.Z, t2._blendLeftRight.X) && CompareBlend(t1._blendTopBottom.W, t2._blendLeftRight.Y)) {
-                _cornerBottom.Z = tile._blendUV.X;
-                _cornerBottom.W = tile._blendUV.Y;
+        if (GetTile(X - 1, Y + 1, out _, out tilePrio) && GetTile(X - 1, Y, out t1, out _) && GetTile(X, Y + 1, out t2, out _)) {
+            if (currPrio < tilePrio && t1._blends.TryGetValue(BlendInfo.Bottom, out var b1) && t2._blends.TryGetValue(BlendInfo.Left, out var b2) && b1.UV == b2.UV) {
+                var data = b1;
+                data.Position.X = X;
+                data.Position.Y = Y;
+                data.Mask = BlendMasks[5];
+                _blends[BlendInfo.BottomLeft] = data;
             } else {
-                _cornerBottom.Z = -1;
-                _cornerBottom.W = -1;
+                _blends.Remove(BlendInfo.BottomLeft);
             }
         }
         
         // Top Right
-        if (GetTile(X + 1, Y - 1, out tile, out tilePrio) && GetTile(X + 1, Y, out t1, out _) && GetTile(X, Y - 1, out t2, out _)) {
-            if (currPrio < tilePrio && CompareBlend(t1._blendTopBottom.X, t2._blendLeftRight.Z) && CompareBlend(t1._blendTopBottom.Y, t2._blendLeftRight.W)) {
-                _cornerTop.X = tile._blendUV.X;
-                _cornerTop.Y = tile._blendUV.Y;
+        if (GetTile(X + 1, Y - 1, out _, out tilePrio) && GetTile(X + 1, Y, out t1, out _) && GetTile(X, Y - 1, out t2, out _)) {
+            if (currPrio < tilePrio && t1._blends.TryGetValue(BlendInfo.Top, out var b1) && t2._blends.TryGetValue(BlendInfo.Right, out var b2) && b1.UV == b2.UV) {
+                var data = b1;
+                data.Position.X = X;
+                data.Position.Y = Y;
+                data.Mask = BlendMasks[6];
+                _blends[BlendInfo.TopRight] = data;
             } else {
-                _cornerTop.X = -1;
-                _cornerTop.Y = -1;
+                _blends.Remove(BlendInfo.TopRight);
             }
         }
         
         // Top Left
-        if (GetTile(X - 1, Y - 1, out tile, out tilePrio) && GetTile(X - 1, Y, out t1, out _) && GetTile(X, Y - 1, out t2, out _)) {
-            if (currPrio < tilePrio && CompareBlend(t1._blendTopBottom.X, t2._blendLeftRight.X) && CompareBlend(t1._blendTopBottom.Y, t2._blendLeftRight.Y)) {
-                _cornerTop.Z = tile._blendUV.X;
-                _cornerTop.W = tile._blendUV.Y;
+        if (GetTile(X - 1, Y - 1, out _, out tilePrio) && GetTile(X - 1, Y, out t1, out _) && GetTile(X, Y - 1, out t2, out _)) {
+            if (currPrio < tilePrio && t1._blends.TryGetValue(BlendInfo.Top, out var b1) && t2._blends.TryGetValue(BlendInfo.Left, out var b2) && b1.UV == b2.UV) {
+                var data = b1;
+                data.Position.X = X;
+                data.Position.Y = Y;
+                data.Mask = BlendMasks[7];
+                _blends[BlendInfo.TopLeft] = data;
             } else {
-                _cornerTop.Z = -1;
-                _cornerTop.W = -1;
+                _blends.Remove(BlendInfo.TopLeft);
             }
         }
     }
-
-    // ReSharper disable CompareOfFloatsByEqualityOperator
-    private static bool CompareBlend(float a, float b) {
-        if (a == -1f) return false;
-        if (b == -1f) return false;
-        return a == b;
-    }
     
-    private bool GetTile(int x, int y, out MapTile mapTile, out int prio) {
+    private static bool GetTile(int x, int y, out MapTile mapTile, out int prio) {
         var tile = Map.GetTile(x, y);
         
         mapTile = tile;

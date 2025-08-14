@@ -133,6 +133,7 @@ public class Main {
                 _targetFrameTime = 1000d / Settings.FpsCap.Value;
                 break;
             case GraphicsOptions.InGame:
+                _targetFrameTime = 0;
                 Toolkit.OpenGL.SetSwapInterval(0);
                 break;
             default:
@@ -204,15 +205,16 @@ public class Main {
     
     [Conditional("DEBUG")]
     private void EnableDebugOutput() {
+        GLDebugProc debugMessageDelegate = OnDebugMessage;
+        
         GL.DebugMessageCallback(OnDebugMessage, nint.Zero);
         GL.DebugMessageControl(DebugSource.DebugSourceApi, DebugType.DebugTypeOther, DebugSeverity.DontCare, 1, [131185], false);
         GL.Enable(EnableCap.DebugOutput);
         GL.Enable(EnableCap.DebugOutputSynchronous);
-        return;
-        
-        void OnDebugMessage(DebugSource source, DebugType type, uint id, DebugSeverity severity, int length, nint pmessage, nint userParam) {
-            var message = Marshal.PtrToStringAnsi(pmessage, length);
-            Console.WriteLine("[{0} source={1} type={2} id={3}] {4}", severity, source, type, id, message);
-        }
+    }
+    
+    private static void OnDebugMessage(DebugSource source, DebugType type, uint id, DebugSeverity severity, int length, nint pmessage, nint userParam) {
+        var message = Marshal.PtrToStringAnsi(pmessage, length);
+        Console.WriteLine("[{0} source={1} type={2} id={3}] {4}", severity, source, type, id, message);
     }
 }

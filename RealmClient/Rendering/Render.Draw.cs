@@ -27,7 +27,7 @@ public static partial class Render {
     }
 
     public static void EndNewDrawTile() {
-        _tileBuffer.SetDataOnce(_tileData);
+        _tileBuffer.SetDataOnce(_tileData, 0, _tileCount);
     }
 
     public static void DrawTiles() {

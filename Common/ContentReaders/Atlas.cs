@@ -18,6 +18,19 @@ public class Atlas {
 
     public Texture GetTexture() => _texture;
     
+    public AtlasData[] GetAtlasData(string lookup) {
+        if (lookup != null) {
+            var b = _atlasMapStatic.TryGetValue(lookup, out var list);
+            if (b && list.Length >= 1) {
+                return list;
+            }
+        }
+
+        Console.WriteLine($"Unable to lookup atlas array: {lookup}");
+        return [];
+
+    }
+    
     public AtlasData GetAtlasData(string lookup, int index) {
         if (lookup != null) {
             var b = _atlasMapStatic.TryGetValue(lookup, out var list);
