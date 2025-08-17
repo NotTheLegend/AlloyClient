@@ -5,6 +5,7 @@ using RealmClient.UiLib;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using RealmClient.Assets;
+using RealmClient.Game;
 using RealmClient.Rendering.VertexData;
 
 namespace RealmClient.Rendering;
@@ -12,7 +13,7 @@ namespace RealmClient.Rendering;
 public static partial class Render {
     
     private const int BufferSize = 1000;
-    private const int TileBufferSize = (int) (Map.TileRenderDistance * Map.TileRenderDistance * MathHelper.Pi) * 4;
+    private const int TileBufferSize = (int) (Map.TileRenderDistance * Map.TileRenderDistance * MathHelper.Pi) * 5;
     
     // Shaders
     private static Shader _shaderGround;

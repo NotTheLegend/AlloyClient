@@ -10,14 +10,15 @@ public sealed unsafe class VertexBuffer<T> where T : unmanaged, IVertexData {
     private readonly int _count;
     
     private readonly int _vbo;
-    private readonly BufferUsage _usage;
 
     public VertexBuffer(VertexStride stride, int vertexCount, BufferUsage usage) {
         _stride = stride;
         _count = vertexCount;
-        _usage = usage;
 
         _vbo = GL.GenBuffer();
+        GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
+        GL.BufferData(BufferTarget.ArrayBuffer, _count * _stride.Stride, null, usage);
+        GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
     }
 
     public void SetData(T[] data, int start, int count) {
@@ -25,8 +26,7 @@ public sealed unsafe class VertexBuffer<T> where T : unmanaged, IVertexData {
             throw new Exception("Data larger than buffer");
         }
         
-        GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-        GL.BufferSubData(BufferTarget.ArrayBuffer, start, _stride.Stride * count, data);
+        GL.NamedBufferSubData(_vbo, _stride.Stride * start, _stride.Stride * count, data);
     }
     
     public void SetData(T[] data) {
@@ -34,13 +34,11 @@ public sealed unsafe class VertexBuffer<T> where T : unmanaged, IVertexData {
             throw new Exception("Data larger than buffer");
         }
         
-        GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-        GL.BufferSubData(BufferTarget.ArrayBuffer, 0, _stride.Stride * data.Length, data);
+        GL.NamedBufferSubData(_vbo, 0, _stride.Stride * data.Length, data);
     }
 
     public void Bind() {
         GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-        GL.BufferData(BufferTarget.ArrayBuffer, _count * _stride.Stride, null, _usage);
         _stride.BindAttributes();
     }
 }

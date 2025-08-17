@@ -3,7 +3,7 @@ using Common;
 using Common.Structs;
 using OpenTK.Mathematics;
 using RealmClient.Assets;
-using RealmClient.Objects;
+using RealmClient.Game.Objects;
 
 
 namespace RealmClient.Rendering;

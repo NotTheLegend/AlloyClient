@@ -1,4 +1,5 @@
-﻿using RealmClient.Networking.Packets.Outgoing;
+﻿using RealmClient.Game;
+using RealmClient.Networking.Packets.Outgoing;
 using RealmClient.Networking.Structs.DataObjects;
 
 namespace RealmClient.Networking.Packets.Incoming;

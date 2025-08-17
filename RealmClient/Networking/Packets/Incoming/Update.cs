@@ -1,7 +1,8 @@
 ﻿using RealmClient.Assets.Libraries;
+using RealmClient.Game;
+using RealmClient.Game.Objects;
 using RealmClient.Networking.Packets.Outgoing;
 using RealmClient.Networking.Structs.DataObjects;
-using RealmClient.Objects;
 using RealmClient.Utils;
 
 namespace RealmClient.Networking.Packets.Incoming;

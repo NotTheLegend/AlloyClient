@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using Common;
-using RealmClient.Objects.Util;
+using RealmClient.Game.Objects.Util;
 
 namespace RealmClient.Assets.XmlStructs;
 

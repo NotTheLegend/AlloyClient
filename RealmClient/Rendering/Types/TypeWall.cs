@@ -1,7 +1,7 @@
 ﻿using Common.Structs;
 using RealmClient.Assets;
 using RealmClient.Assets.Libraries;
-using RealmClient.Objects;
+using RealmClient.Game.Objects;
 using RealmClient.Rendering.VertexData;
 using RealmClient.Utils;
 

@@ -5,9 +5,10 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using RealmClient.Display;
+using RealmClient.Game;
 using RealmClient.Networking.Packets;
 using RealmClient.Networking.Packets.Outgoing;
-using RealmClient.Screens.Title;
+using RealmClient.Screens;
 using RealmClient.State;
 using RealmClient.Utils;
 

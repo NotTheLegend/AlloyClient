@@ -1,4 +1,5 @@
-﻿using RealmClient.Screens.Game.Components.Hud.Chat;
+﻿using RealmClient.Game;
+using RealmClient.Game.Components.Hud.Chat;
 using RealmClient.Ui.Chat;
 
 namespace RealmClient.Networking.Packets.Incoming;

@@ -2,7 +2,7 @@
 using Common.Structs;
 using OpenTK.Mathematics;
 using RealmClient.Assets;
-using RealmClient.Objects;
+using RealmClient.Game.Objects;
 using RealmClient.Rendering.VertexData;
 using RealmClient.Utils;
 

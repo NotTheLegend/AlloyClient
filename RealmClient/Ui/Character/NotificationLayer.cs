@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Common;
+using RealmClient.Game.Objects;
 using RealmClient.UiLib.Core;
-using RealmClient.Objects;
 
 namespace RealmClient.Ui.Character;
 

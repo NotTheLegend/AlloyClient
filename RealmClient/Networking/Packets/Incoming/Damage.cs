@@ -1,5 +1,5 @@
 ﻿using System.Numerics;
-using RealmClient.Objects.Util;
+using RealmClient.Game.Objects.Util;
 
 namespace RealmClient.Networking.Packets.Incoming;
 

@@ -1,5 +1,5 @@
 ﻿using OpenTK.Mathematics;
-using RealmClient.Objects;
+using RealmClient.Game.Objects;
 
 namespace RealmClient.ParticleEffects;
 

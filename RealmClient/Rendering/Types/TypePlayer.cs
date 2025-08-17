@@ -3,7 +3,8 @@ using Common;
 using RealmClient.Utils;
 using OpenTK.Mathematics;
 using RealmClient.Assets;
-using RealmClient.Objects;
+using RealmClient.Game;
+using RealmClient.Game.Objects;
 using RealmClient.Rendering.Types.SubTypes;
 using RealmClient.Rendering.VertexData;
 

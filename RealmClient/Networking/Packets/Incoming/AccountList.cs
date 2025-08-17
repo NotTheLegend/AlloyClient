@@ -1,4 +1,6 @@
-﻿namespace RealmClient.Networking.Packets.Incoming;
+﻿using RealmClient.Game;
+
+namespace RealmClient.Networking.Packets.Incoming;
 
 public class AccountList : IncomingPacket<AccountList> {
     public int AccountListId;

@@ -2,7 +2,7 @@ using RealmClient.UiLib.BuiltIn;
 using RealmClient.UiLib.Enums;
 using System;
 using RealmClient.Assets.XmlStructs;
-using RealmClient.Objects.Util;
+using RealmClient.Game.Objects.Util;
 using RealmClient.Ui.Components.Elements;
 using RealmClient.Utils;
 

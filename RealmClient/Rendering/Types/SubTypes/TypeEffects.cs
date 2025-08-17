@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenTK.Mathematics;
-using RealmClient.Objects;
-using RealmClient.Objects.Util;
+using RealmClient.Game.Objects;
+using RealmClient.Game.Objects.Util;
 using RealmClient.Rendering.VertexData;
 using RealmClient.State;
 

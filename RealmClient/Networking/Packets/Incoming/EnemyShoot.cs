@@ -1,10 +1,8 @@
 ﻿using System;
-using RealmClient.Objects;
-using RealmClient.Objects.Enums;
-using RealmClient.ParticleEffects;
-using RealmClient.State;
 using RealmClient.Assets.Libraries;
 using RealmClient.Assets.XmlStructs;
+using RealmClient.Game;
+using RealmClient.Game.Objects;
 using RealmClient.Networking.Structs.DataObjects;
 using RealmClient.Utils;
 

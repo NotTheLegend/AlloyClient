@@ -20,10 +20,10 @@ public sealed unsafe class StorageBuffer<T> where T : unmanaged, IBufferData {
         _count = vertexCount;
 
         _vbo = GL.GenBuffer();
-        GL.BindBuffer(BufferTarget.ShaderStorageBuffer, _vbo);
-        GL.BufferData(BufferTarget.ShaderStorageBuffer, _count * _size, null, usage);
-        GL.BindBufferBase(BufferTarget.ShaderStorageBuffer, 0, _vbo);
-        GL.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
+        GL.BindBuffer(Target, _vbo);
+        GL.BufferData(Target, _count * _size, null, usage);
+        GL.BindBufferBase(Target, 0, _vbo);
+        GL.BindBuffer(Target, 0);
     }
 
     public void SetData(T[] data, int start, int count) {

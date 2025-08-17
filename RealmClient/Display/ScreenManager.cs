@@ -4,7 +4,7 @@ using RealmClient.UiLib.BuiltIn;
 using RealmClient.UiLib.Core;
 using RealmClient.UiLib.Extra;
 using OpenTK.Platform;
-using RealmClient.Screens.Game;
+using RealmClient.Game;
 using RealmClient.State;
 
 namespace RealmClient.Display;

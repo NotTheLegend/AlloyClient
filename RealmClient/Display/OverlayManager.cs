@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using Common;
+using RealmClient.Game;
+using RealmClient.Game.Components;
 using RealmClient.UiLib.BuiltIn;
 using RealmClient.UiLib.Core;
 using RealmClient.UiLib.Extra;
 using RealmClient.Utils;
-using RealmClient.Screens.Game.Components;
 using RealmClient.State;
 using RealmClient.Ui.Components.Panels;
 
