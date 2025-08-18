@@ -67,6 +67,17 @@ public class Main {
 
         var mode = Settings.Fullscreen ? WindowMode.WindowedFullscreen : WindowMode.Normal;
         Toolkit.Window.SetMode(Window, mode);
+
+        switch (mode) {
+            case WindowMode.WindowedFullscreen:
+                Toolkit.Window.SetPosition(Window, Vector2i.Zero);
+                break;
+            default:
+                var display = Toolkit.Window.GetDisplay(Window);
+                Toolkit.Display.GetResolution(display, out var width, out var height);
+                Toolkit.Window.SetClientPosition(Window, new Vector2i(width / 2 - Settings.ScreenWidth / 2, height / 2 - Settings.ScreenHeight / 2));
+                break;
+        }
         
         GraphicsMode.Set(SetGraphicOptions);
     }

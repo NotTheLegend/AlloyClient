@@ -32,7 +32,7 @@ public sealed class TypeModel3D : RenderBase {
         SetTexture(entity.GetTexture());
 
         Rotation.X = MathHelper.DegreesToRadians(entity.Properties.Rotation);
-        Extra = new ExtraData(RenderConfig.TypeModel, RenderConfig.NoShade);
+        Extra = new ExtraData(RenderConfig.TypeModel, RenderConfig.Shade);
     }
     
     

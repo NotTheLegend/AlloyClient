@@ -17,6 +17,8 @@ public class TitleScreen : TitleScreenBase {
     public const int FontSize = 35;
     
     private readonly Container _container = new(new ContainerConfig { Anchor = UiAnchor.MiddleTop });
+
+    private readonly int _center;
     
     public TitleScreen() : base(true) {
         var editor = new MenuBarButton("editor", FontSize, () => { });
@@ -42,17 +44,20 @@ public class TitleScreen : TitleScreenBase {
         exit.SetAnchor(UiAnchor.MiddleLeft);
         exit.X = legends.X + legends.Width + 50;
         _container.AddChild(exit);
-
-        _container.X = Settings.DefaultScreenWidth / 2;
+        
+        _center = play.X - _container.Width / 2;
+        _container.X = Settings.DefaultScreenWidth / 2 - _center;
         _container.Y = Settings.DefaultScreenHeight - 90;
         AddChild(_container);
+
+        
         
         SetAutoResize(OnResize);
     }
 
     protected override void OnResize(ResizeEvent args) {
         _container.Scale = UiRender.ScreenScale;
-        _container.X = Stage.StageWidth / 2;
+        _container.X = Stage.StageWidth / 2 - _center;
         _container.Y = Stage.StageHeight - (int)(90 * UiRender.ScreenScale.Y);
         base.OnResize(args);
     }

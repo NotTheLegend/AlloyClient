@@ -93,11 +93,19 @@ public class ChatView : Sprite {
         UserInput.SetManualFocus(false);
         Map.GameSprite.UserInput.ClearMovement();
         _inFocus = true;
+        Stage.AddEventListener(KeyboardEvent.KeyDown, OnKeyDown);
     }
 
     private void OnChatUnFocus() {
         UserInput.SetManualFocus(true);
         _inFocus = false;
+        Stage.RemoveEventListener(KeyboardEvent.KeyDown, OnKeyDown);
+    }
+
+    private void OnKeyDown(KeyboardEvent args) {
+        if (args.Code == Settings.Chat.Key) {
+            HandleChatKey();
+        }
     }
 
     private void HandleChatKey() {

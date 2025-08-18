@@ -30,6 +30,8 @@ public sealed class TypeGameObject : RenderBase {
         _name = new TypeName(this, entity);
         _hpBar = new TypeHpBar(this, entity);
         _effects = new TypeEffects(this, entity);
+
+        Color = Color.Black;
     }
     
     public override void SetPosition(float x, float y, float z = 0) {

@@ -68,6 +68,7 @@ public class MapTile(int x, int y) {
         TextureData = GroundLibrary.TypeToTextureData[type];
 
         var texture = TextureData.GetTexture(out _color, true);
+        texture.RemovePadding();
         
         SetMinimapColor(OccupiedObject);
 
@@ -92,7 +93,7 @@ public class MapTile(int x, int y) {
                 break;
         }
 
-        _data = new TileData(new Vector4(X, Y, offx, offy), texture.ToVector4(true), animate, new Vector4(-1));
+        _data = new TileData(new Vector4(X, Y, offx, offy), texture.ToVector4(), animate, new Vector4(-1));
 
         SetEdgeBlends();
         UpdateCorners();

@@ -102,6 +102,8 @@ public sealed class UserInput : Sprite {
     }
 
     private void SetPlayerMovement() {
+        if (Map.LocalPlayer == null) return;
+        
         if (IsInputDisabled()) {
             Map.LocalPlayer.SetRelativeMovement(0, 0, 0);
             return;
@@ -111,10 +113,8 @@ public sealed class UserInput : Sprite {
     }
 
     private void OnScroll(MouseEvent args) {
-        if (IsInputDisabled())
-            return;
-        if (Map.LocalPlayer == null)
-            return;
+        if (IsInputDisabled()) return;
+        if (Map.LocalPlayer == null) return;
         
         if (args.ShiftKey) {
             Settings.CameraZoom = Math.Clamp(Settings.CameraZoom += Settings.ScaleFactor * args.Delta, Settings.MinCameraZoom, Settings.MaxCameraZoom);
@@ -232,8 +232,8 @@ public sealed class UserInput : Sprite {
     }
     
     private void OnKeyUp(KeyboardEvent args) {
-        if (IsInputDisabled() || args.Code == Scancode.Unknown)
-            return;
+        if (IsInputDisabled() || args.Code == Scancode.Unknown) return;
+        if (Map.LocalPlayer == null) return;
 
         var key = args.Code;
 
