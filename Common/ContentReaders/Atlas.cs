@@ -68,10 +68,10 @@ public class Atlas {
         return new Color(0);
     }
 
-    internal static Atlas Read(BinaryReader reader) {
+    internal static Atlas Read(BinaryReader reader, TextureFilter filter) {
         var png = reader.ReadBytes(reader.ReadInt32());
         using var stream = new MemoryStream(png);
-        var texture = Texture.FromStream(stream, TextureFilter.Nearest);
+        var texture = Texture.FromStream(stream, filter);
 
         var atlasMapStatic = new Dictionary<string, AtlasData[]>();
         var atlasDataMapCount = reader.ReadInt32();

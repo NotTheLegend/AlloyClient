@@ -6,7 +6,7 @@ namespace Common;
 
 public sealed class Texture {
 
-    private static int _textureCount;
+    private static uint _textureCount;
 
     public readonly int Handle;
 
@@ -16,22 +16,20 @@ public sealed class Texture {
     
     public readonly int Height;
     
-    private Texture(int handle, int slot, int width, int height) {
+    private Texture(int handle, uint slot, int width, int height, TextureFilter filter) {
         Handle = handle;
-        TextureSlot = slot;
+        TextureSlot = (int)slot;
         Width = width;
         Height = height;
-        //TODO: add param for filters, and stuff
+        SetFilter(filter);
     }
 
     public void SetData(ReadOnlySpan<Color> data, Vector4i rect) {
-        GL.BindTexture(TextureTarget.Texture2d, Handle);
-        GL.TexSubImage2D(TextureTarget.Texture2d, 0, rect.X, rect.Y, rect.Z, rect.W, PixelFormat.Rgba, PixelType.UnsignedByte, data);
+        GL.TextureSubImage2D(Handle, 0, rect.X, rect.Y, rect.Z, rect.W, PixelFormat.Rgba, PixelType.UnsignedByte, data);
     }
 
     public void SetData(ReadOnlySpan<Color> data, int width, int height) {
-        GL.BindTexture(TextureTarget.Texture2d, Handle);
-        GL.TexSubImage2D(TextureTarget.Texture2d, 0, 0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, data);
+        GL.TextureSubImage2D(Handle, 0, 0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, data);
     }
 
     public static Texture FromStream(Stream stream, TextureFilter filter) {
@@ -39,11 +37,10 @@ public sealed class Texture {
         
         using var img = StbImage.Load(stream, StbiImageFormat.Rgba);
         
-        GL.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, img.Width, img.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, img.ImagePointer);
-        SetFilters(filter);
-        GL.GenerateMipmap(TextureTarget.Texture2d);
+        GL.TextureStorage2D(handle, 1, SizedInternalFormat.Rgba8, img.Width, img.Height);
+        GL.TextureSubImage2D(handle, 0, 0, 0, img.Width, img.Height, PixelFormat.Rgba, PixelType.UnsignedByte, img.ImagePointer);
         
-        return new Texture(handle, slot, img.Width, img.Height);
+        return new Texture(handle, slot, img.Width, img.Height, filter);
     }
 
     public static Texture FromFile(string file, TextureFilter filter) {
@@ -54,28 +51,29 @@ public sealed class Texture {
     public static Texture Create(ReadOnlySpan<Color> data, int width, int height, TextureFilter filter) {
         var (handle, slot) = CreateHandle();
         
-        GL.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, data);
-        SetFilters(filter);
-        GL.GenerateMipmap(TextureTarget.Texture2d);
-        return new Texture(handle, slot, width, height);
+        GL.TextureStorage2D(handle, 1, SizedInternalFormat.Rgba8, width, height);
+        GL.TextureSubImage2D(handle, 0, 0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, data);
+        
+        return new Texture(handle, slot, width, height, filter);
+    }
+    
+    public void SetFilter(TextureFilter filter) {
+        GL.TextureParameteri(Handle, TextureParameterName.TextureMagFilter, filter.MagFilter);
+        GL.TextureParameteri(Handle, TextureParameterName.TextureMinFilter, filter.MinFilter);
     }
 
-    private static (int, int) CreateHandle() {
-        var handle = GL.GenTexture();
+    private static (int, uint) CreateHandle() {
+        var handle = GL.CreateTexture(TextureTarget.Texture2d);
         var slot = _textureCount;
         
-        GL.ActiveTexture(IntToTexUnit(slot));
-        GL.BindTexture(TextureTarget.Texture2d, handle);
+        GL.BindTextureUnit(slot, handle);
         
         _textureCount++;
         
         return (handle, slot);
     }
 
-    private static void SetFilters(TextureFilter filter) {
-        GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, filter.MagFilter);
-        GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, filter.MinFilter);
-    }
+    
 
     private static TextureUnit IntToTexUnit(int value) => value switch {
         0 => TextureUnit.Texture0,
@@ -96,51 +94,40 @@ public sealed class Texture {
         15 => TextureUnit.Texture15,
         _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
     };
-    
-    private static int TexUnitToInt(TextureUnit value) => value switch {
-        TextureUnit.Texture0 => 0,
-        TextureUnit.Texture1 => 1,
-        TextureUnit.Texture2 => 2,
-        TextureUnit.Texture3 => 3,
-        TextureUnit.Texture4 => 4,
-        TextureUnit.Texture5 => 5,
-        TextureUnit.Texture6 => 6,
-        TextureUnit.Texture7 => 7,
-        TextureUnit.Texture8 => 8,
-        TextureUnit.Texture9 => 9,
-        TextureUnit.Texture10 => 10,
-        TextureUnit.Texture11 => 11,
-        TextureUnit.Texture12 => 12,
-        TextureUnit.Texture13 => 13,
-        TextureUnit.Texture14 => 14,
-        TextureUnit.Texture15 => 15,
-        _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
-    };
-
 }
 
 public readonly struct TextureFilter {
     
-    public static readonly TextureFilter Nearest = new (All.Nearest, All.Nearest);
+    public static readonly TextureFilter Nearest = new (TextureMinFilter.Nearest, TextureMagFilter.Nearest);
     
-    public static readonly TextureFilter Linear = new (All.Linear, All.Linear);
+    public static readonly TextureFilter Linear = new (TextureMinFilter.Linear, TextureMagFilter.Linear);
+    
+    public readonly int MinFilter;
 
     public readonly int MagFilter;
 
-    public readonly int MinFilter;
-
-    private TextureFilter(All mag, All min) {
-        Check(mag);
+    private TextureFilter(TextureMinFilter min, TextureMagFilter mag) {
         Check(min);
+        Check(mag);
         
-        MagFilter = (int)mag;
         MinFilter = (int)min;
+        MagFilter = (int)mag;
     }
     
-    private static void Check(All val) {
+    private static void Check(TextureMinFilter val) {
         switch (val) {
-            case All.Nearest:
-            case All.Linear:
+            case TextureMinFilter.Nearest:
+            case TextureMinFilter.Linear:
+                break;
+            default:
+                throw new Exception("Not a valid texture filter");
+        }
+    }
+    
+    private static void Check(TextureMagFilter val) {
+        switch (val) {
+            case TextureMagFilter.Nearest:
+            case TextureMagFilter.Linear:
                 break;
             default:
                 throw new Exception("Not a valid texture filter");

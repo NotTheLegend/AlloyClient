@@ -12,9 +12,9 @@ public static class ContentReader {
     
     public static Texture LoadTexture(string imagePath, TextureFilter filter) => Texture.FromFile(Path.Combine(_folder, imagePath), filter);
 
-    public static Atlas LoadAtlas(string path) {
+    public static Atlas LoadAtlas(string path, TextureFilter filter) {
         using var reader = new BinaryReader(new MemoryStream(File.ReadAllBytes(Path.Combine(_folder, path))));
-        return Atlas.Read(reader);
+        return Atlas.Read(reader, filter);
     }
 
     public static FontFamily LoadFont(string path) {

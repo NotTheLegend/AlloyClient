@@ -85,8 +85,8 @@ public class Main {
     [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH")]
     private void LoadContent() {
         ContentReader.Init(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content"));
-        Atlas = ContentReader.LoadAtlas("Game.atlas");
-        UiAtlas = ContentReader.LoadAtlas("Ui.atlas");
+        Atlas = ContentReader.LoadAtlas("Game.atlas", TextureFilter.Nearest);
+        UiAtlas = ContentReader.LoadAtlas("Ui.atlas", TextureFilter.Nearest);
         MinimapTexture.Init(out var mapTexture);
         
         ModelData.Load();
