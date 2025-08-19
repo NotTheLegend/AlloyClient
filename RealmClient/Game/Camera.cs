@@ -53,14 +53,11 @@ public static class Camera {
         ZoomMatrix = Matrix4.CreateScale(zoom);
     }
 
-    public static void UpdateViewPort() {
-        var w = Settings.ScreenWidth.Value;
-        var h = Settings.ScreenHeight.Value;
-
-        Viewport = new Vector2i(w, h);
+    public static void UpdateViewPort(int width, int height) {
+        Viewport = new Vector2i(width, height);
         
-        GL.Viewport(0, 0, w, h);
-        ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(-w + HudOffset, w + HudOffset, -h, h, -10000f, 10000f);
+        GL.Viewport(0, 0, width, height);
+        ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(-width + HudOffset, width + HudOffset, -height, height, -10000f, 10000f);
     }
 
     public static void Update(float x, float y) {

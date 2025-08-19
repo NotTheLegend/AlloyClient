@@ -19,13 +19,21 @@ public sealed class GameSprite : Sprite {
         AddChild(new NotificationLayer());
         
         Hud = new HudView();
-        Hud.X = Settings.DefaultScreenWidth;
+        Hud.X = Settings.ScreenWidth;
+        Hud.Y = Settings.ScreenHeight / 2;
         AddChild(Hud);
 
         _chat = new ChatView();
         AddChild(_chat);
 
         Map.GameSprite = this;
+        
+        SetAutoResize(OnResize);
+    }
+
+    private void OnResize(ResizeEvent args) {
+        Hud.X = args.Width;
+        Hud.Y = args.Height / 2;
     }
 
     public void Update() {

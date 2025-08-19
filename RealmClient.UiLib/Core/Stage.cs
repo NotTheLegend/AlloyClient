@@ -1,4 +1,5 @@
 ﻿using Common;
+using OpenTK.Mathematics;
 using RealmClient.UiLib.Extra;
 using RealmClient.UiLib.Input;
 
@@ -16,6 +17,12 @@ public class Stage : Sprite {
     internal Stage() {
         MouseEnabled = true;
         Stage = this;
+    }
+
+    internal void SetSize(Vector2i dim) {
+        StageWidth = dim.X;
+        StageHeight = dim.Y;
+        SetBaseDimensions(dim.X, dim.Y);
     }
     
     public void Update(GameTime gameTime) {

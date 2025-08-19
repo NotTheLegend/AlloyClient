@@ -20,7 +20,7 @@ namespace RealmClient.Game.Components.Hud
 
         public HudView()
         {
-            SetAnchor(UiAnchor.RightTop);
+            SetAnchor(UiAnchor.MiddleRight);
 
             var bg = new ColorRect(new ColorRectConfig { Width = 240, Height = Settings.DefaultScreenHeight, Color = 0x363636 });
             AddChild(bg);

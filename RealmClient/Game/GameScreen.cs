@@ -5,6 +5,7 @@ using RealmClient.Networking;
 using RealmClient.Rendering;
 using RealmClient.State;
 using RealmClient.UiLib;
+using RealmClient.UiLib.Core;
 using RealmClient.Utils;
 
 namespace RealmClient.Game;
@@ -16,10 +17,16 @@ public sealed class GameScreen : Screen {
     private int _frames;
 
     public GameScreen() {
-        SetBaseDimensions(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight);
+        SetBaseDimensions(Settings.ScreenWidth, Settings.ScreenHeight);
         Client.Connect(Settings.GameServerAddress, Settings.SelectedGameServerPort);
         GameSprite = new GameSprite();
         AddChild(GameSprite);
+        
+        SetAutoResize(OnResize);
+    }
+
+    protected override void OnResize(ResizeEvent args) {
+        SetBaseDimensions(args.Width, args.Height);
     }
 
     public override void Update(GameTime gameTime) {

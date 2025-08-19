@@ -17,6 +17,7 @@ public static class Program {
         
         var game = new Main();
         game.Run();
+        Settings.SaveSettings();
     }
     
     private static void OnProcessExit(object sender, EventArgs e) {

@@ -32,7 +32,7 @@ public sealed class TypeWall : RenderBase {
         var textureData = ObjectLibrary.TypeToTextureData[entity.Properties.ObjectType];
         SetTexture(textureData.GetTexture());
 
-        Extra = new ExtraData(RenderConfig.TypeWall, RenderConfig.NoShade);
+        Extra = new ExtraData(RenderConfig.TypeWall, RenderConfig.Shade);
         
         Top = new TypeWallTop(this);
         Top.SetTexture(textureData.GetTopTexture());
