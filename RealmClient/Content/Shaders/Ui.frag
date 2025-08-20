@@ -125,34 +125,74 @@ vec4 RenderText() {
     return vec4(color.rgb, alpha);
 }
 
-vec4 RenderOutline(sampler2D tex) {
-    vec4 color = texture(tex, input.UVCoords);
+vec2 uv_aa_smoothstep( vec2 uv,float width ) {
+    const vec2 res = vec2(4096, 4096);
+    vec2 pixels = uv * res;
+
+    vec2 pixels_floor = floor(pixels + 0.5);
+    vec2 pixels_fract = fract(pixels + 0.5);
+    vec2 pixels_aa = fwidth(pixels) * width * 0.5;
+    pixels_fract = smoothstep( vec2(0.5) - pixels_aa, vec2(0.5) + pixels_aa, pixels_fract );
+
+    return (pixels_floor + pixels_fract - 0.5) / res;
+}
+
+float samp(vec2 uv, float width, vec2 dx, vec2 dy) {
+    return textureGrad(GameAtlasTexture, uv_aa_smoothstep(uv, 1.5), dx, dy).a;
+}
+
+vec4 RenderOutline() {
+    vec2 uv = input.UVCoords;
+    vec2 dx = dFdx(uv);
+    vec2 dy = dFdy(uv);
+    vec4 color = textureGrad(GameAtlasTexture, uv_aa_smoothstep(uv, 1.5), dx, dy);
+    color /= color.a;
+
     if (input.UVCoords.y > input.Extra1.x) {
-        color.rgb += 0.9241 * (input.UVCoords.y - input.Extra1.x) / input.Extra1.y;
+        color.rgb -= 0.241 * (((input.UVCoords.y - input.Extra1.y) / input.Extra1.z) - 0.4);
     }
 
     if (color.a > 0) {
         return color;
     }
 
-    vec2 offsetX = vec2(1.0 / 4.0 / 4096.0, 0);
-    vec2 offsetY = vec2(0, 1.0 / 4.0 / 4096.0);
-    float alpha = 0;
-    vec2 c;
-    vec2 uv = input.UVCoords;
-    c = uv + offsetX - offsetY;
-    alpha = max(alpha, texture(tex, c).a);
-    c = uv + offsetX + offsetY;
-    alpha = max(alpha, texture(tex, c).a);
-    c = uv - offsetX - offsetY;
-    alpha = max(alpha, texture(tex, c).a);
-    c = uv - offsetX + offsetY;
-    alpha = max(alpha, texture(tex, c).a);
+    if (input.Extra1.w == -1)
+        discard;
+
+    const float offset = 1.0 / 3.0 / 4096.0;
+    const float val = 36.0 / 255.0 / 4096.0;
+    float scaleX = length(dx) / val;
+    float scaleY = length(dy) / val;
+    const float width = 1.5;
+
+    float alpha = max(0.0, samp(uv + vec2(offset * scaleX, -offset * scaleY), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(offset * scaleX, offset * scaleY), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(-offset * scaleX, -offset * scaleY), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(-offset * scaleX, offset * scaleY), width, dx, dy));
+
+    alpha = max(alpha, samp(uv + vec2(offset * scaleX, 0), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(-offset * scaleX, 0), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(0, offset * scaleY), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(0, -offset * scaleY), width, dx, dy));
+
+    vec4 outline = unpackColor(input.Override);
+
     if (alpha > 0) {
-        color = unpackColor(input.Override);
+        return vec4(outline.rgb, 1);
     }
 
-    return color;
+    float sum = 0.0;
+
+    for (float x = -2; x <= 2; x++) {
+        for (float y = -2.5; y <= 3.5; y++) {
+            sum += samp(uv + vec2(x * offset, y * offset), 1.5, dx, dy);
+        }
+    }
+
+    if (sum == 0.0)
+        discard;
+
+    return vec4(outline.rgb, sum / 30.0);
 }
 
 vec4 RenderNoOutline(sampler2D tex) {
@@ -204,7 +244,7 @@ void main() {
     if (type == IdColor) {
         pixel = color;
     } else if (type == IdGameAtlas) {
-        pixel = RenderOutline(GameAtlasTexture);
+        pixel = RenderOutline();
     } else if (type == IdUiAtlas) {
         pixel = RenderNoOutline(UiAtlasTexture);
     } else if (type == IdUiSlice) {

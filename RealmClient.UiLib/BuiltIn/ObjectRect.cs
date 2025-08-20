@@ -14,6 +14,7 @@ public struct ObjectRectConfig {
     public int Height = 0;
     public float Alpha = 1.0f;
     public uint OutlineColor = 0x0;
+    public bool OutlineEnabled = true;
     
     public UiAnchor Anchor = UiAnchor.LeftTop;
 
@@ -27,6 +28,7 @@ public class ObjectRect : Sprite {
     
     private int _width;
     private int _height;
+    private bool _outline;
 
     public ObjectRect(ObjectRectConfig config) {
         X = config.X;
@@ -41,6 +43,7 @@ public class ObjectRect : Sprite {
 
         _texture = config.Texture.AtlasPosition;
         TextureId = config.Texture.TextureType;
+        _outline = config.OutlineEnabled;
 
         ResizeBackBuffer();
         FillData();
@@ -58,7 +61,7 @@ public class ObjectRect : Sprite {
         VertexData[2] = new VertexUi(new Vector2(_width, 0), new Vector2(_texture.U + _texture.W, _texture.V));
         VertexData[3] = new VertexUi(new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H));
         
-        Extra1 = new Vector4(_texture.V + _texture.H * 0.4f, _texture.V + _texture.H, -1f, -1f);
+        Extra1 = new Vector4(_texture.V + _texture.H * 0.4f, _texture.V, _texture.H, _outline ? 1f : -1f);
     }
     
     public void ChangeTexture(TextureInfo info) {

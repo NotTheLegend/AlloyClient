@@ -35,128 +35,82 @@ float median(float a, float b, float c) {
     return max(min(a, b), min(max(a, b), c));
 }
 
-vec4 GetGameObject() {
+vec2 uv_aa_smoothstep( vec2 uv,float width ) {
+    const vec2 res = vec2(4096, 4096);
+    vec2 pixels = uv * res;
+
+    vec2 pixels_floor = floor(pixels + 0.5);
+    vec2 pixels_fract = fract(pixels + 0.5);
+    vec2 pixels_aa = fwidth(pixels) * width * 0.5;
+    pixels_fract = smoothstep( vec2(0.5) - pixels_aa, vec2(0.5) + pixels_aa, pixels_fract );
+
+    return (pixels_floor + pixels_fract - 0.5) / res;
+}
+
+float samp(vec2 uv, float width, vec2 dx, vec2 dy) {
+    vec2 uv1 = clamp(uv, input.UV.xy, input.UV.xy + input.UV.zw);
+    return textureGrad(GameTexture, uv_aa_smoothstep(uv1, 1.5), dx, dy).a;
+}
+
+vec4 GetModel() {
     vec2 uv = map(input.BaseUV, input.UV.xy, input.UV.xy + input.UV.zw);
-    vec4 color = textureGrad(GameTexture, uv, dFdx(uv), dFdy(uv));
+    vec4 color = texture(GameTexture, uv_aa_smoothstep(uv, 1.5));
+    color /= color.a;
 
     if (input.BaseUV.y > 0.4) {
         color.rgb -= input.Extra.z * 0.241 * (input.BaseUV.y - 0.4);
     }
-
-    if (color.a > 0) {
-        color.a *= input.Extra.w;
-        return color;
-    }
-
-    if (input.Extra.x != 0) {
-        discard;
-    }
-
-    const vec2 offsetX = vec2(1.0 / 4.0 / 4096.0, 0);
-    const vec2 offsetY = vec2(0, 1.0 / 4.0 / 4096.0);
-    float alpha = 0;
-    vec2 c;
-    c = uv + offsetX - offsetY;
-    alpha = max(alpha, texture(GameTexture, c).a);
-    c = uv + offsetX + offsetY;
-    alpha = max(alpha, texture(GameTexture, c).a);
-    c = uv - offsetX - offsetY;
-    alpha = max(alpha, texture(GameTexture, c).a);
-    c = uv - offsetX + offsetY;
-    alpha = max(alpha, texture(GameTexture, c).a);
-    if (alpha > 0) {
-        color = vec4(0, 0, 0, 1);
-        color.a *= input.Extra.w;
-        return color;
-    }
-
-    color = input.Color;
-    c = uv;
-    float sum = 0.0;
-
-    const float px = 1.0 / 4.0 / 4096.0;
-    const float py = 1.0 / 4.0 / 4096.0;
-    float x2 = px * 2;
-    float x3 = px * 3;
-
-    float y3 = py * -3.5;
-    sum += texture(GameTexture, c - vec2(x3, y3)).a;
-    sum += texture(GameTexture, c - vec2(x2, y3)).a;
-    sum += texture(GameTexture, c - vec2(px, y3)).a;
-    sum += texture(GameTexture, c + vec2(0.0, y3)).a;
-    sum += texture(GameTexture, c + vec2(px, y3)).a;
-    sum += texture(GameTexture, c + vec2(x2, y3)).a;
-    sum += texture(GameTexture, c + vec2(x3, y3)).a;
-
-    y3 = py * -2.5;
-
-    sum += texture(GameTexture, c - vec2(x3, y3)).a;
-    sum += texture(GameTexture, c - vec2(x2, y3)).a;
-    sum += texture(GameTexture, c - vec2(px, y3)).a;
-    sum += texture(GameTexture, c + vec2(0.0, y3)).a;
-    sum += texture(GameTexture, c + vec2(px, y3)).a;
-    sum += texture(GameTexture, c + vec2(x2, y3)).a;
-    sum += texture(GameTexture, c + vec2(x3, y3)).a;
-
-    y3 = py * -1.5;
-    sum += texture(GameTexture, c - vec2(x3, y3)).a;
-    sum += texture(GameTexture, c - vec2(x2, y3)).a;
-    sum += texture(GameTexture, c - vec2(px, y3)).a;
-    sum += texture(GameTexture, c + vec2(0.0, y3)).a;
-    sum += texture(GameTexture, c + vec2(px, y3)).a;
-    sum += texture(GameTexture, c + vec2(x2, y3)).a;
-    sum += texture(GameTexture, c + vec2(x3, y3)).a;
-
-    y3 = py * -0.5;
-
-    sum += texture(GameTexture, c - vec2(x3, y3)).a;
-    sum += texture(GameTexture, c - vec2(x2, y3)).a;
-    sum += texture(GameTexture, c - vec2(px, y3)).a;
-    sum += texture(GameTexture, c + vec2(0.0, y3)).a;
-    sum += texture(GameTexture, c + vec2(px, y3)).a;
-    sum += texture(GameTexture, c + vec2(x2, y3)).a;
-    sum += texture(GameTexture, c + vec2(x3, y3)).a;
-
-    y3 = py * 0.5;
-    sum += texture(GameTexture, c - vec2(x3, y3)).a;
-    sum += texture(GameTexture, c - vec2(x2, y3)).a;
-    sum += texture(GameTexture, c - vec2(px, y3)).a;
-    sum += texture(GameTexture, c + vec2(0.0, y3)).a;
-    sum += texture(GameTexture, c + vec2(px, y3)).a;
-    sum += texture(GameTexture, c + vec2(x2, y3)).a;
-    sum += texture(GameTexture, c + vec2(x3, y3)).a;
-
-    y3 = py * 1.5;
-
-    sum += texture(GameTexture, c - vec2(x3, y3)).a;
-    sum += texture(GameTexture, c - vec2(x2, y3)).a;
-    sum += texture(GameTexture, c - vec2(px, y3)).a;
-    sum += texture(GameTexture, c + vec2(0.0, y3)).a;
-    sum += texture(GameTexture, c + vec2(px, y3)).a;
-    sum += texture(GameTexture, c + vec2(x2, y3)).a;
-    sum += texture(GameTexture, c + vec2(x3, y3)).a;
-
-    y3 = py * 2.5;
-    sum += texture(GameTexture, c - vec2(x3, y3)).a;
-    sum += texture(GameTexture, c - vec2(x2, y3)).a;
-    sum += texture(GameTexture, c - vec2(px, y3)).a;
-    sum += texture(GameTexture, c + vec2(0.0, y3)).a;
-    sum += texture(GameTexture, c + vec2(px, y3)).a;
-    sum += texture(GameTexture, c + vec2(x2, y3)).a;
-    sum += texture(GameTexture, c + vec2(x3, y3)).a;
-
-    y3 = py * 3.5;
-
-    sum += texture(GameTexture, c - vec2(x3, y3)).a;
-    sum += texture(GameTexture, c - vec2(x2, y3)).a;
-    sum += texture(GameTexture, c - vec2(px, y3)).a;
-    sum += texture(GameTexture, c + vec2(0.0, y3)).a;
-    sum += texture(GameTexture, c + vec2(px, y3)).a;
-    sum += texture(GameTexture, c + vec2(x2, y3)).a;
-    sum += texture(GameTexture, c + vec2(x3, y3)).a;
-
-    color.a = sum / 49.0;
+    
     return color;
+}
+
+vec4 GetGameObject() {
+    vec2 uv = map(input.BaseUV, input.UV.xy, input.UV.xy + input.UV.zw);
+    vec2 dx = dFdx(uv);
+    vec2 dy = dFdy(uv);
+    vec4 color = textureGrad(GameTexture, uv_aa_smoothstep(uv, 1.5), dx, dy);
+    color /= color.a;
+
+    if (input.BaseUV.y > 0.4) {
+        color.rgb -= input.Extra.z * 0.241 * (input.BaseUV.y - 0.4);
+    }
+    
+    if (color.a > 0) {
+        return color;
+    }
+    
+    const float offset = 1.0 / 3.0 / 4096.0;
+    const float val = 36.0 / 255.0 / 4096.0;
+    float scaleX = length(dx) / val;
+    float scaleY = length(dy) / val;
+    const float width = 1.5;
+    
+    float alpha = max(0.0, samp(uv + vec2(offset * scaleX, -offset * scaleY), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(offset * scaleX, offset * scaleY), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(-offset * scaleX, -offset * scaleY), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(-offset * scaleX, offset * scaleY), width, dx, dy));
+    
+    alpha = max(alpha, samp(uv + vec2(offset * scaleX, 0), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(-offset * scaleX, 0), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(0, offset * scaleY), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(0, -offset * scaleY), width, dx, dy));
+    
+    if (alpha > 0) {
+        return vec4(input.Color.rgb, 1);
+    }
+
+    float sum = 0.0;
+    
+    for (float x = -2; x <= 2; x++) {
+        for (float y = -2.5; y <= 3.5; y++) {
+            sum += samp(uv + vec2(x * offset, y * offset), 1.5, dx, dy);
+        }
+    }
+    
+    if (sum == 0.0)
+        discard;
+     
+    return vec4(input.Color.rgb, sum / 30.0);
 }
 
 vec4 GetText() {
@@ -181,8 +135,10 @@ void main() {
     vec4 outputColor;
     float id = input.Extra.x;
 
-    if (id == TypeGameObject || id == TypeModel || id == TypeWall) {
+    if (id == TypeGameObject) {
         outputColor = GetGameObject();
+    } else if (id == TypeModel || id == TypeWall) {
+        outputColor = GetModel();
     } else if (id == TypeText) {
         outputColor = GetText();
     } else if (id == TypeBar) {

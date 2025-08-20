@@ -63,7 +63,7 @@ public sealed class ItemTile : Sprite {
         _background = new CutEdgeRect(new CutEdgeConfig { Width = Size, Height = Size, CutX = 4, CutY = 4, Cuts = cut, Color = _bgColor });
         AddChild(_background);
         
-        _slotDetail = new ObjectRect(new ObjectRectConfig { Texture = TextureHelper.FromGameAtlas(0x0096), Width = Size, Height = Size });
+        _slotDetail = new ObjectRect(new ObjectRectConfig { Texture = TextureHelper.FromGameAtlas(0x0096), Width = Size, Height = Size, OutlineEnabled = false});
         _slotDetail.Visible = false;
         _slotDetail.ColorTransformation = new ColorTransform(0, 0, 0, 1, 54, 54, 54, 0);
         _slotDetail.SetColorSecondary(0, 0);
