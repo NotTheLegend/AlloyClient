@@ -160,20 +160,19 @@ vec4 RenderOutline() {
         discard;
 
     const float offset = 1.0 / 3.0 / 4096.0;
-    const float val = 36.0 / 255.0 / 4096.0;
+    const float val = 45.0 / 255.0 / 4096.0;
     float scaleX = length(dx) / val;
     float scaleY = length(dy) / val;
     const float width = 1.5;
+    const float texel = 1.0 / 4096;
 
-    float alpha = max(0.0, samp(uv + vec2(offset * scaleX, -offset * scaleY), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(offset * scaleX, offset * scaleY), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(-offset * scaleX, -offset * scaleY), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(-offset * scaleX, offset * scaleY), width, dx, dy));
+    float offX = clamp(offset * scaleX, 1.0 / 6.0 / 4096.0, texel);
+    float offY = clamp(offset * scaleY, 1.0 / 6.0 / 4096.0, texel);
 
-    alpha = max(alpha, samp(uv + vec2(offset * scaleX, 0), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(-offset * scaleX, 0), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(0, offset * scaleY), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(0, -offset * scaleY), width, dx, dy));
+    float alpha = max(0.0, samp(uv + vec2(offX, -offY), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(offX, offY), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(-offX, -offY), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(-offX, offY), width, dx, dy));
 
     vec4 outline = unpackColor(input.Override);
 

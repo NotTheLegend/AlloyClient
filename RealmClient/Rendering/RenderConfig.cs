@@ -9,4 +9,5 @@ public static class RenderConfig {
     public const float TypeWall = 2f;
     public const float TypeText = 3f;
     public const float TypeBar = 4f;
+    public const float TypeEffect = 5f;
 }

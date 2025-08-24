@@ -8,6 +8,7 @@ in VS_OUT {
     vec4 Mask1;
     vec4 Mask2;
     float Depth;
+    float Zed;
 } input;
 
 out vec4 FragColor;
@@ -22,6 +23,7 @@ const float TypeModel = 1.0;
 const float TypeWall = 2.0;
 const float TypeText = 3.0;
 const float TypeBar = 4.0;
+const float TypeEffect = 5.0;
 
 float map(float value, float newMin, float newMax) {
     return value * (newMax - newMin) + newMin;
@@ -57,11 +59,46 @@ vec4 GetModel() {
     vec4 color = texture(GameTexture, uv_aa_smoothstep(uv, 1.5));
     color /= color.a;
 
-    if (input.BaseUV.y > 0.4) {
-        color.rgb -= input.Extra.z * 0.241 * (input.BaseUV.y - 0.4);
+    if (input.Zed <= 0.6) {
+        color.rgb -= input.Extra.z * 0.241 * (0.6 - input.Zed);
     }
     
     return color;
+}
+
+vec4 GetEffect() {
+    vec2 uv = map(input.BaseUV, input.UV.xy, input.UV.xy + input.UV.zw);
+    vec2 dx = dFdx(uv);
+    vec2 dy = dFdy(uv);
+    vec4 color = textureGrad(GameTexture, uv_aa_smoothstep(uv, 1.5), dx, dy);
+    color /= color.a;
+
+    if (input.BaseUV.y > 0.4) {
+        color.rgb -= input.Extra.z * 0.241 * (input.BaseUV.y - 0.4);
+    }
+
+    if (color.a > 0) {
+        return color;
+    }
+
+    const float offset = 1.0 / 4096.0;
+    const float width = 2.0;
+
+    float alpha = max(0.0, samp(uv + vec2(offset, -offset), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(offset, offset), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(-offset, -offset), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(-offset, offset), width, dx, dy));
+
+    alpha = max(alpha, samp(uv + vec2(-offset, 0), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(offset, 0), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(0, -offset), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(0, offset), width, dx, dy));
+
+    if (alpha > 0) {
+        return vec4(input.Color.rgb, 1);
+    }
+
+    discard;
 }
 
 vec4 GetGameObject() {
@@ -80,20 +117,19 @@ vec4 GetGameObject() {
     }
     
     const float offset = 1.0 / 3.0 / 4096.0;
-    const float val = 36.0 / 255.0 / 4096.0;
+    const float val = 45.0 / 255.0 / 4096.0;
     float scaleX = length(dx) / val;
     float scaleY = length(dy) / val;
     const float width = 1.5;
+    const float texel = 1.0 / 4096;
     
-    float alpha = max(0.0, samp(uv + vec2(offset * scaleX, -offset * scaleY), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(offset * scaleX, offset * scaleY), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(-offset * scaleX, -offset * scaleY), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(-offset * scaleX, offset * scaleY), width, dx, dy));
+    float offX = clamp(offset * scaleX, 1.0 / 6.0 / 4096.0, texel);
+    float offY = clamp(offset * scaleY, 1.0 / 6.0 / 4096.0, texel);
     
-    alpha = max(alpha, samp(uv + vec2(offset * scaleX, 0), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(-offset * scaleX, 0), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(0, offset * scaleY), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(0, -offset * scaleY), width, dx, dy));
+    float alpha = max(0.0, samp(uv + vec2(offX, -offY), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(offX, offY), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(-offX, -offY), width, dx, dy));
+    alpha = max(alpha, samp(uv + vec2(-offX, offY), width, dx, dy));
     
     if (alpha > 0) {
         return vec4(input.Color.rgb, 1);
@@ -102,7 +138,7 @@ vec4 GetGameObject() {
     float sum = 0.0;
     
     for (float x = -2; x <= 2; x++) {
-        for (float y = -2.5; y <= 3.5; y++) {
+        for (float y = -0.5; y <= 3.5; y++) {
             sum += samp(uv + vec2(x * offset, y * offset), 1.5, dx, dy);
         }
     }
@@ -110,7 +146,7 @@ vec4 GetGameObject() {
     if (sum == 0.0)
         discard;
      
-    return vec4(input.Color.rgb, sum / 30.0);
+    return vec4(input.Color.rgb, sum / 25.0);
 }
 
 vec4 GetText() {
@@ -137,6 +173,8 @@ void main() {
 
     if (id == TypeGameObject) {
         outputColor = GetGameObject();
+    } else if (id == TypeEffect) {
+        outputColor = GetEffect();
     } else if (id == TypeModel || id == TypeWall) {
         outputColor = GetModel();
     } else if (id == TypeText) {

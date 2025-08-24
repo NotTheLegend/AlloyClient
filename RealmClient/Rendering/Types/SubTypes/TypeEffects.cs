@@ -23,7 +23,7 @@ public class TypeEffects : SubRenderBase {
         UV = new Vector4();
         Scale = new Vector4(Size, Size, 0, -0.5f);
         Rotation = new Vector4(0, 1, 1f, -1);
-        Extra = new ExtraData(RenderConfig.TypeGameObject, RenderConfig.NoShade);
+        Extra = new ExtraData(RenderConfig.TypeEffect, RenderConfig.Shade);
     }
     
     public override void Draw(float yOffset) {

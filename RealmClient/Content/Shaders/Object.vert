@@ -25,6 +25,7 @@ out VS_OUT {
     vec4 Mask1;
     vec4 Mask2;
     float Depth;
+    float Zed;
 } output;
 
 const float TypeGameObject = 0.0;
@@ -32,10 +33,11 @@ const float TypeModel = 1.0;
 const float TypeWall = 2.0;
 const float TypeText = 3.0;
 const float TypeBar = 4.0;
+const float TypeEffect = 5.0;
 
 vec4 GetPosition(vec3 position, vec3 dataPosition, vec4 dataScale, vec4 rot, vec4 dataExtra) {
     float id = dataExtra.x;
-    if (id == TypeGameObject || id == TypeText || id == TypeBar) {
+    if (id == TypeGameObject || id == TypeText || id == TypeBar || id == TypeEffect) {
         vec4 pos = vec4(0);
         
         position.xy *= dataScale.xy;
@@ -81,7 +83,9 @@ vec2 GetUV(vec2 uv, vec4 dataExtra) {
 }
 
 void main() {
-    gl_Position = GetPosition(Position, iPosition, iScale, iRotation, iExtra) * WorldMatrix * ViewMatrix * ProjMatrix;
+    vec4 pos = GetPosition(Position, iPosition, iScale, iRotation, iExtra);
+    output.Zed = pos.z;
+    gl_Position = pos * WorldMatrix * ViewMatrix * ProjMatrix;
     output.BaseUV = GetUV(BaseUV, iExtra);
     output.UV = iUV;
     output.Extra = iExtra;
