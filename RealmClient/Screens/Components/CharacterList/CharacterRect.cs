@@ -253,7 +253,7 @@ public sealed class CharacterRect : Container {
         var accountModel = Account.Model;
         foreach (var classStatModel in accountModel.Stats.ClassStats) {
             var objTypeStr = classStatModel.ObjectType;
-            var objectType = Convert.ToUInt16(objTypeStr, XmlUtil.GetBase(objTypeStr));
+            var objectType = Convert.ToUInt16(objTypeStr, Common.Utils.GetBase(objTypeStr));
             if (objectType != characterModel.ObjectType) {
                 continue;
             }

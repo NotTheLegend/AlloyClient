@@ -67,8 +67,11 @@ public sealed class UserInput : Sprite {
 
     private static bool IsInputDisabled() => !(_windowFocus && _manualFocus);
 
-    private void OnLeftDown() => _mouseDown = true;
-    
+    private void OnLeftDown(MouseEvent args) {
+        if (args.Coords.X > Settings.ScreenWidth - HudView.Width) return;
+        _mouseDown = true;
+    }
+
     private void OnLeftUp() => _mouseDown = false;
     
     private void OnMouseMove(MouseEvent args) => _mousePosition = new Vector2(args.Coords.X, args.Coords.Y);

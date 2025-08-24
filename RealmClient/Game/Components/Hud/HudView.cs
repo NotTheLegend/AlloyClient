@@ -1,76 +1,75 @@
-﻿using RealmClient.Game.Components.Hud.Inventory;
+﻿using Common;
+using RealmClient.Game.Components.Hud.Inventory;
 using RealmClient.State;
 using RealmClient.UiLib.BuiltIn;
 using RealmClient.UiLib.Core;
 using RealmClient.UiLib.Enums;
 
-namespace RealmClient.Game.Components.Hud
-{
-    public sealed class HudView : Sprite
-    {
-        private Minimap _minimap;
-        private CharacterDetails _details;
-        private CharacterBars _bars;
+namespace RealmClient.Game.Components.Hud;
 
-        private EquippedGrid _equippedGrid;
-        private InventoryGrid _inventoryGrid;
-        private TabStrip _tabStrip;
+public sealed class HudView : Sprite {
+    public const int Width = 240;
 
-        private InteractPanel _interactPanel;
 
-        public HudView()
-        {
-            SetAnchor(UiAnchor.MiddleRight);
+    private Minimap _minimap;
+    private CharacterDetails _details;
+    private CharacterBars _bars;
 
-            var bg = new ColorRect(new ColorRectConfig { Width = 240, Height = Settings.DefaultScreenHeight, Color = 0x363636 });
-            AddChild(bg);
+    private EquippedGrid _equippedGrid;
+    private InventoryGrid _inventoryGrid;
+    private TabStrip _tabStrip;
 
-            _minimap = new Minimap();
-            _minimap.X = 5;
-            _minimap.Y = 5;
-            AddChild(_minimap);
+    private InteractPanel _interactPanel;
 
-            _details = new CharacterDetails();
-            _details.X = 5;
-            _details.Y = _minimap.Y + _minimap.Height;
-            AddChild(_details);
+    public HudView() {
+        SetAnchor(UiAnchor.MiddleRight);
 
-            _bars = new CharacterBars();
-            _bars.X = 15;
-            _bars.Y = _details.Y + _details.Height + 5;
-            AddChild(_bars);
-        }
+        var bg = new ColorRect(new ColorRectConfig {Width = Width, Height = Settings.DefaultScreenHeight, Color = 0x363636});
+        AddChild(bg);
 
-        public void CreatePlayerDependentAssets()
-        {
-            RemoveChild(_equippedGrid);
-            RemoveChild(_inventoryGrid);
-            RemoveChild(_interactPanel);
-            RemoveChild(_tabStrip);
+        _minimap = new Minimap();
+        _minimap.X = 5;
+        _minimap.Y = 5;
+        AddChild(_minimap);
 
-            _equippedGrid = new EquippedGrid(Map.LocalPlayer);
-            _equippedGrid.X = 12;
-            _equippedGrid.Y = _bars.Y + _bars.height * 3 + _bars.offset * 3;
-            AddChild(_equippedGrid);
+        _details = new CharacterDetails();
+        _details.X = 5;
+        _details.Y = _minimap.Y + _minimap.Height;
+        AddChild(_details);
 
-            _tabStrip = new TabStrip(Map.LocalPlayer); //Inv + Backpack + StatView is handled under TabStrip.
-            _tabStrip.X = 8;
-            _tabStrip.Y = _equippedGrid.Y + _equippedGrid.Height + 32;
-            AddChild(_tabStrip);
+        _bars = new CharacterBars();
+        _bars.X = 15;
+        _bars.Y = _details.Y + _details.Height + 5;
+        AddChild(_bars);
+    }
 
-            _interactPanel = new InteractPanel();
-            _interactPanel.X = 8;
-            _interactPanel.Y = Settings.DefaultScreenHeight - 115;
-            AddChild(_interactPanel);
-        }
+    public void CreatePlayerDependentAssets() {
+        RemoveChild(_equippedGrid);
+        RemoveChild(_inventoryGrid);
+        RemoveChild(_interactPanel);
+        RemoveChild(_tabStrip);
 
-        public void Update()
-        {
-            if (Map.LocalPlayer == null) return;
+        _equippedGrid = new EquippedGrid(Map.LocalPlayer);
+        _equippedGrid.X = 12;
+        _equippedGrid.Y = _bars.Y + _bars.height * 3 + _bars.offset * 3;
+        AddChild(_equippedGrid);
 
-            _bars.Update();
-            _equippedGrid.UpdateAbilitySlot();
-            _interactPanel.Update();
-        }
+        _tabStrip = new TabStrip(Map.LocalPlayer); //Inv + Backpack + StatView is handled under TabStrip.
+        _tabStrip.X = 8;
+        _tabStrip.Y = _equippedGrid.Y + _equippedGrid.Height + 32;
+        AddChild(_tabStrip);
+
+        _interactPanel = new InteractPanel();
+        _interactPanel.X = 8;
+        _interactPanel.Y = Settings.DefaultScreenHeight - 115;
+        AddChild(_interactPanel);
+    }
+
+    protected override void OnUpdate(GameTime gameTime) {
+        if (Map.LocalPlayer == null) return;
+
+        _bars.Update();
+        _equippedGrid.UpdateAbilitySlot();
+        _interactPanel.Update();
     }
 }

@@ -35,8 +35,4 @@ public sealed class GameSprite : Sprite {
         Hud.X = args.Width;
         Hud.Y = args.Height / 2;
     }
-
-    public void Update() {
-        Hud.Update();//TODO: move to OnUpdate
-    }
 }

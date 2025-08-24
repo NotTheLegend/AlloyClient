@@ -36,7 +36,6 @@ public sealed class GameScreen : Screen {
         Map.Update(time, dt);
         PartyData.Update(time);
         Client.Tick();
-        GameSprite.Update();
         
         if (time - _lastLogTime > 1000) {
             _lastLogTime = time;

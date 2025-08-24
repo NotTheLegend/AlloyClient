@@ -215,9 +215,7 @@ public class Main {
     public static GameTime GameTime { get; private set; }
     
     [Conditional("DEBUG")]
-    private void EnableDebugOutput() {
-        GLDebugProc debugMessageDelegate = OnDebugMessage;
-        
+    private static void EnableDebugOutput() {
         GL.DebugMessageCallback(OnDebugMessage, nint.Zero);
         GL.DebugMessageControl(DebugSource.DebugSourceApi, DebugType.DebugTypeOther, DebugSeverity.DontCare, 1, [131185], false);
         GL.Enable(EnableCap.DebugOutput);

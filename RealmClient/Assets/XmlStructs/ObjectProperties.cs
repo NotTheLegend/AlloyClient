@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using Common;
-using RealmClient.Utils;
 
 namespace RealmClient.Assets.XmlStructs;
 
@@ -125,7 +124,7 @@ public class ObjectProperties {
                     continue;
                 }
                 
-                var objectType = Convert.ToUInt16(clean, XmlUtil.GetBase(clean));
+                var objectType = Convert.ToUInt16(clean, Common.Utils.GetBase(clean));
                 Equipment.Add(objectType);
             }
         }

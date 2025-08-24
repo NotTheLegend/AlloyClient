@@ -7,6 +7,6 @@
       <ProjectReference Include="..\Common\Common.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="OpenTK" Version="5.0.0-pre.14" />
+      <PackageReference Include="OpenTK" Version="5.0.0-pre.15" />
     </ItemGroup>
 </Project>

@@ -433,11 +433,6 @@ public partial class Sprite : EventManager {
     }
 
     internal void InternalUpdateLoop(GameTime gameTime) {
-        //TODO: didnt see an easy way to replace this, figure out what to do
-        //if (_lockMouse && MouseInput.GetMousePosition().Clamp(new IntVector2(0), UiRender.Screen, out var pos)) {
-        //    Mouse.SetPosition(pos.X, pos.Y);
-        //}
-        
         Update(gameTime);
 
         HandleHover();
