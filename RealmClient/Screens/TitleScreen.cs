@@ -56,9 +56,9 @@ public class TitleScreen : TitleScreenBase {
     }
 
     protected override void OnResize(ResizeEvent args) {
-        _container.Scale = UiRender.ScreenScale;
+        _container.Scale = Stage.ScreenScale;
         _container.X = Stage.StageWidth / 2 - _center;
-        _container.Y = Stage.StageHeight - (int)(90 * UiRender.ScreenScale.Y);
+        _container.Y = Stage.StageHeight - (int)(90 * Stage.ScreenScale.Y);
         base.OnResize(args);
     }
 

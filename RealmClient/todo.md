@@ -12,5 +12,10 @@
 
 # Rendering Todo
 - switch to dsa calls
+- connected objects
+- cave walls
 
 # Bugs
+- first item move drops regardless of target
+- text carat selection is fucked when text input is scaled
+- cant click out of chat input

@@ -40,9 +40,9 @@ public abstract class TitleScreenBase : Screen {
 
     protected override void OnResize(ResizeEvent args) {
         _darken.Resize(args.Width, args.Height);
-        _music.Scale = UiRender.ScreenScale;
-        _overlay.Scale = UiRender.ScreenScale;
-        _overlay.X = args.Width - (int)(10 * UiRender.ScreenScale.X);
-        _overlay.Y = (int)(10 * UiRender.ScreenScale.Y);
+        _music.Scale = Stage.ScreenScale;
+        _overlay.Scale = Stage.ScreenScale;
+        _overlay.X = args.Width - (int)(10 * Stage.ScreenScale.X);
+        _overlay.Y = (int)(10 * Stage.ScreenScale.Y);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Common;
 using OpenTK.Mathematics;
 using RealmClient.UiLib.Input;
 
@@ -8,7 +9,6 @@ public partial class Sprite {
     
     private static Sprite _dragSprite;
     private static Type _dropType;
-    private static bool _lockMouse;
 
     public Sprite DropTarget;
     
@@ -16,20 +16,18 @@ public partial class Sprite {
     
     private Vector2i _dragOffset;
 
-    
+    public void StartDrag() => StartDrag<Sprite>();
 
-    public void StartDrag(bool lockMouse = false) => StartDrag<Sprite>(lockMouse);
-
-    public void StartDrag<T>(bool lockMouse = false) where T : Sprite {
+    public void StartDrag<T>() where T : Sprite {
         if (_dragSprite != null)
             _dragSprite._isDragging = false;
-
-        _lockMouse = lockMouse;
         
         var pos = MouseInput.GetMousePosition();
         pos.X -= _trueX;
         pos.Y -= _trueY;
 
+        pos = pos.Scale(Scale);
+        
         _dragOffset = new Vector2i((int)(pos.X / _trueScale.X), (int)(pos.Y / _trueScale.Y));
         
         _dragSprite = this;
@@ -39,7 +37,6 @@ public partial class Sprite {
 
     public void EndDrag() {
         _isDragging = false;
-        _lockMouse = false;
         GetDragTarget();
     }
 

@@ -30,35 +30,38 @@ public class ChatView : Sprite {
     public static void ClearChat() => ClearChatRequested = true;
 
     private ChatContainer _chatContainer;
-    private TextInput _chatBox;
+    private readonly TextInput _chatInput;
     private bool _inFocus;
 
     private string _recentTeller = "";// string.Empty;
 
     public ChatView() {
-        Width = MaxWidth;
-        Height = Settings.DefaultScreenHeight;
+        SetAnchor(UiAnchor.LeftBottom);
+        //Width = MaxWidth;
+        //Height = Settings.DefaultScreenHeight;
 
-        _chatBox = new TextInput(new InputConfig {
+        
+
+        _chatContainer = new ChatContainer(new ContainerConfig {
+            EnableClip = true,
+            Width = MaxWidth,
+            Height = 400,
+        });
+        AddChild(_chatContainer);
+        
+        _chatInput = new TextInput(new InputConfig {
             FontSize = 18,
             FontType = FontType.Bold,
             OutlineThickness = 3,
             ClickToActivate = true,
-            Width = Width,
+            Width = MaxWidth,
             OnFocus = OnChatFocus,
             OnUnfocus = OnChatUnFocus
         });
-        AddChild(_chatBox);
+        AddChild(_chatInput);
 
-        _chatContainer = new ChatContainer(new ContainerConfig {
-            EnableClip = true,
-            Width = Width,
-            Height = Height - _chatBox.Height,
-        });
-        AddChild(_chatContainer);
-
-        _chatBox.Y = _chatContainer.Height;
-        _chatBox.Visible = false;
+        _chatInput.Y = _chatContainer.Height;
+        _chatInput.Visible = false;
 
         AddEventListener(Event.AddedToStage, AddHandlers);
         AddEventListener(Event.RemovedFromStage, RemoveHandlers);
@@ -110,25 +113,25 @@ public class ChatView : Sprite {
 
     private void HandleChatKey() {
         if (_inFocus) {
-            var msg = _chatBox.Text;
+            var msg = _chatInput.Text;
             if (!string.IsNullOrEmpty(msg)) {
                 var text = PlayerText.CreatePacket();
                 text.Text = msg;
                 Client.QueuePacket(text);
                 
                 if(msg[0] != '/')
-                    ChatLayer.QueueSpeech(new SpeechData {Owner = Map.LocalPlayer, Text = _chatBox.Text});
+                    ChatLayer.QueueSpeech(new SpeechData {Owner = Map.LocalPlayer, Text = _chatInput.Text});
             }
 
-            _chatBox.UnFocus(true);
-            _chatBox.Visible = false;
+            _chatInput.UnFocus(true);
+            _chatInput.Visible = false;
         } else {
-            OpenTextInput(_chatBox.Text);
+            OpenTextInput(_chatInput.Text);
         }
     }
 
     private void HandleChatOpen(string text) {
-        if (_chatBox.Text != "") return;
+        if (_chatInput.Text != "") return;
         
         if (text == "/tell " && !string.IsNullOrEmpty(_recentTeller))
             text = $"/tell {_recentTeller} ";
@@ -138,12 +141,12 @@ public class ChatView : Sprite {
 
     private void OpenTextInput(string defaultText) {
         if (!_inFocus) {
-            _chatBox.Focus();
-            _chatBox.Visible = true;
+            _chatInput.Focus();
+            _chatInput.Visible = true;
         }
 
         if (!string.IsNullOrEmpty(defaultText)) {
-            _chatBox.InsertText(defaultText);
+            _chatInput.InsertText(defaultText);
         }
     }
 }

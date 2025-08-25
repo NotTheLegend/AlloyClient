@@ -13,6 +13,8 @@ public static class Utils {
 
     extension(Vector2i vector) {
         public (int, int) ToPair() => (vector.X, vector.Y);
+
+        public Vector2i Scale(Vector2 scale) => new ((int) (vector.X * scale.X), (int) (vector.Y * scale.Y));
     }
     
     public static AtlasData ReadAtlasData(this BinaryReader reader) {

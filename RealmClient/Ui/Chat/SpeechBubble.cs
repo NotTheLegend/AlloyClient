@@ -71,7 +71,7 @@ public sealed class SpeechBubble : Sprite {
 
     protected override void OnUpdate(GameTime gameTime) {
         if (_owner == null) return;
-        if ((_lifetime -= gameTime.TotalMs) <= 0) Parent.RemoveChild(this);
+        if ((_lifetime -= gameTime.ElapsedMs) <= 0) Parent.RemoveChild(this);
 
         Scale = new Vector2(Settings.CameraZoom / 96f);
         

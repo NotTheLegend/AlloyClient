@@ -1,8 +1,10 @@
-﻿using RealmClient.Game.Components.Hud;
+﻿using RealmClient.Display;
+using RealmClient.Game.Components.Hud;
 using RealmClient.Game.Components.Hud.Chat;
 using RealmClient.State;
 using RealmClient.Ui.Character;
 using RealmClient.Ui.Chat;
+using RealmClient.UiLib;
 using RealmClient.UiLib.Core;
 
 namespace RealmClient.Game.Components;
@@ -17,11 +19,7 @@ public sealed class GameSprite : Sprite {
         AddChild(UserInput = new UserInput());
         AddChild(new ChatLayer());
         AddChild(new NotificationLayer());
-        
-        Hud = new HudView();
-        Hud.X = Settings.ScreenWidth;
-        Hud.Y = Settings.ScreenHeight / 2;
-        AddChild(Hud);
+        AddChild(Hud = new HudView());
 
         _chat = new ChatView();
         AddChild(_chat);
@@ -29,10 +27,20 @@ public sealed class GameSprite : Sprite {
         Map.GameSprite = this;
         
         SetAutoResize(OnResize);
+        SetPosition(Settings.ScreenWidth, Settings.ScreenHeight);
+    }
+    
+    private void OnResize(ResizeEvent args) {
+        SetPosition(args.Width, args.Height);
     }
 
-    private void OnResize(ResizeEvent args) {
-        Hud.X = args.Width;
-        Hud.Y = args.Height / 2;
+    private void SetPosition(int width, int height) {
+        Hud.X = width;
+        Hud.Y = height / 2;
+        Hud.Scale = Stage.ScreenScale;
+
+        _chat.X = 0;
+        _chat.Y = height;
+        _chat.Scale = Stage.ScreenScale;
     }
 }

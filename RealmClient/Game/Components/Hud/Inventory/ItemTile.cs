@@ -18,23 +18,23 @@ namespace RealmClient.Game.Components.Hud.Inventory;
 
 public sealed class ItemTile : Sprite {
 
-    public int Size = 50; 
-    
+    public int Size = 50;
+
     public readonly byte SlotId;
 
     public readonly byte SlotType;
-    
+
     public readonly bool Interactive;
 
     public readonly bool OneWay;
 
     public readonly Entity Owner;
-    
+
     public ItemDesc ItemDesc;
 
     private readonly ObjectRect _sprite;
     private readonly SimpleText _tierText;
-    
+
     private EquipmentToolTip _tooltip;
 
     private Vector2i _dragStart;
@@ -59,33 +59,33 @@ public sealed class ItemTile : Sprite {
         _bgColor = bgcolor;
 
         _doubleTimer.AddEventListener(TimerEvent.TimerComplete, OnSingleClick);
-        
-        _background = new CutEdgeRect(new CutEdgeConfig { Width = Size, Height = Size, CutX = 4, CutY = 4, Cuts = cut, Color = _bgColor });
+
+        _background = new CutEdgeRect(new CutEdgeConfig {Width = Size, Height = Size, CutX = 4, CutY = 4, Cuts = cut, Color = _bgColor});
         AddChild(_background);
-        
-        _slotDetail = new ObjectRect(new ObjectRectConfig { Texture = TextureHelper.FromGameAtlas(0x0096), Width = Size, Height = Size, OutlineEnabled = false});
+
+        _slotDetail = new ObjectRect(new ObjectRectConfig {Texture = TextureHelper.FromGameAtlas(0x0096), Width = Size, Height = Size, OutlineEnabled = false});
         _slotDetail.Visible = false;
         _slotDetail.ColorTransformation = new ColorTransform(0, 0, 0, 1, 54, 54, 54, 0);
         _slotDetail.SetColorSecondary(0, 0);
         AddChild(_slotDetail);
-        
+
         if (SlotType != 0) {
             _slotDetail.ChangeTexture(ItemConstants.GetSlot(SlotType));
             _slotDetail.Visible = true;
         }
 
-        _slotId = new SimpleText(new TextConfig { Text = "", X = Size / 2, Y = Size / 2, FontSize = 32, FontType = FontType.Bold, Color = 0x363636, OutlineColor = 0x363636, Anchor = UiAnchor.Middle });
+        _slotId = new SimpleText(new TextConfig {Text = "", X = Size / 2, Y = Size / 2, FontSize = 32, FontType = FontType.Bold, Color = 0x363636, OutlineColor = 0x363636, Anchor = UiAnchor.Middle});
         _slotId.Visible = false;
         AddChild(_slotId);
 
         if (Owner is Player && SlotType == 0) {
             _slotId.Visible = true;
         }
-        
-        _sprite = new ObjectRect(new ObjectRectConfig { Texture = TextureHelper.FromGameAtlas(0x0096), Width = Size, Height = Size });
+
+        _sprite = new ObjectRect(new ObjectRectConfig {Texture = TextureHelper.FromGameAtlas(0x0096), Width = Size, Height = Size});
         AddChild(_sprite);
-        
-        _tierText = new SimpleText(new TextConfig { FontSize = 16, FontType = FontType.Bold, Text = "", OutlineThickness = 6 });
+
+        _tierText = new SimpleText(new TextConfig {FontSize = 16, FontType = FontType.Bold, Text = "", OutlineThickness = 6});
         _tierText.Visible = false;
         _tierText.SetAnchor(UiAnchor.RightBottom);
         _tierText.X = Size - 2;
@@ -95,30 +95,26 @@ public sealed class ItemTile : Sprite {
         if (Owner != null) {
             SetItem(Owner.Equipment[SlotId]);
         }
-        
+
         _sprite.MouseEnabled = true;
-        
+
         if (Interactive) {
             _sprite.AddEventListener(MouseEvent.LeftDown, OnMouseDown);
             _sprite.AddEventListener(MouseEvent.LeftUp, OnMouseUp);
         }
-        
+
         _sprite.AddEventListener(MouseEvent.MouseOver, OnMouseOver);
         _sprite.AddEventListener(MouseEvent.MouseOut, OnMouseOut);
     }
 
-    public void SetItem(ItemDesc itemDesc)
-    {
+    public void SetItem(ItemDesc itemDesc) {
         ItemDesc = itemDesc;
-        if (ItemDesc != null && ItemDesc.ObjectType > 0)
-        {
+        if (ItemDesc != null && ItemDesc.ObjectType > 0) {
             _sprite.ChangeTexture(TextureHelper.FromGameAtlas(ItemDesc.ObjectType));
             _background.SetColor(IsUsableByPlayer(ItemDesc) ? _bgColor : 0x5C1D1Du);
             _slotDetail.Visible = false;
             _slotId.Visible = false;
-        }
-        else
-        {
+        } else {
             _sprite.ChangeTexture(TextureHelper.FromGameAtlas(0x0096));
             _background.SetColor(_bgColor);
             if (SlotType != 0) _slotDetail.Visible = true;
@@ -142,7 +138,7 @@ public sealed class ItemTile : Sprite {
             _tierText.Visible = false;
             return;
         }
-        
+
         var color = 0xFFFFFFu;
         var tag = $"T{ItemDesc.Tier}";
 
@@ -162,7 +158,7 @@ public sealed class ItemTile : Sprite {
         _tierText.SetColor(color);
         _tierText.Visible = true;
     }
-    
+
     private void OnMouseOver() {
         if (ItemDesc == null || _dragging) return;
         _tooltip = new EquipmentToolTip(ItemDesc);
@@ -175,10 +171,10 @@ public sealed class ItemTile : Sprite {
         _tooltip = null;
         _pendingDouble = false;
     }
-    
+
     private void OnMouseDown(MouseEvent args) {
         if (ItemDesc == null) return;
-        
+
         _dragStart = GetRelativeMousePosition();
         _checkForDrag = true;
         _sprite.AddEventListener(MouseEvent.LeftUp, CancelDragCheck);
@@ -189,20 +185,19 @@ public sealed class ItemTile : Sprite {
 
         if (args.ShiftKey) {
             _pendingDouble = false;
-            
+
             // added basic consume logic, this will be looked at another time i assume
-            if(ItemDesc.ObjectType == ItemConstants.PotionType || ItemDesc.Consumable)
-            {
-                int timeStuff = (int)Map.LastGameTime.TotalMs;
+            if (ItemDesc.ObjectType == ItemConstants.PotionType || ItemDesc.Consumable) {
+                int timeStuff = (int) Map.LastGameTime.TotalMs;
 
                 useItem(
-                    time: timeStuff, 
-                    objectId: Owner.ObjectId, 
+                    time: timeStuff,
+                    objectId: Owner.ObjectId,
                     slotId: SlotId,
-                    objectType: ItemDesc.ObjectType, 
+                    objectType: ItemDesc.ObjectType,
                     itemUsePosX: Owner.Position.X,
                     itemUsePosY: Owner.Position.Y,
-                    useType: (byte)UseType.START_USE
+                    useType: (byte) UseType.START_USE
                 );
             }
 
@@ -255,16 +250,17 @@ public sealed class ItemTile : Sprite {
 
         if (SlotType != 0)
             _slotDetail.Visible = true;
-        
+
         if (Owner is Player && SlotType == 0)
             _slotId.Visible = true;
-        
+
         TooltipManager.RemoveTooltip(_tooltip);
-        
+
         RemoveChild(_sprite);
         RemoveChild(_tierText);
         
-        _sprite.StartDrag(true);
+        _sprite.Scale = Stage.ScreenScale;
+        _sprite.StartDrag();
         _sprite.AddEventListener(MouseEvent.LeftUp, OnEndDrag);
         Map.GameSprite.AddChild(_sprite);
     }
@@ -273,19 +269,20 @@ public sealed class ItemTile : Sprite {
         _dragging = false;
         _sprite.RemoveEventListener(MouseEvent.LeftUp, OnEndDrag);
         _sprite.EndDrag();
+        _sprite.Scale = Vector2.One;
         Map.GameSprite.RemoveChild(_sprite);
         AddChild(_sprite);
         AddChild(_tierText);
-        
+
         _slotDetail.Visible = false;
         _slotId.Visible = false;
-        
+
         HandleDropTarget();
     }
 
     private void HandleDropTarget() {
         var list = new[] {typeof(ItemTile), typeof(InventoryGrid), typeof(HudView), typeof(GameScreen)};
-        
+
         var target = _sprite.DropTarget.GetTypeFromList(list);
 
         switch (target) {
@@ -296,23 +293,23 @@ public sealed class ItemTile : Sprite {
                 if (!CanSwapItems(this, tile)) break;
 
                 var swap = InvSwap.CreatePacket();
-                swap.Time = (int)Map.LastGameTime.TotalMs;
-                swap.Position = new Position { X = Map.LocalPlayer.Position.X, Y = Map.LocalPlayer.Position.Y };
-            
+                swap.Time = (int) Map.LastGameTime.TotalMs;
+                swap.Position = new Position {X = Map.LocalPlayer.Position.X, Y = Map.LocalPlayer.Position.Y};
+
                 swap.SlotObj1 = new ObjectSlot {
                     ObjectId = Owner.ObjectId,
                     SlotId = SlotId,
                     ObjectType = ItemDesc.ObjectType
                 };
-                swap.SlotObj2 = new ObjectSlot {    
+                swap.SlotObj2 = new ObjectSlot {
                     ObjectId = tile.Owner.ObjectId,
                     SlotId = tile.SlotId,
                     ObjectType = tile.ItemDesc?.ObjectType ?? 0
                 };
                 Client.QueuePacket(swap);
-            
+
                 (tile.ItemDesc, ItemDesc) = (ItemDesc, tile.ItemDesc);
-                
+
                 SetItem(ItemDesc);
                 tile.SetItem(tile.ItemDesc);
                 break; // swap
@@ -325,16 +322,16 @@ public sealed class ItemTile : Sprite {
                     SlotId = SlotId,
                     ObjectType = ItemDesc.ObjectType
                 };
-                
+
                 Client.QueuePacket(drop);
-                
+
                 SetItem(null);
                 break; // drop
             default:
                 //reset tile
                 SetItem(ItemDesc);
                 break;
-            
+
         }
     }
 
@@ -364,8 +361,7 @@ public sealed class ItemTile : Sprite {
         return false;
     }
 
-    private static void useItem(int time, int objectId, byte slotId, ushort objectType, float itemUsePosX, float itemUsePosY, byte useType) //Simple for now
-    {
+    private static void useItem(int time, int objectId, byte slotId, ushort objectType, float itemUsePosX, float itemUsePosY, byte useType) {
         var packet = UseItem.CreatePacket();
 
         packet.Time = time;

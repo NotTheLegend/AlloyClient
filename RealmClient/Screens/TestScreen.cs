@@ -63,9 +63,9 @@ public class TestScreen : Screen {
     }
 
     protected override void OnResize(ResizeEvent args) {
-        _container.Scale = UiRender.ScreenScale;
-        _container.X = Stage.StageWidth / 2;
-        _container.Y = Stage.StageHeight - (int)(90 * UiRender.ScreenScale.Y);
+        //_container.Scale = UiRender.ScreenScale;
+        //_container.X = Stage.StageWidth / 2;
+        //_container.Y = Stage.StageHeight - (int)(90 * UiRender.ScreenScale.Y);
     }
     
 }

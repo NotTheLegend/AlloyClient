@@ -28,8 +28,6 @@ public static class UiRender {
     
     internal static Vector2i Screen;
     
-    public static Vector2 ScreenScale;//Todo: move to stage?
-    
     public static int LastRenderCount = 0;
 
     public static BitmapFamily MyriadPro;
@@ -98,8 +96,7 @@ public static class UiRender {
         
         var ratio = MathF.Min((float)Screen.X / DefaultScreen.X, (float)Screen.Y / DefaultScreen.Y);
         
-        ScreenScale = new Vector2(ratio, ratio);
-    
+        Stage.ScreenScale = new Vector2(ratio, ratio);
         Stage.SetSize(screen);
 
         ViewMatrix.M11 = 2.0f / Screen.X;

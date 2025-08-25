@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using RealmClient.UiLib;
+﻿using System.Threading.Tasks;
 using RealmClient.UiLib.BuiltIn;
 using RealmClient.UiLib.Core;
 using RealmClient.UiLib.Enums;
@@ -45,8 +43,8 @@ public class LoadingScreen : Screen {
     }
     
     private void OnResize(ResizeEvent args) {
-        _text.Scale = UiRender.ScreenScale;
+        _text.Scale = Stage.ScreenScale;
         _text.X = Stage.StageWidth / 2;
-        _text.Y = Stage.StageHeight - (int)(90 * UiRender.ScreenScale.Y);
+        _text.Y = Stage.StageHeight - (int)(90 * Stage.ScreenScale.Y);
     }
 }
