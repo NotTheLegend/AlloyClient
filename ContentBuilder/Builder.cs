@@ -93,4 +93,14 @@ public static class Builder {
                 break;
         }
     }
+
+    public static void Copy(Paths paths) {
+        var files = Directory.GetFiles(paths.Content, "*.*", SearchOption.AllDirectories);
+
+        foreach (var file in files) {
+            var newPath = file.Replace(paths.Content, paths.Output);
+            Directory.CreateDirectory(Path.GetDirectoryName(newPath)!);
+            File.Copy(file, newPath, true);
+        }
+    }
 }

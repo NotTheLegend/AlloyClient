@@ -10,11 +10,13 @@ if (args.Length != 3) {
 var outputPath = Path.Combine(args[1], args[2]);
 var contentPath = Path.Combine(args[0], args[2]);
 var binPath = Path.Combine(contentPath, "bin");
-var paths = new Paths(contentPath, outputPath);
+var paths = new Paths(contentPath, Path.Combine(binPath, args[2]));
 
 HashManager.Init(binPath);
 
 Builder.Run(paths);
+
+Builder.Copy(new Paths(paths.Output, outputPath));
 
 HashManager.SaveHashes(binPath);
 
