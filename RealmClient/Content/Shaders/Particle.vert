@@ -42,7 +42,7 @@ void main() {
     
     InstanceData data = instanceBuffer.data[instanceId];
     
-    vec4 pos = vec4(particlePos[verId], 0, 1.0) * BillMatrix;
+    vec4 pos = vec4(particlePos[verId] * data.Position.w, 0, 1.0) * BillMatrix;
     pos.xyz += data.Position.xyz;
 
     gl_Position = pos * WorldMatrix * ViewMatrix * ProjMatrix;

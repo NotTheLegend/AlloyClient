@@ -5,7 +5,6 @@
 - gui scale (like minecraft)
 - move font into its own project
 - improve hittest stuff in EntityUtils
-- change effects on entities to a list to allow multiple to tick at once or move to map and tick all at once
 - projectile doesnt account for armor/effects
 - move z jitter into RenderBase class
 - improve interaction panel hotkey logic ei have panels override a blank function for logic

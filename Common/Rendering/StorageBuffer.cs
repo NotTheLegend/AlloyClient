@@ -26,13 +26,20 @@ public sealed unsafe class StorageBuffer<T> where T : unmanaged, IBufferData {
         GL.BindBuffer(Target, 0);
     }
 
-    public void SetData(T[] data, int start, int count) {
-        if (count > _count || count + start > data.Length) {
+    public void SetData(T[] data, int dataStart, int dataCount) {
+        if (dataCount > _count || dataCount + dataStart > data.Length) {
             throw new Exception("Data larger than buffer");
         }
         
-        GL.BindBuffer(Target, _vbo);
-        GL.BufferSubData(Target, start, _size * count, data);
+        GL.NamedBufferSubData(_vbo, 0, _size * dataCount, new ReadOnlySpan<T>(data, dataStart, dataCount));
+    }
+
+    public void SetData(ReadOnlySpan<T> data) {
+        if (data.Length > _count) {
+            throw new Exception("Data larger than buffer");
+        }
+        
+        GL.NamedBufferSubData(_vbo, 0, _size * data.Length, data);
     }
     
     public void SetData(T[] data) {
@@ -40,21 +47,8 @@ public sealed unsafe class StorageBuffer<T> where T : unmanaged, IBufferData {
             throw new Exception("Data larger than buffer");
         }
         
-        GL.BindBuffer(Target, _vbo);
-        GL.BufferSubData(Target, 0, _size * data.Length, data);
-    }
-    
-    public void SetDataOnce(T[] data, int start, int count) {
-        SetData(data, start, count);
-        UnbindBuffer();
-    }
-    
-    public void SetDataOnce(T[] data) {
-        SetData(data);
-        UnbindBuffer();
+        GL.NamedBufferSubData(_vbo, 0, _size * data.Length, data);
     }
 
     public void BindToIndex(uint index) => GL.BindBufferBase(Target, index, _vbo);
-
-    public void UnbindBuffer() => GL.BindBuffer(Target, 0);
 }

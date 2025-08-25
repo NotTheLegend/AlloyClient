@@ -20,9 +20,7 @@ public sealed class GameSprite : Sprite {
         AddChild(new ChatLayer());
         AddChild(new NotificationLayer());
         AddChild(Hud = new HudView());
-
-        _chat = new ChatView();
-        AddChild(_chat);
+        AddChild(_chat= new ChatView());
 
         Map.GameSprite = this;
         

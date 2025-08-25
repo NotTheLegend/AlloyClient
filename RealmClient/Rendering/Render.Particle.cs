@@ -1,4 +1,5 @@
-﻿using Common.Rendering;
+﻿using System;
+using Common.Rendering;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using RealmClient.Rendering.VertexData;
@@ -29,13 +30,13 @@ public static partial class Render {
         
         var startIndex = 0;
         while (count > Buffer) {
-            _particleBuffer.SetData(particles, startIndex, Buffer);
+            _particleBuffer.SetData(new ReadOnlySpan<ParticleData>(particles, startIndex, Buffer));
             startIndex += Buffer;
             count -= Buffer;
             FlushBufferParticle(Buffer);
         }
         
-        _particleBuffer.SetDataOnce(particles, startIndex, count);
+        _particleBuffer.SetData(new ReadOnlySpan<ParticleData>(particles, startIndex, count));
         FlushBufferParticle(count);
     }
 

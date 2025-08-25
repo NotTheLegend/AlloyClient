@@ -27,7 +27,7 @@ public static partial class Render {
     }
 
     public static void EndNewDrawTile() {
-        _tileBuffer.SetDataOnce(_tileData, 0, _tileCount);
+        _tileBuffer.SetData(_tileData, 0, _tileCount);
     }
 
     public static void DrawTiles() {
@@ -75,7 +75,7 @@ public static partial class Render {
     public static void EndShadowDraw() {
         if (_shadowCount == 0) return;
 
-        _shadowBuffer.SetDataOnce(_shadowData, 0, _shadowCount);
+        _shadowBuffer.SetData(_shadowData, 0, _shadowCount);
         
         GL.DrawArrays(PrimitiveType.Triangles, 0, _shadowCount * 6);
 

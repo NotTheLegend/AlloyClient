@@ -3,7 +3,7 @@ using OpenTK.Mathematics;
 
 namespace RealmClient.Utils;
 
-public class MathUtils {
+public static class MathUtils {
     
     private static readonly Random Random = new();
 
@@ -38,6 +38,8 @@ public class MathUtils {
     public static int RandomInt(int max) => Random.Next(max);
 
     public static int RandomInt(int min, int max) => Random.Next(min, max);
+
+    public static float RandomPlusMinus(float range) => Random.NextSingle() * range * 2 - range;
 
     public static float GetDistanceSquared(Vector2 pos1, Vector2 pos2) {
         var x = pos2.X - pos1.X;

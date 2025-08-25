@@ -9,6 +9,7 @@ using RealmClient.Game.Components;
 using RealmClient.Game.Components.Hud;
 using RealmClient.Game.Objects;
 using RealmClient.Networking.Structs.DataObjects;
+using RealmClient.ParticleEffects;
 using RealmClient.Rendering;
 using RealmClient.Rendering.Types;
 using RealmClient.Rendering.VertexData;
@@ -41,6 +42,10 @@ public static class Map {
     public static readonly Dictionary<int, Player> Players = new();
     public static readonly Dictionary<int, Entity> Entities = new(); // todo: add players to separate dic for minimap prio
     public static readonly Dictionary<int, Entity> InteractiveObjects = new();
+    
+    public static readonly List<ParticleEffect> ParticleGenerators = [];
+
+    public static int ParticleGenCount;
 
     private static readonly List<Projectile> Projectiles = [];
 
@@ -86,13 +91,27 @@ public static class Map {
             entity.UpdateVisibility(ref fullMatrix);
         }
 
+        for (var i = ParticleGenCount - 1; i >= 0; i--) {
+            var gen = ParticleGenerators[i];
+            if (gen.Update(time, dt)) {
+                continue;
+            }
+
+            ParticleGenCount--;
+            ParticleGenerators[i] = ParticleGenerators[ParticleGenCount];
+            ParticleGenerators[ParticleGenCount] = null;
+        }
+        
         for (var i = Projectiles.Count - 1; i >= 0; i--) {
             var proj = Projectiles[i];
             if (proj.Update(time, dt, matrix))
                 continue;
             ObjectPools.Projectiles.Push(proj);
             EntityStorage.Remove(proj);
-            Projectiles.RemoveAt(i);
+
+            var idx = Projectiles.Count - 1;
+            Projectiles[i] = Projectiles[idx];
+            Projectiles.RemoveAt(idx);
         }
     }
 
@@ -249,6 +268,16 @@ public static class Map {
         tile.SetType(type);
     }
 
+    public static void AddParticleEffect(ParticleEffect effect) {
+        if (ParticleGenCount == ParticleGenerators.Count) {
+            ParticleGenerators.Add(effect);
+        } else {
+            ParticleGenerators[ParticleGenCount] = effect;
+        }
+        
+        ParticleGenCount++;
+    }
+
     public static void AddEntity(Entity en, Position position) {
         if (!Entities.TryAdd(en.ObjectId, en))
             return;
@@ -293,6 +322,13 @@ public static class Map {
         
         Array.Copy(particles, 0, Particles, _particleCount, count);
         _particleCount += count;
+    }
+
+    public static void AddParticle(ParticleData particle) {
+        if (_particleCount + 1 > Particles.Length) return;
+
+        Particles[_particleCount] = particle;
+        _particleCount++;
     }
 
     public static void Reset() {

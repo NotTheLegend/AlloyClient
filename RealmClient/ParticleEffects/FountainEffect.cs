@@ -2,7 +2,6 @@
 using OpenTK.Mathematics;
 using RealmClient.Game;
 using RealmClient.Game.Objects;
-using RealmClient.ParticleEffects.Particles;
 using RealmClient.Rendering.VertexData;
 
 namespace RealmClient.ParticleEffects;
@@ -35,7 +34,7 @@ public class FountainEffect : ParticleEffect {
         for (var i = start; i < count; i++) {
             if (_count == Buffer) break;
             
-            _data[_count] = new FountainParticle(time);
+            _data[_count] = new FountainParticle(time, MathHelper.TwoPi * Random.Shared.NextSingle());
             _particles[_count] = new ParticleData(SetStartPosition(_data[_count], time), _color);
             
             _count++;

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Xml.Linq;
 using Common;
 using RealmClient.Game.Objects.Util;
@@ -30,6 +27,10 @@ public sealed class ProjectileProperties {
     public readonly float Magnitude;
     public readonly bool NoRotation;
 
+    public readonly uint ParticleTrailColor;
+    public readonly int ParticleTrailLifetime;
+    public readonly float ParticleTrailIntensity;
+
     public ProjectileProperties(XElement e) {
         BulletType = e.GetAttribute<int>("id");
         ObjectId = e.GetValue<string>("ObjectId");
@@ -51,5 +52,12 @@ public sealed class ProjectileProperties {
         Frequency = e.GetValue<float>("Frequency", 1);
         Magnitude = e.GetValue<float>("Magnitude", 3);
         NoRotation = e.HasElement("NoRotation");
+
+        if (ParticleTrail) {
+            var attr = e.Element("ParticleTrail");
+            ParticleTrailColor = attr.GetValue<uint>("ParticleTrail", 0xFF00FF);
+            ParticleTrailLifetime = attr.GetAttribute("lifetimeMS", 600);
+            ParticleTrailIntensity = attr.GetAttribute("intensity", 0.3f);
+        }
     }
 }

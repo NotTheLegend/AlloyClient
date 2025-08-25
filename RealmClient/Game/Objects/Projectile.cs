@@ -11,6 +11,7 @@ using RealmClient.ParticleEffects;
 using RealmClient.Rendering;
 using RealmClient.Rendering.Types;
 using RealmClient.Ui.Character;
+using RealmClient.Utils;
 
 namespace RealmClient.Game.Objects;
 
@@ -47,8 +48,6 @@ public sealed class Projectile {
     public int Size;
 
     private readonly HashSet<int> _hitEntities = [];
-
-    private ParticleEffect _effect;
     
     public RenderBase RenderBaseType;
 
@@ -71,7 +70,6 @@ public sealed class Projectile {
         _position = _startPosition = entity.Position;
         
         _hitEntities.Clear();
-        _effect = null;
         RenderBaseType = new TypeProjectile();
         RenderBaseType.SetSize(Size);
         RenderBaseType.SetTexture(GetTexture());
@@ -108,10 +106,17 @@ public sealed class Projectile {
         if (!MoveTo(newPos) || (doHitTest && HitTest(time))) {
             return false;
         }
-
-        _effect?.Update(time, dt);
+        
         RenderBaseType.SetPosition(newPos.X, newPos.Y);
         RenderBaseType.SetRotation(Rotation);
+
+        if (_projDesc.ParticleTrail && doHitTest) {
+            Map.AddParticleEffect(new SparkEffect(100, _projDesc.ParticleTrailColor, _projDesc.ParticleTrailLifetime, 0.5f, MathUtils.RandomPlusMinus(3), MathUtils.RandomPlusMinus(3), newPos.X, newPos.Y));
+            Map.AddParticleEffect(new SparkEffect(100, _projDesc.ParticleTrailColor, _projDesc.ParticleTrailLifetime, 0.5f, MathUtils.RandomPlusMinus(3), MathUtils.RandomPlusMinus(3), newPos.X, newPos.Y));
+            Map.AddParticleEffect(new SparkEffect(100, _projDesc.ParticleTrailColor, _projDesc.ParticleTrailLifetime, 0.5f, MathUtils.RandomPlusMinus(3), MathUtils.RandomPlusMinus(3), newPos.X, newPos.Y));
+        }
+        
+        
         return true;
     }
     
@@ -160,7 +165,7 @@ public sealed class Projectile {
             if (target == null || _hitEntities.Contains(target.ObjectId))
                 return false;
             
-            target.Effect = new HitEffect(target, 0xff0000);
+            Map.AddParticleEffect(new HitEffect(target, 0xFF0000));
             NotificationLayer.AddStatusText(target, $"-{_damage}", 0xFF0000, 1000, 0);
             
             var hit = PlayerHit.CreatePacket();
@@ -181,7 +186,7 @@ public sealed class Projectile {
         if (enemy == null || _hitEntities.Contains(enemy.ObjectId))
             return false;
 
-        enemy.Effect = new HitEffect(enemy, 0xFF0000);
+        Map.AddParticleEffect(new HitEffect(enemy, 0xFF0000));
         NotificationLayer.AddStatusText(enemy, $"-{_damage}", 0xFF0000, 1000, 0);
         
         var hit1 = EnemyHit.CreatePacket();

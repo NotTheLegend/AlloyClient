@@ -2,7 +2,6 @@
 using OpenTK.Mathematics;
 using RealmClient.Game;
 using RealmClient.Game.Objects;
-using RealmClient.ParticleEffects.Particles;
 using RealmClient.Rendering.VertexData;
 
 namespace RealmClient.ParticleEffects;

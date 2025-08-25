@@ -7,7 +7,7 @@ namespace RealmClient.Rendering.VertexData;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct ParticleData(Vector3 position, Vector4 color) : IBufferData, IEquatable<ParticleData> {
-    public Vector4 Position = new Vector4(position, 0);
+    public Vector4 Position = new Vector4(position, 1);
     public Vector4 Color = color;
     
     public static unsafe int Size { get; } = sizeof(ParticleData);
