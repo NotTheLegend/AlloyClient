@@ -510,6 +510,9 @@ public partial class Sprite : EventManager {
     }
 
     private void SetStage(Stage stage) {
+        UpdateNormalListeners();
+        Stage = stage;
+        
         foreach (var child in _children) {
             child.UpdateNormalListeners();
             child.Stage = stage;
@@ -551,12 +554,10 @@ public partial class Sprite : EventManager {
         if (child == null || !_children.Contains(child)) return;
         _childCount--;
         _childRemovalQueue.Enqueue(child);
-
+        
+        child.SetStage(null);
         child._parent = null;
         
-        child.Stage = null;
-        child.SetStage(null);
-
         var bounds = new Bounds();
 
         for (var i = 0; i < _children.Count; i++) {

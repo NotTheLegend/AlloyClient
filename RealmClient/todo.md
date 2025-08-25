@@ -16,7 +16,6 @@
 - cave walls
 
 # Bugs
-- first item move drops regardless of target
 - text carat selection is fucked when text input is scaled
 - cant click out of chat input
 - loading in -> back to home from options -> play just sends back to char select repeatedly

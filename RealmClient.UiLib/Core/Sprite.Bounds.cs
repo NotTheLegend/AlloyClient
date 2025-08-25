@@ -12,10 +12,10 @@ public partial class Sprite {
             return false;
         
         return HitboxType switch {
-            Enums.HitboxType.Default => SquareHitbox(pos),
-            Enums.HitboxType.Ellipse => EllipseHitbox(pos),
-            Enums.HitboxType.Complex => ComplexHitbox(new Vector2i(pos.X - _trueX, pos.Y - _trueY)),
-            Enums.HitboxType.Custom => CustomHitbox(new Vector2i(pos.X - _trueX, pos.Y - _trueY)),
+            HitboxType.Default => SquareHitbox(pos),
+            HitboxType.Ellipse => EllipseHitbox(pos),
+            HitboxType.Complex => ComplexHitbox(new Vector2i(pos.X - _trueX, pos.Y - _trueY)),
+            HitboxType.Custom => CustomHitbox(new Vector2i(pos.X - _trueX, pos.Y - _trueY)),
             _ => throw new ArgumentOutOfRangeException($"{HitboxType} not handled in InternalBoundsCheck")
         };
     }

@@ -285,6 +285,11 @@ public sealed class ItemTile : Sprite {
 
         var target = _sprite.DropTarget.GetTypeFromList(list);
 
+        if (target == null) {
+            SetItem(ItemDesc);
+            return;
+        }
+
         switch (target) {
             case ItemTile tile:
                 Console.WriteLine($"{!tile.Interactive} {tile.OneWay} {!CanSwapItems(this, tile)}");
