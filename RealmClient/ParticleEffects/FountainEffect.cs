@@ -1,7 +1,6 @@
 ﻿using System;
 using OpenTK.Mathematics;
 using RealmClient.Game;
-using RealmClient.Game.Objects;
 using RealmClient.Rendering.VertexData;
 
 namespace RealmClient.ParticleEffects;
@@ -14,14 +13,14 @@ public class FountainEffect : ParticleEffect {
     private readonly ParticleData[] _particles = new ParticleData[Buffer];
     private readonly FountainParticle[] _data = new FountainParticle[Buffer];
 
-    private readonly Entity _parent;
+    private readonly Vector2 _startingPos;
 
     private readonly Vector4 _color;
 
     private double _lastUpdate = -1;
 
-    public FountainEffect(Entity entity) {
-        _parent = entity;
+    public FountainEffect(Vector2 startingPos) {
+        _startingPos = startingPos;
         _color = GetColor(0x4165D5);
     }
     
@@ -68,7 +67,7 @@ public class FountainEffect : ParticleEffect {
     private Vector3 SetStartPosition(FountainParticle data, double time) {
         var dt = (float)(time - data.StartTime) * 0.0008f;
         var t = dt / 1000;
-        var pos = new Vector3(_parent.Position, 0.75f + FountainParticle.VI * t + FountainParticle.G * (t * t));
+        var pos = new Vector3(_startingPos, 0.75f + FountainParticle.VI * t + FountainParticle.G * (t * t));
         pos.X += data.Velocity.X * dt;
         pos.Y += data.Velocity.Y * dt;
         return pos;

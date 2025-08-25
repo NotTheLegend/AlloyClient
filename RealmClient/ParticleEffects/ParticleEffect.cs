@@ -16,7 +16,7 @@ public abstract class ParticleEffect {
 
     public static ParticleEffect FromProperties(string effectName, Entity entity) {
         return effectName switch {
-            "Fountain" => new FountainEffect(entity),
+            "Fountain" => new FountainEffect(entity.Position),
             _ => null
         };
     }

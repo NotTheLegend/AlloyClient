@@ -4,6 +4,7 @@ using RealmClient.Game.Components;
 using RealmClient.Networking;
 using RealmClient.Rendering;
 using RealmClient.State;
+using RealmClient.Ui.Components.Elements;
 using RealmClient.UiLib;
 using RealmClient.UiLib.Core;
 using RealmClient.Utils;
@@ -13,14 +14,15 @@ namespace RealmClient.Game;
 public sealed class GameScreen : Screen {
     public readonly GameSprite GameSprite;
     
-    private double _lastLogTime;
-    private int _frames;
+    public static int Frames;
 
     public GameScreen() {
         SetBaseDimensions(Settings.ScreenWidth, Settings.ScreenHeight);
         Client.Connect(Settings.GameServerAddress, Settings.SelectedGameServerPort);
         GameSprite = new GameSprite();
         AddChild(GameSprite);
+        
+        AddChild(new DebugStats());
         
         SetAutoResize(OnResize);
     }
@@ -36,22 +38,10 @@ public sealed class GameScreen : Screen {
         Map.Update(time, dt);
         PartyData.Update(time);
         Client.Tick();
-        
-        if (time - _lastLogTime > 1000) {
-            _lastLogTime = time;
-            Logger.Info($"\n[Frame Stats]\n" +
-                        $"FPS: {_frames}\n" +
-                        $"Tiles: {Render.LastDrawCountTiles}\n" +
-                        $"Shadows: {Render.LastDrawCountShadows}\n" +
-                        $"DrawnEntities: {Render.LastDrawCountEntities}\n" +
-                        $"DrawnUiElements: {UiRender.LastRenderCount}\n" +
-                        $"DrawnParticles: {Render.LastDrawParticleCount}");
-            _frames = 0;
-        }
     }
 
     public override void Draw(GameTime gameTime) {
-        _frames++;
+        Frames++;
         Map.Draw(gameTime);
         MinimapTexture.PreDrawUpdate();
     }
