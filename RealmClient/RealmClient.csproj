@@ -37,7 +37,11 @@
     
     <ItemGroup>
       <ProjectReference Include="..\Common\Common.csproj" />
-      <ProjectReference Include="..\ContentBuilder\ContentBuilder.csproj" />
+      <ProjectReference Include="..\ContentBuilder\ContentBuilder.csproj">
+		<Private>False</Private>
+		<CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+		<ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      </ProjectReference>
       <ProjectReference Include="..\RealmClient.UiLib\RealmClient.UiLib.csproj" />
     </ItemGroup>
     

@@ -19,3 +19,6 @@
 - first item move drops regardless of target
 - text carat selection is fucked when text input is scaled
 - cant click out of chat input
+
+# Ě̷̺͎͗̊t̴̙̓e̶͚͇͗̀ͅr̷̮̀͂̋n̵̦̎͋ȧ̴̺̓̇l̷͉̃ ̷̙͙͑T̸̙̠̈́̓̂o̴̜̦̔͝ŕ̸̨̳̼m̷̡̛̖̾́è̸̙̭̆͜n̵͚͌̚t̶͖̦̓
+- improving object outlines, specifically status effects
