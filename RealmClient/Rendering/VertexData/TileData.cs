@@ -7,7 +7,7 @@ using OpenTK.Mathematics;
 namespace RealmClient.Rendering.VertexData;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct TileData(Vector4 posOffset, Vector4 uv, Vector4 animate, Vector4 mask) : IBufferData, IEquatable<TileData> {
+public struct TileData(Vector4 posOffset, Vector4 uv, Vector4 animate, Vector4 mask) : IBufferData<TileData> {
 
     public Vector4 Position = posOffset;
     public Vector4 UV = uv;

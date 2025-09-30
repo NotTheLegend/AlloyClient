@@ -1,5 +1,7 @@
 ﻿#version 450 core
 
+#define TileBuffer
+
 struct InstanceData {
     vec4 Position;
     vec4 UV;
@@ -8,7 +10,7 @@ struct InstanceData {
 };
 
 layout(std140, binding = 0) readonly buffer InstanceBuffer {
-    InstanceData data[];
+    InstanceData data[TileBuffer];
 } instanceBuffer;
 
 

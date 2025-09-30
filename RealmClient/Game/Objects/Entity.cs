@@ -173,6 +173,7 @@ public class Entity {
 
         Rotation = Properties.Rotation;
         RenderBaseType.SetPosition(x, y);
+        Effect?.SetEntityPosition(Position);
     }
 
     public bool HasConditionEffect(ConditionEffects effect) {

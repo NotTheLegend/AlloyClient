@@ -25,6 +25,14 @@ public sealed unsafe class IndexBuffer {
         GL.NamedBufferSubData(_ebo, sizeof(ushort) * start, sizeof(ushort) * count, data);
     }
     
+    public void SetData(ReadOnlySpan<ushort> data) {
+        if (data.Length > _count) {
+            throw new Exception("Data larger than buffer");
+        }
+        
+        GL.NamedBufferSubData(_ebo, 0, sizeof(ushort) * data.Length, data);
+    }
+    
     public void SetData(ushort[] data) {
         if (data.Length > _count) {
             throw new Exception("Data larger than buffer");

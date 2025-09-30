@@ -27,7 +27,7 @@ public sealed class MinimapLayer : Container {
 
     protected override void ResizeBackBuffer() {
         VertexData = new VertexUi[VertexSize];
-        Indices = new short[IndexSize];
+        Indices = new ushort[IndexSize];
         base.ResizeBackBuffer();
         OverridePrimCount = 0;
     }
@@ -49,12 +49,12 @@ public sealed class MinimapLayer : Container {
         VertexData[_count * 4 + 2] = new VertexUi(new Vector2(pos.X + size, pos.Y + size), color);
         VertexData[_count * 4 + 3] = new VertexUi(new Vector2(pos.X - size, pos.Y + size), color);
 
-        Indices[_count * 6 + 0] = (short)(_count * 4 + 0);
-        Indices[_count * 6 + 1] = (short)(_count * 4 + 1);
-        Indices[_count * 6 + 2] = (short)(_count * 4 + 2);
-        Indices[_count * 6 + 3] = (short)(_count * 4 + 0);
-        Indices[_count * 6 + 4] = (short)(_count * 4 + 2);
-        Indices[_count * 6 + 5] = (short)(_count * 4 + 3);
+        Indices[_count * 6 + 0] = (ushort)(_count * 4 + 0);
+        Indices[_count * 6 + 1] = (ushort)(_count * 4 + 1);
+        Indices[_count * 6 + 2] = (ushort)(_count * 4 + 2);
+        Indices[_count * 6 + 3] = (ushort)(_count * 4 + 0);
+        Indices[_count * 6 + 4] = (ushort)(_count * 4 + 2);
+        Indices[_count * 6 + 5] = (ushort)(_count * 4 + 3);
 
         _count++;
         OverridePrimCount += 2;

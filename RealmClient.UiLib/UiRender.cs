@@ -8,6 +8,7 @@ using RealmClient.UiLib.Core;
 using RealmClient.UiLib.Data;
 using RealmClient.UiLib.Enums;
 using RealmClient.UiLib.Input;
+using RealmClient.UiLib.Rendering;
 
 namespace RealmClient.UiLib;
 
@@ -50,8 +51,8 @@ public static class UiRender {
         EventQueue.EventRaised += HandleEvents;
 
         UiShader = ContentReader.LoadShader("shaders/Ui");
-
-        Sprite.BuildBuffers();
+        
+        SpriteRender.Init();
         
         OnResize(settings.Screen);
     }

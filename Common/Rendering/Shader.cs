@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using System.Text;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
 namespace Common.Rendering;
@@ -11,18 +12,26 @@ public sealed class Shader {
         _handle = handle;
     }
 
-    public static Shader Create(string path) {
+    public static Shader Create(string path, (string, string)[] defines = null) {
         var p1 = path + ".vert";
         var p2 = path + ".frag";
-        var vs = File.ReadAllText(p1);
-        var fs = File.ReadAllText(p2);
+        var vs = new StringBuilder(File.ReadAllText(p1));
+        var fs = new StringBuilder(File.ReadAllText(p2));
+
+        if (defines != null) {
+            foreach (var def in defines) {
+                vs.Replace(def.Item1, def.Item2);
+                fs.Replace(def.Item1, def.Item2);
+            }
+        }
+        
         
         var vertexHandle = GL.CreateShader(ShaderType.VertexShader);
-        GL.ShaderSource(vertexHandle, vs);
+        GL.ShaderSource(vertexHandle, vs.ToString());
         CompileShader(vertexHandle, p1);
         
         var fragmentHandle = GL.CreateShader(ShaderType.FragmentShader);
-        GL.ShaderSource(fragmentHandle, fs);
+        GL.ShaderSource(fragmentHandle, fs.ToString());
         CompileShader(fragmentHandle, p2);
         
         var handle = GL.CreateProgram();
@@ -34,6 +43,8 @@ public sealed class Shader {
         GL.DetachShader(handle, fragmentHandle);
         GL.DeleteShader(vertexHandle);
         GL.DeleteShader(fragmentHandle);
+        
+        
 
         return new Shader(handle);
     }

@@ -6,7 +6,7 @@ using OpenTK.Mathematics;
 namespace RealmClient.Rendering.VertexData;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct ParticleData(Vector3 position, Vector4 color) : IBufferData, IEquatable<ParticleData> {
+public struct ParticleData(Vector3 position, Vector4 color) : IBufferData<ParticleData> {
     public Vector4 Position = new Vector4(position, 1);
     public Vector4 Color = color;
     

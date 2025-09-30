@@ -5,6 +5,10 @@ namespace RealmClient.ParticleEffects;
 
 public abstract class ParticleEffect {
 
+    protected Vector2 _position;
+
+    public void SetEntityPosition(Vector2 pos) => _position = pos;
+
     public abstract bool Update(double time, double dt);
 
     protected Vector4 GetColor(uint rgb) {
@@ -16,7 +20,7 @@ public abstract class ParticleEffect {
 
     public static ParticleEffect FromProperties(string effectName, Entity entity) {
         return effectName switch {
-            "Fountain" => new FountainEffect(entity.Position),
+            "Fountain" => new FountainEffect(),
             _ => null
         };
     }

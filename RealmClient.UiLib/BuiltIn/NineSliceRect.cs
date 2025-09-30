@@ -51,7 +51,7 @@ public sealed class NineSliceRect : Sprite {
     
     protected override void ResizeBackBuffer() {
         VertexData = new VertexUi[4];
-        Indices = new short[] { 0, 1, 2, 0, 2, 3 };
+        Indices = new ushort[] { 0, 1, 2, 0, 2, 3 };
         var data = _slice.AtlasData;
         Extra1 = new Vector4(data.U, data.U + data.W, data.V, data.V + data.H);
         base.ResizeBackBuffer();

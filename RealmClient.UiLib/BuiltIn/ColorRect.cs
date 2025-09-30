@@ -43,7 +43,7 @@ public sealed class ColorRect : Sprite {
 
     protected override void ResizeBackBuffer() {
         VertexData = new VertexUi[4];
-        Indices = new short[] { 0, 1, 2, 0, 2, 3 };
+        Indices = new ushort[] { 0, 1, 2, 0, 2, 3 };
         base.ResizeBackBuffer();
     }
 

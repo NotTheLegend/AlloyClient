@@ -17,7 +17,7 @@ public partial class Sprite : EventManager {
     
     public static readonly Vector4 NoScissor = new Vector4(0, 0, 10000, 10000);
 
-    public Stage Stage {
+    public Stage Stage { //TODO: do something with this disaster
         get;
         internal set {
             if (field == value)
@@ -116,7 +116,7 @@ public partial class Sprite : EventManager {
     
     internal bool TweenActive = false;
     
-    protected short[] Indices = [];
+    protected ushort[] Indices = [];
     
     protected VertexUi[] VertexData = [];
 
@@ -200,8 +200,6 @@ public partial class Sprite : EventManager {
 
     #region Other
 
-    private bool _noRenderData = true;
-
     private int _childCount;
 
     private Bounds _childbounds = new();
@@ -211,40 +209,7 @@ public partial class Sprite : EventManager {
 
     #endregion
 
-    #region Rendering
-
-    private const int IndexBuffer = 2000;
-    private const int VertexBuffer = 1000;
     
-    private static int _drawCount;
-
-    private static int _vao;
-
-    private static short _indexCount;
-    private static ushort[] _indices;
-    private static IndexBuffer _indexBuffer;
-
-    private static int _vertexCount;
-    private static VertexDataUi[] _vertices;
-    private static VertexBuffer<VertexDataUi> _vertexBuffer;
-
-    #endregion
-
-    internal static void BuildBuffers() {
-        _indices = new ushort[IndexBuffer];
-        _indexBuffer = new IndexBuffer(IndexBuffer, BufferUsage.DynamicDraw);
-        
-        _vertices = new VertexDataUi[VertexBuffer];
-        _vertexBuffer = new VertexBuffer<VertexDataUi>(VertexDataUi.VertexStride, VertexBuffer, BufferUsage.DynamicDraw);
-        
-        _vao = GL.GenVertexArray();
-        GL.BindVertexArray(_vao);
-        
-        _vertexBuffer.Bind();
-        _indexBuffer.Bind();
-        
-        GL.BindVertexArray(0);
-    }
 
     private void UpdateBounds() {
 
@@ -322,9 +287,7 @@ public partial class Sprite : EventManager {
         }
     }
 
-    protected virtual void ResizeBackBuffer() {
-        _noRenderData = VertexData == null || VertexData.Length < 1;
-    }
+    
 
     protected virtual void OnUpdate(GameTime gameTime) { }
 
@@ -443,70 +406,6 @@ public partial class Sprite : EventManager {
 
         if(MouseInput.CheckEvent(MouseEvent.LeftUp) && TextInput.UnFocusOnClick)
             TextInput.ActiveInput?.UnFocus();
-    }
-
-    private void DrawInternal() {
-        if (_noRenderData || _trueAlpha == 0f || OverridePrimCount == 0) return;
-        
-        if (_vertexCount + VertexData.Length > VertexBuffer || _indexCount + Indices.Length > IndexBuffer)
-            FlushRenderBuffer();
-
-        var count = OverridePrimCount < 0 ? Indices.Length : OverridePrimCount * 3; // # of indices
-        var numVertices = 0;
-        for (var i = 0; i < count; i++) {
-            var index = Indices[i];
-            _indices[_indexCount + i] = (ushort)(_vertexCount + index);
-
-            if (index > numVertices)
-                numVertices = index;// Get highest vertex index
-        }
-
-        _indexCount += (short)count;
-
-        numVertices++;
-        for (var i = 0; i < numVertices; i++) {
-            var color = VertexData[i].Color;
-            _vertices[_vertexCount + i] = new VertexDataUi(VertexData[i].Position.Transform(_trueScale, _trueRotation, _trueX, _trueY, _anchorX, _anchorY), color.A == 0f ? Color : color, ColorSecondary, _info, VertexData[i].UV, _scissor, Extra1, Extra2, _trueTransform);
-        }
-
-        _vertexCount += numVertices;
-        
-        UiRender.LastRenderCount++;
-    }
-
-    internal void InternalDrawLoop() {
-        GL.BindVertexArray(_vao);
-        UiRender.UiShader.Apply();
-        
-        GL.Disable(EnableCap.DepthTest);
-        GL.Disable(EnableCap.StencilTest);
-        
-        Draw();
-        
-        FlushRenderBuffer();
-    }
-
-    private static void FlushRenderBuffer() {
-        if (_indexCount == 0) return;
-        
-        _vertexBuffer.SetData(_vertices, 0, _vertexCount);
-        _indexBuffer.SetData(_indices, 0, _indexCount);
-        
-        
-        GL.DrawElements(PrimitiveType.Triangles, _indexCount, DrawElementsType.UnsignedShort, 0);
-
-        _indexCount = 0;
-        _vertexCount = 0;
-    }
-    
-    private void Draw() {
-        if (!Visible) return;
-        
-        DrawInternal();
-        
-        foreach (var child in _children) {
-            child.Draw();
-        }
     }
 
     private void SetStage(Stage stage) {

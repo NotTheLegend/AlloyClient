@@ -48,7 +48,7 @@ public sealed class Ellipse : Sprite {
     
     protected override void ResizeBackBuffer() {
         VertexData = new VertexUi[9];
-        Indices = new short[] { 4, 3, 0, 0, 1, 4, 4, 1, 2, 2, 5, 4, 6, 3, 4, 4, 7, 6, 7, 4, 8, 8, 4, 5 };
+        Indices = new ushort[] { 4, 3, 0, 0, 1, 4, 4, 1, 2, 2, 5, 4, 6, 3, 4, 4, 7, 6, 7, 4, 8, 8, 4, 5 };
         base.ResizeBackBuffer();
     }
     

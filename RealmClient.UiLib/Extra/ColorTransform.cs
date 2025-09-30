@@ -25,4 +25,8 @@ public struct ColorTransform {
     internal Vector4 GetTransformData() {
         return _mult + _add * 1000;
     }
+    
+    public static implicit operator Vector4(ColorTransform transform) {
+        return transform._mult + transform._add * 1000;
+    }
 }

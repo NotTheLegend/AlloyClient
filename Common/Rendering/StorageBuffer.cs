@@ -2,9 +2,9 @@
 
 namespace Common.Rendering;
 
-public interface IBufferData;
+public interface IBufferData<T> : IEquatable<T>;
 
-public sealed unsafe class StorageBuffer<T> where T : unmanaged, IBufferData {
+public sealed unsafe class StorageBuffer<T> where T : unmanaged, IBufferData<T> {
     
     private const BufferTarget Target = BufferTarget.ShaderStorageBuffer;
 

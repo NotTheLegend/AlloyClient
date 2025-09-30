@@ -22,8 +22,8 @@ public static class ContentReader {
         return FontFamily.Read(reader);
     }
 
-    public static Shader LoadShader(string path) {
-        return Shader.Create(Path.Combine(_folder, path));
+    public static Shader LoadShader(string path, (string, string)[] defines = null) {
+        return Shader.Create(Path.Combine(_folder, path), defines);
     }
 
 }

@@ -7,7 +7,7 @@ using OpenTK.Mathematics;
 namespace RealmClient.Rendering.VertexData;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct ShadowData(Vector3 position, Vector2 scale, Color color) : IBufferData, IEquatable<ShadowData> {
+public struct ShadowData(Vector3 position, Vector2 scale, Color color) : IBufferData<ShadowData> {
     public Vector4 Position = new (position, 0);
     public Vector2 Scale = scale;
     public uint Color = color.PackedValue;

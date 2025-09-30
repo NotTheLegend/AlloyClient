@@ -1,5 +1,7 @@
 ﻿#version 450 core
 
+#define TileBuffer 
+
 uniform mat4 WorldMatrix;
 uniform mat4 ViewMatrix;
 uniform mat4 ProjMatrix;
@@ -31,7 +33,7 @@ struct InstanceData {
 };
 
 layout(std140, binding = 0) readonly buffer InstanceBuffer {
-    InstanceData data[];
+    InstanceData data[TileBuffer];
 } instanceBuffer;
 
 

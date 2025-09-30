@@ -8,7 +8,7 @@ using OpenTK.Mathematics;
 namespace RealmClient.Rendering.VertexData;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct VertexObject(Vector3 position, Vector4 uv, Vector4 scale, Vector4 rotation, Vector4 extra, Color color) : IVertexData, IEquatable<VertexObject> {
+public struct VertexObject(Vector3 position, Vector4 uv, Vector4 scale, Vector4 rotation, Vector4 extra, Color color) : IVertexData<VertexObject> {
     public Vector3 Position = position;
     public Vector4 UV = uv;
     public Vector4 Scale = scale;

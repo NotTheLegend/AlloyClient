@@ -40,7 +40,7 @@ public static partial class Render {
 
     public static void FirstTimeInit() {
         // Shaders
-        _shaderGround = ContentReader.LoadShader("Shaders/Ground");
+        _shaderGround = ContentReader.LoadShader("Shaders/Ground", [("#define TileBuffer", $"#define TileBuffer {TileBufferSize}")]);
         _shaderGround.SetValue("GameTexture", Main.Atlas.GetTexture());
 
         _shaderShadow = ContentReader.LoadShader("Shaders/Shadow");

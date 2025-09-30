@@ -7,7 +7,7 @@ using OpenTK.Mathematics;
 namespace RealmClient.Rendering.VertexData;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct VertexBase(Vector3 position, Vector2 textureCoordinate) : IVertexData, IEquatable<VertexBase> {
+public struct VertexBase(Vector3 position, Vector2 textureCoordinate) : IVertexData<VertexBase> {
     public Vector3 Position = position;
     public Vector2 UV = textureCoordinate;
 

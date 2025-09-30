@@ -112,17 +112,17 @@ public sealed class TextInput : Sprite {
     protected override void ResizeBackBuffer() {
         var size = _maxCharacters + 1;
         VertexData = new VertexUi[size * 4];
-        Indices = new short[size * 6];
+        Indices = new ushort[size * 6];
         for (var i = 0; i < Indices.Length / 6; i++) {
             var idx6 = i * 6;
             var idx4 = i * 4;
 
-            Indices[idx6] = (short)(0 + idx4);
-            Indices[idx6 + 1] = (short)(1 + idx4);
-            Indices[idx6 + 2] = (short)(2 + idx4);
-            Indices[idx6 + 3] = (short)(0 + idx4);
-            Indices[idx6 + 4] = (short)(2 + idx4);
-            Indices[idx6 + 5] = (short)(3 + idx4);
+            Indices[idx6] = (ushort)(0 + idx4);
+            Indices[idx6 + 1] = (ushort)(1 + idx4);
+            Indices[idx6 + 2] = (ushort)(2 + idx4);
+            Indices[idx6 + 3] = (ushort)(0 + idx4);
+            Indices[idx6 + 4] = (ushort)(2 + idx4);
+            Indices[idx6 + 5] = (ushort)(3 + idx4);
         }
         base.ResizeBackBuffer();
     }

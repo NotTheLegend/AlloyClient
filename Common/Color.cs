@@ -156,6 +156,10 @@ public struct Color : IEquatable<Color> {
         YellowGreen = new Color(0xff32cd9a);
     }
     
+    public static implicit operator uint(Color color) {
+        return color.PackedValue;
+    }
+    
     public static Color FromHexRGB(uint rgb, float alpha = 1.0f) {
         var r = (byte)(rgb >> 16);
         var g = (byte)(rgb >> 8);
