@@ -37,7 +37,6 @@ public sealed class Minimap : Sprite {
     private readonly ObjectRect _arrow;
 
     public Minimap() {
-        SetBaseDimensions(MapSize, MapSize);
         TextureId = TextureType.Minimap;
 
         ResizeBackBuffer();
@@ -82,6 +81,8 @@ public sealed class Minimap : Sprite {
         _arrow.ColorTransformation = new ColorTransform(0f, 0f, 1f, 1f);
         AddChild(_arrow);
         
+        AddEventListener(Event.EnterFrame, OnFrameEnter);
+        
         // :smallbrain: not valid callbacks, doesnt support lambdas /shrug >:
         //AddEventListener(MouseEventId.MouseOver, () => _mouseOver = true);
         //AddEventListener(MouseEventId.MouseOut, () => _mouseOver = false);
@@ -100,10 +101,9 @@ public sealed class Minimap : Sprite {
         }
     }
 
-    protected override void ResizeBackBuffer() {
+    private void ResizeBackBuffer() {
         VertexData = new VertexUi[4];
-        Indices = new ushort[] { 0, 1, 2, 0, 2, 3 };
-        base.ResizeBackBuffer();
+        Indices = [0, 1, 2, 0, 2, 3];
     }
 
     private void FillData() {
@@ -111,6 +111,8 @@ public sealed class Minimap : Sprite {
         VertexData[1] = new VertexUi(new Vector2(MapSize, 0)); //Top Right
         VertexData[2] = new VertexUi(new Vector2(MapSize, MapSize)); //Bottom Right
         VertexData[3] = new VertexUi(new Vector2(0, MapSize)); //Bottom Left
+        
+        SetGraphicsBuffer();
     }
     
     private void ZoomHandle(int zoom) {
@@ -127,7 +129,7 @@ public sealed class Minimap : Sprite {
         MinimapTexture.ClearData();
     }
     
-    protected override void OnUpdate(GameTime time) {
+    private void OnFrameEnter() {
         if (Map.LocalPlayer == null) return;
 
         _arrow.Rotation = -Camera.CameraAngle;

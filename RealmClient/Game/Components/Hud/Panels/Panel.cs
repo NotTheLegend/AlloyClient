@@ -8,7 +8,7 @@ public abstract class Panel : Sprite {
     public static readonly Signal OnInteract = new(); 
     
     protected Panel() {
-        SetBaseDimensions(218, 110);
+        //todo:SetBaseDimensions(218, 110);
         AddEventListener(Event.AddedToStage, () => { OnInteract.Add(OnInteractKey); });
         AddEventListener(Event.RemovedFromStage, () => { OnInteract.Remove(OnInteractKey); });
     }

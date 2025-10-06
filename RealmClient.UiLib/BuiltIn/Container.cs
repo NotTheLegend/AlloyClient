@@ -21,7 +21,6 @@ public class Container : Sprite {
         X = config.X;
         Y = config.Y;
         EnableClipRect = config.EnableClip;
-        SetBaseDimensions(config.Width, config.Height);
         SetAnchor(config.Anchor);
         MouseEnabled = config.EnableClip;
     }

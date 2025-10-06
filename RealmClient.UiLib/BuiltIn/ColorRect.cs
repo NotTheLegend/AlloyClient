@@ -31,7 +31,6 @@ public sealed class ColorRect : Sprite {
         _h = config.Height;
         SetColor(config.Color);
         Alpha = config.Alpha;
-        SetBaseDimensions(_w, _h);
         SetAnchor(config.Anchor);
         MouseEnabled = config.MouseEnabled;
         
@@ -41,10 +40,9 @@ public sealed class ColorRect : Sprite {
         FillData();
     }
 
-    protected override void ResizeBackBuffer() {
+    private void ResizeBackBuffer() {
         VertexData = new VertexUi[4];
-        Indices = new ushort[] { 0, 1, 2, 0, 2, 3 };
-        base.ResizeBackBuffer();
+        Indices = [0, 1, 2, 0, 2, 3];
     }
 
     private void FillData() {
@@ -52,12 +50,13 @@ public sealed class ColorRect : Sprite {
         VertexData[1] = new VertexUi(new Vector2(_w, 0)); //Top Right
         VertexData[2] = new VertexUi(new Vector2(_w, _h)); //Bottom Right
         VertexData[3] = new VertexUi(new Vector2(0, _h)); //Bottom Left
+        
+        SetGraphicsBuffer();
     }
 
     public void Resize(int width, int height) {
         _w = width;
         _h = height;
-        SetBaseDimensions(width, height);
         FillData();
     }
 }

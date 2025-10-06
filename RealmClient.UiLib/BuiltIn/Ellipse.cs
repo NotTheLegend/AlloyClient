@@ -36,7 +36,6 @@ public sealed class Ellipse : Sprite {
         SetColor(config.Color);
         SetColorSecondary(config.OutlineColor);
         Alpha = config.Alpha;
-        SetBaseDimensions(_dX, _dY);
         SetAnchor(config.Anchor);
         SetHitboxType(Enums.HitboxType.Ellipse);
         MouseEnabled = config.MouseEnabled;
@@ -46,10 +45,9 @@ public sealed class Ellipse : Sprite {
         FillData();
     }
     
-    protected override void ResizeBackBuffer() {
+    private void ResizeBackBuffer() {
         VertexData = new VertexUi[9];
-        Indices = new ushort[] { 4, 3, 0, 0, 1, 4, 4, 1, 2, 2, 5, 4, 6, 3, 4, 4, 7, 6, 7, 4, 8, 8, 4, 5 };
-        base.ResizeBackBuffer();
+        Indices = [4, 3, 0, 0, 1, 4, 4, 1, 2, 2, 5, 4, 6, 3, 4, 4, 7, 6, 7, 4, 8, 8, 4, 5];
     }
     
     private void FillData() {
@@ -73,12 +71,13 @@ public sealed class Ellipse : Sprite {
         VertexData[6] = new VertexUi(new Vector2(0 - _oSize, ry * 2 + _oSize), new Vector2(u, v)); // Bottom Left
         VertexData[7] = new VertexUi(new Vector2(rx, ry * 2 + _oSize), new Vector2(0f, v)); // Bottom Center
         VertexData[8] = new VertexUi(new Vector2(rx * 2 + _oSize, ry * 2 + _oSize), new Vector2(u, v)); // Bottom Right
+        
+        SetGraphicsBuffer();
     }
 
     public void Resize(int width, int height, int outlineThickness = -1) {
         _dX = width;
         _dY = height;
-        SetBaseDimensions(width, height);
         if (outlineThickness > -1)
             _oSize = outlineThickness;
         FillData();

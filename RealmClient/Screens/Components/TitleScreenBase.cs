@@ -6,6 +6,7 @@ using RealmClient.UiLib;
 using RealmClient.UiLib.BuiltIn;
 using RealmClient.UiLib.Core;
 using RealmClient.UiLib.Enums;
+using RealmClient.Utils;
 
 namespace RealmClient.Screens.Components;
 
@@ -35,7 +36,7 @@ public abstract class TitleScreenBase : Screen {
         _overlay.SetAnchor(UiAnchor.RightTop);
         AddChild(_overlay);
         
-        SetAutoResize(OnResize);
+        this.SetAutoResize(OnResize);
     }
 
     protected override void OnResize(ResizeEvent args) {

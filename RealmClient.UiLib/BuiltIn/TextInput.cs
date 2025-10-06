@@ -100,16 +100,16 @@ public sealed class TextInput : Sprite {
         _textBox = new NineSliceRect(rectConfig);
         AddChild(_textBox);
         
-        SetBaseDimensions(_textBox.Width, _textBox.Height);
-        SetHitboxType(Enums.HitboxType.Custom);
+        SetHitboxType(HitboxType.Custom);
         
         AddEventListener(MouseEvent.LeftClick, OnMouseClick);
+        AddEventListener(Event.EnterFrame, OnFrameEnter);
         
         ResizeBackBuffer();
         FillData();
     }
     
-    protected override void ResizeBackBuffer() {
+    private void ResizeBackBuffer() {
         var size = _maxCharacters + 1;
         VertexData = new VertexUi[size * 4];
         Indices = new ushort[size * 6];
@@ -124,11 +124,11 @@ public sealed class TextInput : Sprite {
             Indices[idx6 + 4] = (ushort)(2 + idx4);
             Indices[idx6 + 5] = (ushort)(3 + idx4);
         }
-        base.ResizeBackBuffer();
     }
     
-    protected override void OnUpdate(GameTime gameTime) {
+    private void OnFrameEnter() {
         if (!_isCaretActive) return;
+        var gameTime = Stage.GameTime;
         if (gameTime.TotalMs - _lastCaretUpdateTime < 500) return;
 
         _lastCaretUpdateTime = gameTime.TotalMs;
@@ -196,6 +196,8 @@ public sealed class TextInput : Sprite {
             _caret.X = (int)zero.X;
             _caret.Y = CutY * 3;
         }
+        
+        SetGraphicsBuffer();
     }
 
     protected override bool CustomHitbox(Vector2i pos) {

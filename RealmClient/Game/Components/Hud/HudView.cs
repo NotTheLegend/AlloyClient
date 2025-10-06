@@ -41,6 +41,7 @@ public sealed class HudView : Sprite {
         _bars.X = 15;
         _bars.Y = _details.Y + _details.Height + 5;
         AddChild(_bars);
+        AddEventListener(Event.EnterFrame, OnFrameEnter);
     }
 
     public void CreatePlayerDependentAssets() {
@@ -65,7 +66,7 @@ public sealed class HudView : Sprite {
         AddChild(_interactPanel);
     }
 
-    protected override void OnUpdate(GameTime gameTime) {
+    private void OnFrameEnter() {
         if (Map.LocalPlayer == null) return;
 
         _bars.Update();

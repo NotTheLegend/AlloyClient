@@ -22,7 +22,7 @@ public class ChoiceOption<T> : Option {
 
         _choiceCallback = choiceCallback;
 
-        SetBaseDimensions(_choiceBox.Width + DescText.X + DescText.Width, _choiceBox.Height);
+        //todo:SetBaseDimensions(_choiceBox.Width + DescText.X + DescText.Width, _choiceBox.Height);
     }
 
     public override void Refresh() {

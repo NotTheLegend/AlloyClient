@@ -36,7 +36,7 @@ public class KeyCodeBox : Sprite {
     private double _elapsed;
 
     public KeyCodeBox(InputSetting setting, Action callback) {
-        SetBaseDimensions(BoxWidth, BoxHeight);
+        //todo:SetBaseDimensions(BoxWidth, BoxHeight);
         SetHitboxType(HitboxType.Custom);
         MouseEnabled = true;
 
@@ -57,14 +57,15 @@ public class KeyCodeBox : Sprite {
         AddEventListener(MouseEvent.MouseOver, () => _background.SetColor(11776947));
         AddEventListener(MouseEvent.MouseOut, () => _background.SetColor(4473924));
         AddEventListener(MouseEvent.LeftClick, OnLeftClick);
+        AddEventListener(Event.EnterFrame, OnFrameEnter);
     }
 
-    protected override void OnUpdate(GameTime gameTime) {
+    private void OnFrameEnter() {
         if (!_inputMode) {
             return;
         }
 
-        _elapsed += gameTime.ElapsedMs;
+        _elapsed += Stage.GameTime.ElapsedMs;
         if (_elapsed > 500) {
             _char.Visible = !_char.Visible;
             _elapsed = 0;

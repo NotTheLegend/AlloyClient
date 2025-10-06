@@ -6,6 +6,7 @@ using OpenTK.Mathematics;
 using RealmClient.State;
 using RealmClient.UiLib.BuiltIn;
 using RealmClient.UiLib.BuiltIn.Buttons;
+using RealmClient.UiLib.Core;
 using RealmClient.UiLib.Enums;
 
 namespace RealmClient.Screens.Components.CharacterSelection;
@@ -49,6 +50,7 @@ public class CharacterWheel : Container {
         var backcfg = new TextButtonConfig { Text = "Back", FontSize = 50, OnClicked = RotateToPreviousCharacter, FontType = FontType.Normal, X = 75, Y = 560 };
         var spinBackButton = new TextButton(backcfg);
         AddChild(spinBackButton);
+        AddEventListener(Event.EnterFrame, OnFrameEnter);
     }
 
     private void UpdateCharacterWheel(float angle) {
@@ -105,13 +107,14 @@ public class CharacterWheel : Container {
         _isAnimating = true;
     }
 
-    protected override void OnUpdate(GameTime gameTime) {
+    private void OnFrameEnter() {
+        var gameTime = Stage.GameTime;
         UpdateCharacterWheel(0);
         
         var sortedCharacters = _classRects.OrderBy(c => c.Y).ToList();
         
         foreach (var character in sortedCharacters) {
-            PrioritizeChild(character);
+            AddChild(character);
         }
 
         if (!_isAnimating)

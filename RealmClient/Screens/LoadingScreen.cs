@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Diagnostics.Tracing;
+using System.Threading.Tasks;
 using RealmClient.UiLib.BuiltIn;
 using RealmClient.UiLib.Core;
 using RealmClient.UiLib.Enums;
@@ -8,6 +10,7 @@ using RealmClient.Data;
 using RealmClient.Display;
 using RealmClient.State;
 using RealmClient.Ui.Components.Graphics;
+using RealmClient.Utils;
 
 namespace RealmClient.Screens;
 
@@ -31,7 +34,7 @@ public class LoadingScreen : Screen {
         });
         AddChild(_text);
         
-        SetAutoResize(OnResize);
+        this.SetAutoResize(OnResize);
         
         AddEventListener(Task.WhenAll(
             Account.LoadAsync(),
@@ -42,7 +45,7 @@ public class LoadingScreen : Screen {
         ), () => { ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 1000, 0x0); });
     }
     
-    private void OnResize(ResizeEvent args) {
+    private new void OnResize(ResizeEvent args) {
         _text.Scale = Stage.ScreenScale;
         _text.X = Stage.StageWidth / 2;
         _text.Y = Stage.StageHeight - (int)(90 * Stage.ScreenScale.Y);

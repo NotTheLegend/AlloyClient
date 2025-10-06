@@ -3,6 +3,7 @@ using RealmClient.UiLib.Core;
 using RealmClient.UiLib.Enums;
 using RealmClient.UiLib.Rendering;
 using OpenTK.Mathematics;
+using RealmClient.Utils;
 
 namespace RealmClient.Ui.Components.Graphics;
 
@@ -15,11 +16,11 @@ public sealed class ScreenGraphic : Sprite {
 
         TextureId = splash ? TextureType.TitleGraphic : TextureType.TitleBackground;
 
-        SetBaseDimensions(TexWidth, TexHeight);
+        //todo:SetBaseDimensions(TexWidth, TexHeight);
         ResizeBackBuffer();
         FillData(TexWidth, TexHeight);
         
-        SetAutoResize(OnResize);
+        this.SetAutoResize(OnResize);
     }
 
     private void OnResize(ResizeEvent args) {
@@ -34,14 +35,12 @@ public sealed class ScreenGraphic : Sprite {
         X = (w - Stage.StageWidth) / -2;
         Y = (h - Stage.StageHeight) / -2;
         
-        SetBaseDimensions(w, h);
         FillData(w, h);
     }
     
-    protected override void ResizeBackBuffer() {
+    private void ResizeBackBuffer() {
         VertexData = new VertexUi[4];
-        Indices = new ushort[] { 0, 1, 2, 0, 2, 3 };
-        base.ResizeBackBuffer();
+        Indices = [0, 1, 2, 0, 2, 3];
     }
 
    private void FillData(int width, int height) {
@@ -49,5 +48,7 @@ public sealed class ScreenGraphic : Sprite {
        VertexData[1] = new VertexUi(new Vector2(0, 0), new Vector2(0f, 0f));
        VertexData[2] = new VertexUi(new Vector2(width, 0), new Vector2(1f, 0f));
        VertexData[3] = new VertexUi(new Vector2(width, height), new Vector2(1f, 1f));
+       
+       SetGraphicsBuffer();
     }
 }

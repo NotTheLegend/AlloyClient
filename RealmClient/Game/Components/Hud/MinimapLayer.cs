@@ -2,6 +2,7 @@
 using OpenTK.Mathematics;
 using RealmClient.Game.Objects;
 using RealmClient.UiLib.BuiltIn;
+using RealmClient.UiLib.Core;
 using RealmClient.UiLib.Enums;
 using RealmClient.UiLib.Rendering;
 
@@ -19,16 +20,17 @@ public sealed class MinimapLayer : Container {
     private static Entity _focus;
 
     public MinimapLayer() : base(new ContainerConfig { EnableClip = true }) {
-        SetBaseDimensions(Minimap.MapSize, Minimap.MapSize);
+        //todo:SetBaseDimensions(Minimap.MapSize, Minimap.MapSize);
         TextureId = TextureType.Color;
+        
+        AddEventListener(Event.EnterFrame, OnFrameEnter);
 
         ResizeBackBuffer();
     }
 
-    protected override void ResizeBackBuffer() {
+    private void ResizeBackBuffer() {
         VertexData = new VertexUi[VertexSize];
         Indices = new ushort[IndexSize];
-        base.ResizeBackBuffer();
         OverridePrimCount = 0;
     }
 
@@ -60,7 +62,7 @@ public sealed class MinimapLayer : Container {
         OverridePrimCount += 2;
     }
 
-    protected override void OnUpdate(GameTime gameTime) {
+    private void OnFrameEnter() {
         if (Map.LocalPlayer == null) return;
         
         _count = 0;

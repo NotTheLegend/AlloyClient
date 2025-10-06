@@ -11,9 +11,13 @@ public sealed class DialogManager : Sprite {
     private static readonly Queue<Dialog> Dialogs = [];
     private static Dialog _current;
 
+    public DialogManager() {
+        AddEventListener(Event.EnterFrame, OnFrameEnter);
+    }
+
     public static void Enqueue(Dialog dialog) => Dialogs.Enqueue(dialog);
 
-    protected override void OnUpdate(GameTime gameTime) {
+    private void OnFrameEnter() {
         if (_current == null && !TryStart()) return;
         if (_current!.State == DialogState.Closed) OnClosed();
     }

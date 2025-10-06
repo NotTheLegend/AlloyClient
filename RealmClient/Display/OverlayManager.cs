@@ -25,6 +25,10 @@ public sealed class OverlayManager : Sprite {
     private static readonly Queue<Overlay> Overlays = [];
     private static Overlay _current;
     private static OverlayState _state = OverlayState.None;
+
+    public OverlayManager() {
+        AddEventListener(Event.EnterFrame, OnFrameEnter);
+    }
     
     public static void Enqueue(Overlay overlay) {
         Overlays.Enqueue(overlay);
@@ -46,7 +50,7 @@ public sealed class OverlayManager : Sprite {
     public static bool CurrentOverlayIs(Overlay overlay)
         => _current != null && _current == overlay;
 
-    protected override void OnUpdate(GameTime gameTime) {
+    private void OnFrameEnter() {
         if (_state == OverlayState.None && !TryStart(true)) return;
         if (_state == OverlayState.Closed) OnClosed();
     }

@@ -49,7 +49,7 @@ public partial class Sprite {
         var next = this;
 
         while (next != null) {
-            next = next._parent;
+            next = next.Parent;
 
             if (next != null)
                 current = next;
@@ -68,8 +68,9 @@ public partial class Sprite {
         
         if (_dropType.IsInstanceOfType(this))
             target = this;
-        
-        foreach (var child in _children) {
+
+        var span = GetChildrenSpan();
+        foreach (var child in span) {
             child.DropCheck(pos, ref target);
         }
     }

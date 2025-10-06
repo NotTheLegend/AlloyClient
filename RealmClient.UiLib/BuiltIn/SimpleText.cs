@@ -56,7 +56,7 @@ public sealed class SimpleText : Sprite {
         FillData();
     }
     
-    protected override void ResizeBackBuffer() {
+    private void ResizeBackBuffer() {
         var size = _font.GetCharCount(Text);
         VertexData = new VertexUi[size * 4];
         Indices = new ushort[size * 6];
@@ -71,7 +71,6 @@ public sealed class SimpleText : Sprite {
             Indices[idx6 + 4] = (ushort)(2 + idx4);
             Indices[idx6 + 5] = (ushort)(3 + idx4);
         }
-        base.ResizeBackBuffer();
     }
 
     private void FillData() {
@@ -145,7 +144,8 @@ public sealed class SimpleText : Sprite {
             boundWidth = zero.X;
         }
         
-        SetBaseDimensions((int)boundWidth, (int)(boundHeight + _font.LineHeight * scale));
+        SetGraphicsBuffer();
+        
         Extra1.X = _outlineThickness;
         Extra1.Y = (int) (_fontScale < 16 ? RenderType.Small : RenderType.Normal);
     }

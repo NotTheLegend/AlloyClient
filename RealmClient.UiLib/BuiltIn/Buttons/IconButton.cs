@@ -48,16 +48,14 @@ public sealed class IconButton : Sprite {
         MouseEnabled = true;
         AddEventListener(MouseEvent.LeftDown, OnLeftDown);
         AddEventListener(MouseEvent.LeftUp, OnLeftUp);
-
-        SetBaseDimensions(_width, _height);
+        
         ResizeBackBuffer();
         FillData();
     }
 
-    protected override void ResizeBackBuffer() {
+    private void ResizeBackBuffer() {
         VertexData = new VertexUi[4];
         Indices = [0, 1, 2, 0, 2, 3];
-        base.ResizeBackBuffer();
     }
 
     private void FillData() {
@@ -67,6 +65,8 @@ public sealed class IconButton : Sprite {
         VertexData[3] = new VertexUi(new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H)); // Bottom Right
 
         Extra1 = new Vector4(_texture.V + _texture.H * 0.4f, _texture.V + _texture.H, -1f, -1f);
+        
+        SetGraphicsBuffer();
     }
 
     private void OnLeftDown() {

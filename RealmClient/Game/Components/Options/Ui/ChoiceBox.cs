@@ -20,7 +20,7 @@ public class ChoiceBox<T> : Sprite {
     private int _selected;
 
     public ChoiceBox(ValueSetting<T> setting, string[] labels, object[] values, Action callback) {
-        SetBaseDimensions(BoxWidth, BoxHeight);
+        //todo:SetBaseDimensions(BoxWidth, BoxHeight);
         MouseEnabled = true;
 
         _setting = setting;

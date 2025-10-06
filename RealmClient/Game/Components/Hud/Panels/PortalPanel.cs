@@ -4,6 +4,7 @@ using RealmClient.Networking;
 using RealmClient.Networking.Packets.Outgoing;
 using RealmClient.UiLib.BuiltIn;
 using RealmClient.UiLib.BuiltIn.Buttons;
+using RealmClient.UiLib.Core;
 using RealmClient.UiLib.Enums;
 
 namespace RealmClient.Game.Components.Hud.Panels;
@@ -61,6 +62,7 @@ public class PortalPanel : Panel {
             Anchor = UiAnchor.MiddleTop
         });
         AddChild(_enterButton);
+        AddEventListener(Event.EnterFrame, OnFrameEnter);
     }
 
     protected override void OnInteractKey() {
@@ -69,13 +71,13 @@ public class PortalPanel : Panel {
         Client.QueuePacket(pkt);
     }
 
-    protected override void OnUpdate(GameTime gameTime) {
-        if ((!_portal.PortalUsable || _locked) && ContainsChild(_enterButton)) {
+    private void OnFrameEnter() {
+        if ((!_portal.PortalUsable || _locked) && Contains(_enterButton)) {
             RemoveChild(_enterButton);
             AddChild(_fullText);
         }
 
-        if ((_portal.PortalUsable && !_locked) && ContainsChild(_fullText)) {
+        if ((_portal.PortalUsable && !_locked) && Contains(_fullText)) {
             RemoveChild(_fullText);
             AddChild(_enterButton);
         }

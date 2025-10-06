@@ -40,7 +40,7 @@ public class ChatContainer : Container {
     }
     
     public void Clear() {
-        RemoveAllChildren();
+        RemoveChildren();
         _chatLines.Clear();
         _chatLineIndex = 0;
     }

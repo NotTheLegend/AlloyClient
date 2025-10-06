@@ -6,6 +6,7 @@ using RealmClient.Screens.Components.CharacterSelection;
 using RealmClient.Ui.Components.Dialogs;
 using RealmClient.Ui.Components.Panels;
 using RealmClient.UiLib.BuiltIn.Buttons;
+using RealmClient.UiLib.Core;
 using RealmClient.UiLib.Enums;
 using RealmClient.UiLib.Extra;
 
@@ -35,6 +36,7 @@ public class ClassContainer : Overlay {
         var slotButton = new TextButton(slotConfig);
         
         AddChild(slotButton);
+        AddEventListener(Event.EnterFrame, OnFrameEnter);
     }
 
     private void OnCreateResponse(LoginResponse response) {
@@ -50,7 +52,7 @@ public class ClassContainer : Overlay {
         CloseOverlay();
     }
     
-    protected override void OnUpdate(GameTime gameTime) {
-        ClassInfo.Update(gameTime, CharacterWheel.SelectedClass);
+    private void OnFrameEnter() {
+        ClassInfo.Update(Stage.GameTime, CharacterWheel.SelectedClass);
     }
 }

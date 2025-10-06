@@ -13,36 +13,16 @@ using RealmClient.UiLib.Utils;
 
 namespace RealmClient.UiLib.Core;
 
-public partial class Sprite : EventManager {
+/* =TODO=
+ * Focus
+ * event phase enum
+ * enter frame event instead of override thing
+ * make enter frame & resize broadcast events
+ */
+
+public partial class Sprite : DisplayContainer {
     
     public static readonly Vector4 NoScissor = new Vector4(0, 0, 10000, 10000);
-
-    public Stage Stage { //TODO: do something with this disaster
-        get;
-        internal set {
-            if (field == value)
-                return;
-
-            if (value == null) {
-                DispatchEvent(new Event(Event.RemovedFromStage));
-                
-                if (_autoResize != null) {
-                    field.RemoveEventListener(ResizeEvent.Resize, _autoResize);
-                }
-                
-                field = null;
-            } else {
-                field = value;
-                
-                if (_autoResize != null) {
-                    field.AddEventListener(ResizeEvent.Resize, _autoResize);
-                    _autoResize(new ResizeEvent(ResizeEvent.Resize, field.StageWidth, field.StageHeight));
-                }
-                
-                DispatchEvent(new Event(Event.AddedToStage));
-            }
-        }
-    }
 
     public int X {
         get => _x;
@@ -66,23 +46,17 @@ public partial class Sprite : EventManager {
     }
 
     public int Width {
-        get => _width;
+        get => (int)(ContentWidth * Scale.X);
         set {
-            if (_width == 0)
-                _graphicalWidth = value;
-            else 
-                Scale = new Vector2(value / (float)_width, Scale.Y);
+            Scale = new Vector2(ContentWidth == 0 ? 0 : value / ContentWidth, Scale.Y);
             UpdateBounds();
         }
     }
     
     public int Height {
-        get => _height;
+        get => (int)(ContentHeight * Scale.Y);
         set {
-            if (_height == 0)
-                _graphicalHeight = value;
-            else
-                Scale = new Vector2(Scale.X, value / (float)_height);
+                Scale = new Vector2(Scale.X, ContentHeight == 0 ? 0 : value / ContentHeight);
             UpdateBounds();
         }
     }
@@ -96,8 +70,6 @@ public partial class Sprite : EventManager {
     }
 
     public float Rotation = 0;
-
-    public Sprite Parent => _parent;
 
     public UiAnchor Anchor { get; private set; } = UiAnchor.LeftTop;
 
@@ -154,31 +126,11 @@ public partial class Sprite : EventManager {
     
     private Vector2 _scale = Vector2.One;
 
-    private int _width;
-
-    private int _height;
-
-    private int _graphicalWidth;
-
-    private int _graphicalHeight;
-
     private int _anchorX;
     
     private int _anchorY;
     
     #endregion    
-
-    #region Children
-    
-    private Sprite _parent;
-    
-    private readonly List<Sprite> _children = [];
-    
-    private readonly Queue<Sprite> _childQueue = new();
-    
-    private readonly Queue<Sprite> _childRemovalQueue = new();
-
-    #endregion
 
     #region TrueValues
 
@@ -198,101 +150,17 @@ public partial class Sprite : EventManager {
 
     #endregion
 
-    #region Other
-
-    private int _childCount;
-
-    private Bounds _childbounds = new();
-    private Bounds _bounds = new();
-
-    private Action<ResizeEvent> _autoResize;
-
-    #endregion
-
-    
-
-    private void UpdateBounds() {
-
-        var bounds = _childbounds;
-
-        if (_childCount > 0) { 
-            bounds.AddParent(this);
-        }
-
-        var update = false;
-
-        var (anchorX, anchorY) = InternalUtils.GetAnchorOffset(Anchor, _graphicalWidth, _graphicalHeight);
-
-        var x = X + (int)(anchorX * Scale.X);
-        var w = (int)(_graphicalWidth * Scale.X);
-        var y = Y + (int)(anchorY * Scale.Y);
-        var h = (int)(_graphicalHeight * Scale.Y);
-        
-        if (x < bounds.MinX) {
-            update = true;
-            bounds.MinX = x;
-        }
-
-        if (x + w > bounds.MaxX) {
-            update = true;
-            bounds.MaxX = x + w;
-        }
-        
-        if (y < bounds.MinY) {
-            update = true;
-            bounds.MinY = y;
-        }
-
-        if (y + h > bounds.MaxY) {
-            update = true;
-            bounds.MaxY = y + h;
-        }
-        
-        _width = bounds.MaxX - bounds.MinX;
-        _height = bounds.MaxY - bounds.MinY;
-        _bounds = bounds;
-
-        // if clip, override w/h to clip size
-        if (EnableClipRect) {
-            _width = (int)(_graphicalWidth * Scale.X);
-            _height = (int)(_graphicalHeight * Scale.Y);
-        }
-
-        if (update && _parent != null) {
-            _parent.UpdateChildBounds(bounds);
-            _parent.UpdateBounds();
-        }
-
-        if (TooltipMode) // Lets not play with tooltip width, it should remain its width no matter the children
-        {
-            _width = _graphicalWidth;
-        }
-    }
-
-    private void UpdateChildBounds(Bounds bounds) {
-        if (bounds.MinX <_childbounds.MinX) {
-            _childbounds.MinX = bounds.MinX;
-        }
-        
-        if (bounds.MaxX > _childbounds.MaxX) {
-            _childbounds.MaxX = bounds.MaxX;
-        }
-        
-        if (bounds.MinY < _childbounds.MinY) {
-            _childbounds.MinY = bounds.MinY;
-        }
-        
-        if (bounds.MaxY > _childbounds.MaxY) {
-            _childbounds.MaxY = bounds.MaxY;
-        }
+    internal Vector2 GetFullRelativePosition() {
+        var (x, y) = InternalUtils.GetAnchorOffset(Anchor, (int)ContentWidth, (int)ContentHeight);
+        return new Vector2(_x + x * Scale.X, _y + y * Scale.Y);
     }
 
     
 
-    protected virtual void OnUpdate(GameTime gameTime) { }
+    //protected virtual void OnUpdate(GameTime gameTime) { }
 
     private void InternalUpdate() {
-        (_anchorX, _anchorY) = InternalUtils.GetAnchorOffset(Anchor, _width, _height);
+        (_anchorX, _anchorY) = InternalUtils.GetAnchorOffset(Anchor, (int)ContentWidth, (int)ContentHeight);
         var (tx, ty) = (0, 0);
         var ta = _alpha;
         var ts = Scale;
@@ -306,37 +174,37 @@ public partial class Sprite : EventManager {
             (tx, ty) = pos.ToPair();
         } else if (TooltipMode) {
             (tx, ty) = MouseInput.GetMousePosition().ToPair();
-            (_anchorX, _anchorY) = InternalUtils.GetAnchorOffset(tx < UiRender.Screen.X / 2 ? UiAnchor.LeftBottom : UiAnchor.RightBottom, _width, _height);
-            tx += (int) (_anchorX * _parent._trueScale.X);
-            ty += (int) (_anchorY * _parent._trueScale.Y);
+            (_anchorX, _anchorY) = InternalUtils.GetAnchorOffset(tx < UiRender.Screen.X / 2 ? UiAnchor.LeftBottom : UiAnchor.RightBottom, (int)ContentWidth, (int)ContentHeight);
+            tx += (int) (_anchorX * Parent._trueScale.X);
+            ty += (int) (_anchorY * Parent._trueScale.Y);
         } else if (_isDragging) {
             var pos = MouseInput.GetMousePosition();
             (tx, ty) = pos.ToPair();
-            tx -= (int)(_dragOffset.X * _parent._trueScale.X);
-            ty -= (int)(_dragOffset.Y * _parent._trueScale.Y);
+            tx -= (int)(_dragOffset.X * Parent._trueScale.X);
+            ty -= (int)(_dragOffset.Y * Parent._trueScale.Y);
         } else {
-            tx += X + _anchorX;
-            ty += Y + _anchorY;
+            tx += X + (int)(_anchorX * _scale.X);
+            ty += Y + (int)(_anchorY * _scale.Y);
             test = true;
         }
         
         var parentInteract = true;
-        if (_parent != null) {
+        if (Parent != null) {
             if (test) {
-                tx = (int) (tx * _parent._trueScale.X);
-                ty = (int) (ty * _parent._trueScale.Y);
-                tx += _parent._trueX;
-                ty += _parent._trueY;
+                tx = (int) (tx * Parent._trueScale.X);
+                ty = (int) (ty * Parent._trueScale.Y);
+                tx += Parent._trueX;
+                ty += Parent._trueY;
             }
 
-            ta *= _parent._trueAlpha;
-            ts *= _parent._trueScale;
-            tt *= _parent._trueTransform;
-            tr += _parent.Rotation;
-            parentInteract = _parent._canInteract;
+            ta *= Parent._trueAlpha;
+            ts *= Parent._trueScale;
+            tt *= Parent._trueTransform;
+            tr += Parent.Rotation;
+            parentInteract = Parent._canInteract;
             
-            if (_parent.EnableClipRect || _parent.ClipChildren) {
-                _scissor = _parent._scissor;
+            if (Parent.EnableClipRect || Parent.ClipChildren) {
+                _scissor = Parent._scissor;
                 ClipChildren = true;
             }
         }
@@ -374,28 +242,22 @@ public partial class Sprite : EventManager {
     }
 
     private void Update(GameTime gameTime) {
-        OnUpdate(gameTime);
+        //OnUpdate(gameTime);// replace with enter frame event
         
         InternalUpdate();
 
-        while (_childQueue.TryDequeue(out var child)) {
-            _children.Add(child);
-        }
-
-        while (_childRemovalQueue.TryDequeue(out var child)) {
-            _children.Remove(child);
-        }
-        
-        UpdateNormalListeners();
-
         CheckHighestSprite();
 
-        foreach (var child in _children) {
+        var span = GetChildrenSpan();
+        foreach (var child in span) {
             child.Update(gameTime);
         }
     }
 
     internal void InternalUpdateLoop(GameTime gameTime) {
+        HandleFinishedTasks();
+        BroadcastEvent(new Event(Event.EnterFrame));
+        
         Update(gameTime);
 
         HandleHover();
@@ -406,91 +268,6 @@ public partial class Sprite : EventManager {
 
         if(MouseInput.CheckEvent(MouseEvent.LeftUp) && TextInput.UnFocusOnClick)
             TextInput.ActiveInput?.UnFocus();
-    }
-
-    private void SetStage(Stage stage) {
-        UpdateNormalListeners();
-        Stage = stage;
-        
-        foreach (var child in _children) {
-            child.UpdateNormalListeners();
-            child.Stage = stage;
-            child.SetStage(stage);
-        }
-
-        foreach (var child in _childQueue) {
-            child.UpdateNormalListeners();
-            child.Stage = stage;
-            child.SetStage(stage);
-        }
-    }
-
-    public bool ContainsChild(Sprite child) {
-        if (child == null) return false;
-        return _children.Contains(child) || _childQueue.Contains(child);
-    }
-    
-    public void AddChild(Sprite child) {
-        if (_children.Contains(child) || _childQueue.Contains(child) || child == this) return;
-        
-        _childCount++;
-        child._parent = this;
-        _childQueue.Enqueue(child);
-
-        child.UpdateNormalListeners();
-        child.Stage = Stage;
-        child.SetStage(Stage);
-
-        _childbounds.MinX = Math.Min(_childbounds.MinX, child._bounds.MinX);
-        _childbounds.MaxX = Math.Max(_childbounds.MaxX, child._bounds.MaxX);
-        _childbounds.MinY = Math.Min(_childbounds.MinY, child._bounds.MinY);
-        _childbounds.MaxY = Math.Max(_childbounds.MaxY, child._bounds.MaxY);
-        
-        UpdateBounds();
-    }
-
-    public void RemoveChild(Sprite child) {
-        if (child == null || !_children.Contains(child)) return;
-        _childCount--;
-        _childRemovalQueue.Enqueue(child);
-        
-        child.SetStage(null);
-        child._parent = null;
-        
-        var bounds = new Bounds();
-
-        for (var i = 0; i < _children.Count; i++) {
-            var c = _children[i];
-            if (_childRemovalQueue.Contains(c)) continue;
-            
-            bounds.MinX = Math.Min(bounds.MinX, c._bounds.MinX);
-            bounds.MaxX = Math.Max(bounds.MaxX, c._bounds.MaxX);
-            bounds.MinY = Math.Min(bounds.MinY, c._bounds.MinY);
-            bounds.MaxY = Math.Max(bounds.MaxY, c._bounds.MaxY);
-        }
-
-        _childbounds = bounds;
-        UpdateBounds();
-    }
-
-    public void RemoveAllChildren() {
-        _childbounds = new Bounds();
-        foreach (var child in _children) {
-            _childRemovalQueue.Enqueue(child);
-        }
-    }
-    
-    public void PrioritizeChild(Sprite child) {
-        if (_children.Count > 0 && _children[^1] == child) {
-            return;
-        }
-
-        if (_children == null || !_children.Contains(child)) {
-            return;
-        }
-        
-        _children.Remove(child); 
-        _children.Add(child);
     }
     
     /// <summary>
@@ -515,47 +292,15 @@ public partial class Sprite : EventManager {
         ColorSecondary.PackedValue = (uint)(a << 24 | b << 16 | g << 8 | r);
     }
 
-    public void SetBaseDimensions(int width, int height) {
-        _graphicalWidth = width;
-        _graphicalHeight = height;
-        UpdateBounds();
-    }
-
     public void SetAnchor(UiAnchor anchor) {
         Anchor = anchor;
         UpdateBounds();
     }
-
-    public void SetAutoResize(Action<ResizeEvent> callback) => _autoResize = callback;
     
     public void SetHitboxType(HitboxType hitbox) => HitboxType = hitbox;
 
     public Vector2i GetRelativeMousePosition() {
         var pos = MouseInput.GetMousePosition();
         return new Vector2i(pos.X - _trueX, pos.Y - _trueY);
-    }
-    
-    private struct Bounds {
-        
-        public int MinX = int.MaxValue;
-        public int MaxX = int.MinValue;
-        public int MinY = int.MaxValue;
-        public int MaxY = int.MinValue;
-        
-        public Bounds(){}
-
-        public void AddParent(Sprite sprite) {
-            var w = sprite._noRenderData ? sprite._childbounds.MaxX - sprite._childbounds.MinX : sprite._graphicalWidth;
-            var h = sprite._noRenderData ? sprite._childbounds.MaxY - sprite._childbounds.MinY : sprite._graphicalHeight;
-
-            var (anchorX, anchorY) = InternalUtils.GetAnchorOffset(sprite.Anchor, w, h);
-            var offsetX = sprite.X + anchorX * sprite.Scale.X;
-            var offsetY = sprite.Y + anchorY * sprite.Scale.Y;
-
-            MinX = (int) (MinX * sprite.Scale.X + offsetX);
-            MaxX = (int) (MaxX * sprite.Scale.X + offsetX);
-            MinY = (int) (MinY * sprite.Scale.Y + offsetY);
-            MaxY = (int) (MaxY * sprite.Scale.Y + offsetY);
-        }
     }
 }

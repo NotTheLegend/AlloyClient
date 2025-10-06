@@ -38,7 +38,7 @@ public class MusicButton : Sprite {
         _button = new IconButton(iconConfig);
         AddChild(_button);
         
-        SetBaseDimensions(_button.Width, _button.Height);
+        //todo:SetBaseDimensions(_button.Width, _button.Height);
         MouseEnabled = true;
         AddEventListener(MouseEvent.MouseOver, OnMouseOver);
         AddEventListener(MouseEvent.MouseOut, OnMouseOut);

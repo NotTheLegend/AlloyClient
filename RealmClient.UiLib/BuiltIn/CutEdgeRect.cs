@@ -41,19 +41,18 @@ public sealed class CutEdgeRect : Sprite {
         _cuts = config.Cuts;
         SetColor(config.Color);
         Alpha = config.Alpha;
-        SetBaseDimensions(_w, _h);
         SetAnchor(config.Anchor);
         MouseEnabled = config.MouseEnabled;
         
         TextureId = TextureType.Color;
         
-        SetHitboxType(Enums.HitboxType.Complex);
+        SetHitboxType(HitboxType.Complex);
 
         ResizeBackBuffer();
         FillData();
     }
 
-    protected override void ResizeBackBuffer() {
+    private void ResizeBackBuffer() {
         VertexData = new VertexUi[36];
         Indices = new ushort[] {
             0, 1, 2, 0, 2, 3,
@@ -68,7 +67,6 @@ public sealed class CutEdgeRect : Sprite {
             28, 29, 30, 28, 30, 31,
             32, 33, 34, 32, 34, 35
         };
-        base.ResizeBackBuffer();
     }
 
     private void FillData() {
@@ -117,12 +115,13 @@ public sealed class CutEdgeRect : Sprite {
         VertexData[33] = new VertexUi(new Vector2(_w - _cx, _h));
         VertexData[34] = new VertexUi(new Vector2(_w - _cx, _h - _cy));
         VertexData[35] = new VertexUi(new Vector2(_w, _h - _cy));
+        
+        SetGraphicsBuffer();
     }
 
     public void Resize(int width, int height) {
         _w = width;
         _h = height;
-        SetBaseDimensions(width, height);
         FillData();
     }
 }

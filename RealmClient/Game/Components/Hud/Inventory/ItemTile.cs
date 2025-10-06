@@ -105,6 +105,7 @@ public sealed class ItemTile : Sprite {
 
         _sprite.AddEventListener(MouseEvent.MouseOver, OnMouseOver);
         _sprite.AddEventListener(MouseEvent.MouseOut, OnMouseOut);
+        AddEventListener(Event.EnterFrame, OnFrameEnter);
     }
 
     public void SetItem(ItemDesc itemDesc) {
@@ -233,7 +234,7 @@ public sealed class ItemTile : Sprite {
         _sprite.RemoveEventListener(MouseEvent.LeftUp, CancelDragCheck);
     }
 
-    protected override void OnUpdate(GameTime gameTime) {
+    private void OnFrameEnter() {
         if (!_checkForDrag) return;
         var delta = GetRelativeMousePosition() - _dragStart;
         var dist = MathF.Sqrt(delta.X * delta.X + delta.Y * delta.Y);

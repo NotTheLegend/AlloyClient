@@ -6,6 +6,7 @@ using RealmClient.Ui.Character;
 using RealmClient.Ui.Chat;
 using RealmClient.UiLib;
 using RealmClient.UiLib.Core;
+using RealmClient.Utils;
 
 namespace RealmClient.Game.Components;
 
@@ -24,7 +25,7 @@ public sealed class GameSprite : Sprite {
 
         Map.GameSprite = this;
         
-        SetAutoResize(OnResize);
+        this.SetAutoResize(OnResize);
         SetPosition(Settings.ScreenWidth, Settings.ScreenHeight);
     }
     
@@ -38,7 +39,7 @@ public sealed class GameSprite : Sprite {
          * bounds are just wrong until 2nd end drag for some reason
          * would like to fix the root cause
          */
-        SetBaseDimensions(width, height);
+        //todo:SetBaseDimensions(width, height);
         
         Hud.X = width;
         Hud.Y = height / 2;

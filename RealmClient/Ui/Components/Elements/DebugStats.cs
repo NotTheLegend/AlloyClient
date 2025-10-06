@@ -28,6 +28,7 @@ public class DebugStats : Sprite {
         AddChild(_entities);
         AddChild(_particles);
         AddChild(_ui);
+        AddEventListener(Event.EnterFrame, OnFrameEnter);
         
         _fps.Y = 4;
         _tiles.Y = _fps.Y + _fps.Height + 4;
@@ -37,18 +38,19 @@ public class DebugStats : Sprite {
         _ui.Y = _particles.Y + _particles.Height + 4;
     }
 
-    protected override void OnUpdate(GameTime gameTime) {
+    private void OnFrameEnter() {
+        var gameTime = Stage.GameTime;
         if (gameTime.TotalMs - _lastTime < 1000) return;
 
         _lastTime = gameTime.TotalMs;
         
-        Logger.Info($"\n[Frame Stats]\n" +
+        /*Logger.Info($"\n[Frame Stats]\n" +
                     $"FPS: {GameScreen.Frames}\n" +
                     $"Tiles: {Render.LastDrawCountTiles}\n" +
                     $"Shadows: {Render.LastDrawCountShadows}\n" +
                     $"DrawnEntities: {Render.LastDrawCountEntities}\n" +
                     $"DrawnUiElements: {UiRender.LastRenderCount}\n" +
-                    $"DrawnParticles: {Render.LastDrawParticleCount}");
+                    $"DrawnParticles: {Render.LastDrawParticleCount}");*/
         
         _fps.SetText($"FPS: {GameScreen.Frames}");
         _tiles.SetText($"Tiles: {Render.LastDrawCountTiles}");

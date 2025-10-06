@@ -67,9 +67,11 @@ public sealed class SpeechBubble : Sprite {
         AddChild(txt);
         
         SetAnchor(UiAnchor.MiddleBottom);
+        AddEventListener(Event.EnterFrame, OnFrameEnter);
     }
 
-    protected override void OnUpdate(GameTime gameTime) {
+    private void OnFrameEnter() {
+        var gameTime = Stage.GameTime;
         if (_owner == null) return;
         if ((_lifetime -= gameTime.ElapsedMs) <= 0) Parent.RemoveChild(this);
 

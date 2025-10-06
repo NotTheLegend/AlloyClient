@@ -6,15 +6,25 @@ using RealmClient.UiLib.Core;
 namespace RealmClient.Ui.Character;
 
 public class NotificationLayer : Sprite {
-    private static readonly Queue<CharacterStatusText> _textQueue = new();
+    private static readonly Queue<CharacterStatusText> TextQueue = new();
+
+    public NotificationLayer() {
+        AddEventListener(Event.EnterFrame, OnFrameEnter);
+    }
     
     public static void AddStatusText(Entity en, string text, uint color, int lifetime, int offsetTime) {
         var data = new CharacterStatusText(en, text, color, lifetime, offsetTime);
-        _textQueue.Enqueue(data);
+        TextQueue.Enqueue(data);
     }
 
-    protected override void OnUpdate(GameTime gameTime) {
-        while (_textQueue.TryDequeue(out var characterStatusText)) {
+    public void Update(GameTime gameTime) {
+        while (TextQueue.TryDequeue(out var characterStatusText)) {
+            AddChild(characterStatusText);
+        }
+    }
+
+    private void OnFrameEnter() {
+        while (TextQueue.TryDequeue(out var characterStatusText)) {
             AddChild(characterStatusText);
         }
     }

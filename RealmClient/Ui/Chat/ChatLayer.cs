@@ -10,9 +10,13 @@ public class ChatLayer : Sprite {
 
     private static readonly Dictionary<int, SpeechBubble> Bubbles = [];
 
+    public ChatLayer() {
+        AddEventListener(Event.EnterFrame, OnFrameEnter);
+    }
+
     public static void QueueSpeech(SpeechData data) => Queue.Enqueue(data);
 
-    protected override void OnUpdate(GameTime gameTime) {
+    private void OnFrameEnter() {
         while (Queue.TryDequeue(out var data)) {
             if (Bubbles.TryGetValue(data.Owner.ObjectId, out var bubble))
                 RemoveChild(bubble);

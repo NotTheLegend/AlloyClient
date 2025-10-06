@@ -3,11 +3,19 @@ using OpenTK.Platform;
 
 namespace RealmClient.UiLib.Core;
 
+public enum EventPhase {
+    Capture,
+    Target,
+    Bubble
+}
+
 public record Event(string Type, bool Bubbles = false) {
     
     public Sprite Target { get; private set; }
     
     public Sprite CurrentTarget { get; private set; }
+    
+    public EventPhase Phase { get; internal set; }
 
     internal bool Stop;
     
@@ -22,6 +30,9 @@ public record Event(string Type, bool Bubbles = false) {
     
     public const string AddedToStage = "addedToStage";
     public const string RemovedFromStage = "removedFromStage";
+    public const string Added = "added";
+    public const string Removed = "removed";
+    public const string EnterFrame = "enterFrame";
 }
 
 /// <summary>

@@ -22,7 +22,7 @@ public partial class Sprite {
 
     private bool SquareHitbox(Vector2i pos) {
         var scale = _trueScale / Scale;// W/H already account for scale
-        return pos.X >= _trueX && pos.X <= _trueX + _width * scale.X && pos.Y >= _trueY && pos.Y <= _trueY + _height * scale.Y;
+        return pos.X >= _trueX && pos.X <= _trueX + Width * scale.X && pos.Y >= _trueY && pos.Y <= _trueY + Height * scale.Y;
     }
     
     private bool EllipseHitbox(Vector2i pos) {
@@ -52,9 +52,10 @@ public partial class Sprite {
             if (!((d1 < 0 || d2 < 0 || d3 < 0) && (d1 > 0 || d2 > 0 || d3 > 0)))
                 return true;
 
-            var count = _children.Count;
+            var span = GetChildrenSpan();
+            var count = span.Length;
             for (var j = 0; j < count; j++) {
-                _children[j].ComplexHitbox(pos);
+                span[j].ComplexHitbox(pos);
             }
         }
         

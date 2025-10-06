@@ -17,18 +17,18 @@ public sealed class GameScreen : Screen {
     public static int Frames;
 
     public GameScreen() {
-        SetBaseDimensions(Settings.ScreenWidth, Settings.ScreenHeight);
+        //todo:SetBaseDimensions(Settings.ScreenWidth, Settings.ScreenHeight);
         Client.Connect(Settings.GameServerAddress, Settings.SelectedGameServerPort);
         GameSprite = new GameSprite();
         AddChild(GameSprite);
         
         AddChild(new DebugStats());
         
-        SetAutoResize(OnResize);
+        this.SetAutoResize(OnResize);
     }
 
     protected override void OnResize(ResizeEvent args) {
-        SetBaseDimensions(args.Width, args.Height);
+        //todo:SetBaseDimensions(args.Width, args.Height);
     }
 
     public override void Update(GameTime gameTime) {

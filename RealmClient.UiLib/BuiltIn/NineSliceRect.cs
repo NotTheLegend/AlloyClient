@@ -37,7 +37,6 @@ public sealed class NineSliceRect : Sprite {
         _w = config.Width;
         _h = config.Height;
         Alpha = config.Alpha;
-        SetBaseDimensions(_w, _h);
         SetAnchor(config.Anchor);
         _cutX = config.CutX;
         _cutY = config.CutY;
@@ -49,21 +48,23 @@ public sealed class NineSliceRect : Sprite {
         Resize(_w, _h);
     }
     
-    protected override void ResizeBackBuffer() {
+    private void ResizeBackBuffer() {
         VertexData = new VertexUi[4];
-        Indices = new ushort[] { 0, 1, 2, 0, 2, 3 };
+        Indices = [0, 1, 2, 0, 2, 3];
         var data = _slice.AtlasData;
         Extra1 = new Vector4(data.U, data.U + data.W, data.V, data.V + data.H);
-        base.ResizeBackBuffer();
     }
 
     public void Resize(int w, int h) {
-        SetBaseDimensions(_w = w, _h = h);
+        _w = w; 
+        _h = h;
 
         VertexData[0] = new VertexUi(new Vector2(0, 0), new Vector2(0, 0));
         VertexData[1] = new VertexUi(new Vector2(_w, 0), new Vector2(1, 0));
         VertexData[2] = new VertexUi(new Vector2(_w, _h), new Vector2(1, 1));
         VertexData[3] = new VertexUi(new Vector2(0, _h), new Vector2(0, 1));
+        
+        SetGraphicsBuffer();
 
         var scaleX = _w / (_cutX * 2f);
         if (scaleX > 1.0f)

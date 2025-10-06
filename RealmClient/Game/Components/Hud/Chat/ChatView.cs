@@ -72,6 +72,7 @@ public class ChatView : Sprite {
         OnChatOpen.Add(HandleChatOpen);
         OnChatHistoryUp.Add(_chatContainer.PageUp);
         OnChatHistoryDown.Add(_chatContainer.PageDown);
+        AddEventListener(Event.EnterFrame, OnFrameEnter);
     }
 
     private void RemoveHandlers() {
@@ -79,16 +80,17 @@ public class ChatView : Sprite {
         OnChatOpen.Remove(HandleChatOpen);
         OnChatHistoryUp.Remove(_chatContainer.PageUp);
         OnChatHistoryDown.Remove(_chatContainer.PageDown);
+        RemoveEventListener(Event.EnterFrame, OnFrameEnter);
     }
 
-    protected override void OnUpdate(GameTime gameTime) {
+    private void OnFrameEnter() {
         if (ClearChatRequested) {
             _chatContainer.Clear();
             ClearChatRequested = false;
         }
 
         while (ChatLineQueue.TryDequeue(out var chatLineData)) {
-            _chatContainer.AddChatLine((int) gameTime.TotalMs, chatLineData);
+            _chatContainer.AddChatLine((int) Stage.GameTime.TotalMs, chatLineData);
         }
     }
 

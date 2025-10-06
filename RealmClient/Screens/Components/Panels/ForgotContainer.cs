@@ -12,7 +12,7 @@ public class ForgotContainer : Overlay {
     public ForgotContainer() {
         X = Settings.DefaultScreenWidth / 2;
         Y = Settings.DefaultScreenHeight / 2;
-        SetBaseDimensions(475, 350);
+        //todo:SetBaseDimensions(475, 350);
         SetAnchor(UiAnchor.Middle);
         
         var background = new ColorRect(new ColorRectConfig { Width = 475, Height = 350, Color = 0x363636 });

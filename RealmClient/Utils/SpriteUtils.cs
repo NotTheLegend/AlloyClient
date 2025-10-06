@@ -17,7 +17,7 @@ public static class SpriteUtils {
                     return obj;
             }
 
-            obj = obj.Parent;
+            obj = obj.Parent as Sprite;
         }
         
         return null;
@@ -26,5 +26,13 @@ public static class SpriteUtils {
     public static void AddAlphaTween(this Sprite sprite, float start, float end, int duration, Easing easing = Easing.SineInOut, int delay = 0) {
         sprite.Alpha = start;
         GTween.Add(Tween.New(sprite, easing, duration, end, EaseType.Alpha, delay));
+    }
+
+    public static void SetAutoResize(this Sprite sprite, Action<ResizeEvent> callback) {
+        sprite.AddEventListener(Event.AddedToStage, () => {
+            sprite.AddEventListener(ResizeEvent.Resize, callback);
+            callback(new ResizeEvent(ResizeEvent.Resize, sprite.Stage.StageWidth, sprite.Stage.StageHeight));
+        });
+        sprite.AddEventListener(Event.RemovedFromStage, () => {sprite.RemoveEventListener(ResizeEvent.Resize, callback);});
     }
 }

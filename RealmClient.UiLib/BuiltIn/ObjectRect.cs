@@ -37,7 +37,6 @@ public class ObjectRect : Sprite {
         _height = config.Height;
         Alpha = config.Alpha;
         SetColorSecondary(config.OutlineColor);
-        SetBaseDimensions(_width, _height);
         SetAnchor(config.Anchor);
         MouseEnabled = config.MouseEnabled;
 
@@ -49,10 +48,9 @@ public class ObjectRect : Sprite {
         FillData();
     }
     
-    protected override void ResizeBackBuffer() {
+    private void ResizeBackBuffer() {
         VertexData = new VertexUi[4];
-        Indices = new ushort[] { 0, 1, 2, 0, 2, 3 };
-        base.ResizeBackBuffer();
+        Indices = [0, 1, 2, 0, 2, 3];
     }
 
     private void FillData() {
@@ -60,6 +58,8 @@ public class ObjectRect : Sprite {
         VertexData[1] = new VertexUi(new Vector2(0, 0), new Vector2(_texture.U, _texture.V));
         VertexData[2] = new VertexUi(new Vector2(_width, 0), new Vector2(_texture.U + _texture.W, _texture.V));
         VertexData[3] = new VertexUi(new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H));
+        
+        SetGraphicsBuffer();
         
         Extra1 = new Vector4(_texture.V + _texture.H * 0.4f, _texture.V, _texture.H, _outline ? 1f : -1f);
     }
@@ -73,7 +73,6 @@ public class ObjectRect : Sprite {
     public void Resize(int width, int height) {
         _width = width;
         _height = height;
-        SetBaseDimensions(width, height);
         FillData();
     }
 }

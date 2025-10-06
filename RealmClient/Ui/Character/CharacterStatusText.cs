@@ -22,7 +22,7 @@ public class CharacterStatusText : Sprite {
     private int _offsetTime;
 
     private double _startTime;
-    
+
 
     public CharacterStatusText(Entity en, string text, uint color, int lifetime, int offsetTime) {
         _owner = en;
@@ -41,13 +41,17 @@ public class CharacterStatusText : Sprite {
         };
         var txt = new SimpleText(txtConfig);
         AddChild(txt);
-        
+
         SetAnchor(UiAnchor.MiddleBottom);
-    }
+        //AddEventListener(Event.EnterFrame, OnFrameEnter); todo: <---- (also broadcast is broken)
+        AddEventListener(Event.AddedToStage, () => { AddEventListener(Event.EnterFrame, OnFrameEnter); });
+        AddEventListener(Event.RemovedFromStage, () => { RemoveEventListener(Event.EnterFrame, OnFrameEnter); });
+}
     
-    protected override void OnUpdate(GameTime gameTime) {
+    private void OnFrameEnter() {
         if (_owner == null) return;
 
+        var gameTime = Stage.GameTime;
         var currentTime = gameTime.TotalMs;
         
         if (_startTime == 0) {

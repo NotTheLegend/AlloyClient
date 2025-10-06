@@ -21,7 +21,8 @@ public class StatusBar : Sprite {
     private bool _mouseOver;
 
     public StatusBar(int width, int height, uint color, uint backColor, uint outlineColor, string label) {
-        SetBaseDimensions(_width = width, _height = height);
+        _width = width;
+        _height = height;
 
         _backgroundBar = new NineSliceRect(new NineSliceConfig { SliceData = SliceLibrary.StatusBar, CutX = 10, CutY = 10, Width = _width, Height = _height });
         _backgroundBar.SetColor(backColor);

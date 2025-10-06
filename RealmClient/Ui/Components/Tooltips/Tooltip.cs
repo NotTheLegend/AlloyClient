@@ -40,7 +40,7 @@ public abstract class Tooltip : Sprite {
         TooltipSprite = new NineSliceRect(TooltipConfig);
         Contain.AddChild(TooltipSprite);
         Height = ToolHeight;
-        SetBaseDimensions(ToolWidth, ToolHeight);
+        //todo:SetBaseDimensions(ToolWidth, ToolHeight);
     }
     
 }

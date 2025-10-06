@@ -48,6 +48,7 @@ public sealed class UserInput : Sprite {
         Stage.AddEventListener(MouseEvent.ScrollVertical, OnScroll);
         Stage.AddEventListener(MouseEvent.MiddleClick, OnMiddleClick);
         Stage.AddEventListener(MouseEvent.MouseMove, OnMouseMove);
+        AddEventListener(Event.EnterFrame, OnFrameEnter);
     }
     
     private void RemovedFromStage() {
@@ -59,6 +60,7 @@ public sealed class UserInput : Sprite {
         Stage.RemoveEventListener(MouseEvent.ScrollVertical, OnScroll);
         Stage.RemoveEventListener(MouseEvent.MiddleClick, OnMiddleClick);
         Stage.RemoveEventListener(MouseEvent.MouseMove, OnMouseMove);
+        RemoveEventListener(Event.EnterFrame, OnFrameEnter);
     }
     
     public static void SetWindowFocus(bool focus) => _windowFocus = focus;
@@ -91,7 +93,7 @@ public sealed class UserInput : Sprite {
         _moveRight = 0;
     }
 
-    protected override void OnUpdate(GameTime gameTime) {
+    private void OnFrameEnter() {
         if (IsInputDisabled() || !(_mouseDown || _autoFire) || Map.LocalPlayer == null)
             return;
         
@@ -101,7 +103,7 @@ public sealed class UserInput : Sprite {
         var dY = pos.Y - Map.LocalPlayer.Position.Y;
         var angle = MathF.Atan2(dY, dX);
         
-        Map.LocalPlayer.Shoot(angle, gameTime);
+        Map.LocalPlayer.Shoot(angle, Stage.GameTime);
     }
 
     private void SetPlayerMovement() {

@@ -12,7 +12,7 @@ public class KeyMapperOption : Option {
         _keyCodeBox = new KeyCodeBox(setting, OnKeyCodeChange);
         AddChild(_keyCodeBox);
 
-        SetBaseDimensions(_keyCodeBox.Width + DescText.X + DescText.Width, _keyCodeBox.Height);
+        //todo:SetBaseDimensions(_keyCodeBox.Width + DescText.X + DescText.Width, _keyCodeBox.Height);
     }
 
     public override void Refresh() {

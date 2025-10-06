@@ -65,8 +65,8 @@ namespace RealmClient.Game.Components.Hud.Inventory
             { 
                 AddTab(TabTypes.Backpack); 
             }
-
-            RemoveAllChildren(); //Remove All Panels
+            
+            RemoveChildren(); //Remove All Panels
             _owner.InventoryUpdate.RemoveAll(); //Remove InventoryUpdate
 
             foreach (var tab in Tabs)

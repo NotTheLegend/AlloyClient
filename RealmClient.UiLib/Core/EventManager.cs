@@ -9,38 +9,52 @@ using RealmClient.UiLib.Utils;
 namespace RealmClient.UiLib.Core;
 
 public abstract class EventManager {
+    
+    internal EventManager() { }
 
     private enum QueueState {
         Add,
         Remove,
-        Clear,
-        ClearAll
+        //Clear,
+        //ClearAll
     }
+
+    private record BroadcastData(string Type, EventManager Manager, QueueState State);
+    private record EventData(string Type, Listener Listener, QueueState State);
+    private sealed record Listener(Delegate Callback, bool UseCapture);
+
+    #region Broadcast
+
+    private static readonly Queue<BroadcastData> BroadcastQueue = [];
+
+    private static readonly Dictionary<string, List<EventManager>> BroadcastMap = new();
     
-    private record EventData(string Type, Delegate Callback, bool Capture, QueueState State);
+    private static bool _isBroadcasting;
+
+    #endregion
     
-    private readonly Queue<EventData> _pending = [];
+    
+    private readonly Dictionary<string, Queue<EventData>> _pending = [];
 
     private readonly Queue<string> _pendingClicks = [];
 
-    private readonly Dictionary<string, List<Delegate>> _eventListeners = [];
-    private readonly Dictionary<string, List<Delegate>> _captureEventListeners = [];
+    
 
-    private readonly Queue<Action> _completedTasks = [];
+    private readonly Dictionary<string, List<Listener>> _eventMap = [];
 
-    private Dictionary<string, List<Delegate>> GetListeners(bool capture) => capture ? _captureEventListeners : _eventListeners;
+    private static readonly Queue<Action> CompletedTasks = [];
+
+    private readonly Stack<string> _currentEventState = [];
+    
     
     private static TaskState GetStatus(Task task) {
-        if (task.IsFaulted)
-            return TaskState.Faulted;
-        if (task.IsCanceled)
-            return TaskState.Canceled;
-
+        if (task.IsFaulted) return TaskState.Faulted;
+        if (task.IsCanceled) return TaskState.Canceled;
         return TaskState.Completed;
     }
 
     private void QueueTaskFinish(Action callback) {
-        _completedTasks.Enqueue(callback);
+        CompletedTasks.Enqueue(callback);
     }
     
     public void AddEventListener(Task task, Action callback) {
@@ -61,34 +75,20 @@ public abstract class EventManager {
 
     public void AddEventListener(string type, Delegate callback, bool capture = false) {
         ValidateAgainstBuiltIn(type, callback);
+
+        var listener = new Listener(callback, capture);
+        if (_eventMap.TryGetValue(type, out var listeners) && listeners.Contains(listener))
+            return;
         
-        var listeners = GetListeners(capture);
-        
-        if (listeners.TryGetValue(type, out var list) && list.Contains(callback)) return;
-        
-        _pending.Enqueue(new EventData(type, callback, capture, QueueState.Add));
+        HandleListener(new EventData(type, listener, QueueState.Add));
     }
     
     public void RemoveEventListener(string type, Delegate callback, bool capture = false) {
-        var listeners = GetListeners(capture);
+        var listener = new Listener(callback, capture);
+        if (!_eventMap.TryGetValue(type, out var listeners)) return;
+        if (!listeners.Contains(listener)) return;
         
-        if (!listeners.TryGetValue(type, out var list)) return;
-        if (!list.Contains(callback)) return;
-        
-        _pending.Enqueue(new EventData(type, callback, capture, QueueState.Remove));
-    }
-
-    public void RemoveEventListeners(string type = null, bool capture = false) {
-        var listeners = GetListeners(capture);
-        
-        if (type == null) {
-            _pending.Enqueue(new EventData("", null, capture, QueueState.ClearAll));
-            return;
-        }
-
-        if (listeners.ContainsKey(type)) {
-            _pending.Enqueue(new EventData(type, null, capture, QueueState.Clear));
-        }
+        HandleListener(new EventData(type, listener, QueueState.Remove));
     }
 
     private static void ValidateAgainstBuiltIn(string type, Delegate callback) {
@@ -104,38 +104,77 @@ public abstract class EventManager {
                 return;
         }
     }
-    
-    internal void UpdateNormalListeners() {
-        while (_pending.TryDequeue(out var pending)) {
-            var listeners = GetListeners(pending.Capture);
-            List<Delegate> list;
-            
-            switch (pending.State) {
-                case QueueState.Add:
-                    if (listeners.TryGetValue(pending.Type, out list)) {
-                        list.Add(pending.Callback);
-                        break;
-                    }
-                    listeners[pending.Type] = [pending.Callback];
-                    break;
-                case QueueState.Remove:
-                    if (listeners.TryGetValue(pending.Type, out list)) {
-                        list.Remove(pending.Callback);
-                        if (list.Count == 0) {
-                            listeners.Remove(pending.Type);
-                        }
-                    }
-                    break;
-                case QueueState.Clear:
-                    listeners.Remove(pending.Type);
-                    break;
-                case QueueState.ClearAll:
-                    listeners.Clear();
-                    break;
+
+    private void HandleListener(EventData pending) {
+        if (_currentEventState.Contains(pending.Type)) {
+            if (_pending.TryGetValue(pending.Type, out var queue)) {
+                queue.Enqueue(pending);
+            } else {
+                _pending[pending.Type] = [];
+                _pending[pending.Type].Enqueue(pending);
             }
+            return;
+        }
+        
+        if (IsBroadcast(pending.Type)) {
+            HandleBroadcastListener(new BroadcastData(pending.Type, this, pending.State));
         }
 
-        while (_completedTasks.TryDequeue(out var callback)) {
+        var hasType = _eventMap.TryGetValue(pending.Type, out var listeners);
+        if (pending.State == QueueState.Add && !hasType)
+            _eventMap[pending.Type] = listeners = [];
+            
+        switch (pending.State) {
+            case QueueState.Add:
+                listeners!.Add(pending.Listener);
+                break;
+            case QueueState.Remove when hasType:
+                listeners.Remove(pending.Listener);
+                break;
+        }
+    }
+
+    private static void HandleBroadcastListener(BroadcastData pending) {
+        if (_isBroadcasting) {
+            BroadcastQueue.Enqueue(pending);
+            return;
+        }
+        
+        var hasType = BroadcastMap.TryGetValue(pending.Type, out var managers);
+        if (pending.State == QueueState.Add && !hasType) BroadcastMap[pending.Type] = managers = [];
+        
+        switch (pending.State) {
+            case QueueState.Add:
+                managers!.Add(pending.Manager);
+                break;
+            case QueueState.Remove when hasType:
+                managers.Remove(pending.Manager);
+                break;
+        }
+    }
+
+    private static bool IsBroadcast(string id) => id switch {
+        Event.EnterFrame => true,
+        _ => false
+    };
+
+    private void HandlePending(string type) {
+        if (!_pending.TryGetValue(type, out var queue))
+            return;
+        
+        while (queue.TryDequeue(out var pending)) {
+            HandleListener(pending);
+        }
+    }
+
+    private static void HandlePendingBroadcast() {
+        while (BroadcastQueue.TryDequeue(out var pending)) {
+            HandleBroadcastListener(pending);
+        }
+    }
+    
+    internal static void HandleFinishedTasks() {
+        while (CompletedTasks.TryDequeue(out var callback)) {
             callback();
         }
     }
@@ -185,31 +224,50 @@ public abstract class EventManager {
         }
     }
 
-    public void DispatchEvent(Event @event) {
+    internal static void BroadcastEvent(Event @event) {
+        if (!BroadcastMap.TryGetValue(@event.Type, out var sprites))
+            return;
+
+        _isBroadcasting = true;
+
+        foreach (var sprite in sprites) {
+            sprite.DispatchEvent(@event);
+        }
+
+        _isBroadcasting = false;
+        HandlePendingBroadcast();
+    }
+
+    public bool DispatchEvent(Event @event) {
+        if (string.IsNullOrWhiteSpace(@event.Type)) throw new Exception("Event Type must not be null, empty, or whitespace");
+        
         var bubble = @event.Bubbles;
 
-        if (!bubble && !_eventListeners.ContainsKey(@event.Type))
-            return;
+        if (!bubble && !_eventMap.ContainsKey(@event.Type))
+            return false;
 
         var prev = @event.Target;
         @event.SetTarget(this as Sprite);
 
+        bool stop;
         if (bubble) {
-            BubbleEvent(@event);
+            stop = BubbleEvent(@event);
         } else {
-            InvokeEvent(@event, false);
+           stop = InvokeEvent(@event, EventPhase.Target);
         }
         
         @event.SetTarget(prev);
+        return stop;
     }
     
-    private bool InvokeMouseEvent(MouseEvent mouseEvent, List<Delegate> listeners) {
+    private bool InvokeMouseEvent(MouseEvent mouseEvent, List<Listener> listeners, EventPhase phase) {
         var sprite = this as Sprite;
 
         if (!sprite!.MouseEnabled)
             return false;
         
         mouseEvent.SetCurrentTarget(sprite);
+        mouseEvent.Phase = phase;
         
         var inBounds = sprite!.IsInBounds(mouseEvent.Coords);
         var button = MouseEvent.IsButtonType(mouseEvent.Type);
@@ -217,57 +275,62 @@ public abstract class EventManager {
         if (button && !inBounds)
             return false;
         
+        _currentEventState.Push(mouseEvent.Type);
         
-        var len = listeners.Count;
-        for (var i = 0; i < len; i++) {
-            var cb = listeners[i];
-            
-            switch (cb) {
-                case Action callback: callback();
-                    break;
-                default: cb.DynamicInvoke(mouseEvent);
-                    break;
-            }
+        var isCapture = mouseEvent.Phase == EventPhase.Capture;
+        foreach (var listener in listeners) {
+            if (isCapture && !listener.UseCapture)
+                continue;
 
+            if (listener.Callback is Action callback)
+                callback();
+            else
+                listener.Callback.DynamicInvoke(mouseEvent);
+            
             if (mouseEvent.ImmediateStop)
-                return true;
+                break;
         }
         
-        return mouseEvent.Stop;
+        HandlePending(_currentEventState.Pop());
+        
+        return mouseEvent.Stop || mouseEvent.ImmediateStop;
     }
 
-    private bool InvokeEvent(Event @event, bool capture) {
-        var has = GetListeners(capture).TryGetValue(@event.Type, out var listeners);
+    private bool InvokeEvent(Event @event, EventPhase phase) {
+        var has = _eventMap.TryGetValue(@event.Type, out var listeners);
         if (!has || listeners.Count < 1)
             return false;
 
         if (MouseEvent.ValidateType(@event.Type))
-            return InvokeMouseEvent(@event as MouseEvent, listeners);
+            return InvokeMouseEvent(@event as MouseEvent, listeners, phase);
         
         @event.SetCurrentTarget(this as Sprite);
+        @event.Phase = phase;
         
-        var len = listeners.Count;
-        for (var i = 0; i < len; i++) {
-            var cb = listeners[i];
-            
-            switch (cb) {
-                case Action callback: callback();
-                    break;
-                default: cb.DynamicInvoke(@event);
-                    break;
-            }
+        _currentEventState.Push(@event.Type);
 
+        var isCapture = phase == EventPhase.Capture;
+        foreach (var listener in listeners) {
+            if (isCapture && !listener.UseCapture)
+                continue;
+
+            if (listener.Callback is Action callback)
+                callback();
+            else
+                listener.Callback.DynamicInvoke(@event);
+            
             if (@event.ImmediateStop)
-                return true;
+                break;
         }
+        HandlePending(_currentEventState.Pop());
         
-        return @event.Stop;
+        return @event.Stop || @event.ImmediateStop;
     }
     
-    private void BubbleEvent(Event @event) {
+    private bool BubbleEvent(Event @event) {
         var chain = new List<EventManager>();
         
-        var obj = this as Sprite;
+        var obj = this as DisplayContainer;
 
         while ((obj = obj!.Parent) != null) {
             chain.Add(obj);
@@ -275,19 +338,20 @@ public abstract class EventManager {
 
         //capture phase
         for (var i = chain.Count - 1; i >= 0; i--) {
-            if (chain[i].InvokeEvent(@event, true))
-                return;
+            if (chain[i].InvokeEvent(@event, EventPhase.Capture))
+                return true;
         }
 
         // target phase
-        if (InvokeEvent(@event, false))
-            return;
+        if (InvokeEvent(@event, EventPhase.Target))
+            return true;
 
         // bubble phase
         for (var i = 0; i < chain.Count; i++) {
-            if (chain[i].InvokeEvent(@event, false))
-                return;
+            if (chain[i].InvokeEvent(@event, EventPhase.Bubble))
+                return true;
         }
-    }
 
+        return false;
+    }
 }
