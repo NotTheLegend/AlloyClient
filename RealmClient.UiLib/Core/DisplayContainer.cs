@@ -1,15 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using OpenTK.Mathematics;
 using RealmClient.UiLib.BuiltIn;
+using RealmClient.UiLib.Utils;
 
 namespace RealmClient.UiLib.Core;
 
-public abstract class DisplayContainer : DisplayObject {
+public abstract class DisplayContainer : EventManager {
     
     internal DisplayContainer() { }
 
     public int NumChildren => _children.Count;
+    
+    public Stage Stage { get; internal set; }
+    
+    public Sprite Parent { get; private set; }
+    
+    internal float SelfContentWidth;
+
+    internal float SelfContentHeight;
+    
+    internal int ContentWidth;
+
+    internal int ContentHeight;
     
     private readonly List<Sprite> _children = [];
 
@@ -147,7 +161,7 @@ public abstract class DisplayContainer : DisplayObject {
     }
 
     private void SetStageReferenceChildren(Stage stage) {
-        SetStageReference(stage);
+        Stage = stage;
         foreach (var child in _children) {
             child.SetStageReferenceChildren(stage);
         }
@@ -160,20 +174,21 @@ public abstract class DisplayContainer : DisplayObject {
         var yMax = SelfContentHeight;
 
         foreach (var child in _children) {
-            var pos = child.GetFullRelativePosition();
+            var (x, y) = InternalUtils.GetAnchorOffset(child.Anchor, child.Width, child.Height);
+            var pos = new Vector2(child.X + x, child.Y + y);
             xMin = Math.Min(xMin, pos.X);
             xMax = Math.Max(xMax, pos.X + child.Width);
             yMin = Math.Min(yMin, pos.Y);
             yMax = Math.Max(yMax, pos.Y + child.Height);
         }
 
-        ContentWidth = xMax - xMin;
-        ContentHeight = yMax - yMin;
+        ContentWidth = (int)(xMax - xMin);
+        ContentHeight = (int)(yMax - yMin);
 
         Parent?.UpdateBounds();
     }
 
-    private void ValidateChild(DisplayObject child) {
+    private void ValidateChild(Sprite child) {
         if (child == null) throw new Exception("Tried to add null as child");
         if (child == this) throw new Exception("Tried to add self as child");
         if (child is Stage) throw new Exception("Tried to add stage as child");

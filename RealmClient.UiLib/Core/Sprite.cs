@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Common;
 using Common.Rendering;
 using OpenTK.Graphics.OpenGL;
@@ -15,59 +16,52 @@ namespace RealmClient.UiLib.Core;
 
 /* =TODO=
  * Focus
- * event phase enum
- * enter frame event instead of override thing
- * make enter frame & resize broadcast events
+ * make resize broadcast event
  */
 
 public partial class Sprite : DisplayContainer {
     
     public static readonly Vector4 NoScissor = new Vector4(0, 0, 10000, 10000);
 
-    public int X {
-        get => _x;
-        set {
-            _x = value;
-            UpdateBounds();
-        }
-    }
+    public int X { get; set { field = value; UpdateBounds(); } }
 
-    public int Y {
-        get => _y;
-        set {
-            _y = value;
-            UpdateBounds();
-        }
-    }
-    
-    public float Alpha {
-        get => _alpha;
-        set => _alpha = Math.Max(Math.Min(value, 1f), 0f);
-    }
+    public int Y { get; set { field = value; UpdateBounds(); } }
 
     public int Width {
         get => (int)(ContentWidth * Scale.X);
-        set {
-            Scale = new Vector2(ContentWidth == 0 ? 0 : value / ContentWidth, Scale.Y);
-            UpdateBounds();
-        }
+        set => ScaleX = GetScale(ContentWidth, value);
     }
     
     public int Height {
         get => (int)(ContentHeight * Scale.Y);
-        set {
-                Scale = new Vector2(Scale.X, ContentHeight == 0 ? 0 : value / ContentHeight);
-            UpdateBounds();
-        }
+        set => ScaleY = GetScale(ContentHeight, value);
     }
 
-    public Vector2 Scale {
-        get => _scale;
+    public float ScaleX {
+        get;
         set {
-            _scale = value;
+            field = value;
             UpdateBounds();
         }
+    } = 1f;
+
+    public float ScaleY {
+        get;
+        set {
+            field = value;
+            UpdateBounds();
+        }
+    } = 1f;
+
+    public Vector2 Scale {
+        get => new(ScaleX, ScaleY);
+        set {
+            ScaleX = value.X;
+            ScaleY = value.Y;
+        }
     }
+    
+    public float Alpha { get; set => field = Math.Clamp(value, 0f, 1f); } = 1f;
 
     public float Rotation = 0;
 
@@ -78,8 +72,6 @@ public partial class Sprite : DisplayContainer {
     public bool Visible = true;
     
     public bool MouseEnabled = false;
-    
-    public bool FollowMouse = false;
 
     public bool TooltipMode = false;
 
@@ -118,14 +110,6 @@ public partial class Sprite : DisplayContainer {
 
     #region Backers
 
-    private int _x;
-    
-    private int _y;
-
-    private float _alpha = 1f;
-    
-    private Vector2 _scale = Vector2.One;
-
     private int _anchorX;
     
     private int _anchorY;
@@ -150,29 +134,17 @@ public partial class Sprite : DisplayContainer {
 
     #endregion
 
-    internal Vector2 GetFullRelativePosition() {
-        var (x, y) = InternalUtils.GetAnchorOffset(Anchor, (int)ContentWidth, (int)ContentHeight);
-        return new Vector2(_x + x * Scale.X, _y + y * Scale.Y);
-    }
-
-    
-
-    //protected virtual void OnUpdate(GameTime gameTime) { }
-
     private void InternalUpdate() {
         (_anchorX, _anchorY) = InternalUtils.GetAnchorOffset(Anchor, (int)ContentWidth, (int)ContentHeight);
         var (tx, ty) = (0, 0);
-        var ta = _alpha;
+        var ta = Alpha;
         var ts = Scale;
         var tt = ColorTransformation;
         var tr = Rotation;
         var test = false;
         
-
-        if (FollowMouse) {
-            var pos = MouseInput.GetMousePosition();
-            (tx, ty) = pos.ToPair();
-        } else if (TooltipMode) {
+        //TODO: maybe move these out into the client rather than being built in
+        if (TooltipMode) {
             (tx, ty) = MouseInput.GetMousePosition().ToPair();
             (_anchorX, _anchorY) = InternalUtils.GetAnchorOffset(tx < UiRender.Screen.X / 2 ? UiAnchor.LeftBottom : UiAnchor.RightBottom, (int)ContentWidth, (int)ContentHeight);
             tx += (int) (_anchorX * Parent._trueScale.X);
@@ -183,8 +155,8 @@ public partial class Sprite : DisplayContainer {
             tx -= (int)(_dragOffset.X * Parent._trueScale.X);
             ty -= (int)(_dragOffset.Y * Parent._trueScale.Y);
         } else {
-            tx += X + (int)(_anchorX * _scale.X);
-            ty += Y + (int)(_anchorY * _scale.Y);
+            tx += X + (int)(_anchorX * ScaleX);
+            ty += Y + (int)(_anchorY * ScaleY);
             test = true;
         }
         
@@ -225,7 +197,7 @@ public partial class Sprite : DisplayContainer {
         }
 
         if (EnableClipRect) {
-            var scissor = new Vector4(tx, ty, tx + Width * _trueScale.X, ty + Height * _trueScale.Y);
+            var scissor = new Vector4(tx, ty, tx + SelfContentWidth * _trueScale.X, ty + SelfContentHeight * _trueScale.Y);
             if (ClipChildren) {
                 _scissor.X = Math.Max(_scissor.X, scissor.X);
                 _scissor.Y = Math.Max(_scissor.Y, scissor.Y);
@@ -241,24 +213,22 @@ public partial class Sprite : DisplayContainer {
         _info = new Vector2((float) TextureId, ta);
     }
 
-    private void Update(GameTime gameTime) {
-        //OnUpdate(gameTime);// replace with enter frame event
-        
+    private void Update() {
         InternalUpdate();
 
         CheckHighestSprite();
 
         var span = GetChildrenSpan();
         foreach (var child in span) {
-            child.Update(gameTime);
+            child.Update();
         }
     }
 
-    internal void InternalUpdateLoop(GameTime gameTime) {
-        HandleFinishedTasks();
+    internal void InternalUpdateLoop() {
         BroadcastEvent(new Event(Event.EnterFrame));
+        HandleFinishedTasks();
         
-        Update(gameTime);
+        Update();
 
         HandleHover();
         
@@ -303,4 +273,7 @@ public partial class Sprite : DisplayContainer {
         var pos = MouseInput.GetMousePosition();
         return new Vector2i(pos.X - _trueX, pos.Y - _trueY);
     }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static float GetScale(int contentWidth, int newWidth) => contentWidth == 0 ? 0f : (float) newWidth / contentWidth;
 }

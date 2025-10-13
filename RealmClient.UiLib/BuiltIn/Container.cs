@@ -23,5 +23,7 @@ public class Container : Sprite {
         EnableClipRect = config.EnableClip;
         SetAnchor(config.Anchor);
         MouseEnabled = config.EnableClip;
+        SelfContentWidth = config.Width;
+        SelfContentHeight = config.Height;
     }
 }

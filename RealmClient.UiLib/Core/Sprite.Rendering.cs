@@ -30,8 +30,8 @@ public partial class Sprite {
                 h = Math.Max(h, vertex.Position.Y);
             }
 
-            SelfContentWidth = w;
-            SelfContentHeight = h;
+            SelfContentWidth = (int)w;
+            SelfContentHeight = (int)h;
         } else {
             SelfContentWidth = SelfContentHeight = 0;
         }

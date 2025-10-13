@@ -20,7 +20,7 @@ public sealed class Stage : Sprite {
 
     internal Stage() {
         MouseEnabled = true;
-        SetStageReference(this);
+        Stage = this;
     }
 
     internal void SetSize(Vector2i dim) {
@@ -33,7 +33,7 @@ public sealed class Stage : Sprite {
         GTween.Update(gameTime);
         Timer.Update(gameTime);
         MouseInput.Update();
-        InternalUpdateLoop(gameTime);
+        InternalUpdateLoop();
     }
 
     public void Draw(GameTime gameTime) {
