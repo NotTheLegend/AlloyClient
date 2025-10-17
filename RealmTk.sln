@@ -1,9 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealmClient", "RealmClient\RealmClient.csproj", "{2A15EA5A-63E7-4015-AAF5-9132C7FF5F6D}"
-	ProjectSection(ProjectDependencies) = postProject
-		{EC4CE7F1-D9A5-4683-A544-FFF4D0BCC997} = {EC4CE7F1-D9A5-4683-A544-FFF4D0BCC997}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{7C334904-592F-484C-9677-F8EC6EE85A15}"
 EndProject
