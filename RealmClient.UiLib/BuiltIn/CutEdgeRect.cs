@@ -46,7 +46,7 @@ public sealed class CutEdgeRect : Sprite {
         
         TextureId = TextureType.Color;
         
-        SetHitboxType(HitboxType.Complex);
+        SetHitboxType(CollisionType.Vertices);
 
         ResizeBackBuffer();
         FillData();

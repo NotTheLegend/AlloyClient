@@ -67,7 +67,8 @@ public sealed class SpeechBubble : Sprite {
         AddChild(txt);
         
         SetAnchor(UiAnchor.MiddleBottom);
-        AddEventListener(Event.EnterFrame, OnFrameEnter);
+        AddEventListener(Event.AddedToStage, () => { AddEventListener(Event.EnterFrame, OnFrameEnter); });
+        AddEventListener(Event.RemovedFromStage, () => { RemoveEventListener(Event.EnterFrame, OnFrameEnter); });
     }
 
     private void OnFrameEnter() {

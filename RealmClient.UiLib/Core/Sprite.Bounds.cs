@@ -11,12 +11,12 @@ public partial class Sprite {
         if (pos.X < _scissor.X || pos.X > _scissor.Z || pos.Y < _scissor.Y || pos.Y > _scissor.W)
             return false;
         
-        return HitboxType switch {
-            HitboxType.Default => SquareHitbox(pos),
-            HitboxType.Ellipse => EllipseHitbox(pos),
-            HitboxType.Complex => ComplexHitbox(new Vector2i(pos.X - _trueX, pos.Y - _trueY)),
-            HitboxType.Custom => CustomHitbox(new Vector2i(pos.X - _trueX, pos.Y - _trueY)),
-            _ => throw new ArgumentOutOfRangeException($"{HitboxType} not handled in InternalBoundsCheck")
+        return CollisionType switch {
+            CollisionType.Square => SquareHitbox(pos),
+            CollisionType.Ellipse => EllipseHitbox(pos),
+            CollisionType.Vertices => ComplexHitbox(new Vector2i(pos.X - _trueX, pos.Y - _trueY)),
+            CollisionType.Custom => CustomHitbox(new Vector2i(pos.X - _trueX, pos.Y - _trueY)),
+            _ => throw new ArgumentOutOfRangeException($"{CollisionType} not handled in InternalBoundsCheck")
         };
     }
 

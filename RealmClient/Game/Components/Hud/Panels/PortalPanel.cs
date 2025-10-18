@@ -1,3 +1,4 @@
+using System;
 using Common;
 using RealmClient.Game.Objects;
 using RealmClient.Networking;
@@ -25,7 +26,7 @@ public class PortalPanel : Panel {
 
         var txt = _portal.Properties.DisplayName;
 
-        if (_locked && txt.IndexOf("Locked") == 0) {
+        if (_locked && txt.StartsWith("Locked", StringComparison.Ordinal)) {
             txt = txt[7..];
         }
 
@@ -62,7 +63,9 @@ public class PortalPanel : Panel {
             Anchor = UiAnchor.MiddleTop
         });
         AddChild(_enterButton);
-        AddEventListener(Event.EnterFrame, OnFrameEnter);
+        
+        AddEventListener(Event.AddedToStage, () => { AddEventListener(Event.EnterFrame, OnFrameEnter);});
+        AddEventListener(Event.RemovedFromStage, () => { RemoveEventListener(Event.EnterFrame, OnFrameEnter);});
     }
 
     protected override void OnInteractKey() {

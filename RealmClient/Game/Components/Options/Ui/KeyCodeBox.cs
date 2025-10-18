@@ -37,7 +37,7 @@ public class KeyCodeBox : Sprite {
 
     public KeyCodeBox(InputSetting setting, Action callback) {
         //todo:SetBaseDimensions(BoxWidth, BoxHeight);
-        SetHitboxType(HitboxType.Custom);
+        SetHitboxType(CollisionType.Custom);
         MouseEnabled = true;
 
         _callback = callback;

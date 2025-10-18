@@ -27,10 +27,10 @@ public enum TextureType : byte {
     Ellipse = 8,
 }
 
-public enum HitboxType : byte {
-    Default,
+public enum CollisionType : byte {
+    Square,
     Ellipse,
-    Complex,
+    Vertices,
     Custom
 }
 

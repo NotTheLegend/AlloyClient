@@ -100,10 +100,9 @@ public sealed class TextInput : Sprite {
         _textBox = new NineSliceRect(rectConfig);
         AddChild(_textBox);
         
-        SetHitboxType(HitboxType.Custom);
+        SetHitboxType(CollisionType.Custom);
         
         AddEventListener(MouseEvent.LeftClick, OnMouseClick);
-        AddEventListener(Event.EnterFrame, OnFrameEnter);
         
         ResizeBackBuffer();
         FillData();
@@ -307,6 +306,8 @@ public sealed class TextInput : Sprite {
             _isDefaultText = false;
         }
         
+        AddEventListener(Event.EnterFrame, OnFrameEnter);
+        
         FillData();
     }
 
@@ -324,6 +325,8 @@ public sealed class TextInput : Sprite {
             _isDefaultText = true;
             _inputText.Append(_defaultText);
         }
+        
+        RemoveEventListener(Event.EnterFrame, OnFrameEnter);
         
         FillData();
     }

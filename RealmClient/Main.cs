@@ -44,7 +44,13 @@ public class Main {
         var options = new ToolkitOptions();
         Toolkit.Init(options);
         
-        var hints = new OpenGLGraphicsApiHints();
+        var version = new Version(4, 6);
+        if (!MinimumVersionCheck(version))
+            return;
+
+        var hints = new OpenGLGraphicsApiHints {
+            Version = version
+        };
         Window = Toolkit.Window.Create(hints);
         Context = Toolkit.OpenGL.CreateFromWindow(Window);
         
@@ -156,6 +162,8 @@ public class Main {
     private bool _running = true;
 
     public void Run() {
+        if (Window == null || Context == null) return;
+        
         var sw = Stopwatch.StartNew();
         var totalMs = 0d;
         
@@ -225,5 +233,29 @@ public class Main {
     private static void OnDebugMessage(DebugSource source, DebugType type, uint id, DebugSeverity severity, int length, nint pmessage, nint userParam) {
         var message = Marshal.PtrToStringAnsi(pmessage, length);
         Console.WriteLine("[{0} source={1} type={2} id={3}] {4}", severity, source, type, id, message);
+    }
+
+    private static bool MinimumVersionCheck(Version version) {
+        var hints = new OpenGLGraphicsApiHints {
+            Version = version
+        };
+        
+        var window = Toolkit.Window.Create(hints);
+        OpenGLContextHandle context = null;
+        var pass = true;
+
+        try {
+            context = Toolkit.OpenGL.CreateFromWindow(window);
+        } catch {
+            Toolkit.Dialog.ShowMessageBox(window, "OpenGL creation failure", $"Client requires a minimum opengl version of {version.Major}.{version.Minor}", MessageBoxType.Information);
+            pass = false;
+        } finally {
+            if (pass) {
+                Toolkit.OpenGL.DestroyContext(context!);
+            }
+            Toolkit.Window.Destroy(window);
+        }
+
+        return pass;
     }
 }

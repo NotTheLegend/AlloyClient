@@ -67,7 +67,7 @@ public partial class Sprite : DisplayContainer {
 
     public UiAnchor Anchor { get; private set; } = UiAnchor.LeftTop;
 
-    public HitboxType HitboxType { get; private set; } = HitboxType.Default;
+    public CollisionType CollisionType { get; private set; } = CollisionType.Square;
     
     public bool Visible = true;
     
@@ -267,7 +267,7 @@ public partial class Sprite : DisplayContainer {
         UpdateBounds();
     }
     
-    public void SetHitboxType(HitboxType hitbox) => HitboxType = hitbox;
+    public void SetHitboxType(CollisionType collision) => CollisionType = collision;
 
     public Vector2i GetRelativeMousePosition() {
         var pos = MouseInput.GetMousePosition();

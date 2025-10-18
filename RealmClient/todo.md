@@ -8,13 +8,13 @@
 - projectile doesnt account for armor/effects
 - move z jitter into RenderBase class
 - improve interaction panel hotkey logic ei have panels override a blank function for logic
-- redo sprite bounds
+- add rect mask instead of the current container clip stuff
 
 # Rendering Todo
 - switch to dsa calls
 - connected objects
 - cave walls
-- ui vertex color and coor channel changes
+- ui vertex color and color channel changes
 
 # Bugs
 - text carat selection is fucked when text input is scaled
