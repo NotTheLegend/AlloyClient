@@ -5,7 +5,7 @@
         <RollForward>Major</RollForward>
         <PublishReadyToRun>false</PublishReadyToRun>
         <TieredCompilation>false</TieredCompilation>
-        <LangVersion>default</LangVersion>
+        <LangVersion>preview</LangVersion>
 
         <EnablePreviewFeatures>true</EnablePreviewFeatures>
 

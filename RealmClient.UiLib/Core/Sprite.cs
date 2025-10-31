@@ -236,8 +236,11 @@ public partial class Sprite : DisplayContainer {
         
         HighestSprite = null;
 
-        if(MouseInput.CheckEvent(MouseEvent.LeftUp) && TextInput.UnFocusOnClick)
+        /*if (MouseInput.CheckEvent(MouseEvent.LeftUp) && TextInput.UnFocusOnClick) {
             TextInput.ActiveInput?.UnFocus();
+            TextInput.UnFocusOnClick = false;
+        }*/
+            
     }
     
     /// <summary>

@@ -31,7 +31,8 @@ public enum CollisionType : byte {
     Square,
     Ellipse,
     Vertices,
-    Custom
+    Custom,
+    CustomNoScale,
 }
 
 [Flags]

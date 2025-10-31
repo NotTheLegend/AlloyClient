@@ -40,7 +40,6 @@ public sealed class TextInput : Sprite {
     private const int CutY = 2;
 
     internal static TextInput ActiveInput;
-    internal static bool UnFocusOnClick = false;
     
     public string Text => _inputText.ToString();
     private readonly StringBuilder _inputText = new();
@@ -63,6 +62,7 @@ public sealed class TextInput : Sprite {
     private bool _isCaretActive = false;
     private double _lastCaretUpdateTime;
     private int _startIndex;
+    private bool _unFocusOnClick = false;
 
     private Vector2i _mousePosition;
 
@@ -100,7 +100,7 @@ public sealed class TextInput : Sprite {
         _textBox = new NineSliceRect(rectConfig);
         AddChild(_textBox);
         
-        SetHitboxType(CollisionType.Custom);
+        SetHitboxType(CollisionType.CustomNoScale);
         
         AddEventListener(MouseEvent.LeftClick, OnMouseClick);
         
@@ -202,13 +202,19 @@ public sealed class TextInput : Sprite {
     protected override bool CustomHitbox(Vector2i pos) {
         var hit = pos.X > 0 && pos.X < _textBox.Width && pos.Y > 0 && pos.Y < _textBox.Height;
 
-        UnFocusOnClick = !hit && ActiveInput == this;
+        _unFocusOnClick = !hit && ActiveInput == this;
         
         _mousePosition = pos;
         return hit;
     }
 
     private void OnMouseClick(MouseEvent args) {
+        if (_unFocusOnClick) {
+            UnFocus();
+            return;
+        }
+        
+        
         if (ActiveInput != this && _clickActivate) {
             ActiveInput?.UnFocus();
             Focus();
