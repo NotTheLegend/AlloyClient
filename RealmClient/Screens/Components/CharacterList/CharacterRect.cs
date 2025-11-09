@@ -1,5 +1,3 @@
-using System;
-using Common;
 using RealmClient.Assets.Libraries;
 using RealmClient.Data;
 using RealmClient.Data.XmlModels;
@@ -10,16 +8,19 @@ using RealmClient.UiLib.BuiltIn.Buttons;
 using RealmClient.UiLib.Enums;
 using RealmClient.UiLib.Extra;
 using RealmClient.Utils;
+using System;
 
 namespace RealmClient.Screens.Components.CharacterList;
 
-public enum CharacterRectType {
+public enum CharacterRectType
+{
     Character,
     GraveyardCharacter,
     NewCharacter
 }
 
-public sealed class CharacterRect : Container {
+public sealed class CharacterRect : Container
+{
     private const int NumberStatsMaxed = 8;
     private const int NumberStars = 5;
 
@@ -30,10 +31,12 @@ public sealed class CharacterRect : Container {
     private int _statsMaxed;
     private int _baseFame;
 
-    public CharacterRect(CharacterListScreen characterListScreen) : base(new ContainerConfig { Width = 200, Height = 200, EnableClip = true }) {
+    public CharacterRect(CharacterListScreen characterListScreen) : base(new ContainerConfig { Width = 200, Height = 200, EnableClip = true })
+    {
         _characterListScreen = characterListScreen;
 
-        var background = new ColorRect(new ColorRectConfig {
+        var background = new ColorRect(new ColorRectConfig
+        {
             Width = 200,
             Height = 200,
             Color = 0x2B2B2B,
@@ -42,8 +45,10 @@ public sealed class CharacterRect : Container {
         AddChild(background);
     }
 
-    public void Initialize(CharacterRectType type, CharacterModel character = null, int remainingSlots = 0) {
-        var charNameText = new SimpleText(new TextConfig {
+    public void Initialize(CharacterRectType type, CharacterModel character = null, int remainingSlots = 0)
+    {
+        var charNameText = new SimpleText(new TextConfig
+        {
             Text = "New Character",
             FontSize = 18,
             FontType = FontType.Bold,
@@ -53,9 +58,11 @@ public sealed class CharacterRect : Container {
         charNameText.X = Width / 2;
         charNameText.Y = charNameText.Height / 2 + 10;
         AddChild(charNameText);
-        
-        var textButton = new TextButton(new TextButtonConfig {
-            Text = type switch {
+
+        var textButton = new TextButton(new TextButtonConfig
+        {
+            Text = type switch
+            {
                 CharacterRectType.Character => "Play",
                 CharacterRectType.GraveyardCharacter => "View",
                 CharacterRectType.NewCharacter => "Create",
@@ -63,21 +70,29 @@ public sealed class CharacterRect : Container {
             },
             FontSize = 24,
             Anchor = UiAnchor.Middle,
-            OnClicked = type switch {
-                CharacterRectType.Character => () => {
-                    if (character == null) {
+            OnClicked = type switch
+            {
+                CharacterRectType.Character => () =>
+                {
+                    if (character == null)
+                    {
                         return;
                     }
 
                     Account.SelectedCharacterId = character.Id;
                     ScreenManager.FadeToScreen(new GameScreen(), Easing.SineInOut, 1000, 0x0);
-                },
-                CharacterRectType.GraveyardCharacter => () => {
-                    if (character == null) {
+                }
+                ,
+                CharacterRectType.GraveyardCharacter => () =>
+                {
+                    if (character == null)
+                    {
                         return;
                     }
-                },
-                CharacterRectType.NewCharacter => () => { _characterListScreen.ShowCharacterCreate(); },
+                }
+                ,
+                CharacterRectType.NewCharacter => () => { _characterListScreen.ShowCharacterCreate(); }
+                ,
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
             }
         });
@@ -85,14 +100,16 @@ public sealed class CharacterRect : Container {
         textButton.Y = Height - textButton.Height / 2 - 12;
         AddChild(textButton);
 
-        if (character != null) {
+        if (character != null)
+        {
             #region Character and Graveyard Character
 
             var props = ObjectLibrary.TypeToObjectProps[character.ObjectType];
             charNameText.SetText(props.ObjectId);
 
             _statsMaxed = GetStatsMaxed(character);
-            var statsMaxedText = new SimpleText(new TextConfig {
+            var statsMaxedText = new SimpleText(new TextConfig
+            {
                 Text = $"{_statsMaxed}/{NumberStatsMaxed}",
                 FontSize = 16,
                 FontType = FontType.Bold,
@@ -103,7 +120,8 @@ public sealed class CharacterRect : Container {
             statsMaxedText.Y = charNameText.Height + statsMaxedText.Height / 2 + 13;
             AddChild(statsMaxedText);
 
-            switch (_statsMaxed) {
+            switch (_statsMaxed)
+            {
                 case NumberStatsMaxed:
                     statsMaxedText.SetColor(0xFCDF00);
                     break;
@@ -114,21 +132,23 @@ public sealed class CharacterRect : Container {
 
             var textureData = ObjectLibrary.TypeToTextureData[character.ObjectType];
             var atlasData = textureData.AnimatedTextures.FaceDown[0];
-            
-            var charPortrait = new ObjectRect(new ObjectRectConfig {
+
+            var charPortrait = new ObjectRect(new ObjectRectConfig
+            {
                 Texture = TextureHelper.Create(atlasData, TextureType.GameAtlas, false),
                 Width = 50,
                 Height = 50,
                 Anchor = UiAnchor.Middle,
-                
+
             });
             charPortrait.X = Width / 2;
             charPortrait.Y = statsMaxedText.Y + charPortrait.Height / 2 + 14;
             AddChild(charPortrait);
-            
+
             _baseFame = character.CurrentFame;
-            
-            var fameText = new SimpleText(new TextConfig {
+
+            var fameText = new SimpleText(new TextConfig
+            {
                 Text = _baseFame.ToString(),
                 FontSize = 16,
                 FontType = FontType.Bold,
@@ -143,8 +163,10 @@ public sealed class CharacterRect : Container {
             const int starWidth = 16;
             var startX = Width / 2 - middleStarIndex * starWidth;
             var numStars = GetStars(character);
-            for (var i = 0; i < NumberStars; i++) {
-                var star = new ObjectRect(new ObjectRectConfig {
+            for (var i = 0; i < NumberStars; i++)
+            {
+                var star = new ObjectRect(new ObjectRectConfig
+                {
                     Texture = TextureHelper.FromUiAtlas("CharacterList/StarGraphic"),
                     Width = starWidth,
                     Height = starWidth,
@@ -154,19 +176,22 @@ public sealed class CharacterRect : Container {
                 });
                 AddChild(star);
 
-                if (i >= numStars) {
+                if (i >= numStars)
+                {
                     star.ColorTransformation = new ColorTransform(0.5f, 0.5f, 0.5f, 1);
                 }
             }
 
             #endregion
         }
-        else {
+        else
+        {
             #region New Character
-            
+
             var index = Random.Shared.Next(0, NumberCharacters);
             var frames = Main.Atlas.GetAnimationAtlasData("players", index);
-            var charPortrait = new ObjectRect(new ObjectRectConfig {
+            var charPortrait = new ObjectRect(new ObjectRectConfig
+            {
                 Texture = TextureHelper.Create(frames.FaceDown[0], TextureType.GameAtlas),
                 Width = 50,
                 Height = 50,
@@ -177,8 +202,9 @@ public sealed class CharacterRect : Container {
             charPortrait.Y = charNameText.Height + charPortrait.Height / 2 + 25;
             charPortrait.ColorTransformation = new ColorTransform(0, 0, 0, 0.5f);
             AddChild(charPortrait);
-            
-            var remainingSlotsText = new SimpleText(new TextConfig {
+
+            var remainingSlotsText = new SimpleText(new TextConfig
+            {
                 Text = $"{remainingSlots} Character Slots",
                 FontSize = 18,
                 FontType = FontType.Bold,
@@ -188,8 +214,9 @@ public sealed class CharacterRect : Container {
             remainingSlotsText.X = Width / 2;
             remainingSlotsText.Y = charPortrait.Y + charPortrait.Height / 2 + 25;
             AddChild(remainingSlotsText);
-            
-            var remainingSlotsText2 = new SimpleText(new TextConfig {
+
+            var remainingSlotsText2 = new SimpleText(new TextConfig
+            {
                 Text = "Remaining",
                 FontSize = 18,
                 FontType = FontType.Bold,
@@ -204,66 +231,86 @@ public sealed class CharacterRect : Container {
         }
     }
 
-    public int ComputeSortValue() {
+    public int ComputeSortValue()
+    {
         return _statsMaxed * 1000 + _baseFame;
     }
 
-    private static int GetStatsMaxed(CharacterModel characterModel) {
+    private static int GetStatsMaxed(CharacterModel characterModel)
+    {
         var player = ObjectLibrary.TypeToObjectProps[characterModel.ObjectType];
         var playerProps = player.PlayerProperties;
 
         var numStatsMaxed = 0;
-        if (characterModel.MaxHitPoints >= playerProps.MaxHp) {
+        if (characterModel.MaxHitPoints >= playerProps.MaxHp)
+        {
             numStatsMaxed++;
         }
 
-        if (characterModel.MaxMagicPoints >= playerProps.MaxMp) {
+        if (characterModel.MaxMagicPoints >= playerProps.MaxMp)
+        {
             numStatsMaxed++;
         }
 
-        if (characterModel.Attack >= playerProps.MaxAttack) {
+        if (characterModel.Attack >= playerProps.MaxAttack)
+        {
             numStatsMaxed++;
         }
 
-        if (characterModel.Defense >= playerProps.MaxDefense) {
+        if (characterModel.Defense >= playerProps.MaxDefense)
+        {
             numStatsMaxed++;
         }
 
-        if (characterModel.Speed >= playerProps.MaxSpeed) {
+        if (characterModel.Speed >= playerProps.MaxSpeed)
+        {
             numStatsMaxed++;
         }
 
-        if (characterModel.Dexterity >= playerProps.MaxDexterity) {
+        if (characterModel.Dexterity >= playerProps.MaxDexterity)
+        {
             numStatsMaxed++;
         }
 
-        if (characterModel.HpRegen >= playerProps.MaxVitality) {
+        if (characterModel.HpRegen >= playerProps.MaxVitality)
+        {
             numStatsMaxed++;
         }
 
-        if (characterModel.MpRegen >= playerProps.MaxWisdom) {
+        if (characterModel.MpRegen >= playerProps.MaxWisdom)
+        {
             numStatsMaxed++;
         }
 
         return numStatsMaxed;
     }
 
-    private static int GetStars(CharacterModel characterModel) {
+    private static int GetStars(CharacterModel characterModel)
+    {
         var fame = characterModel.CurrentFame;
         var accountModel = Account.Model;
-        foreach (var classStatModel in accountModel.Stats.ClassStats) {
+        if (accountModel.Stats == null || accountModel.Stats.ClassStats == null)
+        {
+            Logger.Fatal("accountModel.Stats.ClassStats is null! At CharacterRect.cs");
+            return 0;
+        }
+        foreach (var classStatModel in accountModel.Stats.ClassStats)
+        {
             var objTypeStr = classStatModel.ObjectType;
             var objectType = Convert.ToUInt16(objTypeStr, Common.Utils.GetBase(objTypeStr));
-            if (objectType != characterModel.ObjectType) {
+            if (objectType != characterModel.ObjectType)
+            {
                 continue;
             }
 
-            if (fame < classStatModel.BestFame) {
+            if (fame < classStatModel.BestFame)
+            {
                 fame = classStatModel.BestFame;
             }
         }
 
-        return fame switch {
+        return fame switch
+        {
             < 20 => 0,
             < 150 => 1,
             < 400 => 2,
