@@ -1,5 +1,6 @@
-using RealmClient.Data;
+using RealmClient.AppEngine;
 using RealmClient.Display;
+using RealmClient.Models;
 using RealmClient.State;
 using RealmClient.Ui.Components.Dialogs;
 using RealmClient.Ui.Components.Panels;
@@ -8,11 +9,11 @@ using RealmClient.UiLib.BuiltIn.Buttons;
 using RealmClient.UiLib.Enums;
 using RealmClient.UiLib.Extra;
 
-namespace RealmClient.Screens.Components.Panels;
+namespace RealmClient.Screens.Components.Containers;
 
 public class RegisterContainer : Overlay {
     
-    private readonly TextInput _emailInput;
+    private readonly TextInput _usernameInput;
     private readonly TextInput _passwordInput;
     
     public RegisterContainer() {
@@ -30,9 +31,9 @@ public class RegisterContainer : Overlay {
         AddChild(title);
         
         
-        var emailConfig = new InputConfig { X = Width / 2, Y = 100, FontSize = 24, FontType = FontType.Bold, Color = 0xFFFFFF, Width = 350, DefaultText = "Email", Anchor = UiAnchor.Middle };
-        _emailInput = new TextInput(emailConfig);
-        AddChild(_emailInput);
+        var emailConfig = new InputConfig { X = Width / 2, Y = 100, FontSize = 24, FontType = FontType.Bold, Color = 0xFFFFFF, Width = 350, DefaultText = "Username", Anchor = UiAnchor.Middle };
+        _usernameInput = new TextInput(emailConfig);
+        AddChild(_usernameInput);
 
         var passwordConfig = new InputConfig { X = Width / 2, Y = 160, FontSize = 24, FontType = FontType.Bold, Color = 0xFFFFFF, Width = 350, DefaultText = "Password", Password = true, Anchor = UiAnchor.Middle };
         _passwordInput = new TextInput(passwordConfig);
@@ -50,10 +51,10 @@ public class RegisterContainer : Overlay {
     }
     
     private void OnRegister() {
-        AddEventListener(Account.Register(_emailInput.Text, _passwordInput.Text), OnLoginResponse);
+        AddEventListener(AppRequests.Register(_usernameInput.Text, _passwordInput.Text), OnLoginResponse);
     }
     
-    private void OnLoginResponse(LoginResponse response) {
+    private void OnLoginResponse(AppResponse response) {
         if (!response.Success) {
             var dialog = new Dialog("Register Error", response.Message, new DialogOption("Ok"));
             DialogManager.Enqueue(dialog);

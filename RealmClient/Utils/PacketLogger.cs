@@ -90,9 +90,9 @@ public static class PacketLogger {
             PacketId.Move => true,
             PacketId.NewTick => true,
             PacketId.Update => true,
-            PacketId.UpdateAck => true,
-            PacketId.Pong => true,
-            PacketId.Ping => true,
+            //PacketId.UpdateAck => true,
+            //PacketId.Pong => true,
+            //PacketId.Ping => true,
             _ => false
         };
     }

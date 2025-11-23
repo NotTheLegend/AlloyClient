@@ -13,7 +13,7 @@ public class Failure : IncomingPacket<Failure> {
 
     public override void Read(NetworkReader reader) {
         ErrorId = reader.ReadInt32();
-        ErrorDescription = reader.ReadUtf();
+        ErrorDescription = reader.ReadUTF();
     }
 
     public override void Handle() {

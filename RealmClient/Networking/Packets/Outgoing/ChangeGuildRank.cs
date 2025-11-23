@@ -12,7 +12,7 @@ public class ChangeGuildRank : OutgoingPacket<ChangeGuildRank> {
     }
 
     public override void Write(NetworkWriter writer) {
-        writer.WriteUtf(Name);
+        writer.WriteUTF(Name);
         writer.Write(GuildRank);
     }
 

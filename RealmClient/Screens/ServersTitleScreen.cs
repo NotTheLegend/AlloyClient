@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using RealmClient.Data;
-using RealmClient.Data.XmlModels;
 using RealmClient.Display;
 using RealmClient.Screens.Components;
 using RealmClient.State;
@@ -105,23 +104,19 @@ public class ServersTitleScreen : TitleScreenBase {
         
         #endregion
         
-        if (RequestNewCharList)
-            AddEventListener(CharacterList.LoadAsync(), OnCharListReceived);
-        else {
-            BuildServerListUI(CharacterList.Model.Servers.ServerItems);
-        }
+        BuildServerListUI(GlobalData.Get<ServerListData>());
     }
 
-    private void BuildServerListUI(ServerListItem[] servers) {
-        var selectedServer = servers.FirstOrDefault(s => s.Port == Settings.SelectedGameServerPort);
-        SelectServer(selectedServer ?? servers[0]);
+    private void BuildServerListUI(ServerListData data) {
+        var selectedServer = data.ServerList.FirstOrDefault(s => s.Port == Settings.SelectedGameServerPort);
+        SelectServer(selectedServer ?? data.ServerList[0]);
 
         int leftX = _serverListContainer.Width / 4;
         int rightX = _serverListContainer.Width * 3 / 4;
         int startY = 10;
 
         int i = 0;
-        foreach (var server in servers) {
+        foreach (var server in data.ServerList) {
             var serverRect = new ServerRect(server);
             
             serverRect.X = i % 2 == 0 ? leftX : rightX;
@@ -135,12 +130,8 @@ public class ServersTitleScreen : TitleScreenBase {
             i++;
         }
     }
-
-    private void OnCharListReceived() {
-        BuildServerListUI(CharacterList.Model.Servers.ServerItems);
-    }
-
-    private void SelectServer(ServerListItem server) {
+    
+    private void SelectServer(ServerItem server) {
         // All GameServers would be hosted on the same IP because there's no
         // address property on ServerListItem(?) so only Port matters
         Settings.SelectedGameServerPort.SetValue((ushort)server.Port);

@@ -4,7 +4,7 @@ public class GlobalNotification : IncomingPacket<GlobalNotification> {
     public int Type;
     public string Text;
 
-    public override PacketId PacketId => PacketId.GlobalNotification;
+    public override PacketId PacketId => PacketId.Unknown;
 
     public override void Reset() {
         Type = 0;
@@ -13,7 +13,7 @@ public class GlobalNotification : IncomingPacket<GlobalNotification> {
 
     public override void Read(NetworkReader reader) {
         Type = reader.ReadInt32();
-        Text = reader.ReadUtf();
+        Text = reader.ReadUTF();
     }
 
     public override void Handle() {

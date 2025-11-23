@@ -5,7 +5,7 @@ public class Pic : IncomingPacket<Pic> {
     public int Height;
     public byte[] Bytes;
 
-    public override PacketId PacketId => PacketId.Pic;
+    public override PacketId PacketId => PacketId.Unknown;
 
     public override void Reset() {
         Width = 0;

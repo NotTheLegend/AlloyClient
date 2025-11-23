@@ -1,7 +1,7 @@
 ﻿namespace RealmClient.Networking.Packets.Outgoing;
 
 public class Pong : OutgoingPacket<Pong> {
-    public override PacketId PacketId => PacketId.Pong;
+    public override PacketId PacketId => PacketId.Unknown;
 
     public int Serial;
 

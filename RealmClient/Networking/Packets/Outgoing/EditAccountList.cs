@@ -5,7 +5,7 @@ public class EditAccountList : OutgoingPacket<EditAccountList> {
     public bool Add;
     public int ObjectId;
 
-    public override PacketId PacketId => PacketId.EditAccountList;
+    public override PacketId PacketId => PacketId.Unknown;
 
     public override void Reset() {
         AccountListId = 0;

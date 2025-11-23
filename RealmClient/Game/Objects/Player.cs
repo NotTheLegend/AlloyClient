@@ -78,7 +78,7 @@ public class Player : Entity {
     public int CurrentFame;
     public int FameGoal;
 
-    public bool NameChosen;
+    public bool NameChosen = true;
 
     public string Guild;
     public int GuildRank;
@@ -222,10 +222,10 @@ public class Player : Entity {
                 case StatsType.Wisdom:
                     Wisdom = stat.Value;
                     break;
-                case StatsType.HpBoost:
+                case StatsType.MaxHpBonus:
                     MaxHpBoost = stat.Value;
                     break;
-                case StatsType.MpBoost:
+                case StatsType.MaxMpBonus:
                     MaxMpBoost = stat.Value;
                     break;
                 case StatsType.AttackBonus:
@@ -249,13 +249,13 @@ public class Player : Entity {
                 case StatsType.AccountId:
                     AccountId = stat.Value;
                     break;
-                case StatsType.ExperienceGoal:
+                case StatsType.NextLevelXp:
                     NextLevelExp = stat.Value;
                     break;
                 case StatsType.Experience:
                     Experience = stat.Value;
                     break;
-                case StatsType.Stars:
+                case StatsType.NumStars:
                     Stars = stat.Value;
                     break;
                 case StatsType.Credits:
@@ -264,14 +264,11 @@ public class Player : Entity {
                 case StatsType.Fame:
                     Fame = stat.Value;
                     break;
-                case StatsType.CurrentFame:
+                case StatsType.CharFame:
                     CurrentFame = stat.Value;
                     break;
-                case StatsType.FameGoal:
+                case StatsType.NextClassQuestFame:
                     FameGoal = stat.Value;
-                    break;
-                case StatsType.NameChosen:
-                    NameChosen = stat.Value != 0;
                     break;
                 case StatsType.Guild:
                     Guild = stat.Text;
@@ -279,13 +276,13 @@ public class Player : Entity {
                 case StatsType.GuildRank:
                     GuildRank = stat.Value;
                     break;
-                case StatsType.OxygenBar:
+                case StatsType.Oxygen:
                     OxygenBar = stat.Value;
                     break;
-                case StatsType.HealthStackCount:
+                case StatsType.HealthPotionStack:
                     HealthStackCount = stat.Value;
                     break;
-                case StatsType.MagicStackCount:
+                case StatsType.MagicPotionStack:
                     MagicStackCount = stat.Value;
                     break;
                 case StatsType.Skin:

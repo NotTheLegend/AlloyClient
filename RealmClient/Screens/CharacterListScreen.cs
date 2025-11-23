@@ -4,7 +4,7 @@ using RealmClient.Display;
 using RealmClient.Game;
 using RealmClient.Screens.Components;
 using RealmClient.Screens.Components.CharacterList;
-using RealmClient.Screens.Components.Panels;
+using RealmClient.Screens.Components.Containers;
 using RealmClient.State;
 using RealmClient.Ui.Components.Buttons;
 using RealmClient.Ui.Components.Scrollbars;
@@ -39,17 +39,24 @@ public class CharacterListScreen : TitleScreenBase {
 
     private int _selectedCharacterId = -1;
 
+
+    private Container _mainBar;
+    private Container _backBar;
+    
+    
+
     public CharacterListScreen() {
         #region Title Buttons
 
         var playButton = new MenuBarButton("play",  PlayFontSize, () => {
-            var charList = CharacterList.Model.Characters;
-            if (charList == null || charList.Length <= 0) 
+            var data = GlobalData.Get<CharacterListData>();
+            var charList = data.Characters;
+            if (charList == null || charList.Length <= 0)
             {
                 ShowCharacterCreate();
                 return;
             }
-            Account.SelectedCharacterId = _selectedCharacterId;
+            GlobalData.SelectedCharacterId = _selectedCharacterId;
             ScreenManager.FadeToScreen(new GameScreen(), Easing.SineInOut, 1000, 0x0);
         }, true);
         playButton.SetAnchor(UiAnchor.Middle);
@@ -62,7 +69,7 @@ public class CharacterListScreen : TitleScreenBase {
         classesButton.X = playButton.X + playButton.Width / 2 + 50;
         classesButton.Y = Settings.DefaultScreenHeight - 50;
         AddChild(classesButton);
-        
+
         var backButton = new MenuBarButton("back", FontSize, () => {
             ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 1000, 0x0);
         });
@@ -70,11 +77,11 @@ public class CharacterListScreen : TitleScreenBase {
         backButton.X = playButton.X - playButton.Width / 2 - 50;
         backButton.Y = Settings.DefaultScreenHeight - 50;
         AddChild(backButton);
-        
+
         #endregion
-        
+
         #region Class Creation Popup
-        
+
         #endregion
 
         #region Decoration
@@ -86,25 +93,26 @@ public class CharacterListScreen : TitleScreenBase {
             Color = 0x2B2B2B,
         });
         AddChild(lineDivider);
-        
+
         #endregion
-        
+
         #region Name and Currency
-        
+
+        var account = GlobalData.Get<AccountData>();
+
+        //TODO: swap to simple text
         var nameText = new TextButton(new TextButtonConfig() {
-            Text = Account.Username,
+            Text = account.Name,
             FontSize = 32,
             FontType = FontType.Bold,
             X = Settings.DefaultScreenWidth / 2,
             Y = 50,
-            OnClicked = () => OverlayManager.Enqueue(new NameContainer()),
             ActiveColor = 0xB3B3B3,
             InactiveColor = 0xB3B3B3,
             Anchor = UiAnchor.Middle,
         });
-        nameText.SetState(!CharacterList.Model.Account.NameChosen);
         AddChild(nameText);
-        
+
         var goldIcon = new ObjectRect(new ObjectRectConfig {
             Texture = TextureHelper.FromGameAtlas("lofiObj3", 0xE1),
             X = Settings.DefaultScreenWidth - 15,
@@ -114,9 +122,9 @@ public class CharacterListScreen : TitleScreenBase {
             Anchor = UiAnchor.RightBottom,
         });
         AddChild(goldIcon);
-        
+
         var goldText = new SimpleText(new TextConfig {
-            Text = CharacterList.Model.Account.Credits.ToString(),
+            Text = account.Stats.Credits.ToString(),
             FontSize = 24,
             FontType = FontType.Normal,
             X = goldIcon.X - goldIcon.Width - 5,
@@ -125,7 +133,7 @@ public class CharacterListScreen : TitleScreenBase {
             Anchor = UiAnchor.RightBottom,
         });
         AddChild(goldText);
-        
+
         var fameIcon = new ObjectRect(new ObjectRectConfig {
             Texture = TextureHelper.FromGameAtlas("lofiObj3", 0xE0),
             X = goldText.X - goldText.Width - 10,
@@ -137,7 +145,7 @@ public class CharacterListScreen : TitleScreenBase {
         AddChild(fameIcon);
 
         var fameText = new SimpleText(new TextConfig {
-            Text = CharacterList.Model.Account.Stats.Fame.ToString(),
+            Text = account.Stats.Fame.ToString(),
             FontSize = 24,
             FontType = FontType.Normal,
             X = fameIcon.X - fameIcon.Width - 5,
@@ -146,9 +154,9 @@ public class CharacterListScreen : TitleScreenBase {
             Anchor = UiAnchor.RightBottom,
         });
         AddChild(fameText);
-        
+
         #endregion
-        
+
         #region Containers
 
         var containerY = lineDivider.Y + lineDivider.Height;
@@ -160,17 +168,17 @@ public class CharacterListScreen : TitleScreenBase {
             EnableClip = true
         });
         AddChild(_scrollContainer);
-        
+
         _characterListContainer = new Container();
         _scrollContainer.AddChild(_characterListContainer);
-        
+
         _graveyardContainer = new Container();
         _scrollContainer.AddChild(_graveyardContainer);
-        
+
         _graveyardContainer.Visible = false;
 
         #endregion
-        
+
         #region Tab Buttons
 
         _charactersButton = new TextButton(new TextButtonConfig {
@@ -191,7 +199,7 @@ public class CharacterListScreen : TitleScreenBase {
         });
         _charactersButton.Y = lineDivider.Y - _charactersButton.Height / 2 - 15;
         AddChild(_charactersButton);
-        
+
         _graveyardButton = new TextButton(new TextButtonConfig {
             Text = "Graveyard",
             FontSize = 24,
@@ -211,19 +219,19 @@ public class CharacterListScreen : TitleScreenBase {
         _graveyardButton.Alpha = 0.6f;
         _graveyardButton.Y = lineDivider.Y - _graveyardButton.Height / 2 - 15;
         AddChild(_graveyardButton);
-        
+
         #endregion
-        
+
         MouseEnabled = true;
-        
-        AddEventListener(CharacterList.LoadAsync(), () => {
+
+        //AddEventListener(CharacterList.LoadAsync(), () => {
             LoadCharacterList();
             LoadGraveyardList();
-        });
+        //});
     }
 
     private void LoadCharacterList() {
-        var charModel = CharacterList.Model;
+        var charModel = GlobalData.Get<CharacterListData>();
         if (charModel == null) {
             return;
         }

@@ -1,5 +1,5 @@
 ﻿using System;
-using RealmClient.Data.XmlModels;
+using RealmClient.Data;
 using RealmClient.State;
 using RealmClient.UiLib.BuiltIn;
 using RealmClient.UiLib.Core;
@@ -34,7 +34,7 @@ public class ServerRect : Container {
     private readonly SimpleText _serverNameText;
     private readonly SimpleText _playersText;
     
-    public ServerRect(ServerListItem model) : base(Config) {
+    public ServerRect(ServerItem model) : base(Config) {
         
         _background = new ColorRect(new ColorRectConfig {
             Width = Width,
@@ -88,7 +88,7 @@ public class ServerRect : Container {
     /// <summary>
     /// Sets the server information and updates the UI elements.
     /// </summary>
-    public void SetServer(ServerListItem server) {
+    public void SetServer(ServerItem server) {
         _serverNameText.SetText(server.Name);
         _playersText.SetText($"{server.Players} / {server.MaxPlayers}");
         

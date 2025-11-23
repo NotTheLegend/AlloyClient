@@ -1,5 +1,6 @@
-using RealmClient.Data;
+using RealmClient.AppEngine;
 using RealmClient.Display;
+using RealmClient.Models;
 using RealmClient.State;
 using RealmClient.Ui.Components.Dialogs;
 using RealmClient.Ui.Components.Panels;
@@ -8,7 +9,7 @@ using RealmClient.UiLib.BuiltIn.Buttons;
 using RealmClient.UiLib.Enums;
 using RealmClient.UiLib.Extra;
 
-namespace RealmClient.Screens.Components.Panels;
+namespace RealmClient.Screens.Components.Containers;
 
 public class LoginContainer : Overlay {
     private readonly TextInput _emailInput;
@@ -17,7 +18,6 @@ public class LoginContainer : Overlay {
     public LoginContainer() {
         X = Settings.DefaultScreenWidth / 2;
         Y = Settings.DefaultScreenHeight / 2;
-        //todo:SetBaseDimensions(475, 350);
         SetAnchor(UiAnchor.Middle);
         
         var background = new ColorRect(new ColorRectConfig { Width = 475, Height = 350, Color = 0x363636 });
@@ -29,7 +29,7 @@ public class LoginContainer : Overlay {
         var title = new SimpleText(new TextConfig { Text = "Log in", FontSize = 22, FontType = FontType.Bold, X = Width / 2, Y = titleBackground.Height / 2, Color = 0xFFFFFF, Anchor = UiAnchor.Middle });
         AddChild(title);
 
-        var emailConfig = new InputConfig { X = Width / 2, Y = 100, FontSize = 24, FontType = FontType.Bold, Color = 0xFFFFFF, Width = 350, DefaultText = "Email", Anchor = UiAnchor.Middle };
+        var emailConfig = new InputConfig { X = Width / 2, Y = 100, FontSize = 24, FontType = FontType.Bold, Color = 0xFFFFFF, Width = 350, DefaultText = "Username", Anchor = UiAnchor.Middle };
         _emailInput = new TextInput(emailConfig);
         AddChild(_emailInput);
 
@@ -41,10 +41,6 @@ public class LoginContainer : Overlay {
         var registerButton = new TextButton(registerConfig);
         AddChild(registerButton);
         
-        var forgotConfig = new TextButtonConfig { Text = "Forgot Password?", FontSize = 16, OnClicked = () => { CloseOverlay(); OverlayManager.Enqueue(new ForgotContainer()); }, FontType = FontType.Bold, X = Width / 2, Y = registerButton.Y + 30, Anchor = UiAnchor.Middle };
-        var forgotButton = new TextButton(forgotConfig);
-        AddChild(forgotButton);
-        
         var loginConfig = new TextButtonConfig { Text = "Log in", FontSize = 28, OnClicked = OnLogin, FontType = FontType.Normal, X = Width - 25, Y = Height - 25, Anchor = UiAnchor.RightBottom };
         var loginButton = new TextButton(loginConfig);
         AddChild(loginButton);
@@ -55,10 +51,10 @@ public class LoginContainer : Overlay {
     }
 
     private void OnLogin() {
-        AddEventListener(Account.LoginAsync(_emailInput.Text, _passwordInput.Text), OnLoginResponse);
+        AddEventListener(AppRequests.VerifyAsync(_emailInput.Text, _passwordInput.Text, true), OnLoginResponse);
     }
     
-    private void OnLoginResponse(LoginResponse response) {
+    private void OnLoginResponse(AppResponse response) {
         if (!response.Success) {
             var dialog = new Dialog("Login Error", response.Message, new DialogOption("Ok"));
             DialogManager.Enqueue(dialog);

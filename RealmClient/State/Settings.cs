@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Xml;
+using Newtonsoft.Json;
 using OpenTK.Platform;
+using RealmClient.Data;
+using RealmClient.Models;
 using RealmClient.State.SettingTypes;
 using RealmClient.Utils;
 
@@ -12,22 +16,26 @@ namespace RealmClient.State;
 public static class Settings {
     private static readonly Logger Log = new(typeof(Settings));
 
+    public const string LocalFolderName = "AlloyClient";
+    public static readonly string LocalFolderPath;
+    
+    private const string AccountFileName = "account.json";
     public const string SettingsPath = "settings.json"; // Relative to application directory
 
-    public const string BuildVersion = "7.0";
+    public const string BuildVersion = "0.3.3";
     public const string BuildLabel = $"OpenTK v{BuildVersion}";
 
-    //public const string AppEngineAddress = "127.0.0.1";
-    public const string AppEngineAddress = "204.13.235.158";
+    public const string AppEngineAddress = "127.0.0.1";
+    //public const string AppEngineAddress = "204.13.235.158";
     public const string AssetUrl = "https://domain-of-magica.github.io";
 
-    public const string AppEnginePort = "8080";
+    public const string AppEnginePort = "80";
     public const string AppEngineUrl = $"http://{AppEngineAddress}:{AppEnginePort}";
 
     public const int AppEngineTimeout = 10000;
 
-    //public const string GameServerAddress = "127.0.0.1";
-    public const string GameServerAddress = "204.13.235.158";
+    public const string GameServerAddress = "127.0.0.1";
+    //public const string GameServerAddress = "204.13.235.158";
     public const ushort GameServerPort = 2050;
 
     public const int DefaultScreenWidth = 1280;
@@ -153,6 +161,11 @@ public static class Settings {
     private static readonly Dictionary<string, ISettingType> SettingTypes = [];
     public static readonly List<InputSetting> Inputs = [];
 
+    static Settings() {
+        LocalFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), LocalFolderName);
+        Directory.CreateDirectory(LocalFolderPath);
+    }
+
     public static void ResetToDefault() {
         PacketLogging.SetValue(PacketLogLevel.Off);
         Options.Set(Scancode.Escape);
@@ -257,6 +270,7 @@ public static class Settings {
     }
 
     public static void LoadSettings() {
+        LoadLocalAccount();
         try {
             ResetToDefault();
             TryLoadSettings();
@@ -370,5 +384,73 @@ public static class Settings {
         }
 
         setting.SetValue(value); // Makes sure we're updating the static field, no use of reflection :pray:
+    }
+    
+    public static void LoadLocalAccount() {
+        var filePath = Path.Combine(LocalFolderPath, AccountFileName);
+
+        if (!File.Exists(filePath)) {
+            Log.Debug("No local account data found");
+            return;
+        }
+
+        string text;
+        try {
+            text = File.ReadAllText(filePath);
+        } catch (Exception e) {
+            Log.Error($"Failed to read to file {AccountFileName}: {e.Message}");
+            return;
+        }
+        
+        var info = JsonConvert.DeserializeObject<Dictionary<string, string>>(text);
+
+        if (info == null) {
+            Log.Debug("Failed to parse local account data");
+            return;
+        }
+
+        var loadedUser = info.TryGetValue("username", out var username) && !string.IsNullOrWhiteSpace(username);
+        var loadedPass = info.TryGetValue("password", out var password) && !string.IsNullOrWhiteSpace(password);
+
+        if (!loadedUser || !loadedPass) {
+            Log.Debug("No/Incomplete/Invalid local account data");
+            return;
+        }
+
+        var data = new byte[(password.Length * 3 + 3) / 4];
+        
+        if (!Convert.TryFromBase64String(password, data.AsSpan(), out var count)) {
+            Log.Error("Invalid Base64 encoding on password");
+            return;
+        }
+
+        GlobalData.Add(new LoginData(username, Encoding.UTF8.GetString(data.AsSpan(0, count))));
+    }
+
+    public static void SaveLocalAccount() {
+        var data = GlobalData.Get<LoginData>() ?? LoginData.Default;
+        
+        var bytes = new byte[Encoding.UTF8.GetByteCount(data.Password.AsSpan())];
+        if (!Encoding.UTF8.TryGetBytes(data.Password.AsSpan(), bytes.AsSpan(), out var byteCount)) {
+            Log.Error("Failed to get password bytes");
+            return;
+        }
+
+        var chars = new char[4 * (data.Password.Length + 2) / 3];
+        if (!Convert.TryToBase64Chars(bytes.AsSpan(0, byteCount), chars.AsSpan(), out var charCount)) {
+            Log.Error("Failed to Base64 encode password");
+            return;
+        }
+
+        var username = data.Username;
+        var password = new string(chars.AsSpan(0, charCount));
+
+        var jsonString = JsonConvert.SerializeObject(new Dictionary<string, string>{{"username", username}, {"password", password}});
+
+        try {
+            File.WriteAllText(Path.Combine(LocalFolderPath, AccountFileName), jsonString);
+        } catch (Exception e) {
+            Log.Error($"Failed to write to file {AccountFileName}: {e.Message}");
+        }
     }
 }

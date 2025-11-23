@@ -12,8 +12,8 @@ public class InvitedToGuild : IncomingPacket<InvitedToGuild> {
     }
 
     public override void Read(NetworkReader reader) {
-        Name = reader.ReadUtf();
-        GuildName = reader.ReadUtf();
+        Name = reader.ReadUTF();
+        GuildName = reader.ReadUTF();
     }
 
     public override void Handle() {

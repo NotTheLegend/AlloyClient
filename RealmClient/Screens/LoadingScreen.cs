@@ -1,13 +1,12 @@
-﻿using System;
-using System.Diagnostics.Tracing;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using RealmClient.AppEngine;
 using RealmClient.UiLib.BuiltIn;
 using RealmClient.UiLib.Core;
 using RealmClient.UiLib.Enums;
 using RealmClient.UiLib.Extra;
 using RealmClient.Assets;
-using RealmClient.Data;
 using RealmClient.Display;
+using RealmClient.Models;
 using RealmClient.State;
 using RealmClient.Ui.Components.Graphics;
 using RealmClient.Utils;
@@ -37,7 +36,7 @@ public class LoadingScreen : Screen {
         this.SetAutoResize(OnResize);
         
         AddEventListener(Task.WhenAll(
-            Account.LoadAsync(),
+            AppRequests.Startup(),
             //Task.Run(SoundManager.PreLoadSounds),
             //Task.Run(Music.PreLoadSongs),
             AssetParser.ParseAssetsAsync(),

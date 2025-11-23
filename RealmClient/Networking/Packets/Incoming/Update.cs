@@ -39,6 +39,7 @@ public class Update : IncomingPacket<Update> {
 
         for (var i = 0; i < Drops.Length; i++) {
             Drops[i] = reader.ReadInt32();
+            _ = reader.ReadBoolean();//todo: expelode?
         }
     }
 

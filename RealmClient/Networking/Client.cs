@@ -4,8 +4,10 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using RealmClient.Data;
 using RealmClient.Display;
 using RealmClient.Game;
+using RealmClient.Models;
 using RealmClient.Networking.Packets;
 using RealmClient.Networking.Packets.Outgoing;
 using RealmClient.Screens;
@@ -301,6 +303,9 @@ public static class Client {
     }
 
     public static void QueuePacket(IOutgoingPacket pkt) {
+        if (pkt.PacketId == PacketId.Unknown)
+            return;
+        
         lock (SendState) {
             var begin = SendState.PacketBegin();
             pkt.Write(SendState.Writer);
@@ -331,11 +336,12 @@ public static class Client {
     }
 
     private static void SendHello() {
+        var login = GlobalData.Get<LoginData>();
         var hello = Hello.CreatePacket();
         hello.BuildVersion = Settings.BuildVersion;
-        hello.GameId = -2;
-        hello.GUID = Rsa.EncryptPublic(Data.Account.Email);
-        hello.Password = Rsa.EncryptPublic(Data.Account.Password);
+        hello.GameId = -1;
+        hello.Username = login.Username;
+        hello.Password = login.Password;
         hello.Key = [];
         hello.MapJSON = "";
         QueuePacket(hello);

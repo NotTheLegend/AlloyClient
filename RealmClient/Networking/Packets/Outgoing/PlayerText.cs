@@ -10,7 +10,7 @@ public class PlayerText : OutgoingPacket<PlayerText> {
     }
 
     public override void Write(NetworkWriter writer) {
-        writer.WriteUtf(Text);
+        writer.WriteUTF(Text);
     }
 
     public override string ToString() {

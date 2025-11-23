@@ -24,12 +24,12 @@ public class Text : IncomingPacket<Text> {
     }
 
     public override void Read(NetworkReader reader) {
-        Name = reader.ReadUtf();
+        Name = reader.ReadUTF();
         ObjectId = reader.ReadInt32();
         NumStars = reader.ReadInt32();
         BubbleTime = reader.ReadByte();
-        Recipient = reader.ReadUtf();
-        Txt = reader.ReadUtf();
+        Recipient = reader.ReadUTF();
+        Txt = reader.ReadUTF();
     }
 
     public override void Handle() {

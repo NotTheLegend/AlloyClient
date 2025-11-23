@@ -20,7 +20,7 @@ public struct TradeItem : IDataObject {
         SlotType = reader.ReadInt32();
         Tradeable = reader.ReadBoolean();
         Included = reader.ReadBoolean();
-        ItemData = reader.ReadUtf();
+        ItemData = reader.ReadUTF();
     }
 
     public void Write(NetworkWriter writer) {

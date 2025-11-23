@@ -4,7 +4,7 @@ public class NameResult : IncomingPacket<NameResult> {
     public bool Success;
     public string ErrorText;
 
-    public override PacketId PacketId => PacketId.NameResult;
+    public override PacketId PacketId => PacketId.Unknown;
 
     public override void Reset() {
         Success = false;
@@ -13,7 +13,7 @@ public class NameResult : IncomingPacket<NameResult> {
 
     public override void Read(NetworkReader reader) {
         Success = reader.ReadBoolean();
-        ErrorText = reader.ReadUtf();
+        ErrorText = reader.ReadUTF();
     }
 
     public override void Handle() {

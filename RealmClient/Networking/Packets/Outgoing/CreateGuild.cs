@@ -10,7 +10,7 @@ public class CreateGuild : OutgoingPacket<CreateGuild> {
     }
 
     public override void Write(NetworkWriter writer) {
-        writer.WriteUtf(Name);
+        writer.WriteUTF(Name);
     }
 
     public override string ToString() {

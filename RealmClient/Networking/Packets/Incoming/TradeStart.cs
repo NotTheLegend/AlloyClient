@@ -22,7 +22,7 @@ public class TradeStart : IncomingPacket<TradeStart> {
             MyItems[i].Read(reader);
         }
 
-        YourName = reader.ReadUtf();
+        YourName = reader.ReadUTF();
 
         YourItems = new TradeItem[reader.ReadInt16()];
 

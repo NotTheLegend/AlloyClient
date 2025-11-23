@@ -1,6 +1,7 @@
 using RealmClient.Data;
 using RealmClient.Display;
-using RealmClient.Screens.Components.Panels;
+using RealmClient.Models;
+using RealmClient.Screens.Components.Containers;
 using RealmClient.UiLib.BuiltIn;
 using RealmClient.UiLib.BuiltIn.Buttons;
 using RealmClient.UiLib.Core;
@@ -17,16 +18,20 @@ public class AccountOverlay : Sprite {
 
     public AccountOverlay(bool title) {
         _isTitle = title;
+
+        var login = GlobalData.Get<LoginData>() ?? LoginData.Default;
         
         CreateAccountInfo();
         
-        AddChild(Account.LoggedIn ? _currentAccount : _newAccount);
+        AddChild(login.LoggedIn ? _currentAccount : _newAccount);
     }
 
     private void CreateAccountInfo() {
         _currentAccount = new Container();
 
-        var nameConfig = new TextConfig { Text = $"logged in as {Account.Username} - ", FontSize = 24 };
+        var account = GlobalData.Get<AccountData>();
+        
+        var nameConfig = new TextConfig { Text = $"logged in as {account.Name ?? ""} - ", FontSize = 24 };
         var nameText = new SimpleText(nameConfig);
         _currentAccount.AddChild(nameText);
         
@@ -54,7 +59,7 @@ public class AccountOverlay : Sprite {
     }
     
     private void OnLogout() {
-        Account.LogOut();
+        GlobalData.Logout();
 
         if (_isTitle) {
             GTween.Add(Tween.New(_currentAccount, Easing.SineInOut, 150, 0f, EaseType.Alpha, onFinish: () => RemoveChild(_currentAccount)));

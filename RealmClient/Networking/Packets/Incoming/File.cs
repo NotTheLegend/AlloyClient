@@ -4,7 +4,7 @@ public class File : IncomingPacket<File> {
     public string Name;
     public byte[] Bytes;
 
-    public override PacketId PacketId => PacketId.File;
+    public override PacketId PacketId => PacketId.Unknown;
 
     public override void Reset() {
         Name = null;
@@ -12,7 +12,7 @@ public class File : IncomingPacket<File> {
     }
 
     public override void Read(NetworkReader reader) {
-        Name = reader.ReadUtf();
+        Name = reader.ReadUTF();
         var bytesLen = reader.ReadInt32();
 
         for (var i = 0; i < bytesLen; i++) {

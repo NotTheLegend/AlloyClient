@@ -17,7 +17,7 @@ public class Notification : IncomingPacket<Notification> {
 
     public override void Read(NetworkReader reader) {
         ObjectId = reader.ReadInt32();
-        Message = reader.ReadUtf();
+        Message = reader.ReadUTF();
         Color.Read(reader);
     }
 

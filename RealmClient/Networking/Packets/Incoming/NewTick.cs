@@ -19,8 +19,8 @@ public class NewTick : IncomingPacket<NewTick> {
     }
 
     public override void Read(NetworkReader reader) {
-        TickId = reader.ReadInt32();
-        TickTime = reader.ReadInt32();
+        //TickId = reader.ReadInt32();
+        //TickTime = reader.ReadInt32();
 
         ObjectStats = new ObjectStats[reader.ReadInt16()];
 

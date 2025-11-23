@@ -5,7 +5,7 @@ namespace RealmClient.Networking.Packets.Incoming;
 public class Ping : IncomingPacket<Ping> {
     public int RTT;
 
-    public override PacketId PacketId => PacketId.Ping;
+    public override PacketId PacketId => PacketId.Unknown;
 
     public override void Reset() {
         RTT = 0;

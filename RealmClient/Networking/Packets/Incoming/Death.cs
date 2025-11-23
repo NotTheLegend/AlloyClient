@@ -21,7 +21,7 @@ public class Death : IncomingPacket<Death> {
     public override void Read(NetworkReader reader) {
         AccountId = reader.ReadInt32();
         CharId = reader.ReadInt32();
-        KilledBy = reader.ReadUtf();
+        KilledBy = reader.ReadUTF();
     }
 
     public override void Handle() {

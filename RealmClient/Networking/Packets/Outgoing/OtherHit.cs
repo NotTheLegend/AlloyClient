@@ -6,7 +6,7 @@ public class OtherHit : OutgoingPacket<OtherHit> {
     public int ObjectId;
     public int TargetId;
 
-    public override PacketId PacketId => PacketId.OtherHit;
+    public override PacketId PacketId => PacketId.Unknown;
 
     public override void Reset() {
         Time = 0;

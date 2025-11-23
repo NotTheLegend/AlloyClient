@@ -19,7 +19,7 @@ public class AccountList : IncomingPacket<AccountList> {
         AccountIds = new int[reader.ReadInt16()];
 
         for (var i = 0; i < AccountIds.Length; i++) {
-            AccountIds[i] = int.Parse(reader.ReadUtf());
+            AccountIds[i] = int.Parse(reader.ReadUTF());
         }
     }
 

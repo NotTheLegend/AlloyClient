@@ -1,4 +1,5 @@
 using RealmClient.Data;
+using RealmClient.Models;
 using RealmClient.UiLib.BuiltIn;
 using RealmClient.UiLib.Core;
 using RealmClient.UiLib.Enums;
@@ -38,7 +39,10 @@ public class ChatLine {
         _senderObjectId = data.ObjectId;
         _recipient = data.Recipient;
         _text = data.Txt;
-        _toMe = _recipient == Account.Username;
+        
+        
+        //FIXME: anything is better than this
+        //_toMe = _recipient == AccountModel.Name;
 
         Sprite = CreateSprite();
     }

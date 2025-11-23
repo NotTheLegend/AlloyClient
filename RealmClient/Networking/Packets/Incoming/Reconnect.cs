@@ -1,4 +1,5 @@
-﻿using RealmClient.Game;
+﻿using RealmClient.Data;
+using RealmClient.Game;
 using RealmClient.Networking.Packets.Outgoing;
 using RealmClient.State;
 
@@ -24,8 +25,8 @@ public class Reconnect : IncomingPacket<Reconnect> {
     }
 
     public override void Read(NetworkReader reader) {
-        Name = reader.ReadUtf();
-        Host = reader.ReadUtf();
+        Name = reader.ReadUTF();
+        Host = reader.ReadUTF();
         Port = reader.ReadInt32();
         GameId = reader.ReadInt32();
         KeyTime = reader.ReadInt32();
@@ -36,11 +37,12 @@ public class Reconnect : IncomingPacket<Reconnect> {
         Map.Entities.Clear();
         Map.EntityStorage.Clear();
 
+        var login = GlobalData.Get<LoginData>();
         var hello = Hello.CreatePacket();
         hello.BuildVersion = Settings.BuildVersion;
         hello.GameId = GameId;
-        hello.GUID = Rsa.EncryptPublic(Data.Account.Email);
-        hello.Password = Rsa.EncryptPublic(Data.Account.Password);
+        hello.Username = login.Username;
+        hello.Password = login.Password;
         hello.Key = Key ?? [];
         hello.MapJSON = "";
         Client.QueuePacket(hello);

@@ -13,7 +13,7 @@ public class GuildResult : IncomingPacket<GuildResult> {
 
     public override void Read(NetworkReader reader) {
         Success = reader.ReadBoolean();
-        Text = reader.ReadUtf();
+        Text = reader.ReadUTF();
     }
 
     public override void Handle() {

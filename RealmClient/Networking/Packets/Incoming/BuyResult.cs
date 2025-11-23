@@ -13,7 +13,7 @@ public class BuyResult : IncomingPacket<BuyResult> {
 
     public override void Read(NetworkReader reader) {
         Result = reader.ReadInt32();
-        ResultString = reader.ReadUtf();
+        ResultString = reader.ReadUTF();
     }
 
     public override void Handle() {

@@ -121,19 +121,8 @@ public static class Utils {
     
         public Vector4 ReadVector4() => new(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
     }
-}
-
-public static class XmlSerializer<T> {
-    private static readonly XmlSerializer Serializer = new(typeof(T));
-
-    public static string Serialize(T obj) {
-        using var writer = new MemoryStream();
-        Serializer.Serialize(writer, obj);
-        return Encoding.UTF8.GetString(writer.ToArray());
-    }
-
-    public static T Deserialize(string xml) {
-        using var reader = new StringReader(xml);
-        return (T) Serializer.Deserialize(reader);
+    
+    public static int[] FromCommaSepString(this string src, string delim = ", ") {
+        return src == string.Empty ? [] : src.Split(delim).Select(int.Parse).ToArray();
     }
 }

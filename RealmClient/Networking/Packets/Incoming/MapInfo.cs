@@ -32,8 +32,8 @@ public class MapInfo : IncomingPacket<MapInfo> {
     public override void Read(NetworkReader reader) {
         Width = reader.ReadInt32();
         Height = reader.ReadInt32();
-        Name = reader.ReadUtf();
-        DisplayName = reader.ReadUtf();
+        Name = reader.ReadUTF();
+        DisplayName = reader.ReadUTF();
         Difficulty = reader.ReadInt32();
         Seed = reader.ReadUInt32();
         Background = reader.ReadInt32();
@@ -53,23 +53,22 @@ public class MapInfo : IncomingPacket<MapInfo> {
     }
 
     private static void LoadOrCreate() {
-        if (Account.CharacterType > 0) {
+        if (GlobalData.CharacterType > 0) {
             var create = Create.CreatePacket();
-            create.ClassType = Account.CharacterType;
+            create.ClassType = GlobalData.CharacterType;
             create.SkinType = 0;
             Client.QueuePacket(create);
 
-            Account.CharacterType = 0;
+            GlobalData.CharacterType = 0;
             return;
         }
         
         var load = Load.CreatePacket();
-        load.CharId = Account.SelectedCharacterId;
+        load.CharId = GlobalData.SelectedCharacterId;
         Client.QueuePacket(load);
     }
 
     public override string ToString() {
-        return
-            $"Width: {Width}, Height: {Height}, Name: {Name}, DisplayName: {DisplayName}, Difficulty: {Difficulty}, Seed: {Seed}, Background: {Background}, AllowPlayerTeleport: {AllowPlayerTeleport}, ShowDisplays: {ShowDisplays}";
+        return $"Width: {Width}, Height: {Height}, Name: {Name}, DisplayName: {DisplayName}, Difficulty: {Difficulty}, Seed: {Seed}, Background: {Background}, AllowPlayerTeleport: {AllowPlayerTeleport}, ShowDisplays: {ShowDisplays}";
     }
 }

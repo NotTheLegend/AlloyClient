@@ -10,7 +10,7 @@ public class TradeRequested : IncomingPacket<TradeRequested> {
     }
 
     public override void Read(NetworkReader reader) {
-        Name = reader.ReadUtf();
+        Name = reader.ReadUTF();
     }
 
     public override void Handle() {

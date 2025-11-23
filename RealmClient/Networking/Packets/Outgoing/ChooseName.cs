@@ -3,14 +3,14 @@
 public class ChooseName : OutgoingPacket<ChooseName> {
     public string Name;
 
-    public override PacketId PacketId => PacketId.ChooseName;
+    public override PacketId PacketId => PacketId.Unknown;
 
     public override void Reset() {
         Name = string.Empty;
     }
 
     public override void Write(NetworkWriter writer) {
-        writer.WriteUtf(Name);
+        writer.WriteUTF(Name);
     }
 
     public override string ToString() {

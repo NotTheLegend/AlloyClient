@@ -13,7 +13,7 @@ public class TradeDone : IncomingPacket<TradeDone> {
 
     public override void Read(NetworkReader reader) {
         Code = reader.ReadInt32();
-        Description = reader.ReadUtf();
+        Description = reader.ReadUTF();
     }
 
     public override void Handle() {

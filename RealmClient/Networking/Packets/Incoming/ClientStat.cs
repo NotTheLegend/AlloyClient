@@ -4,7 +4,7 @@ public class ClientStat : IncomingPacket<ClientStat> {
     public string Name;
     public int Value;
 
-    public override PacketId PacketId => PacketId.ClientStat;
+    public override PacketId PacketId => PacketId.Unknown;
 
     public override void Reset() {
         Name = null;
@@ -12,7 +12,7 @@ public class ClientStat : IncomingPacket<ClientStat> {
     }
 
     public override void Read(NetworkReader reader) {
-        Name = reader.ReadUtf();
+        Name = reader.ReadUTF();
         Value = reader.ReadInt32();
     }
 

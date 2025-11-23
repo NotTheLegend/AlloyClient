@@ -1,7 +1,8 @@
 ﻿using RealmClient.Data;
 using RealmClient.Display;
+using RealmClient.Models;
 using RealmClient.Screens.Components;
-using RealmClient.Screens.Components.Panels;
+using RealmClient.Screens.Components.Containers;
 using RealmClient.State;
 using RealmClient.Ui.Components.Buttons;
 using RealmClient.UiLib;
@@ -64,7 +65,9 @@ public class TitleScreen : TitleScreenBase {
     }
 
     private void OnPlay() {
-        if (Account.LoggedIn) {
+        var login = GlobalData.Get<LoginData>();
+        if (login.LoggedIn) {
+            //TODO: add charlist event into char screen here
             ScreenManager.FadeTo(new CharacterListScreen());
         }
         else {

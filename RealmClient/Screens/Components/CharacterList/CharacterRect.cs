@@ -1,6 +1,5 @@
 using RealmClient.Assets.Libraries;
 using RealmClient.Data;
-using RealmClient.Data.XmlModels;
 using RealmClient.Display;
 using RealmClient.Game;
 using RealmClient.UiLib.BuiltIn;
@@ -45,7 +44,7 @@ public sealed class CharacterRect : Container
         AddChild(background);
     }
 
-    public void Initialize(CharacterRectType type, CharacterModel character = null, int remainingSlots = 0)
+    public void Initialize(CharacterRectType type, Character character = null, int remainingSlots = 0)
     {
         var charNameText = new SimpleText(new TextConfig
         {
@@ -79,7 +78,7 @@ public sealed class CharacterRect : Container
                         return;
                     }
 
-                    Account.SelectedCharacterId = character.Id;
+                    GlobalData.SelectedCharacterId = character.Id;
                     ScreenManager.FadeToScreen(new GameScreen(), Easing.SineInOut, 1000, 0x0);
                 }
                 ,
@@ -236,7 +235,7 @@ public sealed class CharacterRect : Container
         return _statsMaxed * 1000 + _baseFame;
     }
 
-    private static int GetStatsMaxed(CharacterModel characterModel)
+    private static int GetStatsMaxed(Character characterModel)
     {
         var player = ObjectLibrary.TypeToObjectProps[characterModel.ObjectType];
         var playerProps = player.PlayerProperties;
@@ -272,12 +271,12 @@ public sealed class CharacterRect : Container
             numStatsMaxed++;
         }
 
-        if (characterModel.HpRegen >= playerProps.MaxVitality)
+        if (characterModel.Vitality >= playerProps.MaxVitality)
         {
             numStatsMaxed++;
         }
 
-        if (characterModel.MpRegen >= playerProps.MaxWisdom)
+        if (characterModel.Wisdom >= playerProps.MaxWisdom)
         {
             numStatsMaxed++;
         }
@@ -285,9 +284,10 @@ public sealed class CharacterRect : Container
         return numStatsMaxed;
     }
 
-    private static int GetStars(CharacterModel characterModel)
-    {
-        var fame = characterModel.CurrentFame;
+    private static int GetStars(Character characterModel) {
+        return 0;
+        //TODO: stars
+        /*var fame = characterModel.CurrentFame;
         var accountModel = Account.Model;
         if (accountModel.Stats == null || accountModel.Stats.ClassStats == null)
         {
@@ -317,6 +317,6 @@ public sealed class CharacterRect : Container
             < 800 => 3,
             < 2000 => 4,
             _ => 5,
-        };
+        };*/
     }
 }

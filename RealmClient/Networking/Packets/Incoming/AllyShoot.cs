@@ -7,7 +7,7 @@ public class AllyShoot : IncomingPacket<AllyShoot> {
     public ushort ContainerType;
     public float Angle;
 
-    public override PacketId PacketId => PacketId.AllyShoot;
+    public override PacketId PacketId => PacketId.Unknown;
 
     public override void Reset() {
         BulletId = 0;

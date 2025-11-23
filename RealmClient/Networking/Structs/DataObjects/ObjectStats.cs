@@ -17,7 +17,7 @@ public struct ObjectStats : IDataObject {
         Id = reader.ReadInt32();
         Position.Read(reader);
 
-        var len = reader.ReadInt16();
+        var len = reader.ReadByte();
         Stats = new List<StatData>(len);
 
         for (var i = 0; i < len; i++) {
