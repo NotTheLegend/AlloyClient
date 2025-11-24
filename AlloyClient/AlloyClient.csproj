@@ -26,6 +26,7 @@
     
     <ItemGroup>
         <None Remove="AlloyClient.csproj.DotSettings" />
+        <None Include="..\README.md" />
     </ItemGroup>
     
     <ItemGroup>
