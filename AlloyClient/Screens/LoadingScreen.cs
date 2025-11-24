@@ -40,7 +40,7 @@ public class LoadingScreen : Screen {
             AppRequests.Startup(),
             //Task.Run(SoundManager.PreLoadSounds),
             //Task.Run(Music.PreLoadSongs),
-            // AssetParser.ParseAssetsAsync(), Moved this over to startup
+            AssetParser.LoadAssetsAsync(),
             Task.Delay(2000) // Loading screen too fast lmao
         ), () => { ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 1000, 0x0); });
     }

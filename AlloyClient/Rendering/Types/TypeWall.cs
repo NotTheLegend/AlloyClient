@@ -3,6 +3,7 @@ using AlloyClient.Assets.Libraries;
 using AlloyClient.Game.Objects;
 using AlloyClient.Rendering.VertexData;
 using AlloyClient.Utils;
+using Common;
 using Common.Structs;
 
 namespace AlloyClient.Rendering.Types;

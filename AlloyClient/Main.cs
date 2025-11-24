@@ -98,7 +98,7 @@ public class Main {
         MinimapTexture.Init(out var mapTexture);
         
         ModelData.Load();
-        AssetParser.LoadAssets();
+        // AssetParser.LoadAssets();
 
         var settings = new UiSettings {
             DefaultScreen = new Vector2i(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight),

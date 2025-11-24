@@ -2,6 +2,7 @@
 using AlloyClient.Game.Components.Options.Ui;
 using AlloyClient.State.SettingTypes;
 using AlloyClient.Utils;
+using Common;
 
 namespace AlloyClient.Game.Components.Options.OptionTypes;
 

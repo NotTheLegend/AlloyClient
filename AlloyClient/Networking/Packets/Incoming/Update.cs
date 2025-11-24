@@ -4,6 +4,7 @@ using AlloyClient.Game.Objects;
 using AlloyClient.Networking.Packets.Outgoing;
 using AlloyClient.Networking.Structs.DataObjects;
 using AlloyClient.Utils;
+using Common;
 
 namespace AlloyClient.Networking.Packets.Incoming;
 

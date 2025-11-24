@@ -5,6 +5,7 @@ using AlloyClient.UiLib.Enums;
 using AlloyClient.UiLib.Input;
 using AlloyClient.UiLib.Utils;
 using AlloyClient.UiLib.BuiltIn;
+using Common;
 
 namespace AlloyClient.UiLib.Core;
 
@@ -58,19 +59,39 @@ public abstract class EventManager {
     }
     
     public void AddEventListener(Task task, Action callback) {
-            task.ContinueWith(_ => QueueTaskFinish(callback));
+        task.ContinueWith(_ => {
+            if (task.IsFaulted) {
+                Logger.Error(task.Exception);
+            }
+            QueueTaskFinish(callback);
+        });
     }
     
     public void AddEventListener(Task task, Action<TaskState> callback) {
-        task.ContinueWith(t => QueueTaskFinish(() => callback(GetStatus(t))));
+        task.ContinueWith(t => {
+            if (task.IsFaulted) {
+                Logger.Error(task.Exception);
+            }
+            QueueTaskFinish(() => callback(GetStatus(t)));
+        });
     }
     
     public void AddEventListener<T>(Task<T> task, Action<T> callback) {
-        task.ContinueWith(t => QueueTaskFinish(() => callback(t.Result)));
+        task.ContinueWith(t => {
+            if (task.IsFaulted) {
+                Logger.Error(task.Exception);
+            }
+            QueueTaskFinish(() => callback(t.Result));
+        });
     }
     
     public void AddEventListener<T>(Task<T> task, Action<T, TaskState> callback) {
-        task.ContinueWith(t => QueueTaskFinish(() => callback(t.Result, GetStatus(t))));
+        task.ContinueWith(t => {
+            if (task.IsFaulted) {
+                Logger.Error(task.Exception);
+            }
+            QueueTaskFinish(() => callback(t.Result, GetStatus(t)));
+        });
     }
 
     public void AddEventListener(string type, Delegate callback, bool capture = false) {

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace AlloyClient.Utils;
+namespace Common;
 
 public enum LogLevel {
     Trace,
@@ -30,56 +30,56 @@ public class Logger {
         _loggerName = type.Name;
     }
 
-    public static void Trace(string txt, string loggerName = DefaultLoggerName) {
-        Log(txt, LogLevel.Trace, loggerName);
+    public static void Trace(object obj, string loggerName = DefaultLoggerName) {
+        Log(obj, LogLevel.Trace, loggerName);
     }
 
-    public static void Info(string txt, string loggerName = DefaultLoggerName) {
-        Log(txt, LogLevel.Info, loggerName);
+    public static void Info(object obj, string loggerName = DefaultLoggerName) {
+        Log(obj, LogLevel.Info, loggerName);
     }
 
-    public static void Debug(string txt, string loggerName = DefaultLoggerName) {
-        Log(txt, LogLevel.Debug, loggerName);
+    public static void Debug(object obj, string loggerName = DefaultLoggerName) {
+        Log(obj, LogLevel.Debug, loggerName);
     }
 
-    public static void Warn(string txt, string loggerName = DefaultLoggerName) {
-        Log(txt, LogLevel.Warn, loggerName);
+    public static void Warn(object obj, string loggerName = DefaultLoggerName) {
+        Log(obj, LogLevel.Warn, loggerName);
     }
 
-    public static void Error(string txt, string loggerName = DefaultLoggerName) {
-        Log(txt, LogLevel.Error, loggerName);
+    public static void Error(object obj, string loggerName = DefaultLoggerName) {
+        Log(obj, LogLevel.Error, loggerName);
     }
 
-    public static void Fatal(string txt, string loggerName = DefaultLoggerName) {
-        Log(txt, LogLevel.Fatal, loggerName);
+    public static void Fatal(object obj, string loggerName = DefaultLoggerName) {
+        Log(obj, LogLevel.Fatal, loggerName);
     }
 
-    public void Trace(string txt) {
-        Log(txt, LogLevel.Trace, _loggerName);
+    public void Trace(object obj) {
+        Log(obj, LogLevel.Trace, _loggerName);
     }
 
-    public void Info(string txt) {
-        Log(txt, LogLevel.Info, _loggerName);
+    public void Info(object obj) {
+        Log(obj, LogLevel.Info, _loggerName);
     }
 
-    public void Debug(string txt) {
-        Log(txt, LogLevel.Debug, _loggerName);
+    public void Debug(object obj) {
+        Log(obj, LogLevel.Debug, _loggerName);
     }
 
-    public void Warn(string txt) {
-        Log(txt, LogLevel.Warn, _loggerName);
+    public void Warn(object obj) {
+        Log(obj, LogLevel.Warn, _loggerName);
     }
 
-    public void Error(string txt) {
-        Log(txt, LogLevel.Error, _loggerName);
+    public void Error(object obj) {
+        Log(obj, LogLevel.Error, _loggerName);
     }
 
-    public void Fatal(string txt) {
-        Log(txt, LogLevel.Fatal, _loggerName);
+    public void Fatal(object obj) {
+        Log(obj, LogLevel.Fatal, _loggerName);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void Log(string text, LogLevel levelType, string loggerName) {
+    private static void Log(object obj, LogLevel levelType, string loggerName) {
 #if !TRACE
         if (levelType == LogLevel.Trace) {
             return;
@@ -96,7 +96,7 @@ public class Logger {
         lock (ConsoleLock) {
             Console.BackgroundColor = GetBackColor(levelType);
             Console.ForegroundColor = GetForeColor(levelType);
-            Console.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] {levelStr} {loggerStr} {text}");
+            Console.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] {levelStr} {loggerStr} {obj.ToString()}");
         }
     }
 

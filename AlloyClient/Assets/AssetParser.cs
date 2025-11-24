@@ -13,7 +13,7 @@ using Common.Structs;
 namespace AlloyClient.Assets;
 
 public static class AssetParser {
-    public static async void LoadAssets() {
+    public static async Task LoadAssetsAsync() {
         await Task.WhenAll(Task.Run(ParseGround), Task.Run(ParseObjects));
     }
 
@@ -31,7 +31,6 @@ public static class AssetParser {
 
     private static void ParseObjects() {
         var xmlFiles = Directory.GetFiles("Content/Xmls", "*.xml");
-        var i = 0;
         foreach (var xmlFile in xmlFiles) {
             var path = File.ReadAllText(xmlFile);
             var objectContainer = XElement.Parse(path).Elements("Object");
