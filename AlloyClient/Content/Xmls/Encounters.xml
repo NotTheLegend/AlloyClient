@@ -2990,7 +2990,7 @@
 		</Projectile>
 	</Object>
 
-	<Object type="0x740d" id="Pentaract Eye4">
+	<Object type="0xb4ff" id="Pentaract Eye4">
 		<DisplayId>Pentaract Eye</DisplayId>
 		<Enemy/>
 		<Class>Character</Class>

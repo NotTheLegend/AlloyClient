@@ -3922,14 +3922,14 @@
          <Index>0x4B6</Index>
       </Texture>
    </Object>
-   <Object type="0x740b" id="Heartfinder Slash">
+   <Object type="0x74fb" id="Heartfinder Slash">
       <Class>Projectile</Class>
       <Texture>
          <File>lofiObj3</File>
          <Index>0x4A8</Index>
       </Texture>
    </Object>
-   <Object type="0x740c" id="Cupid's Arrow">
+   <Object type="0x74fc" id="Cupid's Arrow">
       <Class>Projectile</Class>
       <Texture>
          <File>lofiObj3</File>
@@ -3953,7 +3953,7 @@
       </Texture>
       <Rotation>90</Rotation>
    </Object>
-   <Object type="0x740a" id="Glittering Prizes">
+   <Object type="0x74fa" id="Glittering Prizes">
       <Class>Projectile</Class>
       <RandomTexture>
          <Texture>
@@ -6265,7 +6265,7 @@
       </Texture>
       <AngleCorrection>1</AngleCorrection>
    </Object>
-   <Object type="0x974" id="O3 White Bolt">
+   <Object type="0x932a" id="O3 White Bolt">
       <Class>Projectile</Class>
       <Texture>
          <File>oryxSanctuaryObjects8x8</File>
@@ -7709,7 +7709,7 @@
          <Index>0x1fc</Index>
       </Texture>
    </Object>
-   <Object type="0x7406" id="O3 Black Slash">
+   <Object type="0x7bcd" id="O3 Black Slash">
       <Class>Projectile</Class>
       <Texture>
          <File>oryxSanctuaryObjects8x8</File>
@@ -7717,7 +7717,7 @@
       </Texture>
       <AngleCorrection>1</AngleCorrection>
    </Object>
-   <Object type="0x7407" id="O3 Black Beam">
+   <Object type="0x7bce" id="O3 Black Beam">
       <Class>Projectile</Class>
       <Texture>
          <File>oryxSanctuaryObjects8x8</File>
@@ -7725,7 +7725,7 @@
       </Texture>
       <AngleCorrection>1</AngleCorrection>
    </Object>
-   <Object type="0x7408" id="O3 Black Stab">
+   <Object type="0x7bcf" id="O3 Black Stab">
       <Class>Projectile</Class>
       <Texture>
          <File>oryxSanctuaryObjects8x8</File>
@@ -7733,7 +7733,7 @@
       </Texture>
       <AngleCorrection>1</AngleCorrection>
    </Object>
-   <Object type="0x7409" id="O3 Black Mid Laser 3">
+   <Object type="0x7cca" id="O3 Black Mid Laser 3">
       <Class>Projectile</Class>
       <Texture>
          <File>oryxSanctuaryObjects8x8</File>
@@ -8358,7 +8358,7 @@
          <Index>0x71</Index>
       </Texture>
    </Object>
-   <Object type="0xe1f" id="O3 Purple Big Disk SRot">
+   <Object type="0xfe1f" id="O3 Purple Big Disk SRot">
       <Class>Projectile</Class>
       <Rotation>80</Rotation>
       <Texture>

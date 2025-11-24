@@ -14,49 +14,59 @@ namespace AlloyClient.Assets;
 
 public static class AssetParser {
     public static async Task LoadAssetsAsync() {
+        using var timer = new EasyTimer("Loading assets...");
         await Task.WhenAll(Task.Run(ParseGround), Task.Run(ParseObjects));
     }
 
     private static void ParseGround() {
         var path = File.ReadAllText("Content/Xmls/Ground.xml");
         var groundContainer = XElement.Parse(path).Elements("Ground");
-        foreach (var ground in groundContainer) {
+        Parallel.ForEach(groundContainer, ground => {
             var props = new GroundProperties(ground);
-            GroundLibrary.TypeToGroundProps[props.ObjectType] = props;
-            GroundLibrary.TypeToTextureData[props.ObjectType] = new TextureData(ground);
-
-            GroundLibrary.IdToTileType[props.ObjectId] = props.ObjectType;
-        }
+            lock (GroundLibrary.TypeToGroundProps)
+                GroundLibrary.TypeToGroundProps.Add(props.ObjectType, props);
+            
+            lock (GroundLibrary.TypeToTextureData)
+                GroundLibrary.TypeToTextureData.Add(props.ObjectType, new TextureData(ground));
+            
+            lock (GroundLibrary.IdToTileType)
+                GroundLibrary.IdToTileType.Add(props.ObjectId, props.ObjectType);
+        });
     }
 
     private static void ParseObjects() {
         var xmlFiles = Directory.GetFiles("Content/Xmls", "*.xml");
-        foreach (var xmlFile in xmlFiles) {
+        Parallel.ForEach(xmlFiles, xmlFile => {
             var path = File.ReadAllText(xmlFile);
             var objectContainer = XElement.Parse(path).Elements("Object");
-            foreach (var gameObject in objectContainer) {
+            Parallel.ForEach(objectContainer, gameObject => {
                 // Console.WriteLine($"XML:{gameObject.Attribute("id")}"); This line might become handy if you're messing with xmls
                 var props = new ObjectProperties(gameObject);
-                ObjectLibrary.TypeToObjectProps[props.ObjectType] = props;
-                ObjectLibrary.TypeToTextureData[props.ObjectType] = new TextureData(gameObject);
-
-                ObjectLibrary.IdToObjectType[props.ObjectId] = props.ObjectType;
-
-                ObjectLibrary.IdToObjectType[props.ObjectId] = props.ObjectType;
+                lock (ObjectLibrary.TypeToObjectProps)
+                    ObjectLibrary.TypeToObjectProps.Add(props.ObjectType, props);
+                
+                lock (ObjectLibrary.TypeToTextureData)
+                    ObjectLibrary.TypeToTextureData.Add(props.ObjectType, new TextureData(gameObject));
+                
+                lock (ObjectLibrary.IdToObjectType)
+                    ObjectLibrary.IdToObjectType.Add(props.ObjectId, props.ObjectType);
 
                 if (props.Class == "Player") {
-                    ObjectLibrary.TypeToClassProps[props.ObjectType] = props.PlayerProperties;
+                    lock (ObjectLibrary.TypeToClassProps)
+                        ObjectLibrary.TypeToClassProps.Add(props.ObjectType, props.PlayerProperties);
                 }
 
                 if (props.Skin) {
-                    ObjectLibrary.TypeToSkins.Add(new Tuple<ushort, ushort>(props.PlayerClassType, props.ObjectType));
+                    lock (ObjectLibrary.TypeToSkins)
+                        ObjectLibrary.TypeToSkins.Add(new Tuple<ushort, ushort>(props.PlayerClassType, props.ObjectType));
                 }
 
                 if (gameObject.HasElement("Item")) {
-                    ObjectLibrary.TypeToItem[props.ObjectType] = new ItemDesc(props.ObjectType, gameObject);
+                    lock (ObjectLibrary.TypeToItem)
+                        ObjectLibrary.TypeToItem.Add(props.ObjectType, new ItemDesc(props.ObjectType, gameObject));
                 }
-            }
-        }
+            });
+        });
     }
 }
 

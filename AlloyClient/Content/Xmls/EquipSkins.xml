@@ -6065,7 +6065,7 @@
       <BagType>7</BagType>
       <feedPower>1000</feedPower>
    </Object>
-   <Object type="0x973" id="Wererat Rogue Skin">
+   <Object type="0xa929" id="Wererat Rogue Skin">
       <Class>Equipment</Class>
       <Item/>
       <AnimatedTexture>

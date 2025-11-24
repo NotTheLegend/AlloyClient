@@ -79,7 +79,7 @@ public class Logger {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void Log(object obj, LogLevel levelType, string loggerName) {
+    public static void Log(object obj, LogLevel levelType, string loggerName) {
 #if !TRACE
         if (levelType == LogLevel.Trace) {
             return;
