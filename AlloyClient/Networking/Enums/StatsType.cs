@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Networking.Enums;
+﻿namespace AlloyClient.Networking.Enums;
 
 public enum StatsType : byte {
     MaximumHp,

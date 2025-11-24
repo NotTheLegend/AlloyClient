@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AlloyClient.State;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.BuiltIn.Buttons;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
 using Common;
 using OpenTK.Mathematics;
-using RealmClient.State;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.BuiltIn.Buttons;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
 
-namespace RealmClient.Screens.Components.CharacterSelection;
+namespace AlloyClient.Screens.Components.CharacterSelection;
 
 public class CharacterWheel : Container {
     private const int CenterX = Settings.DefaultScreenWidth / 2; 

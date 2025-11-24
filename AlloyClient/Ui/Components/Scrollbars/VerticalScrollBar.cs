@@ -1,9 +1,9 @@
 using System;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
 
-namespace RealmClient.Ui.Components.Scrollbars;
+namespace AlloyClient.Ui.Components.Scrollbars;
 
 public struct VerticalScrollBarConfig {
     public int X = 0;

@@ -1,8 +1,8 @@
 ﻿using System;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
 
-namespace RealmClient.UiLib.BuiltIn.Buttons;
+namespace AlloyClient.UiLib.BuiltIn.Buttons;
 
 public struct TextButtonConfig {
     public string Text = "";

@@ -1,12 +1,12 @@
 ﻿using System;
+using AlloyClient.Assets;
+using AlloyClient.Game.Objects;
 using Common;
 using Common.Structs;
 using OpenTK.Mathematics;
-using RealmClient.Assets;
-using RealmClient.Game.Objects;
 
 
-namespace RealmClient.Rendering;
+namespace AlloyClient.Rendering;
 
 public abstract class RenderBase : IComparable<RenderBase> {
     public abstract ModelType ModelType { get; }

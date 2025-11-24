@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RealmClient.Networking;
+namespace AlloyClient.Networking;
 
 public class PacketBuffer {
     private const int MaxBufferSize = 1048576;

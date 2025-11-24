@@ -1,8 +1,8 @@
-﻿using Common.Structs;
-using RealmClient.Assets;
-using RealmClient.Rendering.VertexData;
+﻿using AlloyClient.Assets;
+using AlloyClient.Rendering.VertexData;
+using Common.Structs;
 
-namespace RealmClient.Rendering.Types;
+namespace AlloyClient.Rendering.Types;
 
 public sealed class TypeWallTop : RenderBase {
 

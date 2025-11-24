@@ -1,10 +1,10 @@
-﻿using OpenTK.Mathematics;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Data;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Rendering;
+﻿using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Data;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Rendering;
+using OpenTK.Mathematics;
 
-namespace RealmClient.UiLib.BuiltIn;
+namespace AlloyClient.UiLib.BuiltIn;
 
 public struct NineSliceConfig {
     public required string SliceData;

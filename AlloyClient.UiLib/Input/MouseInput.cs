@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using AlloyClient.UiLib.Core;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
-using RealmClient.UiLib.Core;
 
-namespace RealmClient.UiLib.Input;
+namespace AlloyClient.UiLib.Input;
 
 internal static class MouseInput {
 

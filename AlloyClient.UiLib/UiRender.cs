@@ -1,16 +1,16 @@
 ﻿using System;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Data;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Input;
+using AlloyClient.UiLib.Rendering;
 using Common;
 using Common.ContentReaders;
 using Common.Rendering;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Data;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Input;
-using RealmClient.UiLib.Rendering;
 
-namespace RealmClient.UiLib;
+namespace AlloyClient.UiLib;
 
 public class UiSettings {
 

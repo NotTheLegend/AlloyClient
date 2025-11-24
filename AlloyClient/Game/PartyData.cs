@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using RealmClient.Game.Objects;
-using RealmClient.Networking;
-using RealmClient.Networking.Packets.Outgoing;
-using RealmClient.Utils;
+using AlloyClient.Game.Objects;
+using AlloyClient.Networking;
+using AlloyClient.Networking.Packets.Outgoing;
+using AlloyClient.Utils;
 
-namespace RealmClient.Game;
+namespace AlloyClient.Game;
 
 public static class PartyData {
 

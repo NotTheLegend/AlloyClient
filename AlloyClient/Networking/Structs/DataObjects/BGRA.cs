@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Networking.Structs.DataObjects;
+﻿namespace AlloyClient.Networking.Structs.DataObjects;
 
 public struct ARGB(uint bgra) : IDataObject {
     public byte B = (byte)(bgra & 0xFF);

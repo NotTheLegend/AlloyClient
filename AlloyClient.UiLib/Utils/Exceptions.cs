@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RealmClient.UiLib.Utils;
+namespace AlloyClient.UiLib.Utils;
 
 internal sealed class InvalidCallbackException : Exception {
     

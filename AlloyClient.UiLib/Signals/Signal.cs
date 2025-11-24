@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RealmClient.UiLib.Signals;
+namespace AlloyClient.UiLib.Signals;
 
 public sealed class Signal {
 

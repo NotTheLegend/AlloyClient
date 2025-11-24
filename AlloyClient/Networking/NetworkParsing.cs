@@ -4,7 +4,7 @@ using System.Net;
 using System.Numerics;
 using System.Text;
 
-namespace RealmClient.Networking;
+namespace AlloyClient.Networking;
 
 public class NetworkReader : BinaryReader
     {

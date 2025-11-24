@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Networking.Packets.Outgoing;
+﻿namespace AlloyClient.Networking.Packets.Outgoing;
 
 public class CreateGuild : OutgoingPacket<CreateGuild> {
     public string Name;

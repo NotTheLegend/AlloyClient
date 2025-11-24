@@ -1,11 +1,11 @@
 ﻿using System;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Rendering;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Rendering;
 using OpenTK.Mathematics;
-using RealmClient.Utils;
+using AlloyClient.Utils;
 
-namespace RealmClient.Ui.Components.Graphics;
+namespace AlloyClient.Ui.Components.Graphics;
 
 public sealed class ScreenGraphic : Sprite {
     

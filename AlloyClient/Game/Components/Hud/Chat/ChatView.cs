@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
+using AlloyClient.Networking;
+using AlloyClient.Networking.Packets.Outgoing;
+using AlloyClient.State;
+using AlloyClient.Ui.Chat;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Signals;
 using Common;
-using RealmClient.Networking;
-using RealmClient.Networking.Packets.Outgoing;
-using RealmClient.State;
-using RealmClient.Ui.Chat;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Signals;
 
-namespace RealmClient.Game.Components.Hud.Chat;
+namespace AlloyClient.Game.Components.Hud.Chat;
 
 // TODO:
 // Scroll up/down chat history

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using RealmClient.Game.Objects;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.BuiltIn.Buttons;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
-using RealmClient.Utils;
+using AlloyClient.Game.Objects;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.BuiltIn.Buttons;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.Utils;
 
-namespace RealmClient.Game.Components.Hud.Inventory
+namespace AlloyClient.Game.Components.Hud.Inventory
 {
     public sealed class TabStrip : Sprite
     {

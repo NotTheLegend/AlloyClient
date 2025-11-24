@@ -1,17 +1,17 @@
-﻿using RealmClient.Data;
-using RealmClient.Display;
-using RealmClient.Models;
-using RealmClient.Screens.Components;
-using RealmClient.Screens.Components.Containers;
-using RealmClient.State;
-using RealmClient.Ui.Components.Buttons;
-using RealmClient.UiLib;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
-using RealmClient.Utils;
+﻿using AlloyClient.Data;
+using AlloyClient.Display;
+using AlloyClient.Screens.Components;
+using AlloyClient.Screens.Components.Containers;
+using AlloyClient.State;
+using AlloyClient.Ui.Components.Buttons;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.Models;
+using AlloyClient.UiLib;
+using AlloyClient.Utils;
 
-namespace RealmClient.Screens;
+namespace AlloyClient.Screens;
 
 public class TitleScreen : TitleScreenBase {
     

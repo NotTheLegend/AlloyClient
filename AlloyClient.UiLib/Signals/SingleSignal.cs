@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RealmClient.UiLib.Signals;
+namespace AlloyClient.UiLib.Signals;
 
 public sealed class SingleSignal {
 

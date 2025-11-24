@@ -1,6 +1,6 @@
-﻿using RealmClient.UiLib.Extra;
+﻿using AlloyClient.UiLib.Extra;
 
-namespace RealmClient.Utils;
+namespace AlloyClient.Utils;
 
 public static class Transforms {
     public static readonly ColorTransform Default = new(1f, 1f, 1f, 1f);

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using AlloyClient.UiLib.Extra;
 using Common;
 using Common.Rendering;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using RealmClient.UiLib.Extra;
 
-namespace RealmClient.UiLib.Rendering;
+namespace AlloyClient.UiLib.Rendering;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 internal struct SpriteInstanceData(SpriteVertexMatrix data, Color color, Color colorOverride, Vector2 info, Vector4 scissor, Vector4 extra1, Vector4 extra2, ColorTransform colorTransform) : IBufferData<SpriteInstanceData> {

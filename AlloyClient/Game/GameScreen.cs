@@ -1,15 +1,15 @@
-﻿using Common;
-using RealmClient.Display;
-using RealmClient.Game.Components;
-using RealmClient.Networking;
-using RealmClient.Rendering;
-using RealmClient.State;
-using RealmClient.Ui.Components.Elements;
-using RealmClient.UiLib;
-using RealmClient.UiLib.Core;
-using RealmClient.Utils;
+﻿using AlloyClient.Display;
+using AlloyClient.Game.Components;
+using AlloyClient.Networking;
+using AlloyClient.State;
+using AlloyClient.Ui.Components.Elements;
+using AlloyClient.UiLib.Core;
+using Common;
+using AlloyClient.Rendering;
+using AlloyClient.UiLib;
+using AlloyClient.Utils;
 
-namespace RealmClient.Game;
+namespace AlloyClient.Game;
 
 public sealed class GameScreen : Screen {
     public readonly GameSprite GameSprite;

@@ -1,9 +1,9 @@
-﻿using Common.Structs;
-using RealmClient.Assets;
-using RealmClient.Game.Objects;
-using RealmClient.Rendering.VertexData;
+﻿using AlloyClient.Assets;
+using AlloyClient.Game.Objects;
+using AlloyClient.Rendering.VertexData;
+using Common.Structs;
 
-namespace RealmClient.Rendering.Types;
+namespace AlloyClient.Rendering.Types;
 
 public sealed class TypeGroundObject : RenderBase {
 

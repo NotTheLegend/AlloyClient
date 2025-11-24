@@ -1,7 +1,7 @@
-﻿using OpenTK.Mathematics;
-using RealmClient.Game.Objects;
+﻿using AlloyClient.Game.Objects;
+using OpenTK.Mathematics;
 
-namespace RealmClient.ParticleEffects;
+namespace AlloyClient.ParticleEffects;
 
 public abstract class ParticleEffect {
 

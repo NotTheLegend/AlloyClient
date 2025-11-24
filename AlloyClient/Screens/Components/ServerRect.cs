@@ -1,11 +1,11 @@
 ﻿using System;
-using RealmClient.Data;
-using RealmClient.State;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
+using AlloyClient.Data;
+using AlloyClient.State;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
 
-namespace RealmClient.Screens.Components;
+namespace AlloyClient.Screens.Components;
 
 public class ServerRect : Container {
     

@@ -1,8 +1,8 @@
-﻿using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Enums;
-using RealmClient.Utils;
+﻿using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.Utils;
 
-namespace RealmClient.Screens.Components.CharacterSelection;
+namespace AlloyClient.Screens.Components.CharacterSelection;
 
 public class ClassRect : Container {
     

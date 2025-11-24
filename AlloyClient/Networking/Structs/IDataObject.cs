@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Networking.Structs;
+﻿namespace AlloyClient.Networking.Structs;
 
 public interface IDataObject {
     public void Reset();

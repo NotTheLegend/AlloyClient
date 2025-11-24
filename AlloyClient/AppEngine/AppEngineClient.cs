@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using RealmClient.State;
-using RealmClient.Utils;
+using AlloyClient.State;
+using AlloyClient.Utils;
 
-namespace RealmClient.AppEngine;
+namespace AlloyClient.AppEngine;
 
 public static class AppEngineClient {
     private static readonly Logger Log = new("AppEngine");

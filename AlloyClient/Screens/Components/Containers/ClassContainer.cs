@@ -1,14 +1,14 @@
-using RealmClient.Data;
-using RealmClient.Display;
-using RealmClient.Game;
-using RealmClient.Screens.Components.CharacterSelection;
-using RealmClient.Ui.Components.Panels;
-using RealmClient.UiLib.BuiltIn.Buttons;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Extra;
+using AlloyClient.Data;
+using AlloyClient.Display;
+using AlloyClient.Game;
+using AlloyClient.Screens.Components.CharacterSelection;
+using AlloyClient.Ui.Components.Panels;
+using AlloyClient.UiLib.BuiltIn.Buttons;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Extra;
 
-namespace RealmClient.Screens.Components.Containers;
+namespace AlloyClient.Screens.Components.Containers;
 
 public class ClassContainer : Overlay {
 

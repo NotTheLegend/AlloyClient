@@ -1,6 +1,6 @@
-﻿using RealmClient.Utils;
+﻿using AlloyClient.Utils;
 
-namespace RealmClient.Models;
+namespace AlloyClient.Models;
 
 public struct CharListResponse {
     public bool Success;

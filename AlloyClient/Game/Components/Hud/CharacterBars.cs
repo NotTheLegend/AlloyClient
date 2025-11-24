@@ -1,6 +1,6 @@
-﻿using RealmClient.UiLib.Core;
+﻿using AlloyClient.UiLib.Core;
 
-namespace RealmClient.Game.Components.Hud;
+namespace AlloyClient.Game.Components.Hud;
 
 public class CharacterBars : Sprite {
 

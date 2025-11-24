@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
+using AlloyClient.Game;
+using AlloyClient.Game.Components;
+using AlloyClient.State;
+using AlloyClient.Ui.Components.Panels;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Extra;
 using Common;
-using RealmClient.Game;
-using RealmClient.Game.Components;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Extra;
-using RealmClient.Utils;
-using RealmClient.State;
-using RealmClient.Ui.Components.Panels;
+using AlloyClient.Utils;
 
-namespace RealmClient.Display;
+namespace AlloyClient.Display;
 
 public sealed class OverlayManager : Sprite {
     

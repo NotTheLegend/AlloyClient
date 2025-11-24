@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AlloyClient.Assets;
+using AlloyClient.Assets.Libraries;
+using AlloyClient.Assets.XmlStructs;
+using AlloyClient.Game.Components;
+using AlloyClient.Game.Objects;
+using AlloyClient.Rendering;
+using AlloyClient.Rendering.VertexData;
 using Common;
 using OpenTK.Mathematics;
-using RealmClient.Assets;
-using RealmClient.Assets.Libraries;
-using RealmClient.Assets.XmlStructs;
-using RealmClient.Game.Components;
-using RealmClient.Game.Objects;
-using RealmClient.Rendering;
-using RealmClient.Rendering.VertexData;
 
-namespace RealmClient.Game;
+namespace AlloyClient.Game;
 
 public class MapTile(int x, int y) {
 

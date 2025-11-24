@@ -1,9 +1,9 @@
-﻿using RealmClient.Screens;
-using RealmClient.UiLib;
-using RealmClient.UiLib.Extra;
-using RealmClient.Display;
+﻿using AlloyClient.Display;
+using AlloyClient.Screens;
+using AlloyClient.UiLib.Extra;
+using AlloyClient.UiLib;
 
-namespace RealmClient.Networking.Packets.Incoming;
+namespace AlloyClient.Networking.Packets.Incoming;
 
 public class Death : IncomingPacket<Death> {
     public int AccountId;

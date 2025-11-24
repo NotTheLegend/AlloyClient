@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Networking.Packets.Outgoing;
+﻿namespace AlloyClient.Networking.Packets.Outgoing;
 
 public class OtherHit : OutgoingPacket<OtherHit> {
     public int Time;

@@ -1,9 +1,9 @@
 ﻿using System;
-using RealmClient.State.SettingTypes;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Enums;
+using AlloyClient.State.SettingTypes;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Enums;
 
-namespace RealmClient.Game.Components.Options.OptionTypes;
+namespace AlloyClient.Game.Components.Options.OptionTypes;
 
 public class SliderOption : Option {
     private readonly SimpleText _text;

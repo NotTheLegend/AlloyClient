@@ -4,13 +4,13 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using AlloyClient.State;
+using AlloyClient.Utils;
 using Common;
 using Newtonsoft.Json;
-using RealmClient.AppEngine;
-using RealmClient.State;
-using RealmClient.Utils;
+using AlloyClient.AppEngine;
 
-namespace RealmClient.Models;
+namespace AlloyClient.Models;
 
 public struct AccountResponse {
     public bool Success;

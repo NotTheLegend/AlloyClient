@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using AlloyClient.Rendering.VertexData;
+using AlloyClient.Utils;
 using Common;
 using OpenTK.Mathematics;
-using RealmClient.Rendering.VertexData;
-using RealmClient.Utils;
 
-namespace RealmClient.Assets;
+namespace AlloyClient.Assets;
 
 public enum ModelType {
     Null,

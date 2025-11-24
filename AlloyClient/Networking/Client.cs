@@ -4,17 +4,17 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using RealmClient.Data;
-using RealmClient.Display;
-using RealmClient.Game;
-using RealmClient.Models;
-using RealmClient.Networking.Packets;
-using RealmClient.Networking.Packets.Outgoing;
-using RealmClient.Screens;
-using RealmClient.State;
-using RealmClient.Utils;
+using AlloyClient.Data;
+using AlloyClient.Display;
+using AlloyClient.Game;
+using AlloyClient.Networking.Packets;
+using AlloyClient.Networking.Packets.Outgoing;
+using AlloyClient.Screens;
+using AlloyClient.State;
+using AlloyClient.Utils;
+using AlloyClient.Models;
 
-namespace RealmClient.Networking;
+namespace AlloyClient.Networking;
 
 public enum ConnectionState {
     Disconnected,

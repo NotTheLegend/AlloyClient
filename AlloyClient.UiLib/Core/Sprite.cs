@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Extra;
+using AlloyClient.UiLib.Input;
+using AlloyClient.UiLib.Rendering;
+using AlloyClient.UiLib.Utils;
 using Common;
 using Common.Rendering;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Extra;
-using RealmClient.UiLib.Input;
-using RealmClient.UiLib.Rendering;
-using RealmClient.UiLib.Utils;
+using AlloyClient.UiLib.BuiltIn;
 
-namespace RealmClient.UiLib.Core;
+namespace AlloyClient.UiLib.Core;
 
 /* =TODO=
  * Focus

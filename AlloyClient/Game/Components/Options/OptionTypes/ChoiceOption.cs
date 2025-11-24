@@ -1,9 +1,9 @@
 ﻿using System;
-using RealmClient.Game.Components.Options.Ui;
-using RealmClient.State.SettingTypes;
-using RealmClient.Utils;
+using AlloyClient.Game.Components.Options.Ui;
+using AlloyClient.State.SettingTypes;
+using AlloyClient.Utils;
 
-namespace RealmClient.Game.Components.Options.OptionTypes;
+namespace AlloyClient.Game.Components.Options.OptionTypes;
 
 public class ChoiceOption<T> : Option {
     private static readonly Logger Log = new(typeof(ChoiceBox<T>));

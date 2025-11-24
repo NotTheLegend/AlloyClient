@@ -1,9 +1,9 @@
-﻿using OpenTK.Platform;
-using RealmClient.Game.Components.Options.Ui;
-using RealmClient.State;
-using RealmClient.State.SettingTypes;
+﻿using AlloyClient.Game.Components.Options.Ui;
+using AlloyClient.State;
+using AlloyClient.State.SettingTypes;
+using OpenTK.Platform;
 
-namespace RealmClient.Game.Components.Options.OptionTypes;
+namespace AlloyClient.Game.Components.Options.OptionTypes;
 
 public class KeyMapperOption : Option {
     private readonly KeyCodeBox _keyCodeBox;

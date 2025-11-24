@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using RealmClient.Assets.XmlStructs;
+using AlloyClient.Assets.XmlStructs;
 
-namespace RealmClient.Assets.Libraries;
+namespace AlloyClient.Assets.Libraries;
 
 public static class ObjectLibrary {
     public static readonly Dictionary<ushort, ObjectProperties> TypeToObjectProps = new();

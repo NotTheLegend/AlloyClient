@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Networking.Packets.Outgoing;
+﻿namespace AlloyClient.Networking.Packets.Outgoing;
 
 public class ChooseName : OutgoingPacket<ChooseName> {
     public string Name;

@@ -2,7 +2,7 @@
 using System.Xml.Linq;
 using Common;
 
-namespace RealmClient.Models;
+namespace AlloyClient.Models;
 
 public class AccountStatsModel {
 

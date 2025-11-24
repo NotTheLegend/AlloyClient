@@ -3,7 +3,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Common;
 
-namespace RealmClient.Data;
+namespace AlloyClient.Data;
 
 public sealed class NewsData(IEnumerable<XElement> xmls) : IGlobalData {
     public readonly NewsItem[] NewsList = xmls.Select(n => new NewsItem(n)).ToArray();

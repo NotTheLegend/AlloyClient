@@ -1,7 +1,7 @@
-﻿using RealmClient.Networking.Enums;
-using RealmClient.Networking.Structs.DataObjects;
+﻿using AlloyClient.Networking.Enums;
+using AlloyClient.Networking.Structs.DataObjects;
 
-namespace RealmClient.Networking.Packets.Incoming;
+namespace AlloyClient.Networking.Packets.Incoming;
 
 public class ShowEffect : IncomingPacket<ShowEffect> {
     public EffectType EffectType;

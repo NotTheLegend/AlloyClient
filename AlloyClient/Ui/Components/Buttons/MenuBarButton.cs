@@ -1,10 +1,10 @@
 ﻿using System;
+using AlloyClient.UiLib.BuiltIn.Buttons;
+using AlloyClient.UiLib.Core;
 using Common;
-using RealmClient.UiLib.BuiltIn.Buttons;
 using OpenTK.Mathematics;
-using RealmClient.UiLib.Core;
 
-namespace RealmClient.Ui.Components.Buttons;
+namespace AlloyClient.Ui.Components.Buttons;
 
 public sealed class MenuBarButton : TextButton {
     

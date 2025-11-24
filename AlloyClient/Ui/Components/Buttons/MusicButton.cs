@@ -1,12 +1,12 @@
-﻿using RealmClient.UiLib.BuiltIn.Buttons;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Data;
-using RealmClient.UiLib.Enums;
-using RealmClient.Sound;
-using RealmClient.State;
-using RealmClient.Utils;
+﻿using AlloyClient.Sound;
+using AlloyClient.State;
+using AlloyClient.UiLib.BuiltIn.Buttons;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Data;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.Utils;
 
-namespace RealmClient.Ui.Components.Buttons;
+namespace AlloyClient.Ui.Components.Buttons;
 
 public struct MusicButtonConfig {
     

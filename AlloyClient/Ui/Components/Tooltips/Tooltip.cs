@@ -1,8 +1,8 @@
-﻿using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using System.Reflection.Metadata.Ecma335;
+﻿using System.Reflection.Metadata.Ecma335;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
 
-namespace RealmClient.Ui.Components.Tooltips;
+namespace AlloyClient.Ui.Components.Tooltips;
 
 public abstract class Tooltip : Sprite {
 

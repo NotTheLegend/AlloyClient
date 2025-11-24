@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Game.Objects.Enums;
+﻿namespace AlloyClient.Game.Objects.Enums;
 
 public enum AnimationType {
     Stand,

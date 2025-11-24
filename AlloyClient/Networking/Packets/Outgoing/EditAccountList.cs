@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Networking.Packets.Outgoing;
+﻿namespace AlloyClient.Networking.Packets.Outgoing;
 
 public class EditAccountList : OutgoingPacket<EditAccountList> {
     public int AccountListId;

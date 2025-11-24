@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Networking.Structs.DataObjects;
+﻿namespace AlloyClient.Networking.Structs.DataObjects;
 
 public struct TradeItem : IDataObject {
     public int Item;

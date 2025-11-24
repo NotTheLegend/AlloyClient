@@ -2,7 +2,7 @@
 using Common;
 using OpenTK.Mathematics;
 
-namespace RealmClient.Game.Components;
+namespace AlloyClient.Game.Components;
 
 public static class MinimapTexture {
     

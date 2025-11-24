@@ -1,12 +1,12 @@
 ﻿using System;
+using AlloyClient.Assets;
+using AlloyClient.Game.Objects;
+using AlloyClient.Rendering.Types.SubTypes;
+using AlloyClient.Rendering.VertexData;
 using Common;
 using OpenTK.Mathematics;
-using RealmClient.Assets;
-using RealmClient.Game.Objects;
-using RealmClient.Rendering.Types.SubTypes;
-using RealmClient.Rendering.VertexData;
 
-namespace RealmClient.Rendering.Types;
+namespace AlloyClient.Rendering.Types;
 
 public sealed class TypeGameObject : RenderBase {
     

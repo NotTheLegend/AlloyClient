@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Common;
 
-namespace RealmClient.UiLib.Extra;
+namespace AlloyClient.UiLib.Extra;
 
 public sealed class Timer {
     

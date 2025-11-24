@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Rendering;
+﻿namespace AlloyClient.Rendering;
 
 public static class RenderConfig {
     public const float NoShade = 0f;

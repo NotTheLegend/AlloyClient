@@ -1,11 +1,11 @@
 ﻿using System;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Data;
 using Common;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Data;
-using RealmClient.Utils;
+using AlloyClient.Utils;
 using OpenTK.Mathematics;
 
-namespace RealmClient.Ui;
+namespace AlloyClient.Ui;
 
 public static class SliceLibrary {
     

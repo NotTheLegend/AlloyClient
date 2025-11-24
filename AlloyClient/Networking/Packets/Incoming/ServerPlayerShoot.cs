@@ -1,6 +1,6 @@
-﻿using RealmClient.Networking.Structs.DataObjects;
+﻿using AlloyClient.Networking.Structs.DataObjects;
 
-namespace RealmClient.Networking.Packets.Incoming;
+namespace AlloyClient.Networking.Packets.Incoming;
 
 public class ServerPlayerShoot : IncomingPacket<ServerPlayerShoot> {
     public byte BulletId;

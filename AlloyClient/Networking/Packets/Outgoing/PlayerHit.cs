@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Networking.Packets.Outgoing;
+﻿namespace AlloyClient.Networking.Packets.Outgoing;
 
 public class PlayerHit : OutgoingPacket<PlayerHit> {
     public byte BulletId;

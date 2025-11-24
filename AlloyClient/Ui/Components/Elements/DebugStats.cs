@@ -1,13 +1,13 @@
-﻿using Common;
-using RealmClient.Game;
-using RealmClient.Rendering;
-using RealmClient.UiLib;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
-using RealmClient.Utils;
+﻿using AlloyClient.Game;
+using AlloyClient.Rendering;
+using AlloyClient.UiLib;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
+using Common;
+using AlloyClient.Utils;
 
-namespace RealmClient.Ui.Components.Elements;
+namespace AlloyClient.Ui.Components.Elements;
 
 public class DebugStats : Sprite {
     private const int Outline = 3;

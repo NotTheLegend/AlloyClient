@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Networking.Packets.Incoming;
+﻿namespace AlloyClient.Networking.Packets.Incoming;
 
 public class NameResult : IncomingPacket<NameResult> {
     public bool Success;

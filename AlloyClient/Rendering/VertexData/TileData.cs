@@ -4,7 +4,7 @@ using Common.Rendering;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
-namespace RealmClient.Rendering.VertexData;
+namespace AlloyClient.Rendering.VertexData;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct TileData(Vector4 posOffset, Vector4 uv, Vector4 animate, Vector4 mask) : IBufferData<TileData> {

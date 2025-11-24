@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Networking.Packets.Outgoing;
+﻿namespace AlloyClient.Networking.Packets.Outgoing;
 
 public class UpdateAck : OutgoingPacket<UpdateAck> {
     public override PacketId PacketId => PacketId.Unknown;

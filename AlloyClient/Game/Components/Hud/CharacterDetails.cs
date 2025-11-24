@@ -1,10 +1,10 @@
-using RealmClient.Game.Objects;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
-using RealmClient.Utils;
+using AlloyClient.Game.Objects;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.Utils;
 
-namespace RealmClient.Game.Components.Hud;
+namespace AlloyClient.Game.Components.Hud;
 
 public sealed class CharacterDetails : Sprite {
     

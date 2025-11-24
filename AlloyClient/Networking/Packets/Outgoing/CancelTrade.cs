@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Networking.Packets.Outgoing;
+﻿namespace AlloyClient.Networking.Packets.Outgoing;
 
 public class CancelTrade : OutgoingPacket<CancelTrade> {
     public override PacketId PacketId => PacketId.CancelTrade;

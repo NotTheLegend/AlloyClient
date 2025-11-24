@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AlloyClient.Utils;
 using OpenTK.Mathematics;
-using RealmClient.Utils;
 
-namespace RealmClient.Game.Objects.Util;
+namespace AlloyClient.Game.Objects.Util;
 
 public sealed class ConditionEffect(string name, ConditionEffects bit, int[] iconOffsets) {
     public readonly string Name = name;

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
+using AlloyClient.Ui.Components.Dialogs;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Extra;
 using Common;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Extra;
-using RealmClient.Ui.Components.Dialogs;
 
-namespace RealmClient.Display;
+namespace AlloyClient.Display;
 
 public sealed class DialogManager : Sprite {
 

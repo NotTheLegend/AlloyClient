@@ -1,6 +1,6 @@
-﻿using RealmClient.Networking.Enums;
+﻿using AlloyClient.Networking.Enums;
 
-namespace RealmClient.Networking.Structs.DataObjects;
+namespace AlloyClient.Networking.Structs.DataObjects;
 
 public struct StatData : IDataObject {
     public StatsType Type;

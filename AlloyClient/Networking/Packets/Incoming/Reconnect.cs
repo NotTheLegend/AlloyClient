@@ -1,9 +1,9 @@
-﻿using RealmClient.Data;
-using RealmClient.Game;
-using RealmClient.Networking.Packets.Outgoing;
-using RealmClient.State;
+﻿using AlloyClient.Data;
+using AlloyClient.Game;
+using AlloyClient.Networking.Packets.Outgoing;
+using AlloyClient.State;
 
-namespace RealmClient.Networking.Packets.Incoming;
+namespace AlloyClient.Networking.Packets.Incoming;
 
 public class Reconnect : IncomingPacket<Reconnect> {
     public string Name;

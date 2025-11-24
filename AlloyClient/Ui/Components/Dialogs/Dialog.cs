@@ -1,11 +1,11 @@
 ﻿using System;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.BuiltIn.Buttons;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
-using RealmClient.State;
+using AlloyClient.State;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.BuiltIn.Buttons;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
 
-namespace RealmClient.Ui.Components.Dialogs;
+namespace AlloyClient.Ui.Components.Dialogs;
 
 public sealed record DialogOption(string Text, Action Callback = null);
 

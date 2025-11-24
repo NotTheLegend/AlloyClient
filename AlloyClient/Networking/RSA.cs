@@ -6,7 +6,7 @@ using Org.BouncyCastle.Crypto.Encodings;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.OpenSsl;
 
-namespace RealmClient.Networking;
+namespace AlloyClient.Networking;
 
 public static class Rsa {
     private const string PublicKey = """

@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Networking.Packets.Outgoing;
+﻿namespace AlloyClient.Networking.Packets.Outgoing;
 
 public class Escape : OutgoingPacket<Escape> {
     public override PacketId PacketId => PacketId.Escape;

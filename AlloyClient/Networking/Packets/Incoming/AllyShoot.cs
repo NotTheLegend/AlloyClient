@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Networking.Packets.Incoming;
+﻿namespace AlloyClient.Networking.Packets.Incoming;
 
 public class AllyShoot : IncomingPacket<AllyShoot> {
 

@@ -1,10 +1,10 @@
 ﻿using System;
+using AlloyClient.Game;
+using AlloyClient.Game.Objects;
+using AlloyClient.Rendering.VertexData;
 using OpenTK.Mathematics;
-using RealmClient.Game;
-using RealmClient.Game.Objects;
-using RealmClient.Rendering.VertexData;
 
-namespace RealmClient.ParticleEffects;
+namespace AlloyClient.ParticleEffects;
 
 public class HitEffect : ParticleEffect
 {

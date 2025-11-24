@@ -1,9 +1,9 @@
 ﻿using System;
+using AlloyClient.UiLib.Enums;
 using Common;
 using OpenTK.Mathematics;
-using RealmClient.UiLib.Enums;
 
-namespace RealmClient.UiLib.Utils;
+namespace AlloyClient.UiLib.Utils;
 
 internal static class InternalUtils {
 

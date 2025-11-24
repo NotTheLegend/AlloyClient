@@ -1,7 +1,7 @@
-﻿using RealmClient.Game.Components.Hud.Inventory;
-using RealmClient.Game.Objects;
+﻿using AlloyClient.Game.Components.Hud.Inventory;
+using AlloyClient.Game.Objects;
 
-namespace RealmClient.Game.Components.Hud.Panels;
+namespace AlloyClient.Game.Components.Hud.Panels;
 
 public class ContainerPanel : Panel {
 

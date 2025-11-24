@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using RealmClient.Networking.Packets;
-using RealmClient.State;
+using AlloyClient.Networking.Packets;
+using AlloyClient.State;
 
-namespace RealmClient.Utils;
+namespace AlloyClient.Utils;
 
 public enum PacketLogLevel {
     All,

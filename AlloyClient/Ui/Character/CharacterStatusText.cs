@@ -1,15 +1,13 @@
-﻿using Common;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
+﻿using AlloyClient.Game;
+using AlloyClient.Game.Objects;
+using AlloyClient.State;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
 using OpenTK.Mathematics;
-using RealmClient.Game;
-using RealmClient.Game.Objects;
-using RealmClient.State;
-using RealmClient.Utils;
-using MathUtils = RealmClient.Utils.MathUtils;
+using AlloyClient.Utils;
 
-namespace RealmClient.Ui.Character;
+namespace AlloyClient.Ui.Character;
 
 public class CharacterStatusText : Sprite {
     private const int MaxDrift = 20;

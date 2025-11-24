@@ -1,22 +1,20 @@
 using System.Collections.Generic;
-using RealmClient.Data;
-using RealmClient.Display;
-using RealmClient.Game;
-using RealmClient.Screens.Components;
-using RealmClient.Screens.Components.CharacterList;
-using RealmClient.Screens.Components.Containers;
-using RealmClient.State;
-using RealmClient.Ui.Components.Buttons;
-using RealmClient.Ui.Components.Scrollbars;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.BuiltIn.Buttons;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Extra;
-using RealmClient.Utils;
-using ColorRect = RealmClient.UiLib.BuiltIn.ColorRect;
-using Container = RealmClient.UiLib.BuiltIn.Container;
+using AlloyClient.Data;
+using AlloyClient.Display;
+using AlloyClient.Game;
+using AlloyClient.Screens.Components;
+using AlloyClient.Screens.Components.CharacterList;
+using AlloyClient.Screens.Components.Containers;
+using AlloyClient.State;
+using AlloyClient.Ui.Components.Buttons;
+using AlloyClient.Ui.Components.Scrollbars;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.BuiltIn.Buttons;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Extra;
+using AlloyClient.Utils;
 
-namespace RealmClient.Screens;
+namespace AlloyClient.Screens;
 
 public class CharacterListScreen : TitleScreenBase {
     private const int PlayFontSize = 55;

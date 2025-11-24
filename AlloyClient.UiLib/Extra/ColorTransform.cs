@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace RealmClient.UiLib.Extra;
+namespace AlloyClient.UiLib.Extra;
 
 public struct ColorTransform {
     

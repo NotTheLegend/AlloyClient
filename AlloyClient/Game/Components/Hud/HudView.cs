@@ -1,11 +1,11 @@
-﻿using Common;
-using RealmClient.Game.Components.Hud.Inventory;
-using RealmClient.State;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
+﻿using AlloyClient.Game.Components.Hud.Inventory;
+using AlloyClient.State;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
+using Common;
 
-namespace RealmClient.Game.Components.Hud;
+namespace AlloyClient.Game.Components.Hud;
 
 public sealed class HudView : Sprite {
     public const int Width = 240;

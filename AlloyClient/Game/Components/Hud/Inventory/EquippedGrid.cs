@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using RealmClient.Assets.XmlStructs;
-using RealmClient.Game.Objects;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
+using AlloyClient.Assets.XmlStructs;
+using AlloyClient.Game.Objects;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
 
-namespace RealmClient.Game.Components.Hud.Inventory;
+namespace AlloyClient.Game.Components.Hud.Inventory;
 
 public sealed class EquippedGrid : Sprite {
 

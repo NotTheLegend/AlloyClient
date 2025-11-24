@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using RealmClient.Assets.XmlStructs;
+using AlloyClient.Assets.XmlStructs;
 
-namespace RealmClient.Assets.Libraries;
+namespace AlloyClient.Assets.Libraries;
 
 public static class GroundLibrary {
     public static readonly Dictionary<ushort, GroundProperties> TypeToGroundProps = new();

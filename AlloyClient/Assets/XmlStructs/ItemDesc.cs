@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Xml.Linq;
+using AlloyClient.Game.Objects.Util;
 using Common;
-using RealmClient.Game.Objects.Util;
 
-namespace RealmClient.Assets.XmlStructs;
+namespace AlloyClient.Assets.XmlStructs;
 
 public class ItemDesc {
     public readonly ushort ObjectType;

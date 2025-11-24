@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using AlloyClient.Assets.Libraries;
+using AlloyClient.Game.Objects.Enums;
+using AlloyClient.Game.Objects.Util;
+using AlloyClient.Networking;
+using AlloyClient.Networking.Enums;
+using AlloyClient.Networking.Packets.Outgoing;
+using AlloyClient.Networking.Structs.DataObjects;
+using AlloyClient.Rendering;
+using AlloyClient.Rendering.Types;
+using AlloyClient.State;
+using AlloyClient.Utils;
 using Common;
 using OpenTK.Mathematics;
-using RealmClient.Assets.Libraries;
-using RealmClient.Game.Objects.Enums;
-using RealmClient.Game.Objects.Util;
-using RealmClient.Networking;
-using RealmClient.Networking.Enums;
-using RealmClient.Networking.Packets.Outgoing;
-using RealmClient.Networking.Structs.DataObjects;
-using RealmClient.Rendering;
-using RealmClient.Rendering.Types;
-using RealmClient.State;
-using RealmClient.Utils;
 
-namespace RealmClient.Game.Objects;
+namespace AlloyClient.Game.Objects;
 
 public class Player : Entity {
     private const float MoveThreshold = 0.4f;

@@ -1,20 +1,20 @@
 ﻿using System;
+using AlloyClient.Assets.XmlStructs;
+using AlloyClient.Display;
+using AlloyClient.Game.Objects;
+using AlloyClient.Networking;
+using AlloyClient.Networking.Packets.Outgoing;
+using AlloyClient.Networking.Structs.DataObjects;
+using AlloyClient.Ui.Components.Tooltips;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Extra;
+using AlloyClient.Utils;
 using Common;
 using OpenTK.Mathematics;
-using RealmClient.Assets.XmlStructs;
-using RealmClient.Display;
-using RealmClient.Game.Objects;
-using RealmClient.Networking;
-using RealmClient.Networking.Packets.Outgoing;
-using RealmClient.Networking.Structs.DataObjects;
-using RealmClient.Ui.Components.Tooltips;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Extra;
-using RealmClient.Utils;
 
-namespace RealmClient.Game.Components.Hud.Inventory;
+namespace AlloyClient.Game.Components.Hud.Inventory;
 
 public sealed class ItemTile : Sprite {
 

@@ -1,6 +1,6 @@
-﻿using RealmClient.Screens.Components;
+﻿using AlloyClient.Screens.Components;
 
-namespace RealmClient.Screens;
+namespace AlloyClient.Screens;
 
 public class LegendsTitleScreen : TitleScreenBase {
 

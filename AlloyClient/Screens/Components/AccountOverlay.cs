@@ -1,14 +1,14 @@
-using RealmClient.Data;
-using RealmClient.Display;
-using RealmClient.Models;
-using RealmClient.Screens.Components.Containers;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.BuiltIn.Buttons;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Extra;
+using AlloyClient.Data;
+using AlloyClient.Display;
+using AlloyClient.Screens.Components.Containers;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.BuiltIn.Buttons;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Extra;
+using AlloyClient.Models;
 
-namespace RealmClient.Screens.Components;
+namespace AlloyClient.Screens.Components;
 
 public class AccountOverlay : Sprite {
     private readonly bool _isTitle;

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Input;
-using RealmClient.UiLib.Utils;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Input;
+using AlloyClient.UiLib.Utils;
+using AlloyClient.UiLib.BuiltIn;
 
-namespace RealmClient.UiLib.Core;
+namespace AlloyClient.UiLib.Core;
 
 public abstract class EventManager {
     

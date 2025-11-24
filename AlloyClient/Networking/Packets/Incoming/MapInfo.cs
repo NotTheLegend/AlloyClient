@@ -1,8 +1,8 @@
-﻿using RealmClient.Data;
-using RealmClient.Game;
-using RealmClient.Networking.Packets.Outgoing;
+﻿using AlloyClient.Data;
+using AlloyClient.Game;
+using AlloyClient.Networking.Packets.Outgoing;
 
-namespace RealmClient.Networking.Packets.Incoming;
+namespace AlloyClient.Networking.Packets.Incoming;
 
 public class MapInfo : IncomingPacket<MapInfo> {
     public int Width;

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using RealmClient.State;
+using AlloyClient.State;
 
-namespace RealmClient.Data;
+namespace AlloyClient.Data;
 
 public interface IGlobalData;
 

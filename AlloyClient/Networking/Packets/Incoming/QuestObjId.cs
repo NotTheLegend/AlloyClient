@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Networking.Packets.Incoming;
+﻿namespace AlloyClient.Networking.Packets.Incoming;
 
 public class QuestObjId : IncomingPacket<QuestObjId> {
     public int CurrentQuestObjectId;

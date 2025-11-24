@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RealmClient.UiLib.Enums;
+namespace AlloyClient.UiLib.Enums;
 
 public enum UiAnchor : byte {
     LeftTop = 0,

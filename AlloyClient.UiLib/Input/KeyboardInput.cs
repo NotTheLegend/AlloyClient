@@ -1,8 +1,8 @@
-﻿using OpenTK.Platform;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
+﻿using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using OpenTK.Platform;
 
-namespace RealmClient.UiLib.Input;
+namespace AlloyClient.UiLib.Input;
 
 public static class KeyboardInput {
     

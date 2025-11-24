@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using RealmClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.BuiltIn;
 
-namespace RealmClient.Game.Components.Hud.Chat;
+namespace AlloyClient.Game.Components.Hud.Chat;
 
 // TODO:
 // Chat scrolling

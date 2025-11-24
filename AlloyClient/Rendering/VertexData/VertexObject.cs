@@ -5,7 +5,7 @@ using Common.Rendering;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
-namespace RealmClient.Rendering.VertexData;
+namespace AlloyClient.Rendering.VertexData;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct VertexObject(Vector3 position, Vector4 uv, Vector4 scale, Vector4 rotation, Vector4 extra, Color color) : IVertexData<VertexObject> {

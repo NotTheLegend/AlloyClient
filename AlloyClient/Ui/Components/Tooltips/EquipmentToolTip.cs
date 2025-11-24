@@ -1,12 +1,12 @@
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Enums;
 using System;
-using RealmClient.Assets.XmlStructs;
-using RealmClient.Game.Objects.Util;
-using RealmClient.Ui.Components.Elements;
-using RealmClient.Utils;
+using AlloyClient.Assets.XmlStructs;
+using AlloyClient.Game.Objects.Util;
+using AlloyClient.Ui.Components.Elements;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.Utils;
 
-namespace RealmClient.Ui.Components.Tooltips;
+namespace AlloyClient.Ui.Components.Tooltips;
 
 public sealed class EquipmentToolTip : Tooltip 
 {

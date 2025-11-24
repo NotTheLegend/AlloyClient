@@ -1,13 +1,13 @@
 ﻿using System;
+using AlloyClient.Game;
+using AlloyClient.State;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Extra;
 using Common;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Extra;
 using OpenTK.Platform;
-using RealmClient.Game;
-using RealmClient.State;
 
-namespace RealmClient.Display;
+namespace AlloyClient.Display;
 
 public sealed class ScreenManager : Sprite {
     private static ScreenManager _instance;

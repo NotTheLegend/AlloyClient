@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Networking.Packets.Incoming;
+﻿namespace AlloyClient.Networking.Packets.Incoming;
 
 public class GlobalNotification : IncomingPacket<GlobalNotification> {
     public int Type;

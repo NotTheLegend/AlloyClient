@@ -1,7 +1,7 @@
-﻿using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Signals;
+﻿using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Signals;
 
-namespace RealmClient.Game.Components.Hud.Panels;
+namespace AlloyClient.Game.Components.Hud.Panels;
 
 public abstract class Panel : Sprite {
 

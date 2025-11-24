@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using AlloyClient.UiLib.Core;
 using Common;
-using RealmClient.UiLib.Core;
 
-namespace RealmClient.Ui.Chat;
+namespace AlloyClient.Ui.Chat;
 
 public class ChatLayer : Sprite {
 

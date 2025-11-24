@@ -1,11 +1,11 @@
+using AlloyClient.Game.Objects;
+using AlloyClient.Rendering.VertexData;
+using AlloyClient.UiLib;
+using AlloyClient.UiLib.Enums;
 using Common;
-using RealmClient.UiLib;
-using RealmClient.UiLib.Enums;
 using OpenTK.Mathematics;
-using RealmClient.Game.Objects;
-using RealmClient.Rendering.VertexData;
 
-namespace RealmClient.Rendering.Types.SubTypes;
+namespace AlloyClient.Rendering.Types.SubTypes;
 
 public class TypeName : SubRenderBase {
 

@@ -1,11 +1,11 @@
-﻿using RealmClient.Assets.Libraries;
-using RealmClient.Game;
-using RealmClient.Game.Objects;
-using RealmClient.Networking.Packets.Outgoing;
-using RealmClient.Networking.Structs.DataObjects;
-using RealmClient.Utils;
+﻿using AlloyClient.Assets.Libraries;
+using AlloyClient.Game;
+using AlloyClient.Game.Objects;
+using AlloyClient.Networking.Packets.Outgoing;
+using AlloyClient.Networking.Structs.DataObjects;
+using AlloyClient.Utils;
 
-namespace RealmClient.Networking.Packets.Incoming;
+namespace AlloyClient.Networking.Packets.Incoming;
 
 public class Update : IncomingPacket<Update> {
     public TileData[] Tiles;

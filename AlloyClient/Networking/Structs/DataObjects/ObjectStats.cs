@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace RealmClient.Networking.Structs.DataObjects;
+namespace AlloyClient.Networking.Structs.DataObjects;
 
 public struct ObjectStats : IDataObject {
     public int Id;

@@ -1,4 +1,4 @@
-namespace RealmClient.Networking.Packets;
+namespace AlloyClient.Networking.Packets;
 
 public enum PacketId : byte
 {

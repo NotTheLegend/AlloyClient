@@ -4,14 +4,14 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Xml;
+using AlloyClient.Data;
+using AlloyClient.State.SettingTypes;
+using AlloyClient.Utils;
 using Newtonsoft.Json;
 using OpenTK.Platform;
-using RealmClient.Data;
-using RealmClient.Models;
-using RealmClient.State.SettingTypes;
-using RealmClient.Utils;
+using AlloyClient.Models;
 
-namespace RealmClient.State;
+namespace AlloyClient.State;
 
 public static class Settings {
     private static readonly Logger Log = new(typeof(Settings));

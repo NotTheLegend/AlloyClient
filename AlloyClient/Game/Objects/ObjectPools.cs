@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-namespace RealmClient.Game.Objects;
+namespace AlloyClient.Game.Objects;
 
 public static class ObjectPools {
 

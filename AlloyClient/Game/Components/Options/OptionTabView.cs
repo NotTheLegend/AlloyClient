@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using RealmClient.Game.Components.Options.OptionTypes;
-using RealmClient.State;
-using RealmClient.State.SettingTypes;
-using RealmClient.Ui.Components.Scrollbars;
-using RealmClient.UiLib.BuiltIn;
+using AlloyClient.Game.Components.Options.OptionTypes;
+using AlloyClient.State;
+using AlloyClient.State.SettingTypes;
+using AlloyClient.Ui.Components.Scrollbars;
+using AlloyClient.UiLib.BuiltIn;
 
-namespace RealmClient.Game.Components.Options;
+namespace AlloyClient.Game.Components.Options;
 
 public class OptionTabView : Container {
     private static readonly string[] OnOffLabels = ["On", "Off"];

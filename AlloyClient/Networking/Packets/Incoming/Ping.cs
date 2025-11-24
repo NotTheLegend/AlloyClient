@@ -1,6 +1,6 @@
-﻿using RealmClient.Networking.Packets.Outgoing;
+﻿using AlloyClient.Networking.Packets.Outgoing;
 
-namespace RealmClient.Networking.Packets.Incoming;
+namespace AlloyClient.Networking.Packets.Incoming;
 
 public class Ping : IncomingPacket<Ping> {
     public int RTT;

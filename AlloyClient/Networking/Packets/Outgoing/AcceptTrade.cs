@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RealmClient.Networking.Packets.Outgoing;
+namespace AlloyClient.Networking.Packets.Outgoing;
 
 public class AcceptTrade : OutgoingPacket<AcceptTrade> {
     public bool[] MyOffer;

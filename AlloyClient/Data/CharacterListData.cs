@@ -2,7 +2,7 @@
 using System.Xml.Linq;
 using Common;
 
-namespace RealmClient.Data;
+namespace AlloyClient.Data;
 
 public sealed class CharacterListData(XElement xml) : IGlobalData {
 

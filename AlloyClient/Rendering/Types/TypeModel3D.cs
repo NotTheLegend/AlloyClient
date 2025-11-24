@@ -1,12 +1,12 @@
 ﻿using System;
+using AlloyClient.Assets;
+using AlloyClient.Game.Objects;
+using AlloyClient.Rendering.VertexData;
+using AlloyClient.Utils;
 using Common.Structs;
 using OpenTK.Mathematics;
-using RealmClient.Assets;
-using RealmClient.Game.Objects;
-using RealmClient.Rendering.VertexData;
-using RealmClient.Utils;
 
-namespace RealmClient.Rendering.Types;
+namespace AlloyClient.Rendering.Types;
 
 public sealed class TypeModel3D : RenderBase {
     private static readonly Logger Log = new(typeof(TypeModel3D));

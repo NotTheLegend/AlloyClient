@@ -1,9 +1,9 @@
 ﻿using System;
-using RealmClient.UiLib;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Extra;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Extra;
+using AlloyClient.UiLib;
 
-namespace RealmClient.Utils;
+namespace AlloyClient.Utils;
 
 public static class SpriteUtils {
     

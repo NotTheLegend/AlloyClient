@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenTK.Mathematics;
 
-namespace RealmClient.ParticleEffects;
+namespace AlloyClient.ParticleEffects;
 
 public readonly struct FountainParticle(double startTime, float angle) {
 

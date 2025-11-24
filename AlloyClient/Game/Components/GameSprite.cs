@@ -1,14 +1,14 @@
-﻿using RealmClient.Display;
-using RealmClient.Game.Components.Hud;
-using RealmClient.Game.Components.Hud.Chat;
-using RealmClient.State;
-using RealmClient.Ui.Character;
-using RealmClient.Ui.Chat;
-using RealmClient.UiLib;
-using RealmClient.UiLib.Core;
-using RealmClient.Utils;
+﻿using AlloyClient.Game.Components.Hud;
+using AlloyClient.Game.Components.Hud.Chat;
+using AlloyClient.State;
+using AlloyClient.Ui.Character;
+using AlloyClient.Ui.Chat;
+using AlloyClient.UiLib.Core;
+using AlloyClient.Display;
+using AlloyClient.UiLib;
+using AlloyClient.Utils;
 
-namespace RealmClient.Game.Components;
+namespace AlloyClient.Game.Components;
 
 public sealed class GameSprite : Sprite {
 

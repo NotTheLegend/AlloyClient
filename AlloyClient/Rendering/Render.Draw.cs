@@ -1,8 +1,8 @@
-﻿using OpenTK.Graphics.OpenGL;
-using RealmClient.Assets;
-using RealmClient.Rendering.VertexData;
+﻿using AlloyClient.Assets;
+using AlloyClient.Rendering.VertexData;
+using OpenTK.Graphics.OpenGL;
 
-namespace RealmClient.Rendering;
+namespace AlloyClient.Rendering;
 
 public static partial class Render {
     public static int LastDrawCountTiles;

@@ -1,8 +1,8 @@
-﻿using RealmClient.Game;
-using RealmClient.Game.Components.Hud.Chat;
-using RealmClient.Ui.Chat;
+﻿using AlloyClient.Game;
+using AlloyClient.Game.Components.Hud.Chat;
+using AlloyClient.Ui.Chat;
 
-namespace RealmClient.Networking.Packets.Incoming;
+namespace AlloyClient.Networking.Packets.Incoming;
 
 public class Text : IncomingPacket<Text> {
     public string Name;

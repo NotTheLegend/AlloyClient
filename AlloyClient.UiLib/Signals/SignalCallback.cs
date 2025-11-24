@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace RealmClient.UiLib.Signals;
+namespace AlloyClient.UiLib.Signals;
 
 internal sealed class SignalCallback<T> : IEquatable<SignalCallback<T>> where T : Delegate {
 

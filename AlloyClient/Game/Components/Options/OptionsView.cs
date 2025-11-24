@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
-using RealmClient.Display;
-using RealmClient.Networking;
-using RealmClient.State;
-using RealmClient.Ui.Components.Buttons;
-using RealmClient.Ui.Components.Panels;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.BuiltIn.Buttons;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Signals;
+using AlloyClient.Display;
+using AlloyClient.Networking;
+using AlloyClient.State;
+using AlloyClient.Ui.Components.Buttons;
+using AlloyClient.Ui.Components.Panels;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.BuiltIn.Buttons;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Signals;
 
-namespace RealmClient.Game.Components.Options;
+namespace AlloyClient.Game.Components.Options;
 
 public sealed class OptionsView : Overlay {
 

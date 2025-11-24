@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using AlloyClient.State;
+using AlloyClient.Utils;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using RealmClient.State;
-using RealmClient.Utils;
 
-namespace RealmClient.Game;
+namespace AlloyClient.Game;
 
 public static class Camera {
 

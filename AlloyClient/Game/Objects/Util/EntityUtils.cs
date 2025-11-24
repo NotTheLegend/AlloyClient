@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using OpenTK.Mathematics;
 
-namespace RealmClient.Game.Objects.Util;
+namespace AlloyClient.Game.Objects.Util;
 
 public static class EntityUtils {
     public static float CalculateDistance(Vector2 point1, Vector2 point2) {

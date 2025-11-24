@@ -1,7 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using OpenTK.Platform;
 
-namespace RealmClient.UiLib.Core;
+namespace AlloyClient.UiLib.Core;
 
 public enum EventPhase {
     Capture,

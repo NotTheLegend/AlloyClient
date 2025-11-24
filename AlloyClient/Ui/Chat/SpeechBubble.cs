@@ -1,16 +1,14 @@
 ﻿using System;
-using Common;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
+using AlloyClient.Game;
+using AlloyClient.Game.Objects;
+using AlloyClient.State;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
 using OpenTK.Mathematics;
-using RealmClient.Game;
-using RealmClient.Game.Objects;
-using RealmClient.State;
-using RealmClient.Utils;
-using MathUtils = RealmClient.Utils.MathUtils;
+using AlloyClient.Utils;
 
-namespace RealmClient.Ui.Chat;
+namespace AlloyClient.Ui.Chat;
 
 public record struct SpeechData(Entity Owner, string Text, string Recipient);
 

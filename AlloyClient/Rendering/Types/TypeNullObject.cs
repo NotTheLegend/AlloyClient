@@ -1,7 +1,7 @@
-﻿using Common.Structs;
-using RealmClient.Assets;
+﻿using AlloyClient.Assets;
+using Common.Structs;
 
-namespace RealmClient.Rendering.Types;
+namespace AlloyClient.Rendering.Types;
 
 public sealed class TypeNullObject : RenderBase {
     public override ModelType ModelType {

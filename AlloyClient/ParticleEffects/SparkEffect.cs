@@ -1,8 +1,8 @@
-﻿using OpenTK.Mathematics;
-using RealmClient.Game;
-using RealmClient.Rendering.VertexData;
+﻿using AlloyClient.Game;
+using AlloyClient.Rendering.VertexData;
+using OpenTK.Mathematics;
 
-namespace RealmClient.ParticleEffects;
+namespace AlloyClient.ParticleEffects;
 
 public class SparkEffect : ParticleEffect {
     private ParticleData _particle;

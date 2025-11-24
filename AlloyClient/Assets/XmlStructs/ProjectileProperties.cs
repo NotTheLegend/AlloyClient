@@ -1,8 +1,8 @@
 using System.Xml.Linq;
+using AlloyClient.Game.Objects.Util;
 using Common;
-using RealmClient.Game.Objects.Util;
 
-namespace RealmClient.Assets.XmlStructs;
+namespace AlloyClient.Assets.XmlStructs;
 
 public sealed class ProjectileProperties {
     

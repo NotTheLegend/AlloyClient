@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using AlloyClient.UiLib.Utils;
 using OpenTK.Mathematics;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Utils;
+using AlloyClient.UiLib.BuiltIn;
 
-namespace RealmClient.UiLib.Core;
+namespace AlloyClient.UiLib.Core;
 
 public abstract class DisplayContainer : EventManager {
     

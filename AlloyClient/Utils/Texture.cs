@@ -1,9 +1,9 @@
-﻿using Common.Structs;
-using RealmClient.UiLib.Data;
-using RealmClient.UiLib.Enums;
-using RealmClient.Assets.Libraries;
+﻿using AlloyClient.Assets.Libraries;
+using AlloyClient.UiLib.Data;
+using AlloyClient.UiLib.Enums;
+using Common.Structs;
 
-namespace RealmClient.Utils;
+namespace AlloyClient.Utils;
 
 public static class TextureHelper {
     public static TextureInfo FromUiAtlas(string lookup, int index = 0, bool padding = true) {

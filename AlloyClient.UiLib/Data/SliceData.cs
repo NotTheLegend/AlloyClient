@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using OpenTK.Mathematics;
 
-namespace RealmClient.UiLib.Data;
+namespace AlloyClient.UiLib.Data;
 
 public record SliceData(AtlasPosition AtlasData, Vector2 Cuts);
 

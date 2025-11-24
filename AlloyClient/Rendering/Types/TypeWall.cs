@@ -1,11 +1,11 @@
-﻿using Common.Structs;
-using RealmClient.Assets;
-using RealmClient.Assets.Libraries;
-using RealmClient.Game.Objects;
-using RealmClient.Rendering.VertexData;
-using RealmClient.Utils;
+﻿using AlloyClient.Assets;
+using AlloyClient.Assets.Libraries;
+using AlloyClient.Game.Objects;
+using AlloyClient.Rendering.VertexData;
+using AlloyClient.Utils;
+using Common.Structs;
 
-namespace RealmClient.Rendering.Types;
+namespace AlloyClient.Rendering.Types;
 
 public sealed class TypeWall : RenderBase {
     private static readonly Logger Log = new(typeof(TypeWall));

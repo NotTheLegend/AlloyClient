@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using AlloyClient.UiLib.Enums;
 using Common;
 using Common.ContentReaders;
 using Common.Structs;
-using RealmClient.UiLib.Enums;
 
-namespace RealmClient.UiLib.Data;
+namespace AlloyClient.UiLib.Data;
 
 public class BitmapFamily {
 

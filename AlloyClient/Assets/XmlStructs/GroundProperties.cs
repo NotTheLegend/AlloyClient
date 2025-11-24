@@ -2,7 +2,7 @@ using System;
 using System.Xml.Linq;
 using Common;
 
-namespace RealmClient.Assets.XmlStructs;
+namespace AlloyClient.Assets.XmlStructs;
 
 public class GroundProperties {
     public readonly ushort ObjectType;

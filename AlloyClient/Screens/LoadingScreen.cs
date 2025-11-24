@@ -1,17 +1,17 @@
 ﻿using System.Threading.Tasks;
-using RealmClient.AppEngine;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Extra;
-using RealmClient.Assets;
-using RealmClient.Display;
-using RealmClient.Models;
-using RealmClient.State;
-using RealmClient.Ui.Components.Graphics;
-using RealmClient.Utils;
+using AlloyClient.AppEngine;
+using AlloyClient.Assets;
+using AlloyClient.Display;
+using AlloyClient.State;
+using AlloyClient.Ui.Components.Graphics;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Extra;
+using AlloyClient.Models;
+using AlloyClient.Utils;
 
-namespace RealmClient.Screens;
+namespace AlloyClient.Screens;
 
 public class LoadingScreen : Screen {
 

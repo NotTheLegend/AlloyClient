@@ -1,8 +1,8 @@
-﻿using Common;
-using RealmClient.UiLib;
-using RealmClient.UiLib.Core;
+﻿using AlloyClient.UiLib;
+using AlloyClient.UiLib.Core;
+using Common;
 
-namespace RealmClient.Display;
+namespace AlloyClient.Display;
 
 public static class DisplayManager {
 

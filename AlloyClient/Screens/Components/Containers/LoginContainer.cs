@@ -1,15 +1,15 @@
-using RealmClient.AppEngine;
-using RealmClient.Display;
-using RealmClient.Models;
-using RealmClient.State;
-using RealmClient.Ui.Components.Dialogs;
-using RealmClient.Ui.Components.Panels;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.BuiltIn.Buttons;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Extra;
+using AlloyClient.AppEngine;
+using AlloyClient.Display;
+using AlloyClient.State;
+using AlloyClient.Ui.Components.Dialogs;
+using AlloyClient.Ui.Components.Panels;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.BuiltIn.Buttons;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Extra;
+using AlloyClient.Models;
 
-namespace RealmClient.Screens.Components.Containers;
+namespace AlloyClient.Screens.Components.Containers;
 
 public class LoginContainer : Overlay {
     private readonly TextInput _emailInput;

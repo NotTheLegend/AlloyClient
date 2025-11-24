@@ -1,12 +1,12 @@
-﻿using Common;
+﻿using AlloyClient.Game.Objects;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Rendering;
+using Common;
 using OpenTK.Mathematics;
-using RealmClient.Game.Objects;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Rendering;
 
-namespace RealmClient.Game.Components.Hud;
+namespace AlloyClient.Game.Components.Hud;
 
 public sealed class MinimapLayer : Container {
 

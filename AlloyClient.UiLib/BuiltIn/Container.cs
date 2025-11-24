@@ -1,7 +1,7 @@
-﻿using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
+﻿using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
 
-namespace RealmClient.UiLib.BuiltIn;
+namespace AlloyClient.UiLib.BuiltIn;
 
 public struct ContainerConfig {
     public int X = 0;

@@ -1,7 +1,7 @@
 ﻿using System;
-using RealmClient.UiLib.Input;
+using AlloyClient.UiLib.Input;
 
-namespace RealmClient.UiLib.Core;
+namespace AlloyClient.UiLib.Core;
 
 public partial class Sprite {
     

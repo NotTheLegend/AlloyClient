@@ -2,11 +2,11 @@ using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using AlloyClient.State;
+using AlloyClient.Utils;
 using NAudio.Wave;
-using RealmClient.State;
-using RealmClient.Utils;
 
-namespace RealmClient.Sound;
+namespace AlloyClient.Sound;
 
 public static class Music {
     public const string MusicUrl = Settings.AssetUrl + "/sfx/music/";

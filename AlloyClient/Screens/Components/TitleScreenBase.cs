@@ -1,14 +1,14 @@
-﻿using RealmClient.Display;
-using RealmClient.State;
-using RealmClient.Ui.Components.Buttons;
-using RealmClient.Ui.Components.Graphics;
-using RealmClient.UiLib;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
-using RealmClient.Utils;
+﻿using AlloyClient.Display;
+using AlloyClient.State;
+using AlloyClient.Ui.Components.Buttons;
+using AlloyClient.Ui.Components.Graphics;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib;
+using AlloyClient.Utils;
 
-namespace RealmClient.Screens.Components;
+namespace AlloyClient.Screens.Components;
 
 public abstract class TitleScreenBase : Screen {
     

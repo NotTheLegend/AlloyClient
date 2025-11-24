@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using RealmClient.Networking.Packets.Incoming;
+using AlloyClient.Networking.Packets.Incoming;
 
-namespace RealmClient.Networking.Packets;
+namespace AlloyClient.Networking.Packets;
 
 public interface IPacket {
     PacketId PacketId { get; }

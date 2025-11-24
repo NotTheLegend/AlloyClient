@@ -1,11 +1,11 @@
 ﻿using System;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Data;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Rendering;
 using OpenTK.Mathematics;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Data;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Rendering;
 
-namespace RealmClient.UiLib.BuiltIn.Buttons;
+namespace AlloyClient.UiLib.BuiltIn.Buttons;
 
 public struct IconButtonConfig {
 

@@ -1,10 +1,10 @@
 ﻿using System;
+using AlloyClient.Assets;
+using AlloyClient.Rendering.VertexData;
 using Common;
 using OpenTK.Mathematics;
-using RealmClient.Assets;
-using RealmClient.Rendering.VertexData;
 
-namespace RealmClient.Rendering.Types;
+namespace AlloyClient.Rendering.Types;
 
 public sealed class TypeProjectile : RenderBase {
     

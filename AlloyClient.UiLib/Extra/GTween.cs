@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using AlloyClient.UiLib.Core;
 using Common;
-using RealmClient.UiLib.Core;
 
-namespace RealmClient.UiLib.Extra;
+namespace AlloyClient.UiLib.Extra;
 
 public static class GTween {
     

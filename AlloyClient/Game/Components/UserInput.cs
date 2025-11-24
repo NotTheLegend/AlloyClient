@@ -1,18 +1,18 @@
 ﻿using System;
+using AlloyClient.Game.Components.Hud;
+using AlloyClient.Game.Components.Hud.Chat;
+using AlloyClient.Game.Components.Hud.Panels;
+using AlloyClient.Game.Components.Options;
+using AlloyClient.Networking;
+using AlloyClient.Networking.Packets.Outgoing;
+using AlloyClient.State;
+using AlloyClient.UiLib.Core;
+using AlloyClient.Utils;
 using Common;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
-using RealmClient.Game.Components.Hud;
-using RealmClient.Game.Components.Hud.Chat;
-using RealmClient.Game.Components.Hud.Panels;
-using RealmClient.Game.Components.Options;
-using RealmClient.Networking;
-using RealmClient.Networking.Packets.Outgoing;
-using RealmClient.State;
-using RealmClient.UiLib.Core;
-using RealmClient.Utils;
 
-namespace RealmClient.Game.Components;
+namespace AlloyClient.Game.Components;
 
 public sealed class UserInput : Sprite {
 

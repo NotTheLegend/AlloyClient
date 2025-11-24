@@ -1,17 +1,17 @@
 ﻿using System;
+using AlloyClient.State;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.BuiltIn.Buttons;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Extra;
+using AlloyClient.UiLib.Rendering;
+using AlloyClient.UiLib.Signals;
+using AlloyClient.Utils;
 using Common;
 using OpenTK.Mathematics;
-using RealmClient.State;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.BuiltIn.Buttons;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Extra;
-using RealmClient.UiLib.Rendering;
-using RealmClient.UiLib.Signals;
-using RealmClient.Utils;
 
-namespace RealmClient.Game.Components.Hud;
+namespace AlloyClient.Game.Components.Hud;
 
 public sealed class Minimap : Sprite {
 

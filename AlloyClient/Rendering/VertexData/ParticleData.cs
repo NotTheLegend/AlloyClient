@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using Common.Rendering;
 using OpenTK.Mathematics;
 
-namespace RealmClient.Rendering.VertexData;
+namespace AlloyClient.Rendering.VertexData;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct ParticleData(Vector3 position, Vector4 color) : IBufferData<ParticleData> {

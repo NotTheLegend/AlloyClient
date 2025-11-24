@@ -1,15 +1,15 @@
-using RealmClient.Assets.Libraries;
-using RealmClient.Data;
-using RealmClient.Display;
-using RealmClient.Game;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.BuiltIn.Buttons;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Extra;
-using RealmClient.Utils;
 using System;
+using AlloyClient.Assets.Libraries;
+using AlloyClient.Data;
+using AlloyClient.Display;
+using AlloyClient.Game;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.BuiltIn.Buttons;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Extra;
+using AlloyClient.Utils;
 
-namespace RealmClient.Screens.Components.CharacterList;
+namespace AlloyClient.Screens.Components.CharacterList;
 
 public enum CharacterRectType
 {

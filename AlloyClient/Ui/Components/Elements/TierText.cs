@@ -1,10 +1,10 @@
+using AlloyClient.Assets.XmlStructs;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
 using Common;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
-using RealmClient.Assets.XmlStructs;
 
-namespace RealmClient.Ui.Components.Elements;
+namespace AlloyClient.Ui.Components.Elements;
 
 public class TierText : Sprite
 {

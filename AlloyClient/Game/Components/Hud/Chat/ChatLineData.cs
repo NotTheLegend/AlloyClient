@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Game.Components.Hud.Chat;
+﻿namespace AlloyClient.Game.Components.Hud.Chat;
 
 public struct ChatLineData {
     public string Name;

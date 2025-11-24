@@ -1,7 +1,7 @@
 using System;
 using OpenTK.Platform;
 
-namespace RealmClient.State.SettingTypes;
+namespace AlloyClient.State.SettingTypes;
 
 public class InputSetting : ISettingType {
     

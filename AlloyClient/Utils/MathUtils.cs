@@ -1,7 +1,7 @@
 using System;
 using OpenTK.Mathematics;
 
-namespace RealmClient.Utils;
+namespace AlloyClient.Utils;
 
 public static class MathUtils {
     

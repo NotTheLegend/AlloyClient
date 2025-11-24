@@ -1,11 +1,11 @@
-using RealmClient.Data;
-using RealmClient.Models;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
-using RealmClient.Utils;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.Utils;
+using AlloyClient.Data;
+using AlloyClient.Models;
 
-namespace RealmClient.Game.Components.Hud.Chat;
+namespace AlloyClient.Game.Components.Hud.Chat;
 
 // TODO:
 // NumStars icon

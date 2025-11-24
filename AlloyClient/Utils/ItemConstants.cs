@@ -1,7 +1,7 @@
-﻿using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Data;
+﻿using AlloyClient.UiLib.Data;
+using AlloyClient.UiLib.Core;
 
-namespace RealmClient.Utils;
+namespace AlloyClient.Utils;
 
 public static class ItemConstants {
 

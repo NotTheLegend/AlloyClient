@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using AlloyClient.Assets.Libraries;
+using AlloyClient.Assets.XmlStructs;
+using AlloyClient.Game.Objects.Util;
+using AlloyClient.Networking;
+using AlloyClient.Networking.Packets.Outgoing;
+using AlloyClient.ParticleEffects;
+using AlloyClient.Rendering;
+using AlloyClient.Rendering.Types;
+using AlloyClient.Ui.Character;
+using AlloyClient.Utils;
 using Common.Structs;
 using OpenTK.Mathematics;
-using RealmClient.Assets.Libraries;
-using RealmClient.Assets.XmlStructs;
-using RealmClient.Game.Objects.Util;
-using RealmClient.Networking;
-using RealmClient.Networking.Packets.Outgoing;
-using RealmClient.ParticleEffects;
-using RealmClient.Rendering;
-using RealmClient.Rendering.Types;
-using RealmClient.Ui.Character;
-using RealmClient.Utils;
 
-namespace RealmClient.Game.Objects;
+namespace AlloyClient.Game.Objects;
 
 public sealed class Projectile {
 

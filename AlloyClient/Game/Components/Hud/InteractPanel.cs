@@ -1,10 +1,10 @@
-﻿using RealmClient.Game.Components.Hud.Panels;
-using RealmClient.Game.Objects;
-using RealmClient.Game.Objects.Util;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Signals;
+﻿using AlloyClient.Game.Components.Hud.Panels;
+using AlloyClient.Game.Objects;
+using AlloyClient.Game.Objects.Util;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Signals;
 
-namespace RealmClient.Game.Components.Hud;
+namespace AlloyClient.Game.Components.Hud;
 
 public sealed class InteractPanel : Sprite {
 

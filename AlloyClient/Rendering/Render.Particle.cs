@@ -1,10 +1,10 @@
 ﻿using System;
+using AlloyClient.Rendering.VertexData;
 using Common.Rendering;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using RealmClient.Rendering.VertexData;
 
-namespace RealmClient.Rendering;
+namespace AlloyClient.Rendering;
 
 public static partial class Render {
 

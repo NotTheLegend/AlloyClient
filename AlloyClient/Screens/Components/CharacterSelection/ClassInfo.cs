@@ -1,13 +1,13 @@
 ﻿using System.Linq;
+using AlloyClient.Assets.Libraries;
+using AlloyClient.Game.Components.Hud.Inventory;
+using AlloyClient.State;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.Utils;
 using Common;
-using RealmClient.Assets.Libraries;
-using RealmClient.Game.Components.Hud.Inventory;
-using RealmClient.State;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Enums;
-using RealmClient.Utils;
 
-namespace RealmClient.Screens.Components.CharacterSelection;
+namespace AlloyClient.Screens.Components.CharacterSelection;
 
 public class ClassInfo : Container {
 

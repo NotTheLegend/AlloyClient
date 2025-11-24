@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using AlloyClient.Assets;
+using AlloyClient.Assets.Libraries;
+using AlloyClient.Assets.XmlStructs;
+using AlloyClient.Game.Objects.Enums;
+using AlloyClient.Game.Objects.Util;
+using AlloyClient.Networking.Enums;
+using AlloyClient.Networking.Structs.DataObjects;
+using AlloyClient.ParticleEffects;
+using AlloyClient.Rendering;
+using AlloyClient.Rendering.Types;
+using AlloyClient.State;
+using AlloyClient.UiLib.Signals;
+using AlloyClient.Utils;
 using Common;
 using Common.Structs;
 using OpenTK.Mathematics;
-using RealmClient.Assets;
-using RealmClient.Assets.Libraries;
-using RealmClient.Assets.XmlStructs;
-using RealmClient.Game.Objects.Enums;
-using RealmClient.Game.Objects.Util;
-using RealmClient.Networking.Enums;
-using RealmClient.Networking.Structs.DataObjects;
-using RealmClient.ParticleEffects;
-using RealmClient.Rendering;
-using RealmClient.Rendering.Types;
-using RealmClient.State;
-using RealmClient.UiLib.Signals;
-using RealmClient.Utils;
-using MathUtils = RealmClient.Utils.MathUtils;
-using XmlStructs_ItemDesc = RealmClient.Assets.XmlStructs.ItemDesc;
 
-namespace RealmClient.Game.Objects;
+namespace AlloyClient.Game.Objects;
 
 public class Entity {
     private static readonly Logger Log = new(nameof(Entity));
@@ -67,7 +65,7 @@ public class Entity {
 
     public int Level;
 
-    public XmlStructs_ItemDesc[] Equipment = new XmlStructs_ItemDesc[20];
+    public ItemDesc[] Equipment = new ItemDesc[20];
 
     public ConditionEffects ConditionEffects = 0;
 

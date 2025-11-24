@@ -1,4 +1,4 @@
-namespace RealmClient.Game.Objects.Util;
+namespace AlloyClient.Game.Objects.Util;
 
 public static class StatsUtil {
 

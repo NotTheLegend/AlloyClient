@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using RealmClient.Data;
-using RealmClient.State;
+using AlloyClient.Data;
+using AlloyClient.State;
 
-namespace RealmClient.AppEngine;
+namespace AlloyClient.AppEngine;
 
 public struct AppResponse {
     public bool Success;

@@ -1,11 +1,11 @@
 ﻿using System;
+using AlloyClient.Game.Objects;
+using AlloyClient.Game.Objects.Util;
+using AlloyClient.Rendering.VertexData;
+using AlloyClient.State;
 using OpenTK.Mathematics;
-using RealmClient.Game.Objects;
-using RealmClient.Game.Objects.Util;
-using RealmClient.Rendering.VertexData;
-using RealmClient.State;
 
-namespace RealmClient.Rendering.Types.SubTypes;
+namespace AlloyClient.Rendering.Types.SubTypes;
 
 public class TypeEffects : SubRenderBase {
 

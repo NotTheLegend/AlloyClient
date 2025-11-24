@@ -1,14 +1,14 @@
 ﻿using System.Linq;
-using RealmClient.Data;
-using RealmClient.Display;
-using RealmClient.Screens.Components;
-using RealmClient.State;
-using RealmClient.Ui.Components.Buttons;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Extra;
+using AlloyClient.Data;
+using AlloyClient.Display;
+using AlloyClient.Screens.Components;
+using AlloyClient.State;
+using AlloyClient.Ui.Components.Buttons;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Extra;
 
-namespace RealmClient.Screens;
+namespace AlloyClient.Screens;
 
 public class ServersTitleScreen : TitleScreenBase {
 

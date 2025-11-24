@@ -1,14 +1,14 @@
-﻿using Common;
+﻿using AlloyClient.Assets;
+using AlloyClient.Game;
+using AlloyClient.Rendering.VertexData;
+using AlloyClient.UiLib;
+using Common;
 using Common.ContentReaders;
 using Common.Rendering;
-using RealmClient.UiLib;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using RealmClient.Assets;
-using RealmClient.Game;
-using RealmClient.Rendering.VertexData;
 
-namespace RealmClient.Rendering;
+namespace AlloyClient.Rendering;
 
 public static partial class Render {
     

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RealmClient;
+namespace AlloyClient;
 
 public enum GraphicsOptions {
     TitleScreen,

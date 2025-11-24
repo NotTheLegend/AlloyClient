@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RealmClient.Data;
+namespace AlloyClient.Data;
 
 public sealed class LoginData(string username, string password, bool loggedIn = true) : IGlobalData, IEquatable<LoginData> {
 

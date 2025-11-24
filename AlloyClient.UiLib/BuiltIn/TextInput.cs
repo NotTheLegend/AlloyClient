@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Text;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Data;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Rendering;
 using Common;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Data;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Rendering;
 
-namespace RealmClient.UiLib.BuiltIn;
+namespace AlloyClient.UiLib.BuiltIn;
 
 public struct InputConfig {
     public int X = 0;

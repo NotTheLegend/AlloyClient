@@ -1,4 +1,4 @@
-﻿namespace RealmClient.Networking.Structs.DataObjects;
+﻿namespace AlloyClient.Networking.Structs.DataObjects;
 
 public struct ObjectSlot : IDataObject {
     public int ObjectId;

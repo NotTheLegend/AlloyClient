@@ -1,7 +1,7 @@
-﻿using RealmClient.UiLib.Core;
-using RealmClient.Display;
+﻿using AlloyClient.Display;
+using AlloyClient.UiLib.Core;
 
-namespace RealmClient.Ui.Components.Panels;
+namespace AlloyClient.Ui.Components.Panels;
 
 public class Overlay : Sprite {
 

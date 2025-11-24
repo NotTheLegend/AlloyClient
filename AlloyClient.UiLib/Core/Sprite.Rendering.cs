@@ -1,10 +1,10 @@
 ﻿using System;
+using AlloyClient.UiLib.Rendering;
 using Common;
 using OpenTK.Mathematics;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Rendering;
+using AlloyClient.UiLib.Enums;
 
-namespace RealmClient.UiLib.Core;
+namespace AlloyClient.UiLib.Core;
 
 public partial class Sprite {
     

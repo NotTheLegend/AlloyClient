@@ -1,6 +1,6 @@
 using System;
 
-namespace RealmClient.State.SettingTypes;
+namespace AlloyClient.State.SettingTypes;
 
 public class ValueSetting<T> : ISettingType {
     public T Value;

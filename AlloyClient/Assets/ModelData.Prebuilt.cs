@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace RealmClient.Assets;
+namespace AlloyClient.Assets;
 
 public static partial class ModelData {
     private static void LoadPrebuilt() {

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Linq;
-using RealmClient.UiLib;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Data;
-using RealmClient.UiLib.Enums;
-using RealmClient.UiLib.Extra;
-using RealmClient.Assets.Libraries;
+using AlloyClient.Assets.Libraries;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Extra;
+using AlloyClient.UiLib;
+using AlloyClient.UiLib.Data;
 
-namespace RealmClient.Utils;
+namespace AlloyClient.Utils;
 
 public static class FameUtils {
 

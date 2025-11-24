@@ -1,10 +1,10 @@
-﻿using Common;
-using RealmClient.Utils;
+﻿using AlloyClient.Game.Objects;
+using AlloyClient.Rendering.VertexData;
+using Common;
+using AlloyClient.Utils;
 using OpenTK.Mathematics;
-using RealmClient.Game.Objects;
-using RealmClient.Rendering.VertexData;
 
-namespace RealmClient.Rendering.Types.SubTypes;
+namespace AlloyClient.Rendering.Types.SubTypes;
 
 public class TypeHpBar : SubRenderBase {
     public override float Height {

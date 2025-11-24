@@ -1,7 +1,7 @@
-﻿using RealmClient.UiLib.Core;
-using RealmClient.Ui.Components.Tooltips;
+﻿using AlloyClient.Ui.Components.Tooltips;
+using AlloyClient.UiLib.Core;
 
-namespace RealmClient.Display;
+namespace AlloyClient.Display;
 
 public sealed class TooltipManager : Sprite {
 

@@ -1,7 +1,7 @@
 ﻿using System;
-using RealmClient.Networking.Structs.DataObjects;
+using AlloyClient.Networking.Structs.DataObjects;
 
-namespace RealmClient.Networking.Packets.Outgoing;
+namespace AlloyClient.Networking.Packets.Outgoing;
 
 public class PlayerShoot : OutgoingPacket<PlayerShoot> {
 

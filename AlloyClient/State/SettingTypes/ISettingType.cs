@@ -1,4 +1,4 @@
-namespace RealmClient.State.SettingTypes;
+namespace AlloyClient.State.SettingTypes;
 
 public interface ISettingType {
     void SetValue(ISettingType newValue);

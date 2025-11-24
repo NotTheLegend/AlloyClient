@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
-using RealmClient.Game.Objects.Util;
+using AlloyClient.Game.Objects.Util;
 
-namespace RealmClient.Networking.Packets.Incoming;
+namespace AlloyClient.Networking.Packets.Incoming;
 
 public class Damage : IncomingPacket<Damage> {
     public int TargetId;

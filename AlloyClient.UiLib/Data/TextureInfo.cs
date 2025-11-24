@@ -1,6 +1,6 @@
-﻿using RealmClient.UiLib.Enums;
+﻿using AlloyClient.UiLib.Enums;
 
-namespace RealmClient.UiLib.Data;
+namespace AlloyClient.UiLib.Data;
 
 public record struct TextureInfo(AtlasPosition AtlasPosition, TextureType TextureType);
 

@@ -2,7 +2,7 @@
 using Common.Rendering;
 using OpenTK.Graphics.OpenGL;
 
-namespace RealmClient.UiLib.Rendering;
+namespace AlloyClient.UiLib.Rendering;
 
 public static class SpriteRender {
 

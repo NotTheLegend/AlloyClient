@@ -1,11 +1,11 @@
 ﻿using System;
-using RealmClient.State;
-using RealmClient.Ui;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
+using AlloyClient.State;
+using AlloyClient.Ui;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
 
-namespace RealmClient.Game.Components.Hud;
+namespace AlloyClient.Game.Components.Hud;
 
 public class StatusBar : Sprite {
     private readonly int _width;

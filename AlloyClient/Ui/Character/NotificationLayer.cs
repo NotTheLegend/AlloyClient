@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
+using AlloyClient.Game.Objects;
+using AlloyClient.UiLib.Core;
 using Common;
-using RealmClient.Game.Objects;
-using RealmClient.UiLib.Core;
 
-namespace RealmClient.Ui.Character;
+namespace AlloyClient.Ui.Character;
 
 public class NotificationLayer : Sprite {
     private static readonly Queue<CharacterStatusText> TextQueue = new();

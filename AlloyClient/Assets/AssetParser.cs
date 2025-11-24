@@ -4,13 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using AlloyClient.Assets.Libraries;
+using AlloyClient.Assets.XmlStructs;
+using AlloyClient.Utils;
 using Common;
 using Common.Structs;
-using RealmClient.Assets.Libraries;
-using RealmClient.Assets.XmlStructs;
-using RealmClient.Utils;
 
-namespace RealmClient.Assets;
+namespace AlloyClient.Assets;
 
 public static class AssetParser {
     public static async Task ParseAssetsAsync() {

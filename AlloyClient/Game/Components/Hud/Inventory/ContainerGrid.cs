@@ -1,6 +1,6 @@
-﻿using RealmClient.UiLib.Core;
+﻿using AlloyClient.UiLib.Core;
 
-namespace RealmClient.Game.Components.Hud.Inventory;
+namespace AlloyClient.Game.Components.Hud.Inventory;
 
 public class ContainerGrid : Sprite {
     /*public Entity GridOwner;

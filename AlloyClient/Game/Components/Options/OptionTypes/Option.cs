@@ -1,9 +1,9 @@
-﻿using RealmClient.Game.Components.Options.Ui;
-using RealmClient.State.SettingTypes;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
+﻿using AlloyClient.Game.Components.Options.Ui;
+using AlloyClient.State.SettingTypes;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
 
-namespace RealmClient.Game.Components.Options.OptionTypes;
+namespace AlloyClient.Game.Components.Options.OptionTypes;
 
 public abstract class Option : Sprite {
     // TODO: tooltip

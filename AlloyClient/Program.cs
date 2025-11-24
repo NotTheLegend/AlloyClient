@@ -1,8 +1,8 @@
 ﻿using System;
-using RealmClient.State;
-using RealmClient.Utils;
+using AlloyClient.State;
+using AlloyClient.Utils;
 
-namespace RealmClient;
+namespace AlloyClient;
 
 public static class Program {
     private static readonly Logger Log = new(typeof(Program));

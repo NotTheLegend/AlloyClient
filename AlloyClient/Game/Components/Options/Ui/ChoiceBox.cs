@@ -1,10 +1,10 @@
 ﻿using System;
-using RealmClient.State.SettingTypes;
-using RealmClient.UiLib.BuiltIn;
-using RealmClient.UiLib.Core;
-using RealmClient.UiLib.Enums;
+using AlloyClient.State.SettingTypes;
+using AlloyClient.UiLib.BuiltIn;
+using AlloyClient.UiLib.Core;
+using AlloyClient.UiLib.Enums;
 
-namespace RealmClient.Game.Components.Options.Ui;
+namespace AlloyClient.Game.Components.Options.Ui;
 
 public class ChoiceBox<T> : Sprite {
     private const int BoxWidth = KeyCodeBox.BoxWidth;

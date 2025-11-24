@@ -1,6 +1,6 @@
-﻿using RealmClient.Game;
+﻿using AlloyClient.Game;
 
-namespace RealmClient.Networking.Packets.Incoming;
+namespace AlloyClient.Networking.Packets.Incoming;
 
 public class CreateSuccess : IncomingPacket<CreateSuccess> {
     public int ObjectId;
