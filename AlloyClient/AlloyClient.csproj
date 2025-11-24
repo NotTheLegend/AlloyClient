@@ -13,6 +13,7 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <RunPostBuildEvent>Always</RunPostBuildEvent>
 		<DisableFastUpToDateCheck>True</DisableFastUpToDateCheck>
+		<RootNamespace>RealmClient</RootNamespace>
     </PropertyGroup>
     
     <ItemGroup>
@@ -42,7 +43,7 @@
 		<CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
 		<ReferenceOutputAssembly>False</ReferenceOutputAssembly>
       </ProjectReference>
-      <ProjectReference Include="..\RealmClient.UiLib\RealmClient.UiLib.csproj" />
+      <ProjectReference Include="..\AlloyClient.UiLib\AlloyClient.UiLib.csproj" />
     </ItemGroup>
     
     <ItemGroup>

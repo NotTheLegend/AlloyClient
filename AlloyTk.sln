@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealmClient", "RealmClient\RealmClient.csproj", "{2A15EA5A-63E7-4015-AAF5-9132C7FF5F6D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlloyClient", "AlloyClient\AlloyClient.csproj", "{2A15EA5A-63E7-4015-AAF5-9132C7FF5F6D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{7C334904-592F-484C-9677-F8EC6EE85A15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealmClient.UiLib", "RealmClient.UiLib\RealmClient.UiLib.csproj", "{ECD5DBCA-99D6-4B8E-954A-9E95D33E2BE8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlloyClient.UiLib", "AlloyClient.UiLib\AlloyClient.UiLib.csproj", "{ECD5DBCA-99D6-4B8E-954A-9E95D33E2BE8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContentBuilder", "ContentBuilder\ContentBuilder.csproj", "{C320B980-46F2-454F-8A1D-7DC2B90DCDC4}"
 EndProject

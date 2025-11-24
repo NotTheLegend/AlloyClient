@@ -5,7 +5,7 @@ if (args.Length != 3) {
     throw new Exception("Wrong number of arguments");
 }
 
-//args = ["E:\\Development\\Github\\mono-7.0\\RealmClient", "E:\\Development\\Github\\mono-7.0\\RealmClient\\bin\\Debug\\net8.0", "Content"];
+//args = ["E:\\Development\\Github\\mono-7.0\\AlloyClient", "E:\\Development\\Github\\mono-7.0\\AlloyClient\\bin\\Debug\\net8.0", "Content"];
         
 var outputPath = Path.Combine(args[1], args[2]);
 var contentPath = Path.Combine(args[0], args[2]);
