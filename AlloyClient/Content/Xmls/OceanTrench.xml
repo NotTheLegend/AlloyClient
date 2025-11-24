@@ -1,5 +1,49 @@
 
 <Objects>
+	<Object type="0x0731" id="Ocean Vent">
+		<Class>GameObject</Class>
+		<DrawOnGround/>
+		<Effect>Vent</Effect>
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x26</Index>
+		</Texture>
+	</Object>
+	<Object type="0x4977" id="Sea Slurp Home">
+		<Group>Ocean Trench</Group>
+		<Enemy/>
+		<Class>Character</Class>
+		<Texture>
+			<File>lofiChar216x8</File>
+			<Index>0x1b</Index>
+		</Texture>
+		<AltTexture id="1">
+			<Texture>
+				<File>lofiEnvironment2</File>
+				<Index>0x6d</Index>
+			</Texture>
+		</AltTexture>
+		<HitSound>monster/trees_hit</HitSound>
+		<DeathSound>monster/stone_walls_hit</DeathSound>
+		<MaxHitPoints>5000</MaxHitPoints>
+		<XpMult>1.5</XpMult>
+		<Projectile id="0">
+			<ObjectId>Oryx Insect Sting</ObjectId>
+			<Speed>65</Speed>
+			<Damage>55</Damage>
+			<Size>100</Size>
+			<LifetimeMS>1000</LifetimeMS>
+		</Projectile>
+		<Projectile id="1">
+			<ObjectId>Oryx Insect Sting Status</ObjectId>
+			<Speed>50</Speed>
+			<Damage>60</Damage>
+			<Size>120</Size>
+			<LifetimeMS>1000</LifetimeMS>
+		</Projectile>
+		<Size>120</Size>
+		<Defense>40</Defense>
+	</Object>
 	<Object type="0x1700" id="Fishman Warrior">
 		<Group>Ocean Trench</Group>
 		<Enemy/>

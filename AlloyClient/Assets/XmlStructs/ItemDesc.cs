@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 using AlloyClient.Game.Objects.Util;
@@ -167,7 +168,7 @@ public class ParticleTrailDesc {
     public int Size;
 
     public ParticleTrailDesc(XElement xml) {
-        Color = string.IsNullOrEmpty(xml.Value) ? 0 : uint.Parse(xml.Value);
+        Color = string.IsNullOrEmpty(xml.Value) ? 0 : Convert.ToUInt32(xml.Value, 16);
         LifetimeMS = xml.GetAttribute<int>("lifetimeMS");
         Size = xml.GetAttribute<int>("size");
     }

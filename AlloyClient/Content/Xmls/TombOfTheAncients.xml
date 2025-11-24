@@ -428,6 +428,7 @@
 	<Object type="0x0d1c" id="Sphinx Artifact 1">
 		<DisplayId>Sphinx Artifact</DisplayId>
 		<Enemy/>
+		<KeepInSight/>
 		<Class>Character</Class>
 		<AnimatedTexture><File>chars8x8dEncounters</File><Index>11</Index></AnimatedTexture>
 		<Size>100</Size>
@@ -460,6 +461,7 @@
 	<Object type="0x0d1d" id="Sphinx Artifact 2">
 		<DisplayId>Sphinx Artifact</DisplayId>
 		<Enemy/>
+		<KeepInSight/>
 		<Class>Character</Class>
 		<AnimatedTexture><File>chars8x8dEncounters</File><Index>11</Index></AnimatedTexture>
 		<Size>100</Size>
@@ -492,6 +494,7 @@
 	<Object type="0x0d1e" id="Sphinx Artifact 3">
 		<DisplayId>Sphinx Artifact</DisplayId>
 		<Enemy/>
+		<KeepInSight/>
 		<Class>Character</Class>
 		<AnimatedTexture><File>chars8x8dEncounters</File><Index>11</Index></AnimatedTexture>
 		<Size>100</Size>
@@ -524,6 +527,7 @@
 	<Object type="0x0d1f" id="Nile Artifact 1">
 		<DisplayId>Nile Artifact</DisplayId>
 		<Enemy/>
+		<KeepInSight/>
 		<Class>Character</Class>
 		<AnimatedTexture><File>chars8x8dEncounters</File><Index>12</Index></AnimatedTexture>
 		<Size>100</Size>
@@ -546,6 +550,7 @@
 	<Object type="0x0d20" id="Nile Artifact 2">
 		<DisplayId>Nile Artifact</DisplayId>
 		<Enemy/>
+		<KeepInSight/>
 		<Class>Character</Class>
 		<AnimatedTexture><File>chars8x8dEncounters</File><Index>12</Index></AnimatedTexture>
 		<Size>100</Size>
@@ -568,6 +573,7 @@
 	<Object type="0x0d21" id="Nile Artifact 3">
 		<DisplayId>Nile Artifact</DisplayId>
 		<Enemy/>
+		<KeepInSight/>
 		<Class>Character</Class>
 		<AnimatedTexture><File>chars8x8dEncounters</File><Index>12</Index></AnimatedTexture>
 		<Size>100</Size>
@@ -590,6 +596,7 @@
 	<Object type="0x0d22" id="Pyramid Artifact 1">
 		<DisplayId>Pyramid Artifact</DisplayId>
 		<Enemy/>
+		<KeepInSight/>
 		<Class>Character</Class>
 		<AnimatedTexture><File>chars16x8dEncounters</File><Index>0</Index></AnimatedTexture>
 		<Size>120</Size>
@@ -614,6 +621,7 @@
 	<Object type="0x0d23" id="Pyramid Artifact 2">
 		<DisplayId>Pyramid Artifact</DisplayId>
 		<Enemy/>
+		<KeepInSight/>
 		<Class>Character</Class>
 		<AnimatedTexture><File>chars16x8dEncounters</File><Index>0</Index></AnimatedTexture>
 		<Size>120</Size>
@@ -638,6 +646,7 @@
 	<Object type="0x0d24" id="Pyramid Artifact 3">
 		<DisplayId>Pyramid Artifact</DisplayId>
 		<Enemy/>
+		<KeepInSight/>
 		<Class>Character</Class>
 		<AnimatedTexture><File>chars16x8dEncounters</File><Index>0</Index></AnimatedTexture>
 		<Size>120</Size>
@@ -714,8 +723,11 @@
 		<DisplayId>Nut</DisplayId>
 		<Quest/>
 		<Level>1</Level>
-		
-		<AnimatedTexture><File>chars16x16dEncounters</File><Index>10</Index></AnimatedTexture>
+
+		<Texture><File>lofiChar216x16</File><Index>0x3a</Index></Texture>
+		<AltTexture id="1">
+			<AnimatedTexture><File>chars16x16dEncounters</File><Index>10</Index></AnimatedTexture>
+		</AltTexture>
 		<HitSound>monster/medusa_hit</HitSound>
 		<DeathSound>monster/medusa_death</DeathSound>		
 	
@@ -834,8 +846,10 @@
 		<DisplayId>Geb</DisplayId>
 		<Quest/>
 		<Level>1</Level>
-		
-		<AnimatedTexture><File>chars16x16dEncounters</File><Index>11</Index></AnimatedTexture>
+		<Texture><File>lofiChar216x16</File><Index>0x3b</Index></Texture>
+		<AltTexture id="1">
+			<AnimatedTexture><File>chars16x16dEncounters</File><Index>11</Index></AnimatedTexture>
+		</AltTexture>
 		<HitSound>monster/medusa_hit</HitSound>
 		<DeathSound>monster/medusa_death</DeathSound>		
 	
@@ -922,8 +936,10 @@
 		<DisplayId>Bes</DisplayId>
 		<Quest/>
 		<Level>1</Level>
-		
+		<Texture><File>lofiChar216x16</File><Index>0x3c</Index></Texture>
+		<AltTexture id="1">
 		<AnimatedTexture><File>chars16x16dEncounters</File><Index>12</Index></AnimatedTexture>
+		</AltTexture>
 		<HitSound>monster/medusa_hit</HitSound>
 		<DeathSound>monster/medusa_death</DeathSound>		
 	
@@ -1547,14 +1563,513 @@
 			<Size>140</Size>
 			<MultiHit/>
 			<ConditionEffect duration="1.2">Paralyzed</ConditionEffect>
-		</Projectile>	
-		
-		
-		
-				
-		
-				
-		
-		
+		</Projectile>
 	</Object>
+
+	<Object type="0x9030" id="TombPuzzle">
+		<Class>Character</Class>
+		<DisplayId>Tomb Puzzle</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x9031" id="TombPuzzleUP">
+		<Class>Character</Class>
+		<DisplayId>Tomb Puzzle</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x9032" id="TombPuzzleLEFT">
+		<Class>Character</Class>
+		<DisplayId>Tomb Puzzle</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x9033" id="TombPuzzleRIGHT">
+		<Class>Character</Class>
+		<DisplayId>Tomb Puzzle</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x9034" id="TombPuzzleBOT">
+		<Class>Character</Class>
+		<DisplayId>Tomb Puzzle</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x9035" id="TombPuzzle1">
+		<Class>Character</Class>
+		<DisplayId>Tomb Puzzle</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x9036" id="TombPuzzle2">
+		<Class>Character</Class>
+		<DisplayId>Tomb Puzzle</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x9037" id="TombPuzzle3">
+		<Class>Character</Class>
+		<DisplayId>Tomb Puzzle</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x9038" id="TombPuzzle4">
+		<Class>Character</Class>
+		<DisplayId>Tomb Puzzle</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x9039" id="TombPuzzlePAT1">
+		<Class>Character</Class>
+		<DisplayId>Tomb Puzzle</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x903a" id="TombPuzzlePAT2">
+		<Class>Character</Class>
+		<DisplayId>Tomb Puzzle</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x903b" id="TombPuzzlePAT3">
+		<Class>Character</Class>
+		<DisplayId>Tomb Puzzle</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x903c" id="TombPuzzlePAT4">
+		<Class>Character</Class>
+		<DisplayId>Tomb Puzzle</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x903d" id="TombCorrect">
+		<Class>Character</Class>
+		<DisplayId>Tomb Puzzle Correct</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x903e" id="TombWrong">
+		<Class>Character</Class>
+		<DisplayId>Tomb Puzzle Wrong</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x903f" id="TombPATLEFT">
+		<Class>Character</Class>
+		<DisplayId>Tomb Puzzle</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x9040" id="TombPATRIGHT">
+		<Class>Character</Class>
+		<DisplayId>Tomb Puzzle</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x9041" id="TombPATUP">
+		<Class>Character</Class>
+		<DisplayId>Tomb Puzzle</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x9042" id="TombPATBOT">
+		<Class>Character</Class>
+		<DisplayId>Tomb Puzzle</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x9044" id="TombWalls">
+		<Class>Character</Class>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x9045" id="TombWallsSwitch">
+	<DisplayId>Switch</DisplayId>
+	<Group>Tomb Traps</Group>
+	<Class>Character</Class>
+	<Enemy/>
+	<Texture><File>lofiChar28x8</File><Index>0x90</Index></Texture>
+	<AltTexture id="1">
+		<Texture><File>lofiChar28x8</File><Index>0x91</Index></Texture>
+	</AltTexture>
+	<StasisImmune/>
+	<Size>100</Size>
+	<DrawOnGround/>
+	<NoMiniMap/>
+	</Object>
+
+	<Object type="0x9046" id="TombTOpen">
+		<Class>Character</Class>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x9047" id="TombT">
+		<Class>Character</Class>
+		<DisplayId>TombT</DisplayId>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x9048" id="TombSpawnWall">
+		<Class>GameObject</Class>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x9049" id="BesMode">
+		<Class>Character</Class>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x904a" id="NutMode">
+		<Class>Character</Class>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x904b" id="GebMode">
+		<Class>Character</Class>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x904c" id="Sphinx Artifact 4">
+		<DisplayId>Sphinx Artifact</DisplayId>
+		<Enemy/>
+		<KeepInSight/>
+		<Class>Character</Class>
+		<AnimatedTexture><File>chars8x8dEncounters</File><Index>11</Index></AnimatedTexture>
+		<Size>100</Size>
+		<MaxHitPoints>2000</MaxHitPoints>
+		<Defense>20</Defense>
+
+		<XpMult>0.0</XpMult>
+
+		<Projectile id="0">
+			<ObjectId>Green Spinner</ObjectId>
+			<Damage>90</Damage>
+			<Speed>100</Speed>
+			<Size>80</Size>
+			<LifetimeMS>2000</LifetimeMS>
+			<ConditionEffect duration="3">Slowed</ConditionEffect>
+		</Projectile>
+
+		<Projectile id="1">
+			<ObjectId>Green Spinner</ObjectId>
+			<Damage>130</Damage>
+			<Speed>80</Speed>
+			<Size>120</Size>
+			<LifetimeMS>1000</LifetimeMS>
+			<ConditionEffect duration="5">Slowed</ConditionEffect>
+		</Projectile>
+	</Object>
+
+	<Object type="0x904d" id="Sphinx Artifact Finale">
+	<DisplayId>Sphinx Artifact</DisplayId>
+	<Enemy/>
+	<KeepInSight/>
+	<Class>Character</Class>
+	<AnimatedTexture><File>chars8x8dEncounters</File><Index>11</Index></AnimatedTexture>
+	<Size>100</Size>
+	<MaxHitPoints>3500</MaxHitPoints>
+	<Defense>20</Defense>
+
+	<XpMult>0.0</XpMult>
+
+	<Projectile id="0">
+		<ObjectId>Green Spinner</ObjectId>
+		<Damage>90</Damage>
+		<Speed>100</Speed>
+		<Size>80</Size>
+		<LifetimeMS>2000</LifetimeMS>
+		<ConditionEffect duration="3">Slowed</ConditionEffect>
+	</Projectile>
+
+	<Projectile id="1">
+		<ObjectId>Green Spinner</ObjectId>
+		<Damage>130</Damage>
+		<Speed>80</Speed>
+		<Size>120</Size>
+		<LifetimeMS>1000</LifetimeMS>
+		<ConditionEffect duration="5">Slowed</ConditionEffect>
+	</Projectile>
+	</Object>
+
+	<Object type="0x904e" id="Pyramid Artifact 4">
+	<DisplayId>Pyramid Artifact</DisplayId>
+	<Enemy/>
+	<KeepInSight/>
+	<Class>Character</Class>
+	<AnimatedTexture><File>chars16x8dEncounters</File><Index>0</Index></AnimatedTexture>
+	<Size>120</Size>
+	<MaxHitPoints>3000</MaxHitPoints>
+	<Defense>50</Defense>
+
+	<XpMult>0.0</XpMult>
+
+	<Projectile id="0">
+		<ObjectId>Beam</ObjectId>
+		<Damage>50</Damage>
+		<Speed>200</Speed>
+		<Size>140</Size>
+		<LifetimeMS>200</LifetimeMS>
+		<ConditionEffect duration="2">Weak</ConditionEffect>
+	</Projectile>
+</Object>
+
+
+	<Object type="0x904f" id="Nile Artifact 4">
+		<DisplayId>Nile Artifact</DisplayId>
+		<Enemy/>
+		<KeepInSight/>
+		<Class>Character</Class>
+		<AnimatedTexture><File>chars8x8dEncounters</File><Index>12</Index></AnimatedTexture>
+		<Size>100</Size>
+		<MaxHitPoints>2500</MaxHitPoints>
+		<Defense>20</Defense>
+
+		<XpMult>0.0</XpMult>
+
+		<Projectile id="0">
+			<ObjectId>Black Missile</ObjectId>
+			<Damage>190</Damage>
+			<Speed>40</Speed>
+			<Size>120</Size>
+			<LifetimeMS>3000</LifetimeMS>
+		</Projectile>
+
+
+	</Object>
+
+	<Object type="0x9050" id="Nile Artifact 5">
+		<DisplayId>Nile Artifact</DisplayId>
+		<Enemy/>
+		<KeepInSight/>
+		<Class>Character</Class>
+		<AnimatedTexture><File>chars8x8dEncounters</File><Index>12</Index></AnimatedTexture>
+		<Size>120</Size>
+		<MaxHitPoints>4000</MaxHitPoints>
+		<Defense>25</Defense>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x9051" id="TombTOpen2">
+		<Class>Character</Class>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
 </Objects>

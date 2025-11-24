@@ -53,7 +53,17 @@
 
 		
 	</Object>
-	
+
+	<Object type="0x0e1f" id="AbyssTemporaryLava">
+		<Class>Character</Class>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<Size>0</Size>
+		<NoMiniMap/>
+		<XpMult>0.0</XpMult>
+	</Object>
 
 	
 	<Object type="0x090a" id="Archdemon Malphas">
@@ -71,10 +81,10 @@
 		<DeathSound>monster/demons_death</DeathSound>
 
 			
-		<MaxHitPoints>10000</MaxHitPoints>
+		<MaxHitPoints>15000</MaxHitPoints>
 		<Size>100</Size>
 		<Defense>20</Defense>
-		<XpMult>0.7</XpMult>
+		<XpMult>2.0</XpMult>
 
 		
 		<Projectile id="0">
@@ -112,12 +122,6 @@
 			<MultiHit/>
 			<ConditionEffect duration="4">Weak</ConditionEffect>
 		</Projectile>
-		
-			
-
-
-					
-		
 	</Object>	
 
 
@@ -313,11 +317,10 @@
 		<Texture><File>lofiObjBig</File><Index>0x2c</Index></Texture>
 
 		<MaxHitPoints>25000</MaxHitPoints>
-		<XpMult>0.35</XpMult>
+		<XpMult>0.5</XpMult>
    		<Size>120</Size>
 		<StasisImmune/>
 		<Defense>30</Defense>
-		
 		<HitSound>monster/stone_walls_hit</HitSound>
 		<DeathSound>monster/stone_walls_hit</DeathSound>
    		
@@ -344,9 +347,6 @@
 			<LifetimeMS>1600</LifetimeMS>
    			<Size>100</Size>
 		</Projectile>
-   		
-		
-		
 	</Object>
 
 	<Object type="0x0e1c" id="AbyssExitGuarder">
@@ -359,9 +359,6 @@
 		<XpMult>0.0</XpMult>
    		<Size>0</Size>
 		<MaxHitPoints>10</MaxHitPoints>
-		
-		
-		
 	</Object>
 
 	<Object type="0x0e1b" id="LavaTrigger">
@@ -374,7 +371,6 @@
 		<XpMult>0.0</XpMult>
    		<Size>0</Size>
 		<MaxHitPoints>10</MaxHitPoints>
-
 	</Object>
 
 	<Object type="0x0e1a" id="AbyssTreasureLavaBomb">
@@ -387,7 +383,59 @@
 		<MaxHitPoints>10</MaxHitPoints>
 		<XpMult>0.0</XpMult>
    		<Size>0</Size>
-		
-	
 	</Object>
+
+	<Object type="0x0e1f" id="AbyssTemporaryLava">
+		<Class>Character</Class>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<XpMult>0.0</XpMult>
+
+	</Object>
+
+	<Object type="0x9029" id="AbyssAnchor">
+		<Class>Character</Class>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x902a" id="AbyssTransition">
+		<Class>Character</Class>
+		<Enemy/>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>0</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+	</Object>
+
+	<Object type="0x902b" id="MalphasPortal">
+		<Class>Character</Class>
+		<Enemy/>
+		<Texture>
+			<File>mountainTempleObjects8x8</File>
+			<Index>0xc9</Index>
+		</Texture>
+		<NoMiniMap/>
+		<Size>100</Size>
+		<StasisImmune/>
+		<XpMult>0.0</XpMult>
+		<MaxHitPoints>2000</MaxHitPoints>
+		<Defense>20</Defense>
+	</Object>
+
 </Objects>

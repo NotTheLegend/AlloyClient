@@ -365,8 +365,7 @@ public class Player : Entity {
             Map.AddProjectile(proj);
             
             var shoot = PlayerShoot.CreatePacket();
-            shoot.ContainerType = item.ObjectType;
-            shoot.BulletId = bId;
+            shoot.ItemType = item.ObjectType;
             shoot.Angle = angle;
             shoot.Time = (int)gameTime.TotalMs;
             shoot.StartingPos = new Position { X = Position.X, Y = Position.Y };

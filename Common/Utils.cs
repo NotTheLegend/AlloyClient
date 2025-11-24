@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using Common.Structs;
@@ -31,8 +32,9 @@ public static class Utils {
         public int GetValueInt(string name) => element.GetProperty(name).GetInt32();
     }
 
+    private static readonly Regex _letterRegex = new("[a-zA-Z]");
     public static int GetBase(string val) {
-        var isHex = val.Contains('x') && !val.EndsWith('x');
+        var isHex = _letterRegex.IsMatch(val) && !val.EndsWith('x');
         return isHex ? 16 : 10;
     }
     

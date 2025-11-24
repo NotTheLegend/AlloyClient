@@ -13,13 +13,12 @@ using Common.Structs;
 namespace AlloyClient.Assets;
 
 public static class AssetParser {
-    public static async Task ParseAssetsAsync() {
-        await ParseGround();
-        await ParseObjects();
+    public static async void LoadAssets() {
+        await Task.WhenAll(Task.Run(ParseGround), Task.Run(ParseObjects));
     }
 
-    private static async Task ParseGround() {
-        var path = await File.ReadAllTextAsync("Content/Xmls/Ground.xml");
+    private static void ParseGround() {
+        var path = File.ReadAllText("Content/Xmls/Ground.xml");
         var groundContainer = XElement.Parse(path).Elements("Ground");
         foreach (var ground in groundContainer) {
             var props = new GroundProperties(ground);
@@ -30,14 +29,14 @@ public static class AssetParser {
         }
     }
 
-    private static async Task ParseObjects() {
+    private static void ParseObjects() {
         var xmlFiles = Directory.GetFiles("Content/Xmls", "*.xml");
-        var excludedFiles = new[] { "Ground.xml", "Regions.xml", "TutorialScript.xml" };
-
-        foreach (var xmlFile in xmlFiles.Where(file => !excludedFiles.Contains(Path.GetFileName(file))).ToArray()) {
-            var path = await File.ReadAllTextAsync(xmlFile);
+        var i = 0;
+        foreach (var xmlFile in xmlFiles) {
+            var path = File.ReadAllText(xmlFile);
             var objectContainer = XElement.Parse(path).Elements("Object");
             foreach (var gameObject in objectContainer) {
+                // Console.WriteLine($"XML:{gameObject.Attribute("id")}"); This line might become handy if you're messing with xmls
                 var props = new ObjectProperties(gameObject);
                 ObjectLibrary.TypeToObjectProps[props.ObjectType] = props;
                 ObjectLibrary.TypeToTextureData[props.ObjectType] = new TextureData(gameObject);

@@ -1,4 +1,5 @@
 ﻿using System;
+using AlloyClient.Assets;
 using AlloyClient.State;
 using AlloyClient.Utils;
 

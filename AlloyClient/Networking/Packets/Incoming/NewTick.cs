@@ -35,7 +35,6 @@ public class NewTick : IncomingPacket<NewTick> {
 
         if (Map.LocalPlayer != null) {
             var move = Move.CreatePacket();
-            move.TickId = TickId;
             move.NewPosition = new Position {
                 X = Map.LocalPlayer.Position.X,
                 Y = Map.LocalPlayer.Position.Y

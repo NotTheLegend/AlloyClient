@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AlloyClient.Assets.Libraries;
 using AlloyClient.State;
 using AlloyClient.UiLib.BuiltIn;
 using AlloyClient.UiLib.BuiltIn.Buttons;
@@ -14,6 +15,8 @@ namespace AlloyClient.Screens.Components.CharacterSelection;
 public class CharacterWheel : Container {
     private const int CenterX = Settings.DefaultScreenWidth / 2; 
     private const int CenterY = Settings.DefaultScreenHeight / 2 + 200;
+    
+    private static int ClassesLength => ObjectLibrary.TypeToClassProps.Count;
     
     private readonly List<ClassRect> _classRects = [];
     
@@ -30,15 +33,16 @@ public class CharacterWheel : Container {
     private bool _isAnimating; 
     
     // parse from player xml later
-    public readonly ushort[] Classes = [0x0300, 0x0307, 0x030e, 0x0310, 0x031d, 0x031e, 0x031f, 0x0320, 0x0321, 0x0322, 0x0323, 0x0324, 0x0325, 0x0326];
     public int CurrentCharacterIndex;
     public ClassRect SelectedClass;
 
     public CharacterWheel() {
-        for (var i = 0; i < Classes.Length; i++) {
-            var classRect = new ClassRect(i, Classes[i]); 
+        var i = 0;
+        foreach (var kvp in ObjectLibrary.TypeToClassProps) {
+            var classRect = new ClassRect(i, kvp.Key); 
             _classRects.Add(classRect);
             AddChild(classRect);
+            i++;
         }
 
         UpdateCharacterWheel(0);
@@ -55,8 +59,8 @@ public class CharacterWheel : Container {
 
     private void UpdateCharacterWheel(float angle) {
         var baseY = CenterY + 50f; 
-        var angleStep = MathF.Tau / Classes.Length;
-        for (var i = 0; i < Classes.Length; i++) {
+        var angleStep = MathF.Tau / ClassesLength;
+        for (var i = 0; i < ClassesLength; i++) {
             _snapAngles.Add(_rotationAngle - i * angleStep); 
         }
         
@@ -92,7 +96,7 @@ public class CharacterWheel : Container {
     }
 
     private void RotateToNextCharacter() {
-        CurrentCharacterIndex = (CurrentCharacterIndex + 1) % Classes.Length;
+        CurrentCharacterIndex = (CurrentCharacterIndex + 1) % ClassesLength;
         _startRotationAngle = _rotationAngle;
         _targetRotationAngle = _snapAngles[CurrentCharacterIndex];
         _animationTimer = 0f;
@@ -100,7 +104,7 @@ public class CharacterWheel : Container {
     }
 
     private void RotateToPreviousCharacter() {
-        CurrentCharacterIndex = (CurrentCharacterIndex - 1 + Classes.Length) % Classes.Length;
+        CurrentCharacterIndex = (CurrentCharacterIndex - 1 + ClassesLength) % ClassesLength;
         _startRotationAngle = _rotationAngle;
         _targetRotationAngle = _snapAngles[CurrentCharacterIndex];
         _animationTimer = 0f;
