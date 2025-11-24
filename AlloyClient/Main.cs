@@ -40,8 +40,10 @@ public class Main {
 
     public Main() {
         GameInstance = this;
-        
-        var options = new ToolkitOptions();
+
+        var options = new ToolkitOptions {
+            Logger = null
+        };
         Toolkit.Init(options);
         
         var version = new Version(4, 6);

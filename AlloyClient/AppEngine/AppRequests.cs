@@ -13,9 +13,6 @@ public struct AppResponse {
 }
 
 public static class AppRequests {
-    
-    private const string UsernameKey = "username";
-    private const string PasswordKey = "password";
 
     public static async Task Startup() {
         await VerifyAsync();
@@ -105,5 +102,5 @@ public static class AppRequests {
         return new AppResponse{ Success = true };
     }
     
-    private static Dictionary<string, string> BuildAccountRequestData(string username, string password) => new() {{UsernameKey, username}, {PasswordKey, password}};
+    private static Dictionary<string, string> BuildAccountRequestData(string username, string password) => new() {{"username", username}, {"password", password}};
 }

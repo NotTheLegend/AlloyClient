@@ -15,12 +15,21 @@ public sealed class ScreenGraphic : Sprite {
     public ScreenGraphic(bool splash = false) {
 
         TextureId = splash ? TextureType.TitleGraphic : TextureType.TitleBackground;
-
-        //todo:SetBaseDimensions(TexWidth, TexHeight);
+        
         ResizeBackBuffer();
         FillData(TexWidth, TexHeight);
         
-        this.SetAutoResize(OnResize);
+        AddEventListener(Event.AddedToStage, OnStageEnter);
+        AddEventListener(Event.RemovedFromStage, OnStageExit);
+    }
+
+    private void OnStageEnter() {
+        Stage.AddEventListener(ResizeEvent.Resize, OnResize);
+        OnResize(new ResizeEvent("", Stage.StageWidth, Stage.StageHeight));
+    }
+
+    private void OnStageExit() {
+        Stage.RemoveEventListener(ResizeEvent.Resize, OnResize);
     }
 
     private void OnResize(ResizeEvent args) {

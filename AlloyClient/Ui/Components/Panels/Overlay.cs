@@ -7,5 +7,5 @@ public class Overlay : Sprite {
 
     public virtual bool InputBlocker => true;
 
-    public virtual void CloseOverlay() => OverlayManager.CloseOverlay(this);
+    public virtual void CloseOverlay() => OverlayManager.Clear();
 }

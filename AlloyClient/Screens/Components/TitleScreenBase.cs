@@ -5,8 +5,6 @@ using AlloyClient.Ui.Components.Graphics;
 using AlloyClient.UiLib.BuiltIn;
 using AlloyClient.UiLib.Core;
 using AlloyClient.UiLib.Enums;
-using AlloyClient.UiLib;
-using AlloyClient.Utils;
 
 namespace AlloyClient.Screens.Components;
 
@@ -14,9 +12,9 @@ public abstract class TitleScreenBase : Screen {
     
     private readonly ColorRect _darken = new ColorRect(new ColorRectConfig { Width = Settings.DefaultScreenWidth, Height = Settings.DefaultScreenHeight, Color = 0x2B2B2B, Alpha = 0.8f });
     
-    private readonly MusicButton _music = new MusicButton(new MusicButtonConfig { Width = 36, Height = 36 });
+    private readonly MusicButton _music = new MusicButton(new MusicButtonConfig { X = 7, Y = 7, Width = 32, Height = 32 });
 
-    private readonly AccountOverlay _overlay;
+    public readonly AccountOverlay Overlay;
     
     protected TitleScreenBase(bool title = false) {
         var background = new ScreenGraphic(title);
@@ -30,20 +28,30 @@ public abstract class TitleScreenBase : Screen {
         
         //Todo guild/stars
 
-        _overlay = new AccountOverlay(title);
-        _overlay.X = Settings.DefaultScreenWidth - 10;
-        _overlay.Y = 10;
-        _overlay.SetAnchor(UiAnchor.RightTop);
-        AddChild(_overlay);
+        Overlay = new AccountOverlay(title);
+        Overlay.X = Settings.DefaultScreenWidth - 10;
+        Overlay.Y = 10;
+        Overlay.SetAnchor(UiAnchor.RightTop);
+        AddChild(Overlay);
         
-        this.SetAutoResize(OnResize);
+        AddEventListener(Event.AddedToStage, OnStageEnter);
+        AddEventListener(Event.RemovedFromStage, OnStageExit);
+    }
+
+    private void OnStageEnter() {
+        Stage.AddEventListener(ResizeEvent.Resize, OnResize);
+        OnResize(new ResizeEvent("", Stage.StageWidth, Stage.StageHeight));
+    }
+
+    private void OnStageExit() {
+        Stage.RemoveEventListener(ResizeEvent.Resize, OnResize);
     }
 
     protected override void OnResize(ResizeEvent args) {
         _darken.Resize(args.Width, args.Height);
         _music.Scale = Stage.ScreenScale;
-        _overlay.Scale = Stage.ScreenScale;
-        _overlay.X = args.Width - (int)(10 * Stage.ScreenScale.X);
-        _overlay.Y = (int)(10 * Stage.ScreenScale.Y);
+        Overlay.Scale = Stage.ScreenScale;
+        Overlay.X = args.Width - (int)(10 * Stage.ScreenScale.X);
+        Overlay.Y = (int)(10 * Stage.ScreenScale.Y);
     }
 }

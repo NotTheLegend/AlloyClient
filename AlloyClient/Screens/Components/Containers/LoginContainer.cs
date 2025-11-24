@@ -8,6 +8,7 @@ using AlloyClient.UiLib.BuiltIn.Buttons;
 using AlloyClient.UiLib.Enums;
 using AlloyClient.UiLib.Extra;
 using AlloyClient.Models;
+using AlloyClient.UiLib.Core;
 
 namespace AlloyClient.Screens.Components.Containers;
 
@@ -37,7 +38,7 @@ public class LoginContainer : Overlay {
         _passwordInput = new TextInput(passwordConfig);
         AddChild(_passwordInput);
 
-        var registerConfig = new TextButtonConfig { Text = "New user? Click here to Register!", FontSize = 16, OnClicked = () => { CloseOverlay(); OverlayManager.Enqueue(new RegisterContainer()); }, FontType = FontType.Bold, X = Width / 2, Y = _passwordInput.Y + 40, Anchor = UiAnchor.Middle };
+        var registerConfig = new TextButtonConfig { Text = "New user? Click here to Register!", FontSize = 16, OnClicked = () => { OverlayManager.Set(new RegisterContainer()); }, FontType = FontType.Bold, X = Width / 2, Y = _passwordInput.Y + 40, Anchor = UiAnchor.Middle };
         var registerButton = new TextButton(registerConfig);
         AddChild(registerButton);
         
@@ -61,6 +62,6 @@ public class LoginContainer : Overlay {
             return;
         }
         CloseOverlay();
-        ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 500, 0x0);
+        DispatchEvent(new Event("loginSuccess"));
     }
 }

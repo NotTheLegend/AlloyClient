@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using AlloyClient.AppEngine;
 using AlloyClient.Data;
 using AlloyClient.Display;
 using AlloyClient.Game;
@@ -222,10 +223,10 @@ public class CharacterListScreen : TitleScreenBase {
 
         MouseEnabled = true;
 
-        //AddEventListener(CharacterList.LoadAsync(), () => {
+        AddEventListener(AppRequests.GetCharList(), () => {
             LoadCharacterList();
             LoadGraveyardList();
-        //});
+        });
     }
 
     private void LoadCharacterList() {
@@ -301,7 +302,7 @@ public class CharacterListScreen : TitleScreenBase {
     }
 
     public void ShowCharacterCreate() {
-        OverlayManager.Enqueue(new ClassContainer());
+        OverlayManager.Set(new ClassContainer());
     }
     
     public void HideCharacterCreate() {

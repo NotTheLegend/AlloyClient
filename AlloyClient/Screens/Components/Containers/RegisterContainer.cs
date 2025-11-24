@@ -39,7 +39,9 @@ public class RegisterContainer : Overlay {
         _passwordInput = new TextInput(passwordConfig);
         AddChild(_passwordInput);
         
-        //todo register fields
+        var registerConfig = new TextButtonConfig { Text = "Existing user? Click here to login!", FontSize = 16, OnClicked = () => { OverlayManager.Set(new LoginContainer()); }, FontType = FontType.Bold, X = Width / 2, Y = _passwordInput.Y + 40, Anchor = UiAnchor.Middle };
+        var registerButton = new TextButton(registerConfig);
+        AddChild(registerButton);
         
         var loginConfig = new TextButtonConfig { Text = "Create", FontSize = 28, OnClicked = OnRegister, FontType = FontType.Normal, X = 475 - 25, Y = Height - 25, Anchor = UiAnchor.RightBottom };
         var loginButton = new TextButton(loginConfig);

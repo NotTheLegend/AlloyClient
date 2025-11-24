@@ -18,10 +18,10 @@ public sealed class OptionsView : Overlay {
     
     public static void Toggle() {
         if (_open) {
-            OverlayManager.CloseOverlay();
+            OverlayManager.Clear();
             _open = false;
         } else {
-            OverlayManager.Enqueue(new OptionsView());
+            OverlayManager.Set(new OptionsView());
             _open = true;
         }
     }

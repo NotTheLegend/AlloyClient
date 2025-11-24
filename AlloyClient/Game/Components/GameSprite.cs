@@ -5,6 +5,7 @@ using AlloyClient.Ui.Character;
 using AlloyClient.Ui.Chat;
 using AlloyClient.UiLib.Core;
 using AlloyClient.Display;
+using AlloyClient.Ui.Components.Elements;
 using AlloyClient.UiLib;
 using AlloyClient.Utils;
 
@@ -22,12 +23,26 @@ public sealed class GameSprite : Sprite {
         AddChild(new NotificationLayer());
         AddChild(Hud = new HudView());
         AddChild(_chat= new ChatView());
+        AddChild(new DebugStats());
 
         Map.GameSprite = this;
         
-        this.SetAutoResize(OnResize);
         SetPosition(Settings.ScreenWidth, Settings.ScreenHeight);
+        
+        AddEventListener(Event.AddedToStage, OnStageEnter);
+        AddEventListener(Event.RemovedFromStage, OnStageExit);
     }
+
+    private void OnStageEnter() {
+        Stage.AddEventListener(ResizeEvent.Resize, OnResize);
+        OnResize(new ResizeEvent("", Stage.StageWidth, Stage.StageHeight));
+    }
+
+    private void OnStageExit() {
+        Stage.RemoveEventListener(ResizeEvent.Resize, OnResize);
+    }
+    
+    
     
     private void OnResize(ResizeEvent args) {
         SetPosition(args.Width, args.Height);

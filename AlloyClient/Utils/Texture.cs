@@ -18,6 +18,12 @@ public static class TextureHelper {
         return new TextureInfo(uv.ToPosition(), TextureType.GameAtlas);
     }
     
+    public static TextureInfo FromGameAtlas(string lookup, int index, uint removePadding) {
+        var uv = Main.Atlas.GetAtlasData(lookup, index);
+        uv.RemovePadding(removePadding);
+        return new TextureInfo(uv.ToPosition(), TextureType.GameAtlas);
+    }
+    
     public static TextureInfo FromGameAtlas(ushort id) {
         if (!ObjectLibrary.TypeToTextureData.TryGetValue(id, out var data))
             return FromGameAtlas("invisible", 0);

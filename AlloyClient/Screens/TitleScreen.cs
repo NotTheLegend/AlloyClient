@@ -7,9 +7,6 @@ using AlloyClient.Ui.Components.Buttons;
 using AlloyClient.UiLib.BuiltIn;
 using AlloyClient.UiLib.Core;
 using AlloyClient.UiLib.Enums;
-using AlloyClient.Models;
-using AlloyClient.UiLib;
-using AlloyClient.Utils;
 
 namespace AlloyClient.Screens;
 
@@ -51,10 +48,6 @@ public class TitleScreen : TitleScreenBase {
         _container.X = Settings.DefaultScreenWidth / 2 - _center;
         _container.Y = Settings.DefaultScreenHeight - 90;
         AddChild(_container);
-
-        
-        
-        this.SetAutoResize(OnResize);
     }
 
     protected override void OnResize(ResizeEvent args) {
@@ -65,13 +58,12 @@ public class TitleScreen : TitleScreenBase {
     }
 
     private void OnPlay() {
-        var login = GlobalData.Get<LoginData>();
-        if (login.LoggedIn) {
-            //TODO: add charlist event into char screen here
+        if (GlobalData.Contains<LoginData>()) {
             ScreenManager.FadeTo(new CharacterListScreen());
-        }
-        else {
-            OverlayManager.Enqueue(new LoginContainer());
+        } else {
+            var login = new LoginContainer();
+            login.AddEventListener("loginSuccess", Overlay.OnLogin);
+            OverlayManager.Set(login);
         }
     }
 }

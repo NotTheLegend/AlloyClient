@@ -15,6 +15,7 @@ public struct IconButtonConfig {
     public int Width = 0;
     public int Height = 0;
     public float Alpha = 1.0f;
+    public bool GameObjectShade = true;
     public UiAnchor Anchor = UiAnchor.LeftTop;
     public Action OnClick = null;
     
@@ -34,6 +35,8 @@ public sealed class IconButton : Sprite {
 
     private readonly Action _onClick;
 
+    private readonly bool _gameObjectShade;
+
     public IconButton(IconButtonConfig config) {
         _texture = config.Texture.AtlasPosition;
         TextureId = config.Texture.TextureType;
@@ -44,6 +47,7 @@ public sealed class IconButton : Sprite {
         Alpha = config.Alpha;
         SetAnchor(config.Anchor);
         _onClick = config.OnClick;
+        _gameObjectShade = config.GameObjectShade;
 
         MouseEnabled = true;
         AddEventListener(MouseEvent.LeftDown, OnLeftDown);
@@ -64,7 +68,13 @@ public sealed class IconButton : Sprite {
         VertexData[2] = new VertexUi(new Vector2(_width, 0), new Vector2(_texture.U + _texture.W, _texture.V)); // Top Right
         VertexData[3] = new VertexUi(new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H)); // Bottom Right
 
-        Extra1 = new Vector4(_texture.V + _texture.H * 0.4f, _texture.V + _texture.H, -1f, -1f);
+        if (_gameObjectShade) {
+            Extra1 = new Vector4(_texture.V + _texture.H * 0.4f, _texture.V + _texture.H, -1f, -1f);
+        } else {
+            Extra1 = new Vector4(1f, -1f, -1f, -1f);
+        }
+            
+        
         
         SetGraphicsBuffer();
     }

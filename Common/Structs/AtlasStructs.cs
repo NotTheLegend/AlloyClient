@@ -17,11 +17,11 @@ public struct AtlasData {
         };
     }
 
-    public void RemovePadding() {
-        U += AtlasConfig.Padding / AtlasConfig.AtlasWidth;
-        V += AtlasConfig.Padding / AtlasConfig.AtlasHeight;
-        W -= AtlasConfig.Padding * 2 / AtlasConfig.AtlasWidth;
-        H -= AtlasConfig.Padding * 2 / AtlasConfig.AtlasHeight;
+    public void RemovePadding(uint pixels = 1) {
+        U += AtlasConfig.Padding * pixels / AtlasConfig.AtlasWidth;
+        V += AtlasConfig.Padding * pixels / AtlasConfig.AtlasHeight;
+        W -= AtlasConfig.Padding * pixels * 2 / AtlasConfig.AtlasWidth;
+        H -= AtlasConfig.Padding * pixels * 2 / AtlasConfig.AtlasHeight;
     }
 
     public Vector4 ToVector4(bool removePad = false) {

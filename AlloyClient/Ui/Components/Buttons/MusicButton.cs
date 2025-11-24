@@ -5,6 +5,7 @@ using AlloyClient.UiLib.Core;
 using AlloyClient.UiLib.Data;
 using AlloyClient.UiLib.Enums;
 using AlloyClient.Utils;
+using Common.Structs;
 
 namespace AlloyClient.Ui.Components.Buttons;
 
@@ -28,17 +29,20 @@ public class MusicButton : Sprite {
     private readonly IconButton _button;
 
     private bool _state;
+    
+    //TODO: turn into its own thing instead of having icon child
 
     public MusicButton(MusicButtonConfig config) {
         _state = Settings.PlayMusic.Value;
-        _musicOn = TextureHelper.FromGameAtlas("lofiInterfaceBig", 3);
-        _musicOff = TextureHelper.FromGameAtlas("lofiInterfaceBig", 4);
+        _musicOn = TextureHelper.FromGameAtlas("lofiInterfaceBig", 3, 4);
+        _musicOff = TextureHelper.FromGameAtlas("lofiInterfaceBig", 4, 4);
 
-        var iconConfig = new IconButtonConfig { Texture = _state ? _musicOn : _musicOff, Width = config.Width, Height = config.Height, OnClick = OnClick };
+        var iconConfig = new IconButtonConfig { Texture = _state ? _musicOn : _musicOff, Width = config.Width, Height = config.Height, OnClick = OnClick, Alpha = config.Alpha, Anchor = config.Anchor, GameObjectShade = false };
         _button = new IconButton(iconConfig);
         AddChild(_button);
-        
-        //todo:SetBaseDimensions(_button.Width, _button.Height);
+
+        X = config.X;
+        Y = config.Y;
         MouseEnabled = true;
         AddEventListener(MouseEvent.MouseOver, OnMouseOver);
         AddEventListener(MouseEvent.MouseOut, OnMouseOut);

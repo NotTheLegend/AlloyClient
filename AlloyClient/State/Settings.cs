@@ -9,7 +9,6 @@ using AlloyClient.State.SettingTypes;
 using AlloyClient.Utils;
 using Newtonsoft.Json;
 using OpenTK.Platform;
-using AlloyClient.Models;
 
 namespace AlloyClient.State;
 
@@ -412,8 +411,13 @@ public static class Settings {
         var loadedUser = info.TryGetValue("username", out var username) && !string.IsNullOrWhiteSpace(username);
         var loadedPass = info.TryGetValue("password", out var password) && !string.IsNullOrWhiteSpace(password);
 
+        if (username == string.Empty && password == string.Empty) {
+            Log.Debug("No local account data");
+            return;
+        }
+
         if (!loadedUser || !loadedPass) {
-            Log.Debug("No/Incomplete/Invalid local account data");
+            Log.Debug("Incomplete/Invalid local account data");
             return;
         }
 

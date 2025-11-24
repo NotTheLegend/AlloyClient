@@ -84,9 +84,12 @@ public struct Tween {
     public EaseType Type;
     public Action OnFinish;
 
+    //TODO: add a start param otherwise delay dont really work right
     public static Tween New(Sprite sprite, Easing ease, int durationMs, float end, EaseType type, int delayMs = 0, Action onFinish = null) {
-        if (delayMs == 0)
+        if (delayMs <= 0) {
             sprite.TweenActive = true;
+            delayMs = 0;
+        }
         
         return new Tween {
             Sprite = sprite,
