@@ -3825,15 +3825,6 @@
 			<Size>80</Size>
 		</Projectile>
 	</Object>
-	<Object id="Heal" type="0x164">
-		<PetBehavior/>
-		<Class>PetBehavior</Class>
-		<BaseBehavior id="PetHeal"/>
-		<Parameters>
-			<MaxHeal min="10" max="90" curve="exp_incr"/>
-			<Cooldown min="10" max="1" curve="dim_returns"/>
-		</Parameters>
-	</Object>
 	<Object id="MagicHeal" type="0x474">
 		<PetBehavior/>
 		<Class>PetBehavior</Class>
@@ -3968,7 +3959,7 @@
 		<Group>Savage</Group>
 		<Description>Your pet will run towards nearby enemies.\n\nLevel this ability up to increase its frequency and range.</Description>
 	</Object>
-	<Object id="Decoy" type="0x462">
+	<Object id="DecoyAbility" type="0x462">
 		<PetAbility/>
 		<Class>PetAbility</Class>
 		<Group>Decoy</Group>
