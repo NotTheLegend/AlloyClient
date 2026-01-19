@@ -40,20 +40,20 @@ public static class AssetParser {
             var path = File.ReadAllText(xmlFile);
             var objectContainer = XElement.Parse(path).Elements("Object");
             Parallel.ForEach(objectContainer, gameObject => {
-                // Console.WriteLine($"XML:{gameObject.Attribute("id")}"); This line might become handy if you're messing with xmls
+                //Console.WriteLine($"XML:{gameObject.Attribute("id")}");// This line might become handy if you're messing with xmls
                 var props = new ObjectProperties(gameObject);
                 lock (ObjectLibrary.TypeToObjectProps)
-                    ObjectLibrary.TypeToObjectProps.Add(props.ObjectType, props);
+                    ObjectLibrary.TypeToObjectProps.TryAdd(props.ObjectType, props);
                 
                 lock (ObjectLibrary.TypeToTextureData)
-                    ObjectLibrary.TypeToTextureData.Add(props.ObjectType, new TextureData(gameObject));
+                    ObjectLibrary.TypeToTextureData.TryAdd(props.ObjectType, new TextureData(gameObject));
                 
                 lock (ObjectLibrary.IdToObjectType)
-                    ObjectLibrary.IdToObjectType.Add(props.ObjectId, props.ObjectType);
+                    ObjectLibrary.IdToObjectType.TryAdd(props.ObjectId, props.ObjectType);
 
                 if (props.Class == "Player") {
                     lock (ObjectLibrary.TypeToClassProps)
-                        ObjectLibrary.TypeToClassProps.Add(props.ObjectType, props.PlayerProperties);
+                        ObjectLibrary.TypeToClassProps.TryAdd(props.ObjectType, props.PlayerProperties);
                 }
 
                 if (props.Skin) {
@@ -63,7 +63,7 @@ public static class AssetParser {
 
                 if (gameObject.HasElement("Item")) {
                     lock (ObjectLibrary.TypeToItem)
-                        ObjectLibrary.TypeToItem.Add(props.ObjectType, new ItemDesc(props.ObjectType, gameObject));
+                        ObjectLibrary.TypeToItem.TryAdd(props.ObjectType, new ItemDesc(props.ObjectType, gameObject));
                 }
             });
         });

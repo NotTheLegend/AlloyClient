@@ -26,7 +26,7 @@ public class Atlas {
             }
         }
 
-        Console.WriteLine($"Unable to lookup atlas array: {lookup}");
+        //Console.WriteLine($"Unable to lookup atlas array: {lookup}");
         return [];
 
     }
@@ -39,7 +39,7 @@ public class Atlas {
             }
         }
 
-        Console.WriteLine($"Unable to lookup atlas: {lookup} - {index}");
+        //Console.WriteLine($"Unable to lookup atlas: {lookup} - {index}");
         return new AtlasData();
 
     }
@@ -52,7 +52,7 @@ public class Atlas {
             }
         }
 
-        Console.WriteLine($"Unable to lookup atlas[AnimationAtlasData]: {lookup} - {index}");
+        //Console.WriteLine($"Unable to lookup atlas[AnimationAtlasData]: {lookup} - {index}");
         return new AnimationAtlasData();
     }
 
@@ -64,7 +64,7 @@ public class Atlas {
             }
         }
 
-        Console.WriteLine($"Unable to lookup atlas[DominantColor]: {lookup} - {index}");
+        //Console.WriteLine($"Unable to lookup atlas[DominantColor]: {lookup} - {index}");
         return new Color(0);
     }
 
