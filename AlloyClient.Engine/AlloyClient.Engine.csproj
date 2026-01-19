@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <LangVersion>preview</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="OpenTK" Version="5.0.0-pre.15" />
+      <PackageReference Include="ReFuel.StbImage" Version="2.1.0" />
+    </ItemGroup>
+	
+	<ItemGroup>
+	  <Using Include="OpenTK.Graphics.OpenGL" />
+      <Using Include="OpenTK.Mathematics" />
+    </ItemGroup>
+
+</Project>
