@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using AlloyClient.Assets;
 using AlloyClient.Display;
+using AlloyClient.Engine.Graphics;
 using AlloyClient.Game.Components;
 using AlloyClient.Rendering;
 using AlloyClient.Screens;
@@ -93,9 +94,22 @@ public class Main {
     [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH")]
     private void LoadContent() {
         ContentReader.Init(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content"));
-        Atlas = ContentReader.LoadAtlas("Game.atlas", TextureFilter.Linear);
-        UiAtlas = ContentReader.LoadAtlas("Ui.atlas", TextureFilter.Nearest);
+        
+        Atlas = ContentReader.LoadAtlas("Game.atlas");
+        Atlas.Texture.SetFilter(TextureFilter.Linear);
+        UiAtlas = ContentReader.LoadAtlas("Ui.atlas");
         MinimapTexture.Init(out var mapTexture);
+        var titleBackground = ContentReader.LoadTexture("TitleScreen/TitleScreenBackground.png");
+        var titleGraphic = ContentReader.LoadTexture("TitleScreen/TitleScreenGraphic.png");
+        var font = ContentReader.LoadFont("Fonts/MyriadPro/MyriadPro.msdf");
+        
+        // Set texture units
+        Atlas.Texture.BindToTextureUnit(0);
+        UiAtlas.Texture.BindToTextureUnit(1);
+        mapTexture.BindToTextureUnit(2);
+        titleBackground.BindToTextureUnit(3);
+        titleGraphic.BindToTextureUnit(4);
+        font.Texture.BindToTextureUnit(5);
         
         ModelData.Load();
         // AssetParser.LoadAssets();
@@ -104,15 +118,17 @@ public class Main {
             DefaultScreen = new Vector2i(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight),
             Screen = new Vector2i(Settings.ScreenWidth, Settings.ScreenHeight)
         };
+        
+        
 
         //UiRender needs to be loaded first so Render can pull font data from it
         UiRender.ConfigureAndLoad(settings, out var stage);
-        UiRender.RegisterFont(ContentReader.LoadFont("Fonts/MyriadPro/MyriadPro.msdf"));
-        UiRender.RegisterTexture(TextureType.GameAtlas, Atlas.GetTexture());
-        UiRender.RegisterTexture(TextureType.UiAtlas, UiAtlas.GetTexture());
+        UiRender.RegisterFont(font);
+        UiRender.RegisterTexture(TextureType.GameAtlas, Atlas.Texture);
+        UiRender.RegisterTexture(TextureType.UiAtlas, UiAtlas.Texture);
         UiRender.RegisterTexture(TextureType.Minimap, mapTexture);
-        UiRender.RegisterTexture(TextureType.TitleBackground, ContentReader.LoadTexture("TitleScreen/TitleScreenBackground.png", TextureFilter.Nearest));
-        UiRender.RegisterTexture(TextureType.TitleGraphic, ContentReader.LoadTexture("TitleScreen/TitleScreenGraphic.png", TextureFilter.Nearest));
+        UiRender.RegisterTexture(TextureType.TitleBackground, titleBackground);
+        UiRender.RegisterTexture(TextureType.TitleGraphic, titleGraphic);
         
         Render.FirstTimeInit();
 

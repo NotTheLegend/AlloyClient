@@ -1,8 +1,8 @@
 using AlloyClient.Assets.XmlStructs;
+using AlloyClient.Engine.Common;
 using AlloyClient.UiLib.BuiltIn;
 using AlloyClient.UiLib.Core;
 using AlloyClient.UiLib.Enums;
-using Common;
 
 namespace AlloyClient.Ui.Components.Elements;
 
@@ -11,7 +11,7 @@ public class TierText : Sprite
     private SimpleText Tag;
     public TierText(ItemDesc desc)
     {
-        Color c = Color.White;
+        var c = Color.White;
 
         string text;
         if (desc.Tier == -1)

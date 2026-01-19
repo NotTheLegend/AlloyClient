@@ -15,7 +15,7 @@ public sealed class Texture {
 
     public Texture(string file) : this(File.ReadAllBytes(file)) { }
 
-    public Texture(ReadOnlySpan<byte> data) : this(StbImage.Load(data)) { }
+    public Texture(ReadOnlySpan<byte> data) : this(StbImage.Load(data, StbiImageFormat.Rgba)) { }
     
     public Texture(StbImage image) : this(image.AsSpan<Color>(), image.Width, image.Height) { }
     
@@ -26,6 +26,8 @@ public sealed class Texture {
         
         GL.TextureStorage2D(_handle, 1, SizedInternalFormat.Rgba8, width, height);
         GL.TextureSubImage2D(_handle, 0, 0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, data);
+        
+        SetFilter(TextureFilter.Nearest);
     }
 
     public void SetData(ReadOnlySpan<Color> data, Vector4i rect) => GL.TextureSubImage2D(_handle, 0, rect.X, rect.Y, rect.Z, rect.W, PixelFormat.Rgba, PixelType.UnsignedByte, data);

@@ -1,11 +1,10 @@
 ﻿using System;
 using AlloyClient.Assets;
+using AlloyClient.Engine.Common;
 using AlloyClient.Game;
 using AlloyClient.Game.Objects;
 using AlloyClient.Rendering.Types.SubTypes;
 using AlloyClient.Rendering.VertexData;
-using Common;
-using AlloyClient.Utils;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering.Types;

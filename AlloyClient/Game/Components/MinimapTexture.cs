@@ -1,5 +1,6 @@
 ﻿using System;
-using Common;
+using AlloyClient.Engine.Common;
+using AlloyClient.Engine.Graphics;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Components;
@@ -17,7 +18,7 @@ public static class MinimapTexture {
 
     public static void Init(out Texture texture) {
         _data = new Color[4096 * 4096];
-        _texture = Texture.Create(new ReadOnlySpan<Color>(_data), 4096, 4096, TextureFilter.Nearest);
+        _texture = new Texture(new ReadOnlySpan<Color>(_data), 4096, 4096);
 
         _minX = _minY = 4096;
         _maxX = _maxY = 0;

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using AlloyClient.Assets;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Assets.XmlStructs;
+using AlloyClient.Engine.Common;
 using AlloyClient.Game.Objects.Enums;
 using AlloyClient.Game.Objects.Util;
 using AlloyClient.Networking.Enums;

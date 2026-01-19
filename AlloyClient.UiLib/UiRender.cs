@@ -1,12 +1,11 @@
 ﻿using System;
+using AlloyClient.Engine.Graphics;
 using AlloyClient.UiLib.Core;
 using AlloyClient.UiLib.Data;
 using AlloyClient.UiLib.Enums;
 using AlloyClient.UiLib.Input;
 using AlloyClient.UiLib.Rendering;
-using Common;
 using Common.ContentReaders;
-using Common.Rendering;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
 

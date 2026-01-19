@@ -26,7 +26,7 @@ public sealed class Shader {
 
     public void SetValue(string uniform, Vector2 value) => GL.ProgramUniform2f(_handle, GetLocation(uniform, UniformType.FloatVec2), 1, in value);
 
-    public void SetValue(string uniform, Texture texture) => GL.ProgramUniform1ui(_handle, GetLocation(uniform, UniformType.Sampler2d), texture.TextureUnit);
+    public void SetValue(string uniform, Texture texture) => GL.ProgramUniform1i(_handle, GetLocation(uniform, UniformType.Sampler2d), (int)texture.TextureUnit);
 
     private int GetLocation(string uniform, UniformType type) {
         if (!_uniforms.TryGetValue(uniform, out var info)) {

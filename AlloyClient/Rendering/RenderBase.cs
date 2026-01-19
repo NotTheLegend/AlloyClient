@@ -1,5 +1,6 @@
 ﻿using System;
 using AlloyClient.Assets;
+using AlloyClient.Engine.Common;
 using AlloyClient.Game.Objects;
 using Common;
 using Common.Structs;

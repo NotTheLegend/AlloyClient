@@ -4,11 +4,11 @@ using System.Linq;
 using AlloyClient.Assets;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Assets.XmlStructs;
+using AlloyClient.Engine.Common;
 using AlloyClient.Game.Components;
 using AlloyClient.Game.Objects;
 using AlloyClient.Rendering;
 using AlloyClient.Rendering.VertexData;
-using Common;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Game;

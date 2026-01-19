@@ -1,22 +1,23 @@
-﻿using Common.Structs;
+﻿using System.Buffers;
+using AlloyClient.Engine.Common;
+using AlloyClient.Engine.Graphics;
+using Common.Structs;
 
 namespace Common.ContentReaders;
 
 public class Atlas {
     
-    private readonly Texture _texture;
+    public readonly Texture Texture;
     private readonly Dictionary<string, AtlasData[]> _atlasMapStatic;
     private readonly Dictionary<string, AnimationAtlasData[]> _atlasMapAnimation;
     private readonly Dictionary<string, Color[]> _dominantColors;
 
     private Atlas(Texture texture, Dictionary<string, AtlasData[]> atlasMapStatic, Dictionary<string, AnimationAtlasData[]> atlasMapAnimation, Dictionary<string, Color[]> dominantColors) {
-        _texture = texture;
+        Texture = texture;
         _atlasMapStatic = atlasMapStatic;
         _atlasMapAnimation = atlasMapAnimation;
         _dominantColors = dominantColors;
     }
-
-    public Texture GetTexture() => _texture;
     
     public AtlasData[] GetAtlasData(string lookup) {
         if (lookup != null) {
@@ -68,10 +69,12 @@ public class Atlas {
         return new Color(0);
     }
 
-    internal static Atlas Read(BinaryReader reader, TextureFilter filter) {
-        var png = reader.ReadBytes(reader.ReadInt32());
-        using var stream = new MemoryStream(png);
-        var texture = Texture.FromStream(stream, filter);
+    internal static Atlas Read(BinaryReader reader) {
+        var length = reader.ReadInt32();
+        var png = ArrayPool<byte>.Shared.Rent(length);
+        reader.Read(png, 0, length);
+        var texture = new Texture(png);
+        ArrayPool<byte>.Shared.Return(png);
 
         var atlasMapStatic = new Dictionary<string, AtlasData[]>();
         var atlasDataMapCount = reader.ReadInt32();

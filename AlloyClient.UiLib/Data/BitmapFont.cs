@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using AlloyClient.Engine.Graphics;
 using AlloyClient.UiLib.Enums;
-using Common;
 using Common.ContentReaders;
 using Common.Structs;
 
@@ -17,7 +17,7 @@ public class BitmapFamily {
     public readonly float PixelRange;
 
     public BitmapFamily(FontFamily data) {
-        Atlas = data.Atlas;
+        Atlas = data.Texture;
 
         foreach (var kvp in data.FontData) {
             if (!Enum.TryParse(kvp.Key, out FontType type)) {

@@ -1,26 +1,31 @@
-﻿using System.Text.Json;
+﻿using System.Buffers;
+using System.Text.Json;
+using AlloyClient.Engine.Graphics;
 using Common.Structs;
 
 namespace Common.ContentReaders;
 
 public class FontFamily {
 
-    public readonly Texture Atlas;
+    public readonly Texture Texture;
 
     public readonly Dictionary<string, FontData> FontData;
 
     public float PixelRange;
 
-    private FontFamily(Texture atlas, Dictionary<string, FontData> fontData, float pixelRange) {
-        Atlas = atlas;
+    private FontFamily(Texture texture, Dictionary<string, FontData> fontData, float pixelRange) {
+        Texture = texture;
         FontData = fontData;
         PixelRange = pixelRange;
     }
 
     internal static FontFamily Read(BinaryReader reader) {
-        var png = reader.ReadBytes(reader.ReadInt32());
-        using var stream = new MemoryStream(png);
-        var texture = Texture.FromStream(stream, TextureFilter.Linear);
+        var length = reader.ReadInt32();
+        var png = ArrayPool<byte>.Shared.Rent(length);
+        reader.Read(png, 0, length);
+        var texture = new Texture(png);
+        texture.SetFilter(TextureFilter.Linear);
+        ArrayPool<byte>.Shared.Return(png);
         
         var fontFamily = new Dictionary<string, FontData>();
         var fontOrder = new string[reader.ReadInt32()];

@@ -1,7 +1,7 @@
 ﻿using System;
 using AlloyClient.Assets;
+using AlloyClient.Engine.Common;
 using AlloyClient.Rendering.VertexData;
-using Common;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering.Types;

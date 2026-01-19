@@ -1,4 +1,4 @@
-﻿using Common.Rendering;
+﻿using AlloyClient.Engine.Graphics;
 
 namespace Common.ContentReaders;
 
@@ -10,11 +10,11 @@ public static class ContentReader {
         _folder = folder;
     }
     
-    public static Texture LoadTexture(string imagePath, TextureFilter filter) => Texture.FromFile(Path.Combine(_folder, imagePath), filter);
+    public static Texture LoadTexture(string imagePath) => new Texture(Path.Combine(_folder, imagePath));
 
-    public static Atlas LoadAtlas(string path, TextureFilter filter) {
+    public static Atlas LoadAtlas(string path) {
         using var reader = new BinaryReader(new MemoryStream(File.ReadAllBytes(Path.Combine(_folder, path))));
-        return Atlas.Read(reader, filter);
+        return Atlas.Read(reader);
     }
 
     public static FontFamily LoadFont(string path) {
@@ -22,8 +22,8 @@ public static class ContentReader {
         return FontFamily.Read(reader);
     }
 
-    public static Shader LoadShader(string path, (string, string)[] defines = null) {
-        return Shader.Create(Path.Combine(_folder, path), defines);
+    public static Shader LoadShader(string path, (string, int)[] defines = null) {
+        return new Shader(Path.Combine(_folder, path), defines);
     }
 
 }

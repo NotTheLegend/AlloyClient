@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using AlloyClient.Engine.Common;
 using AlloyClient.UiLib.Enums;
 using AlloyClient.UiLib.Extra;
 using AlloyClient.UiLib.Input;
 using AlloyClient.UiLib.Rendering;
 using AlloyClient.UiLib.Utils;
 using Common;
-using Common.Rendering;
-using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using AlloyClient.UiLib.BuiltIn;
 
 namespace AlloyClient.UiLib.Core;
 

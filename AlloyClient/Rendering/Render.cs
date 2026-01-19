@@ -1,4 +1,5 @@
 ﻿using AlloyClient.Assets;
+using AlloyClient.Engine.Graphics;
 using AlloyClient.Game;
 using AlloyClient.Rendering.VertexData;
 using AlloyClient.UiLib;
@@ -40,20 +41,20 @@ public static partial class Render {
 
     public static void FirstTimeInit() {
         // Shaders
-        _shaderGround = ContentReader.LoadShader("Shaders/Ground", [("#define TileBuffer", $"#define TileBuffer {TileBufferSize}")]);
-        _shaderGround.SetValue("GameTexture", Main.Atlas.GetTexture());
+        _shaderGround = ContentReader.LoadShader("Shaders/Ground", [("TileBuffer", TileBufferSize)]);
+        _shaderGround.SetValue("GameTexture", Main.Atlas.Texture);
 
         _shaderShadow = ContentReader.LoadShader("Shaders/Shadow");
         
         _shaderObject = ContentReader.LoadShader("Shaders/Object");
-        _shaderObject.SetValue("GameTexture", Main.Atlas.GetTexture());
+        _shaderObject.SetValue("GameTexture", Main.Atlas.Texture);
         
         _shaderObject.SetValue("PixelRange", UiRender.MyriadPro.PixelRange);
         _shaderObject.SetValue("TextTextureSize", new Vector2(UiRender.MyriadPro.Atlas.Width, UiRender.MyriadPro.Atlas.Height));
         _shaderObject.SetValue("TextTexture", UiRender.MyriadPro.Atlas);
 
         _shaderParticle = ContentReader.LoadShader("Shaders/Particle");
-        _shaderParticle.SetValue("GameTexture", Main.Atlas.GetTexture());
+        _shaderParticle.SetValue("GameTexture", Main.Atlas.Texture);
         
         _defaultVao = GL.GenVertexArray();
         
