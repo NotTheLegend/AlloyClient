@@ -16,6 +16,8 @@ public static partial class Render {
     private const int BufferSize = 1000;
     private const int TileBufferSize = (int) (Map.TileRenderDistance * Map.TileRenderDistance * MathHelper.Pi) * 5;
     
+    private static readonly (string, string)[] TileDefines = [("TileBuffer", $"{TileBufferSize}")];
+    
     // Shaders
     private static Shader _shaderGround;
     private static Shader _shaderShadow;
@@ -41,7 +43,7 @@ public static partial class Render {
 
     public static void FirstTimeInit() {
         // Shaders
-        _shaderGround = ContentReader.LoadShader("Shaders/Ground", [("TileBuffer", TileBufferSize)]);
+        _shaderGround = ContentReader.LoadShader("Shaders/Ground", TileDefines);
         _shaderGround.SetValue("GameTexture", Main.Atlas.Texture);
 
         _shaderShadow = ContentReader.LoadShader("Shaders/Shadow");

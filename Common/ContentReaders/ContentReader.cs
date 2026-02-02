@@ -22,7 +22,7 @@ public static class ContentReader {
         return FontFamily.Read(reader);
     }
 
-    public static Shader LoadShader(string path, (string, int)[] defines = null) {
+    public static Shader LoadShader(string path, (string, string)[] defines = null) {
         return new Shader(Path.Combine(_folder, path), defines);
     }
 

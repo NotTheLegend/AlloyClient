@@ -115,8 +115,10 @@ public static class Map {
         }
     }
 
-    private static int _lastX = -1;
-    private static int _lastY = -1;
+    //private static int _lastX = -1;
+    //private static int _lastY = -1;
+    
+    private static Vector2 _lastPosition = Vector2.Zero;
 
     public static void Draw(GameTime gameTime) {
         if (LocalPlayer == null) return;
@@ -131,9 +133,10 @@ public static class Map {
 
         #region Tile
 
-        if ((int) LocalPlayer.Position.X != _lastX || (int) LocalPlayer.Position.Y != _lastY) {
-            _lastX = (int) LocalPlayer.Position.X;
-            _lastY = (int) LocalPlayer.Position.Y;
+        //if ((int) LocalPlayer.Position.X != _lastX || (int) LocalPlayer.Position.Y != _lastY) {
+        var pos = Vector2.Floor(LocalPlayer.Position);
+        if (pos != _lastPosition) {
+            _lastPosition = pos;
             
             Render.StartNewDrawTile();
 

@@ -1,32 +1,41 @@
-﻿namespace AlloyClient.Engine.Graphics;
+﻿using AlloyClient.Engine.Graphics.Buffers;
+
+namespace AlloyClient.Engine.Graphics;
 
 public sealed class Shader {
 
     internal record struct UniformInfo(int Location, UniformType Type, int Size);
+    
+    internal record struct UniformBlockInfo(uint Location);
 
     public readonly string Name;
 
-    private readonly int _handle;
+    internal readonly int Handle;
 
     private readonly Dictionary<string, UniformInfo> _uniforms = new();
+    
+    private readonly Dictionary<string, UniformBlockInfo> _uniformBlocks = new();
 
-    public Shader(string path, (string, int)[] defines = null) {
-        Name = new DirectoryInfo(path).Name;;
-        _handle = GL.CreateProgram();
+    public Shader(string path, (string, string)[] defines = null) {
+        Name = new DirectoryInfo(path).Name;
+        Handle = GL.CreateProgram();
         
-        ShaderHelper.Compile(_handle, path, defines);
-        ShaderHelper.LoadUniforms(_handle, _uniforms);
+        ShaderHelper.Compile(Handle, path, defines);
+        ShaderHelper.LoadUniformProperties(Handle, _uniforms);
+        ShaderHelper.LoadUniformBlocks(Handle, _uniformBlocks);
     }
 
-    public void Apply() => GL.UseProgram(_handle);
+    public void Apply() => GL.UseProgram(Handle);
 
-    public void SetValue(string uniform, Matrix4 matrix) => GL.ProgramUniformMatrix4f(_handle, GetLocation(uniform, UniformType.FloatMat4), 1, true, in matrix);
+    public void SetValue(string uniform, Matrix4 matrix) => GL.ProgramUniformMatrix4f(Handle, GetLocation(uniform, UniformType.FloatMat4), 1, true, in matrix);
 
-    public void SetValue(string uniform, float value) => GL.ProgramUniform1f(_handle, GetLocation(uniform, UniformType.Float), value);
+    public void SetValue(string uniform, float value) => GL.ProgramUniform1f(Handle, GetLocation(uniform, UniformType.Float), value);
 
-    public void SetValue(string uniform, Vector2 value) => GL.ProgramUniform2f(_handle, GetLocation(uniform, UniformType.FloatVec2), 1, in value);
+    public void SetValue(string uniform, Vector2 value) => GL.ProgramUniform2f(Handle, GetLocation(uniform, UniformType.FloatVec2), 1, in value);
 
-    public void SetValue(string uniform, Texture texture) => GL.ProgramUniform1i(_handle, GetLocation(uniform, UniformType.Sampler2d), (int)texture.TextureUnit);
+    public void SetValue(string uniform, Texture texture) => GL.ProgramUniform1i(Handle, GetLocation(uniform, UniformType.Sampler2d), (int)texture.TextureUnit);
+    
+    public void SetValue<T>(string uniform, UniformBuffer<T> buffer) where T : unmanaged, IBufferData<T>, IEquatable<T> => GL.BindBufferBase(BufferTarget.UniformBuffer, GetUniformBlock(uniform), buffer.Handle);
 
     private int GetLocation(string uniform, UniformType type) {
         if (!_uniforms.TryGetValue(uniform, out var info)) {
@@ -35,6 +44,14 @@ public sealed class Shader {
 
         if (type != info.Type) {
             throw new Exception($"Value does not match the type of uniform <{uniform}>");
+        }
+
+        return info.Location;
+    }
+
+    internal uint GetUniformBlock(string uniform) {
+        if (!_uniformBlocks.TryGetValue(uniform, out var info)) {
+            throw new Exception($"Unable to find uniform block <{uniform}> in shader <{Name}>");
         }
 
         return info.Location;

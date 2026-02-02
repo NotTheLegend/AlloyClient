@@ -4,7 +4,7 @@ namespace AlloyClient.Engine.Graphics;
 
 internal static class ShaderHelper {
 
-    internal static void LoadUniforms(int handle, Dictionary<string, Shader.UniformInfo> uniforms) {
+    internal static void LoadUniformProperties(int handle, Dictionary<string, Shader.UniformInfo> uniforms) {
         GL.GetProgrami(handle, ProgramProperty.ActiveUniforms, out var count);
         if (count == 0)
             return;
@@ -16,8 +16,21 @@ internal static class ShaderHelper {
             uniforms[uniform] = new Shader.UniformInfo(location, type, size);
         }
     }
+    
+    internal static void LoadUniformBlocks(int handle, Dictionary<string, Shader.UniformBlockInfo> blocks) {
+        GL.GetProgramInterfacei(handle, ProgramInterface.UniformBlock, ProgramInterfacePName.ActiveResources, out var count);
+        if (count == 0)
+            return;
+        
+        GL.GetProgramInterfacei(handle, ProgramInterface.UniformBlock, ProgramInterfacePName.MaxNameLength, out var maxLength);
+        for (var i = 0u; i < count; i++) {
 
-    internal static void Compile(int handle, string path, (string, int)[] defines) {
+            var blockName = GL.GetProgramResourceName(handle, ProgramInterface.UniformBlock, i, maxLength, out _);
+            blocks[blockName] = new Shader.UniformBlockInfo(i);
+        }
+    }
+
+    internal static void Compile(int handle, string path, (string, string)[] defines) {
         var p1 = path + ".vert";
         var p2 = path + ".frag";
         var vs = new StringBuilder(File.ReadAllText(p1));
