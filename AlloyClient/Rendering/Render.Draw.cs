@@ -1,4 +1,5 @@
-﻿using AlloyClient.Assets;
+﻿using System;
+using AlloyClient.Assets;
 using AlloyClient.Rendering.VertexData;
 using OpenTK.Graphics.OpenGL;
 
@@ -28,13 +29,13 @@ public static partial class Render {
     }
 
     public static void EndNewDrawTile() {
-        _tileBuffer.SetData(_tileData, 0, _tileCount);
+        _tileBuffer.SetData(_tileData.AsSpan(0, _tileCount));
     }
 
     public static void DrawTiles() {
         LastDrawCountTiles = _tileCount;
         
-        GL.BindVertexArray(_defaultVao);
+        _defaultVao.Bind();
         
         _shaderGround.Apply();
         _tileBuffer.BindToIndex(0);
@@ -47,11 +48,10 @@ public static partial class Render {
     #region Render Shadow
 
     public static void StartDrawShadow() {
-        LastDrawCountShadows = 0;
-        _shadowCount = 0;
+        LastDrawCountShadows = _shadowCount = 0;
 
-        GL.BindVertexArray(_defaultVao);
-        _shadowBuffer.BindToIndex(0);
+        _defaultVao.Bind();
+        _shaderShadow.SetValue("ShadowData", _shadowBuffer);
         _shaderShadow.Apply();
     }
 
@@ -59,13 +59,13 @@ public static partial class Render {
         _shadowData[_shadowCount] = shadow;
         _shadowCount++;
 
-        if (_shadowCount == BufferSize) {
+        if (_shadowCount == _shadowData.Length) {
             FlushBufferShadow();
         }
     }
 
     private static void FlushBufferShadow() {
-        _shadowBuffer.SetData(_shadowData, 0, _shadowCount);
+        _shadowBuffer.SetData(_shadowData.AsSpan(0, _shadowCount), 0);
         
         GL.DrawArrays(PrimitiveType.Triangles, 0, _shadowCount * 6);
         
@@ -74,14 +74,11 @@ public static partial class Render {
     }
 
     public static void EndShadowDraw() {
-        if (_shadowCount == 0) return;
-
-        _shadowBuffer.SetData(_shadowData, 0, _shadowCount);
+        if (_shadowCount == 0) {
+            return;
+        }
         
-        GL.DrawArrays(PrimitiveType.Triangles, 0, _shadowCount * 6);
-
-        LastDrawCountShadows += _shadowCount;
-        _shadowCount = 0;
+        FlushBufferShadow();
     }
 
     #endregion
@@ -93,10 +90,10 @@ public static partial class Render {
         _modelCount = 0;
         
         _shaderModel.Apply();
-        GL.BindVertexArray(_modelVao);
+        _modelVao.Bind();
     }
 
-    //public static void SetEntityModel(ModelType model) => _entityModel = model;
+    public static void SetEntityModel(ModelType model) => _entityModel = model;
 
     public static void DrawModel(VertexModel vertexModel) {
         _modelData[_modelCount] = vertexModel;
@@ -112,7 +109,7 @@ public static partial class Render {
             return;
         }
         
-        _modelDataBuffer.SetData(_modelData, 0, _modelCount);
+        _modelDataBuffer.SetData(_modelData.AsSpan(0, _modelCount));
 
         var info = ModelData.ModelRenderInfo[_entityModel];
         GL.DrawElementsInstanced(PrimitiveType.Triangles, info.PrimitiveCount * 3, DrawElementsType.UnsignedShort, info.IndexOffset * 2, _modelCount);
@@ -129,18 +126,18 @@ public static partial class Render {
         _entityCount = 0;
         
         _shaderObject.Apply();
-        GL.BindVertexArray(_entityVao);
+        //GL.BindVertexArray(_entityVao);
     }
 
-    public static void SetEntityModel(ModelType model) => _entityModel = model;
+    //public static void SetEntityModel(ModelType model) => _entityModel = model;
 
     public static void DrawEntity(VertexObject vertexObject) {
-        _entityData[_entityCount] = vertexObject;
+        //_entityData[_entityCount] = vertexObject;
         _entityCount++;
 
-        if (_entityCount == _entityData.Length) {
+        //if (_entityCount == _entityData.Length) {
             FlushBufferEntity();
-        }
+        //}
     }
 
     public static void FlushBufferEntity() {
@@ -148,7 +145,7 @@ public static partial class Render {
             return;
         }
         
-        _entityDataBuffer.SetData(_entityData, 0, _entityCount);
+        //_entityDataBuffer.SetData(_entityData, 0, _entityCount);
 
         var info = ModelData.ModelRenderInfo[_entityModel];
         GL.DrawElementsInstanced(PrimitiveType.Triangles, info.PrimitiveCount * 3, DrawElementsType.UnsignedShort, info.IndexOffset * 2, _entityCount);

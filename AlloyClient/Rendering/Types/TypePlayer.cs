@@ -97,6 +97,6 @@ public sealed class TypePlayer : RenderBase {
 
     public override void DrawShadow() {
         if (Entity.Size == 0) return;
-        Render.DrawShadow(new ShadowData(Position, new Vector2(1f, 0.5f), Color.Black));
+        Render.DrawShadow(new ShadowData(Position.Xy, 1f, Color.Black));
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Common.Rendering;
-using OpenTK.Graphics.OpenGL;
+using AlloyClient.Engine.Graphics.Buffers;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering.VertexData;
@@ -13,14 +12,8 @@ public struct TileData(Vector4 posOffset, Vector4 uv, Vector4 animate, Vector4 m
     public Vector4 UV = uv;
     public Vector4 Animate = animate;
     public Vector4 Mask = mask;
-    
-    public static unsafe int Size { get; } = sizeof(TileData);
 
-    public override int GetHashCode() {
-        return ((Position.GetHashCode() * 397 ^ UV.GetHashCode())
-                            * 397 ^ Animate.GetHashCode())
-                    * 397 ^ Mask.GetHashCode();
-    }
+    public override int GetHashCode() => HashCode.Combine(Position, UV, Animate, Mask);
 
     public override string ToString() {
         return "{{TextureCoordinate:" + UV + "}}";

@@ -23,7 +23,7 @@ public static partial class Render {
         
         LastDrawParticleCount= 0;
         
-        GL.BindVertexArray(_defaultVao);
+        _defaultVao.Bind();
         
         _shaderParticle.Apply();
         _particleBuffer.BindToIndex(0);

@@ -43,12 +43,16 @@ void main() {
     InstanceData data = instanceBuffer.data[instanceId];
     
     vec4 pos = vec4(particlePos[verId] * data.Position.w, 0, 1.0) * BillMatrix;
-    pos.xyz += data.Position.xyz;
-
-    gl_Position = pos * WorldMatrix * ViewMatrix * ProjMatrix;
+    
+    
     BaseUV = particleUV[verId];
     Color = data.Color;
     
     vec4 depth = vec4(data.Position.xy, 0, 1) * WorldMatrix * ViewMatrix * ProjMatrix;
-    Depth = 0.5f + 0.4f * depth.y;
+    
+    pos.xyz += data.Position.xyz;
+    pos = pos * WorldMatrix * ViewMatrix * ProjMatrix;
+    pos.z = 0.5f + 0.4f * depth.y;
+    
+    gl_Position = pos;
 }

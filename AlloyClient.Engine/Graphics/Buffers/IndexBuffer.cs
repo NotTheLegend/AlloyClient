@@ -8,11 +8,11 @@ public sealed unsafe class IndexBuffer {
     
     internal readonly int Handle;
 
-    public IndexBuffer(int indexLength) {
-        if (indexLength < 0) throw new Exception("Element count must be >= 0");
+    public IndexBuffer(int indicesCount) {
+        if (indicesCount < 0) throw new Exception("Element count must be >= 0");
         
-        Length = indexLength;
-        LengthBytes = indexLength * sizeof(ushort);
+        Length = indicesCount;
+        LengthBytes = indicesCount * sizeof(ushort);
 
         GL.CreateBuffer(out Handle);
         GL.NamedBufferStorage(Handle, Length * sizeof(ushort), null, BufferStorageMask.DynamicStorageBit);

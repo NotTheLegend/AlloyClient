@@ -20,7 +20,8 @@ public readonly struct VertexStride {
             var e = Layout[i];
             
             GL.EnableVertexArrayAttrib(vao.Handle, e.Location);
-
+            GL.VertexArrayAttribBinding(vao.Handle, e.Location, index);
+            
             if (Instanced) {
                 GL.VertexArrayBindingDivisor(vao.Handle, index, 1);
             }

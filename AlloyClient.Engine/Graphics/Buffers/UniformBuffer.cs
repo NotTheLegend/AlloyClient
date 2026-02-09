@@ -1,12 +1,16 @@
 ﻿namespace AlloyClient.Engine.Graphics.Buffers;
 
-public sealed unsafe class UniformBuffer<T> where T : unmanaged, IBufferData<T> {
+public sealed unsafe class UniformBuffer {
     
     public readonly int LengthBytes;
     
     internal readonly int Handle;
 
     public UniformBuffer(int sizeInBytes) {
+        if ((sizeInBytes - 1) > ushort.MaxValue) {
+            throw new Exception($"Size too big for uniform buffer object, {sizeInBytes}/{ushort.MaxValue}");
+        }
+        
         LengthBytes = sizeInBytes;
         
         GL.CreateBuffer(out Handle);

@@ -1,4 +1,4 @@
-﻿#version 450 core
+﻿#version 460 core
 
 out vec4 FragColor;
 
@@ -8,9 +8,9 @@ in flat uint Color;
 // ABGR
 vec3 unpackColor(uint color) {
     return vec3(
-    float(color & 0x0000FFu) / 255.0,
-    float((color & 0x00FF00u) >> 8u) / 255.0,
-    float((color & 0xFF0000u) >> 16u) / 255.0
+        float(color & 0x0000FFu) / 255.0,
+        float((color & 0x00FF00u) >> 8u) / 255.0,
+        float((color & 0xFF0000u) >> 16u) / 255.0
     );
 }
 

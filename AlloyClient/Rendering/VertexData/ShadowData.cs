@@ -1,20 +1,19 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using AlloyClient.Engine.Common;
-using Common.Rendering;
+using AlloyClient.Engine.Graphics.Buffers;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering.VertexData;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct ShadowData(Vector3 position, Vector2 scale, Color color) : IBufferData<ShadowData> {
-    public Vector4 Position = new (position, 0);
-    public Vector2 Scale = scale;
+public struct ShadowData(Vector2 position, float scale, Color color) : IBufferData<ShadowData> {
+    public Vector2 Position = position;
+    public float Scale = scale;
     public uint Color = color.PackedValue;
-    public float _;
-
-    public static unsafe int Size { get; } = sizeof(ShadowData);
 
     public override int GetHashCode() {
+        HashCode.Combine(Position, Scale, Color);
         return (Position.GetHashCode() * 397 ^ Scale.GetHashCode()) * 397 ^ Color.GetHashCode();
     }
 
@@ -23,7 +22,7 @@ public struct ShadowData(Vector3 position, Vector2 scale, Color color) : IBuffer
     }
 
     public static bool operator ==(ShadowData left, ShadowData right) {
-        return left.Position == right.Position && left.Scale == right.Scale && left.Color == right.Color;
+        return left.Position == right.Position && left.Scale.Equals(right.Scale) && left.Color == right.Color;
     }
 
     public static bool operator !=(ShadowData left, ShadowData right) {

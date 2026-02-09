@@ -1,4 +1,6 @@
-﻿#version 450 core
+﻿#version 460 core
+
+#define ShadowBuffer 
 
 uniform mat4x4 WorldMatrix;
 uniform mat4x4 ViewMatrix;
@@ -6,12 +8,12 @@ uniform mat4x4 ProjMatrix;
 uniform mat4x4 BillMatrix;
 
 const vec2 shadowPos[6] = vec2[6](
-    vec2(-0.5, 0.5),
-    vec2(0.5, 0.5),
-    vec2(-0.5, -0.5),
-    vec2(-0.5, -0.5),
-    vec2(0.5, 0.5),
-    vec2(0.5, -0.5)
+    vec2(-0.5, 0.25),
+    vec2(0.5, 0.25),
+    vec2(-0.5, -0.25),
+    vec2(-0.5, -0.25),
+    vec2(0.5, 0.25),
+    vec2(0.5, -0.25)
 );
 
 const vec2 shadowUV[6] = vec2[6](
@@ -24,14 +26,13 @@ const vec2 shadowUV[6] = vec2[6](
 );
 
 struct InstanceData {
-    vec4 Position;
-    vec2 Scale;
+    vec2 Position;
+    float Scale;
     uint Color;
-    float Padding;
 };
 
-layout(std140, binding = 0) readonly buffer InstanceBuffer {
-    InstanceData data[];
+layout(std140) uniform ShadowData {
+    InstanceData data[ShadowBuffer];
 } instanceBuffer;
 
 out vec2 BaseUV;
@@ -44,7 +45,7 @@ void main() {
     InstanceData data = instanceBuffer.data[instanceId];
     
     vec4 pos = vec4(shadowPos[verId] * data.Scale, 0, 1) * BillMatrix;
-    pos.xyz += data.Position.xyz;
+    pos.xy += data.Position.xy;
     
     gl_Position = pos * WorldMatrix * ViewMatrix * ProjMatrix;
     

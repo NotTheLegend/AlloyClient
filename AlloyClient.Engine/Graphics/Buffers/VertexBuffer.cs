@@ -3,6 +3,8 @@
 public sealed unsafe class VertexBuffer<T> where T : unmanaged, IVertexData<T> {
     
     public readonly int Length;
+    
+    public readonly int LengthBytes;
 
     public readonly VertexStride Stride;
     
@@ -10,6 +12,7 @@ public sealed unsafe class VertexBuffer<T> where T : unmanaged, IVertexData<T> {
     
     public VertexBuffer(VertexStride stride, int vertexCount) {
         Length = vertexCount;
+        Length = vertexCount * sizeof(T);
         Stride = stride;
         
         GL.CreateBuffer(out Handle);

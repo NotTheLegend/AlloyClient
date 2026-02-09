@@ -151,9 +151,9 @@ public static class Map {
         #endregion
 
         //TODO: use tile shader for these
-        #region GroundObjects
+        /* #region GroundObjects
 
-        /*if (EntityStorage.TryGetValue(ModelType.PbTile, out var ground)) {
+        if (EntityStorage.TryGetValue(ModelType.PbTile, out var ground)) {
             Render.StartDrawEntity();
             Render.SetEntityModel(ModelType.PbTile);
 
@@ -163,11 +163,9 @@ public static class Map {
             }
 
             Render.FlushBufferEntity();
-        }*/
-        
-        
+        }
 
-        #endregion
+        #endregion */
 
         #region Shadows
 
@@ -194,7 +192,7 @@ public static class Map {
         GL.Enable(EnableCap.CullFace);
 
         #region Entities
-
+        
         Render.StartDrawModel();
 
         foreach (var kvp in EntityStorage) {
@@ -212,7 +210,8 @@ public static class Map {
 
             Render.FlushBufferModel();
         }
-        
+
+        return;
         Render.StartDrawEntity();
 
         if (EntityStorage.TryGetValue(ModelType.PbObject, out var entities)) {
