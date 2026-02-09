@@ -1,15 +1,20 @@
-﻿#version 330
+﻿#version 460 core
 
-in VS_OUT {
+struct extra {
+    float Type;
+    float SortId;
+    float Shade;
+    float Alpha;
+};
+
+in OBJECT_OUT {
     vec2 BaseUV;
     vec4 UV;
-    vec4 Extra;
+    extra Extra;
     vec4 Color;
     vec4 Mask1;
     vec4 Mask2;
-    float Depth;
-    float Zed;
-} input;
+} vsInput;
 
 out vec4 FragColor;
 
@@ -35,32 +40,32 @@ float median(float a, float b, float c) {
     return max(min(a, b), min(max(a, b), c));
 }
 
-vec2 uv_aa_smoothstep( vec2 uv,float width ) {
+vec2 uv_aa_smoothstep(vec2 uv,float width) {
     const vec2 res = vec2(4096, 4096);
     vec2 pixels = uv * res;
 
     vec2 pixels_floor = floor(pixels + 0.5);
     vec2 pixels_fract = fract(pixels + 0.5);
     vec2 pixels_aa = fwidth(pixels) * width * 0.5;
-    pixels_fract = smoothstep( vec2(0.5) - pixels_aa, vec2(0.5) + pixels_aa, pixels_fract );
+    pixels_fract = smoothstep(vec2(0.5) - pixels_aa, vec2(0.5) + pixels_aa, pixels_fract);
 
     return (pixels_floor + pixels_fract - 0.5) / res;
 }
 
 float samp(vec2 uv, float width, vec2 dx, vec2 dy) {
-    vec2 uv1 = clamp(uv, input.UV.xy, input.UV.xy + input.UV.zw);
+    vec2 uv1 = clamp(uv, vsInput.UV.xy, vsInput.UV.xy + vsInput.UV.zw);
     return textureGrad(GameTexture, uv_aa_smoothstep(uv1, 1.5), dx, dy).a;
 }
 
 vec4 GetEffect() {
-    vec2 uv = map(input.BaseUV, input.UV.xy, input.UV.xy + input.UV.zw);
+    vec2 uv = map(vsInput.BaseUV, vsInput.UV.xy, vsInput.UV.xy + vsInput.UV.zw);
     vec2 dx = dFdx(uv);
     vec2 dy = dFdy(uv);
     vec4 color = textureGrad(GameTexture, uv_aa_smoothstep(uv, 1.5), dx, dy);
     color /= color.a;
 
-    if (input.BaseUV.y > 0.4) {
-        color.rgb -= input.Extra.z * 0.241 * (input.BaseUV.y - 0.4);
+    if (vsInput.BaseUV.y > 0.4) {
+        color.rgb -= vsInput.Extra.Shade * 0.241 * (vsInput.BaseUV.y - 0.4);
     }
 
     if (color.a > 0) {
@@ -81,21 +86,21 @@ vec4 GetEffect() {
     alpha = max(alpha, samp(uv + vec2(0, offset), width, dx, dy));
 
     if (alpha > 0) {
-        return vec4(input.Color.rgb, 1);
+        return vec4(vsInput.Color.rgb, 1);
     }
 
     discard;
 }
 
 vec4 GetGameObject() {
-    vec2 uv = map(input.BaseUV, input.UV.xy, input.UV.xy + input.UV.zw);
+    vec2 uv = map(vsInput.BaseUV, vsInput.UV.xy, vsInput.UV.xy + vsInput.UV.zw);
     vec2 dx = dFdx(uv);
     vec2 dy = dFdy(uv);
     vec4 color = textureGrad(GameTexture, uv_aa_smoothstep(uv, 1.5), dx, dy);
     color /= color.a;
 
-    if (input.BaseUV.y > 0.4) {
-        color.rgb -= input.Extra.z * 0.241 * (input.BaseUV.y - 0.4);
+    if (vsInput.BaseUV.y > 0.4) {
+        color.rgb -= vsInput.Extra.Shade * 0.241 * (vsInput.BaseUV.y - 0.4);
     }
     
     if (color.a > 0) {
@@ -118,7 +123,7 @@ vec4 GetGameObject() {
     alpha = max(alpha, samp(uv + vec2(-offX, offY), width, dx, dy));
     
     if (alpha > 0) {
-        return vec4(input.Color.rgb, 1);
+        return vec4(vsInput.Color.rgb, 1);
     }
 
     float sum = 0.0;
@@ -132,11 +137,11 @@ vec4 GetGameObject() {
     if (sum == 0.0)
         discard;
      
-    return vec4(input.Color.rgb, sum / 25.0);
+    return vec4(vsInput.Color.rgb, sum / 25.0);
 }
 
 vec4 GetText() {
-    vec2 uv = map(input.BaseUV, input.UV.xy, input.UV.xy + input.UV.zw);
+    vec2 uv = map(vsInput.BaseUV, vsInput.UV.xy, vsInput.UV.xy + vsInput.UV.zw);
     vec3 samp = texture(TextTexture, uv).rgb;
     float pRange = PixelRange;
     vec2 dim = TextTextureSize;
@@ -150,12 +155,12 @@ vec4 GetText() {
     strokeDist = strokeDist * dot(msdfUnit, 0.5f / fwidth(uv));
     float opacity = clamp(sigDist + 0.5f, 0.0f, 1.0f);
     float strokeOpacity = clamp(strokeDist + 0.5f, 0.0f, 1.0f);
-    return mix(vec4(0, 0, 0, 1), input.Color, opacity) * max(opacity, strokeOpacity);
+    return mix(vec4(0, 0, 0, 1), vsInput.Color, opacity) * max(opacity, strokeOpacity);
 }
 
 void main() {
     vec4 outputColor;
-    float id = input.Extra.x;
+    float id = vsInput.Extra.Type;
 
     if (id == TypeGameObject) {
         outputColor = GetGameObject();
@@ -164,12 +169,12 @@ void main() {
     } else if (id == TypeText) {
         outputColor = GetText();
     } else if (id == TypeBar) {
-        outputColor = input.Color;
+        outputColor = vsInput.Color;
     } else {
         outputColor = vec4(0, 0, 0, 0);
     }
 
-    outputColor.a *= input.Extra.w;
+    outputColor.a *= vsInput.Extra.Alpha;
     if(outputColor.a == 0) {
         discard;
     }

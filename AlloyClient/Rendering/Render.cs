@@ -1,5 +1,4 @@
-﻿using System;
-using AlloyClient.Assets;
+﻿using AlloyClient.Assets;
 using AlloyClient.Engine.Graphics;
 using AlloyClient.Engine.Graphics.Buffers;
 using AlloyClient.Game;
@@ -7,7 +6,6 @@ using AlloyClient.Rendering.VertexData;
 using AlloyClient.UiLib;
 using Common;
 using Common.ContentReaders;
-using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering;
@@ -20,6 +18,7 @@ public static partial class Render {
     
     private static readonly (string, string)[] TileDefines = [("TileBuffer", $"{TileBufferSize}")];
     private static readonly (string, string)[] ShadowDefines = [("ShadowBuffer", $"{ShadowBufferSize}")];
+    private static readonly (string, string)[] ObjectDefines = [("ObjectBuffer", $"{BufferSize}")];
     
     // Shaders
     private static Shader _shaderGround;
@@ -45,9 +44,8 @@ public static partial class Render {
     private static VertexModel[] _modelData;
     private static VertexBuffer<VertexModel> _modelDataBuffer;
     
-    //private static int _entityVao;
-    //private static VertexObject[] _entityData;
-    //private static VertexBuffer<VertexObject> _entityDataBuffer;
+    private static VertexObject[] _entityData;
+    private static StorageBuffer<VertexObject> _entityDataBuffer;
     
 
     public static unsafe void FirstTimeInit() {
@@ -60,7 +58,7 @@ public static partial class Render {
         _shaderModel = ContentReader.LoadShader("Shaders/Model");
         _shaderModel.SetValue("GameTexture", Main.Atlas.Texture);
         
-        _shaderObject = ContentReader.LoadShader("Shaders/Object");
+        _shaderObject = ContentReader.LoadShader("Shaders/Object", ObjectDefines);
         _shaderObject.SetValue("GameTexture", Main.Atlas.Texture);
         
         _shaderObject.SetValue("PixelRange", UiRender.MyriadPro.PixelRange);
@@ -91,15 +89,10 @@ public static partial class Render {
         _modelVertexBuffer.BindTo(_modelVao);
         _modelDataBuffer.BindTo(_modelVao, 1);
         
-        /*
-        GL.BindVertexArray(_entityVao = GL.GenVertexArray());
-        _entityData = new VertexObject[BufferSize];
-        _entityDataBuffer = new VertexBuffer<VertexObject>(VertexObject.VertexStride, BufferSize, BufferUsage.DynamicDraw);
-        _entityDataBuffer.Bind();
-        _modelIndexBuffer.Bind();
-        _modelVertexBuffer.Bind();
         
-        */
+        _entityData = new VertexObject[BufferSize];
+        _entityDataBuffer = new StorageBuffer<VertexObject>(BufferSize);
+        
         BuildParticleBuffers();
     }
     

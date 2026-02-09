@@ -1,28 +1,20 @@
 ﻿using System.Runtime.InteropServices;
 using AlloyClient.Engine.Common;
-using Common.Rendering;
-using OpenTK.Graphics.OpenGL;
+using AlloyClient.Engine.Graphics.Buffers;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering.VertexData;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct VertexObject(Vector3 position, Vector4 uv, Vector4 scale, Vector4 rotation, Vector4 extra, Color color) : IVertexData<VertexObject> {
-    public Vector3 Position = position;
+public struct VertexObject(Vector3 position, Vector4 uv, Vector4 scale, Vector4 rotation, Vector4 extra, Color color) : IBufferData<VertexObject> {
+    public Vector4 Position = new (position, 1);
     public Vector4 UV = uv;
     public Vector4 Scale = scale;
     public Vector4 Rotation = rotation;
     public Vector4 Extra = extra;
-    public Color Color = color;
-    
-    public static VertexStride VertexStride { get; } = new([
-        new ElementFormat(2, VertexAttribPointerType.Float, FormatType.Vector3),
-        new ElementFormat(3, VertexAttribPointerType.Float, FormatType.Vector4),
-        new ElementFormat(4, VertexAttribPointerType.Float, FormatType.Vector4),
-        new ElementFormat(5, VertexAttribPointerType.Float, FormatType.Vector4),
-        new ElementFormat(6, VertexAttribPointerType.Float, FormatType.Vector4),
-        new ElementFormat(7, VertexAttribPointerType.Int, FormatType.Color)
-    ], true);
+    public Vector4 Color = color.ToVector4();
+    public Vector4 Mask1;
+    public Vector4 Mask2;
 
     public override int GetHashCode() {
         return ((((Position.GetHashCode() * 397 ^ UV.GetHashCode())

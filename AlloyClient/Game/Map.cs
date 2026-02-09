@@ -210,12 +210,12 @@ public static class Map {
 
             Render.FlushBufferModel();
         }
-
-        return;
+        
+        GL.Disable(EnableCap.CullFace);
+        
         Render.StartDrawEntity();
 
         if (EntityStorage.TryGetValue(ModelType.PbObject, out var entities)) {
-            Render.SetEntityModel(ModelType.PbObject);
             entities.Sort();
 
             foreach (var type in entities) {

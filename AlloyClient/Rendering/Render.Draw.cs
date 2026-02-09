@@ -126,18 +126,16 @@ public static partial class Render {
         _entityCount = 0;
         
         _shaderObject.Apply();
-        //GL.BindVertexArray(_entityVao);
+        _entityDataBuffer.BindToIndex(0);
     }
 
-    //public static void SetEntityModel(ModelType model) => _entityModel = model;
-
     public static void DrawEntity(VertexObject vertexObject) {
-        //_entityData[_entityCount] = vertexObject;
+        _entityData[_entityCount] = vertexObject;
         _entityCount++;
 
-        //if (_entityCount == _entityData.Length) {
+        if (_entityCount == _entityData.Length) {
             FlushBufferEntity();
-        //}
+        }
     }
 
     public static void FlushBufferEntity() {
@@ -145,10 +143,9 @@ public static partial class Render {
             return;
         }
         
-        //_entityDataBuffer.SetData(_entityData, 0, _entityCount);
-
-        var info = ModelData.ModelRenderInfo[_entityModel];
-        GL.DrawElementsInstanced(PrimitiveType.Triangles, info.PrimitiveCount * 3, DrawElementsType.UnsignedShort, info.IndexOffset * 2, _entityCount);
+        _entityDataBuffer.SetData(_entityData.AsSpan(0, _entityCount));
+        
+        GL.DrawArrays(PrimitiveType.Triangles, 0, _entityCount * 6);
         _entityCount = 0;
     }
 

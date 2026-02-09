@@ -1,4 +1,4 @@
-﻿#version 450 core
+﻿#version 460 core
 
 uniform mat4x4 WorldMatrix;
 uniform mat4x4 ViewMatrix;
