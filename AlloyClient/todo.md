@@ -11,7 +11,6 @@
 - add rect mask instead of the current container clip stuff
 
 # Rendering Todo
-- switch to dsa calls
 - connected objects
 - cave walls
 - ui vertex color and color channel changes
@@ -20,6 +19,3 @@
 - text carat selection is fucked when text input is scaled
 - cant click out of chat input
 - loading in -> back to home from options -> play just sends back to char select repeatedly
-
-# Ě̷̺͎͗̊t̴̙̓e̶͚͇͗̀ͅr̷̮̀͂̋n̵̦̎͋ȧ̴̺̓̇l̷͉̃ ̷̙͙͑T̸̙̠̈́̓̂o̴̜̦̔͝ŕ̸̨̳̼m̷̡̛̖̾́è̸̙̭̆͜n̵͚͌̚t̶͖̦̓
-- improving object outlines, specifically status effects

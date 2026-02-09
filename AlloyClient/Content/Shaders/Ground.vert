@@ -36,13 +36,15 @@ layout(std140, binding = 0) readonly buffer InstanceBuffer {
     InstanceData data[TileBuffer];
 } instanceBuffer;
 
-
-flat out int instanceId;
-out vec2 baseUV;
-out vec2 coreUV;
+out GROUND_OUTPUT {
+    vec2 baseUV;
+    vec2 coreUV;
+    vec4 UV;
+    vec4 Mask;
+} vsOutput;
 
 void main() {
-    instanceId = gl_VertexID / 6;
+    int instanceId = gl_VertexID / 6;
     int verId = gl_VertexID % 6;
     
     InstanceData data = instanceBuffer.data[instanceId];
@@ -51,7 +53,9 @@ void main() {
     inputPosition.xy += data.Position.xy;
     gl_Position = inputPosition * WorldMatrix * ViewMatrix * ProjMatrix;
 
-    baseUV = tileUV[verId];
-    coreUV.x = baseUV.x + data.Position.z + sin(GameTime * data.Animate.x) + GameTime * data.Animate.z;
-    coreUV.y = baseUV.y + data.Position.w + sin(GameTime * data.Animate.y) + GameTime * data.Animate.w;
+    vsOutput.baseUV = tileUV[verId];
+    vsOutput.coreUV.x = tileUV[verId].x + data.Position.z + sin(GameTime * data.Animate.x) + GameTime * data.Animate.z;
+    vsOutput.coreUV.y = tileUV[verId].y + data.Position.w + sin(GameTime * data.Animate.y) + GameTime * data.Animate.w;
+    vsOutput.UV = data.UV;
+    vsOutput.Mask = data.Mask;
 }

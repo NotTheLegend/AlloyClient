@@ -96,7 +96,6 @@ public class Main {
         ContentReader.Init(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content"));
         
         Atlas = ContentReader.LoadAtlas("Game.atlas");
-        Atlas.Texture.SetFilter(TextureFilter.Linear);
         UiAtlas = ContentReader.LoadAtlas("Ui.atlas");
         MinimapTexture.Init(out var mapTexture);
         var titleBackground = ContentReader.LoadTexture("TitleScreen/TitleScreenBackground.png");

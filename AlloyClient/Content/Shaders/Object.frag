@@ -28,116 +28,42 @@ const float TypeText = 3.0;
 const float TypeBar = 4.0;
 const float TypeEffect = 5.0;
 
-float map(float value, float newMin, float newMax) {
-    return value * (newMax - newMin) + newMin;
-}
-
-vec2 map(vec2 values, vec2 newMins, vec2 newMaxs) {
-    return vec2(map(values.x, newMins.x, newMaxs.x), map(values.y, newMins.y, newMaxs.y));
+vec2 map(vec2 base, vec2 uvMin, vec2 uvMax) {
+    return vec2(base.x * (uvMax.x - uvMin.x) + uvMin.x, base.y * (uvMax.y - uvMin.y) + uvMin.y);
 }
 
 float median(float a, float b, float c) {
     return max(min(a, b), min(max(a, b), c));
 }
 
-vec2 uv_aa_smoothstep(vec2 uv,float width) {
-    const vec2 res = vec2(4096, 4096);
-    vec2 pixels = uv * res;
-
-    vec2 pixels_floor = floor(pixels + 0.5);
-    vec2 pixels_fract = fract(pixels + 0.5);
-    vec2 pixels_aa = fwidth(pixels) * width * 0.5;
-    pixels_fract = smoothstep(vec2(0.5) - pixels_aa, vec2(0.5) + pixels_aa, pixels_fract);
-
-    return (pixels_floor + pixels_fract - 0.5) / res;
-}
-
-float samp(vec2 uv, float width, vec2 dx, vec2 dy) {
-    vec2 uv1 = clamp(uv, vsInput.UV.xy, vsInput.UV.xy + vsInput.UV.zw);
-    return textureGrad(GameTexture, uv_aa_smoothstep(uv1, 1.5), dx, dy).a;
-}
-
-vec4 GetEffect() {
-    vec2 uv = map(vsInput.BaseUV, vsInput.UV.xy, vsInput.UV.xy + vsInput.UV.zw);
-    vec2 dx = dFdx(uv);
-    vec2 dy = dFdy(uv);
-    vec4 color = textureGrad(GameTexture, uv_aa_smoothstep(uv, 1.5), dx, dy);
-    color /= color.a;
-
-    if (vsInput.BaseUV.y > 0.4) {
-        color.rgb -= vsInput.Extra.Shade * 0.241 * (vsInput.BaseUV.y - 0.4);
-    }
-
-    if (color.a > 0) {
-        return color;
-    }
-
-    const float offset = 1.0 / 4096.0;
-    const float width = 2.0;
-
-    float alpha = max(0.0, samp(uv + vec2(offset, -offset), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(offset, offset), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(-offset, -offset), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(-offset, offset), width, dx, dy));
-
-    alpha = max(alpha, samp(uv + vec2(-offset, 0), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(offset, 0), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(0, -offset), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(0, offset), width, dx, dy));
-
-    if (alpha > 0) {
-        return vec4(vsInput.Color.rgb, 1);
-    }
-
-    discard;
+float samp(vec2 uv, vec2 dx, vec2 dy) {
+    return textureGrad(GameTexture, uv, dx, dy).a;
 }
 
 vec4 GetGameObject() {
     vec2 uv = map(vsInput.BaseUV, vsInput.UV.xy, vsInput.UV.xy + vsInput.UV.zw);
     vec2 dx = dFdx(uv);
     vec2 dy = dFdy(uv);
-    vec4 color = textureGrad(GameTexture, uv_aa_smoothstep(uv, 1.5), dx, dy);
-    color /= color.a;
+    vec4 color = textureGrad(GameTexture, uv, dx, dy);
+    color.rgb -= vsInput.Extra.Shade * 0.241 * clamp(0.4 - vsInput.BaseUV.y, 0.0 , 0.4);
 
-    if (vsInput.BaseUV.y > 0.4) {
-        color.rgb -= vsInput.Extra.Shade * 0.241 * (vsInput.BaseUV.y - 0.4);
-    }
-    
     if (color.a > 0) {
         return color;
     }
+
+    float offX = length(dx);
+    float offY = length(dy);
     
-    const float offset = 1.0 / 3.0 / 4096.0;
-    const float val = 45.0 / 255.0 / 4096.0;
-    float scaleX = length(dx) / val;
-    float scaleY = length(dy) / val;
-    const float width = 1.5;
-    const float texel = 1.0 / 4096;
-    
-    float offX = clamp(offset * scaleX, 1.0 / 6.0 / 4096.0, texel);
-    float offY = clamp(offset * scaleY, 1.0 / 6.0 / 4096.0, texel);
-    
-    float alpha = max(0.0, samp(uv + vec2(offX, -offY), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(offX, offY), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(-offX, -offY), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(-offX, offY), width, dx, dy));
-    
+    float alpha = max(0.0, samp(uv + vec2(offX, -offY), dx, dy));
+    alpha = max(alpha, samp(uv + vec2(offX, offY), dx, dy));
+    alpha = max(alpha, samp(uv + vec2(-offX, -offY), dx, dy));
+    alpha = max(alpha, samp(uv + vec2(-offX, offY), dx, dy));
+
     if (alpha > 0) {
         return vec4(vsInput.Color.rgb, 1);
     }
-
-    float sum = 0.0;
     
-    for (float x = -2; x <= 2; x++) {
-        for (float y = -0.5; y <= 3.5; y++) {
-            sum += samp(uv + vec2(x * offset, y * offset), 1.5, dx, dy);
-        }
-    }
-    
-    if (sum == 0.0)
-        discard;
-     
-    return vec4(vsInput.Color.rgb, sum / 25.0);
+    discard;
 }
 
 vec4 GetText() {
@@ -162,10 +88,8 @@ void main() {
     vec4 outputColor;
     float id = vsInput.Extra.Type;
 
-    if (id == TypeGameObject) {
+    if (id == TypeGameObject || id == TypeEffect) {
         outputColor = GetGameObject();
-    } else if (id == TypeEffect) {
-        outputColor = GetEffect();
     } else if (id == TypeText) {
         outputColor = GetText();
     } else if (id == TypeBar) {

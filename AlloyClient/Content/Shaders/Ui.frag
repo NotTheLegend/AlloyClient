@@ -77,8 +77,7 @@ float screenPxRange(vec2 uv) {
     return max(0.5 * dot(unitRange, screenSize), 1.0);
 }
 
-vec2 SafeNormalize(vec2 v)
-{
+vec2 SafeNormalize(vec2 v) {
     float vLength = length(v);
 
     vLength = (vLength > 0.0) ?
@@ -125,29 +124,16 @@ vec4 RenderText() {
     return vec4(color.rgb, alpha);
 }
 
-vec2 uv_aa_smoothstep( vec2 uv,float width ) {
-    const vec2 res = vec2(4096, 4096);
-    vec2 pixels = uv * res;
-
-    vec2 pixels_floor = floor(pixels + 0.5);
-    vec2 pixels_fract = fract(pixels + 0.5);
-    vec2 pixels_aa = fwidth(pixels) * width * 0.5;
-    pixels_fract = smoothstep( vec2(0.5) - pixels_aa, vec2(0.5) + pixels_aa, pixels_fract );
-
-    return (pixels_floor + pixels_fract - 0.5) / res;
-}
-
-float samp(vec2 uv, float width, vec2 dx, vec2 dy) {
-    return textureGrad(GameAtlasTexture, uv_aa_smoothstep(uv, 1.5), dx, dy).a;
+float samp(vec2 uv, vec2 dx, vec2 dy) {
+    return textureGrad(GameAtlasTexture, uv, dx, dy).a;
 }
 
 vec4 RenderOutline() {
     vec2 uv = input.UVCoords;
     vec2 dx = dFdx(uv);
     vec2 dy = dFdy(uv);
-    vec4 color = textureGrad(GameAtlasTexture, uv_aa_smoothstep(uv, 1.5), dx, dy);
-    color /= color.a;
-
+    vec4 color = textureGrad(GameAtlasTexture, uv, dx, dy);
+    
     if (input.UVCoords.y > input.Extra1.x) {
         color.rgb -= 0.241 * (((input.UVCoords.y - input.Extra1.y) / input.Extra1.z) - 0.4);
     }
@@ -159,20 +145,13 @@ vec4 RenderOutline() {
     if (input.Extra1.w == -1)
         discard;
 
-    const float offset = 1.0 / 3.0 / 4096.0;
-    const float val = 45.0 / 255.0 / 4096.0;
-    float scaleX = length(dx) / val;
-    float scaleY = length(dy) / val;
-    const float width = 1.5;
-    const float texel = 1.0 / 4096;
+    float offX = length(dx);
+    float offY = length(dy);
 
-    float offX = clamp(offset * scaleX, 1.0 / 6.0 / 4096.0, texel);
-    float offY = clamp(offset * scaleY, 1.0 / 6.0 / 4096.0, texel);
-
-    float alpha = max(0.0, samp(uv + vec2(offX, -offY), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(offX, offY), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(-offX, -offY), width, dx, dy));
-    alpha = max(alpha, samp(uv + vec2(-offX, offY), width, dx, dy));
+    float alpha = max(0.0, samp(uv + vec2(offX, -offY), dx, dy));
+    alpha = max(alpha, samp(uv + vec2(offX, offY), dx, dy));
+    alpha = max(alpha, samp(uv + vec2(-offX, -offY), dx, dy));
+    alpha = max(alpha, samp(uv + vec2(-offX, offY), dx, dy));
 
     vec4 outline = unpackColor(input.Override);
 
@@ -180,18 +159,7 @@ vec4 RenderOutline() {
         return vec4(outline.rgb, 1);
     }
 
-    float sum = 0.0;
-
-    for (float x = -2; x <= 2; x++) {
-        for (float y = -2.5; y <= 3.5; y++) {
-            sum += samp(uv + vec2(x * offset, y * offset), 1.5, dx, dy);
-        }
-    }
-
-    if (sum == 0.0)
-        discard;
-
-    return vec4(outline.rgb, sum / 30.0);
+    discard;
 }
 
 vec4 RenderNoOutline(sampler2D tex) {
