@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using AlloyClient.Engine.Common;
+using AlloyClient.Engine.Graphics.Buffers;
 using AlloyClient.UiLib.Extra;
-using Common.Rendering;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
@@ -58,10 +58,10 @@ internal struct SpriteVertexData(VertexUi vertex, uint instanceId) : IVertexData
     public uint InstanceId = instanceId;
     
     public static VertexStride VertexStride { get; } = new([
-        new ElementFormat(0, VertexAttribPointerType.Float, FormatType.Vector2),
-        new ElementFormat(1, VertexAttribPointerType.Float, FormatType.Vector2),
-        new ElementFormat(2, VertexAttribPointerType.UnsignedInt, FormatType.Default),
-        new ElementFormat(3, VertexAttribPointerType.UnsignedInt, FormatType.Default),
+        new ElementFormat(0, VertexAttribType.Float, FormatType.Vector2),
+        new ElementFormat(1, VertexAttribType.Float, FormatType.Vector2),
+        new ElementFormat(2, VertexAttribType.UnsignedInt, FormatType.Default),
+        new ElementFormat(3, VertexAttribType.UnsignedInt, FormatType.Default),
     ]);
 
     public bool Equals(SpriteVertexData other) {
@@ -136,15 +136,15 @@ internal struct VertexDataUi : IVertexData<VertexDataUi> {
     }
     
     public static VertexStride VertexStride { get; } = new([
-        new ElementFormat(0, VertexAttribPointerType.Float, FormatType.Vector2),
-        new ElementFormat(1, VertexAttribPointerType.UnsignedInt, FormatType.Color),
-        new ElementFormat(2, VertexAttribPointerType.UnsignedInt, FormatType.Color),
-        new ElementFormat(3, VertexAttribPointerType.Float, FormatType.Vector2),
-        new ElementFormat(4, VertexAttribPointerType.Float, FormatType.Vector2),
-        new ElementFormat(5, VertexAttribPointerType.Float, FormatType.Vector4),
-        new ElementFormat(6, VertexAttribPointerType.Float, FormatType.Vector4),
-        new ElementFormat(7, VertexAttribPointerType.Float, FormatType.Vector4),
-        new ElementFormat(8, VertexAttribPointerType.Float, FormatType.Vector4)
+        new ElementFormat(0, VertexAttribType.Float, FormatType.Vector2),
+        new ElementFormat(1, VertexAttribType.UnsignedInt, FormatType.Color),
+        new ElementFormat(2, VertexAttribType.UnsignedInt, FormatType.Color),
+        new ElementFormat(3, VertexAttribType.Float, FormatType.Vector2),
+        new ElementFormat(4, VertexAttribType.Float, FormatType.Vector2),
+        new ElementFormat(5, VertexAttribType.Float, FormatType.Vector4),
+        new ElementFormat(6, VertexAttribType.Float, FormatType.Vector4),
+        new ElementFormat(7, VertexAttribType.Float, FormatType.Vector4),
+        new ElementFormat(8, VertexAttribType.Float, FormatType.Vector4)
     ]);
 
     public override int GetHashCode() {

@@ -1,5 +1,6 @@
 ﻿using System;
-using Common.Rendering;
+using AlloyClient.Engine.Graphics;
+using AlloyClient.Engine.Graphics.Buffers;
 using OpenTK.Graphics.OpenGL;
 
 namespace AlloyClient.UiLib.Rendering;
@@ -22,29 +23,28 @@ public static class SpriteRender {
     private static SpriteVertexData[] _vertices;
     private static VertexBuffer<SpriteVertexData> _vertexBuffer;
     
-    private static int _vao;
+    private static VertexArrayObject _vao;
 
     internal static void Init() {
         _instanceData = new SpriteInstanceData[InstanceBufferSize];
-        _instanceBuffer = new StorageBuffer<SpriteInstanceData>(SpriteInstanceData.Size, InstanceBufferSize, BufferUsage.DynamicDraw);
+        _instanceBuffer = new StorageBuffer<SpriteInstanceData>(InstanceBufferSize);
 
         _indices = new ushort[IndexBufferSize];
-        _indexBuffer = new IndexBuffer(IndexBufferSize, BufferUsage.DynamicDraw);
+        _indexBuffer = new IndexBuffer(IndexBufferSize);
 
         _vertices = new SpriteVertexData[VertexBufferSize];
-        _vertexBuffer = new VertexBuffer<SpriteVertexData>(SpriteVertexData.VertexStride, VertexBufferSize, BufferUsage.DynamicDraw);
+        _vertexBuffer = new VertexBuffer<SpriteVertexData>(SpriteVertexData.VertexStride, VertexBufferSize);
+
+        _vao = new VertexArrayObject();
         
-        _vao = GL.GenVertexArray();
-        GL.BindVertexArray(_vao);
-        
-        _vertexBuffer.Bind();
-        _indexBuffer.Bind();
+        _vertexBuffer.BindTo(_vao);
+        _indexBuffer.BindTo(_vao);
         
         GL.BindVertexArray(0);
     }
 
     internal static void StartDraw() {
-        GL.BindVertexArray(_vao);
+        _vao.Bind();
         _instanceBuffer.BindToIndex(0);
         
         UiRender.UiShader.Apply();

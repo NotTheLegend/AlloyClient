@@ -1,8 +1,7 @@
 ﻿using System;
+using AlloyClient.Engine.Graphics.Buffers;
 using AlloyClient.Rendering.VertexData;
-using Common.Rendering;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering;
 
@@ -15,7 +14,7 @@ public static partial class Render {
     private static StorageBuffer<ParticleData> _particleBuffer;
 
     private static void BuildParticleBuffers() {
-        _particleBuffer = new StorageBuffer<ParticleData>(ParticleData.Size, Buffer, BufferUsage.DynamicDraw);
+        _particleBuffer = new StorageBuffer<ParticleData>(Buffer);
     }
 
     public static void DrawParticles(ParticleData[] particles, int count) {
