@@ -56,8 +56,6 @@ public static class Map {
 
     public static Signal<Player> OnPlayerUpdate = new();
 
-    private static readonly Lock DrawLock = new();
-
     private static int _particleCount;
     private static readonly ParticleData[] Particles = new ParticleData[30000];
 
@@ -114,15 +112,11 @@ public static class Map {
             Projectiles.RemoveAt(idx);
         }
     }
-
-    //private static int _lastX = -1;
-    //private static int _lastY = -1;
     
     private static Vector2 _lastPosition = Vector2.Zero;
 
     public static void Draw(GameTime gameTime) {
         if (LocalPlayer == null) return;
-        using (DrawLock.EnterScope());
 
         GL.Disable(EnableCap.DepthTest);
         GL.Disable(EnableCap.CullFace);
@@ -132,8 +126,7 @@ public static class Map {
         Render.SetShaderParams(gameTime);
 
         #region Tile
-
-        //if ((int) LocalPlayer.Position.X != _lastX || (int) LocalPlayer.Position.Y != _lastY) {
+        
         var pos = Vector2.Floor(LocalPlayer.Position);
         if (pos != _lastPosition) {
             _lastPosition = pos;
@@ -202,7 +195,7 @@ public static class Map {
 
         #region Entities
 
-        Render.StartDrawEntity();
+        Render.StartDrawModel();
 
         foreach (var kvp in EntityStorage) {
             if (kvp.Key == ModelType.Null || kvp.Key == ModelType.PbObject) continue;
@@ -217,8 +210,10 @@ public static class Map {
 
             }
 
-            Render.FlushBufferEntity();
+            Render.FlushBufferModel();
         }
+        
+        Render.StartDrawEntity();
 
         if (EntityStorage.TryGetValue(ModelType.PbObject, out var entities)) {
             Render.SetEntityModel(ModelType.PbObject);
@@ -361,14 +356,6 @@ public static class Map {
         LastTickId = 0;
 
         _tiles = null;
-    }
-
-    public static void Disconnect() {
-        lock (DrawLock) {
-            Reset();
-        }
-
-        Sound.Music.Stop();
     }
 
     public static void OnLocalPlayerCreated(Entity entity) {

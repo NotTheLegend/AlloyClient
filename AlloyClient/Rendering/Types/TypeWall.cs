@@ -1,10 +1,12 @@
-﻿using AlloyClient.Assets;
+﻿using System;
+using AlloyClient.Assets;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Game.Objects;
 using AlloyClient.Rendering.VertexData;
 using AlloyClient.Utils;
 using Common;
 using Common.Structs;
+using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering.Types;
 
@@ -17,6 +19,7 @@ public sealed class TypeWall : RenderBase {
 
     public readonly TypeWallTop Top;
     private readonly int _topZ;
+    private float _sortId;
     
     public TypeWall(Entity entity, ModelType modelType = ModelType.PbWall) {
         Entity = entity;
@@ -40,8 +43,8 @@ public sealed class TypeWall : RenderBase {
     }
 
     public override void SetPosition(float x, float y, float z = 0) {
-        Position.X = x;
-        Position.Y = y;
+        Position.X = x - 0.5f; // fixme: move the 0.5 to vertex data 
+        Position.Y = y - 0.5f;
         Position.Z = z;
         Top.SetPosition(x, y, _topZ + z);
     }
@@ -52,13 +55,12 @@ public sealed class TypeWall : RenderBase {
     }
     
     public override void SetDepth(float depth) {
-        Extra.SortId = depth;
+        _sortId = depth;
         Top.SetDepth(depth);
     }
 
     public override void SetAlpha(float alpha) {
-        Extra.Alpha = alpha;
-        Top.SetAlpha(alpha);
+        throw new NotSupportedException("Walls do not support alpha");
     }
 
     public override void SetName(string name) { }
@@ -68,6 +70,6 @@ public sealed class TypeWall : RenderBase {
     }
 
     public override void Draw() {
-        Render.DrawEntity(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color));
+        Render.DrawModel(new VertexModel(Position, UV, new Vector3(0, _sortId, RenderConfig.Shade)));
     }
 }

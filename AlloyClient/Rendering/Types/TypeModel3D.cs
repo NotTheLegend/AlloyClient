@@ -14,9 +14,11 @@ public sealed class TypeModel3D : RenderBase {
     
     public override ModelType ModelType { get; }
 
-    public override bool HasShadow {
-        get => false;
-    }
+    public override bool HasShadow => false;
+
+    private float _rotation;
+
+    private float _sortId;
 
     public TypeModel3D(string modelName, Entity entity) {
         ModelType type;
@@ -32,7 +34,7 @@ public sealed class TypeModel3D : RenderBase {
         Entity = entity;
         SetTexture(entity.GetTexture());
 
-        Rotation.X = MathHelper.DegreesToRadians(entity.Properties.Rotation);
+        _rotation = MathHelper.DegreesToRadians(entity.Properties.Rotation);
         Extra = new ExtraData(RenderConfig.TypeModel, RenderConfig.Shade);
     }
     
@@ -52,16 +54,16 @@ public sealed class TypeModel3D : RenderBase {
     }
     
     public override void SetDepth(float depth) {
-        Extra.SortId = depth;
+        _sortId = depth;
     }
     
     public override void SetAlpha(float alpha) {
-        Extra.Alpha = alpha;
+        throw new NotSupportedException("Models do not support alpha");
     }
     
     public override void SetName(string name) { }
 
     public override void Draw() {
-        Render.DrawEntity(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color));
+        Render.DrawModel(new VertexModel(Position, UV, new Vector3(_rotation, _sortId, RenderConfig.Shade)));
     }
 }

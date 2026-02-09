@@ -1,10 +1,14 @@
-﻿using AlloyClient.Assets;
+﻿using System;
+using AlloyClient.Assets;
 using AlloyClient.Rendering.VertexData;
 using Common.Structs;
+using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering.Types;
 
 public sealed class TypeWallTop : RenderBase {
+    
+    private float _sortId;
 
     public override ModelType ModelType {
         get => ModelType.PbTile;
@@ -20,8 +24,8 @@ public sealed class TypeWallTop : RenderBase {
     }
     
     public override void SetPosition(float x, float y, float z = 0) {
-        Position.X = x;
-        Position.Y = y;
+        Position.X = x - 0.5f; // fixme: move the 0.5 to vertex data 
+        Position.Y = y - 0.5f;
         Position.Z = z;
     }
 
@@ -34,16 +38,16 @@ public sealed class TypeWallTop : RenderBase {
     }
 
     public override void SetDepth(float depth) {
-        Extra.SortId = depth;
+        _sortId = depth;
     }
 
     public override void SetAlpha(float alpha) {
-        Extra.Alpha = alpha;
+        throw new NotSupportedException("Walls do not support alpha");
     }
     
     public override void SetName(string name) { }
 
     public override void Draw() {
-        Render.DrawEntity(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color));
+        Render.DrawModel(new VertexModel(Position, UV, new Vector3(0, _sortId, RenderConfig.NoShade)));
     }
 }

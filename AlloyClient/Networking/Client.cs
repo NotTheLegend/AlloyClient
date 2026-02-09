@@ -331,8 +331,8 @@ public static class Client {
                 pkt.ReturnPacket();
             }
         }
-
-        Map.Disconnect();
+        
+        Sound.Music.Stop();
         ScreenManager.FadeTo(new CharacterListScreen());
     }
 

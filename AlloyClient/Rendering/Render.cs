@@ -21,6 +21,7 @@ public static partial class Render {
     // Shaders
     private static Shader _shaderGround;
     private static Shader _shaderShadow;
+    private static Shader _shaderModel;
     private static Shader _shaderObject;
     private static Shader _shaderParticle;
 
@@ -35,6 +36,10 @@ public static partial class Render {
     
     private static ShadowData[] _shadowData;
     private static StorageBuffer<ShadowData> _shadowBuffer;
+
+    private static int _modelVao;
+    private static VertexModel[] _modelData;
+    private static VertexBuffer<VertexModel> _modelDataBuffer;// todo: uniform???
     
     private static int _entityVao;
     private static VertexObject[] _entityData;
@@ -47,6 +52,9 @@ public static partial class Render {
         _shaderGround.SetValue("GameTexture", Main.Atlas.Texture);
 
         _shaderShadow = ContentReader.LoadShader("Shaders/Shadow");
+        
+        _shaderModel = ContentReader.LoadShader("Shaders/Model");
+        _shaderModel.SetValue("GameTexture", Main.Atlas.Texture);
         
         _shaderObject = ContentReader.LoadShader("Shaders/Object");
         _shaderObject.SetValue("GameTexture", Main.Atlas.Texture);
@@ -66,9 +74,19 @@ public static partial class Render {
         _shadowData = new ShadowData[BufferSize];
         _shadowBuffer = new StorageBuffer<ShadowData>(ShadowData.Size, _shadowData.Length, BufferUsage.DynamicDraw);
         
-        GL.BindVertexArray(_entityVao = GL.GenVertexArray());
         _modelIndexBuffer = new IndexBuffer(ModelData.Indices.Length, BufferUsage.StaticDraw);
         _modelVertexBuffer = new VertexBuffer<VertexBase>(VertexBase.VertexStride, ModelData.Vertices.Length, BufferUsage.StaticDraw);
+        
+        
+        GL.BindVertexArray(_modelVao = GL.GenVertexArray());
+        _modelData = new VertexModel[BufferSize];
+        _modelDataBuffer = new VertexBuffer<VertexModel>(VertexModel.VertexStride, BufferSize, BufferUsage.DynamicDraw);
+        _modelDataBuffer.Bind();
+        _modelIndexBuffer.Bind();
+        _modelVertexBuffer.Bind();
+        
+        
+        GL.BindVertexArray(_entityVao = GL.GenVertexArray());
         _entityData = new VertexObject[BufferSize];
         _entityDataBuffer = new VertexBuffer<VertexObject>(VertexObject.VertexStride, BufferSize, BufferUsage.DynamicDraw);
         _entityDataBuffer.Bind();
@@ -91,6 +109,10 @@ public static partial class Render {
         _shaderShadow.SetValue("ViewMatrix", Camera.ViewMatrix);
         _shaderShadow.SetValue("ProjMatrix", Camera.ProjectionMatrix);
         _shaderShadow.SetValue("BillMatrix", Camera.BillboardMatrix);
+        
+        _shaderModel.SetValue("WorldMatrix", Camera.WorldMatrix);
+        _shaderModel.SetValue("ViewMatrix", Camera.ViewMatrix);
+        _shaderModel.SetValue("ProjMatrix", Camera.ProjectionMatrix);
         
         _shaderObject.SetValue("WorldMatrix", Camera.WorldMatrix);
         _shaderObject.SetValue("ViewMatrix", Camera.ViewMatrix);

@@ -11,6 +11,7 @@ public static partial class Render {
 
     private static int _tileCount;
     private static int _shadowCount;
+    private static int _modelCount;
     private static int _entityCount;
     private static ModelType _entityModel;
 
@@ -85,6 +86,42 @@ public static partial class Render {
 
     #endregion
 
+    #region Render Model
+
+    public static void StartDrawModel() {
+        LastDrawCountEntities = 0;
+        _modelCount = 0;
+        
+        _shaderModel.Apply();
+        GL.BindVertexArray(_modelVao);
+    }
+
+    //public static void SetEntityModel(ModelType model) => _entityModel = model;
+
+    public static void DrawModel(VertexModel vertexModel) {
+        _modelData[_modelCount] = vertexModel;
+        _modelCount++;
+
+        if (_modelCount == _modelData.Length) {
+            FlushBufferModel();
+        }
+    }
+
+    public static void FlushBufferModel() {
+        if (_modelCount < 1) {
+            return;
+        }
+        
+        _modelDataBuffer.SetData(_modelData, 0, _modelCount);
+
+        var info = ModelData.ModelRenderInfo[_entityModel];
+        GL.DrawElementsInstanced(PrimitiveType.Triangles, info.PrimitiveCount * 3, DrawElementsType.UnsignedShort, info.IndexOffset * 2, _modelCount);
+        _modelCount = 0;
+    }
+
+    #endregion
+    
+    
     #region Render Entity
 
     public static void StartDrawEntity() {

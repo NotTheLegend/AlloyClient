@@ -92,7 +92,8 @@ public class MapTile(int x, int y) {
                 animate.W = animateProp.DeltaY;
                 break;
         }
-
+        
+        // can be shrunk down to 48 bytes by making posOff vec4short & animate vec4h
         _data = new TileData(new Vector4(X, Y, offx, offy), texture.ToVector4(), animate, new Vector4(-1));
 
         SetEdgeBlends();

@@ -29,8 +29,6 @@ out VS_OUT {
 } output;
 
 const float TypeGameObject = 0.0;
-const float TypeModel = 1.0;
-const float TypeWall = 2.0;
 const float TypeText = 3.0;
 const float TypeBar = 4.0;
 const float TypeEffect = 5.0;
@@ -53,20 +51,6 @@ vec4 GetPosition(vec3 position, vec3 dataPosition, vec4 dataScale, vec4 rot, vec
         pos.xyz += dataPosition;
 
         return pos;
-    } else if (id == TypeModel){
-        float s = sin(rot.x);
-        float c = cos(rot.x);
-        
-        mat2 rot = mat2(c, -s, s, c);
-        
-        vec4 pos = vec4(position.xy * rot, position.z, 1);
-        pos.xyz += dataPosition;
-        return pos;
-    } else if (id == TypeWall) {
-        position.xyz += dataPosition.xyz;
-        position.xy -= 0.5;
-
-        return vec4(position, 1);
     } else {
         position.xyz += dataPosition.xyz;
         return vec4(position, 1);
@@ -85,7 +69,9 @@ vec2 GetUV(vec2 uv, vec4 dataExtra) {
 void main() {
     vec4 pos = GetPosition(Position, iPosition, iScale, iRotation, iExtra);
     output.Zed = pos.z;
-    gl_Position = pos * WorldMatrix * ViewMatrix * ProjMatrix;
+    pos = pos * WorldMatrix * ViewMatrix * ProjMatrix;
+    pos.z = iExtra.y;
+    gl_Position = pos;
     output.BaseUV = GetUV(BaseUV, iExtra);
     output.UV = iUV;
     output.Extra = iExtra;

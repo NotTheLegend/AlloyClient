@@ -19,8 +19,6 @@ uniform vec2 TextTextureSize;
 uniform sampler2D TextTexture;
 
 const float TypeGameObject = 0.0;
-const float TypeModel = 1.0;
-const float TypeWall = 2.0;
 const float TypeText = 3.0;
 const float TypeBar = 4.0;
 const float TypeEffect = 5.0;
@@ -52,18 +50,6 @@ vec2 uv_aa_smoothstep( vec2 uv,float width ) {
 float samp(vec2 uv, float width, vec2 dx, vec2 dy) {
     vec2 uv1 = clamp(uv, input.UV.xy, input.UV.xy + input.UV.zw);
     return textureGrad(GameTexture, uv_aa_smoothstep(uv1, 1.5), dx, dy).a;
-}
-
-vec4 GetModel() {
-    vec2 uv = map(input.BaseUV, input.UV.xy, input.UV.xy + input.UV.zw);
-    vec4 color = texture(GameTexture, uv_aa_smoothstep(uv, 1.5));
-    color /= color.a;
-
-    if (input.Zed <= 0.6) {
-        color.rgb -= input.Extra.z * 0.241 * (0.6 - input.Zed);
-    }
-    
-    return color;
 }
 
 vec4 GetEffect() {
@@ -175,8 +161,6 @@ void main() {
         outputColor = GetGameObject();
     } else if (id == TypeEffect) {
         outputColor = GetEffect();
-    } else if (id == TypeModel || id == TypeWall) {
-        outputColor = GetModel();
     } else if (id == TypeText) {
         outputColor = GetText();
     } else if (id == TypeBar) {
@@ -184,8 +168,6 @@ void main() {
     } else {
         outputColor = vec4(0, 0, 0, 0);
     }
-
-    gl_FragDepth = input.Depth;
 
     outputColor.a *= input.Extra.w;
     if(outputColor.a == 0) {
