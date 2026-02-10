@@ -50,4 +50,17 @@ public static class MathUtils {
     public static float Map(float value, float valMin, float valMax, float newMin, float newMax) {
         return (value - valMin) / (valMax - valMin) * (newMax - newMin) + newMin;
     }
+
+    public static float BoundToPi(float num) {
+        var v = 0;
+        if (num < MathHelper.Pi) {
+            v = ((int)(num / -MathHelper.Pi) + 1) / 2;
+            num = num + v * 2 * MathHelper.Pi;
+        } else if (num > MathHelper.Pi) {
+            v = ((int)(num / MathHelper.Pi) + 1) / 2;
+            num = num - v * 2 * MathHelper.Pi;
+        }
+
+        return num;
+    }
 }

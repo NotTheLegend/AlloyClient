@@ -110,6 +110,8 @@ public class Entity {
     public Stopwatch AnimationTimer = new();
     public int CurrentFrameIndex;
     public bool Flipped;
+
+    public float FacingAngle;
     
     public float Jitter;
 
@@ -227,7 +229,7 @@ public class Entity {
 
         // add wall support here at some point
         if (TextureData.HasAnimationData) {
-            AnimateCharacter();
+            AnimateCharacter(time);
         }
         
         Effect?.Update(time, dt);
@@ -415,7 +417,11 @@ public class Entity {
         AttackAngle = attackAngle;
     }
     
-    public virtual AtlasData GetTexture(double time) {
+    public virtual AtlasData GetTexture(double time, out bool attackFrame, out bool flipped) {
+        const float ZeroLimit = 0.00001f;
+        const float NegZeroLimit = -ZeroLimit;
+        
+        
         var texture = new AtlasData();
         var action = AnimationType.Stand;
         if (TextureData.HasAnimationData) {
@@ -423,16 +429,31 @@ public class Entity {
             if (time < AttackStart + AttackPeriod) {
                 action = AnimationType.Attack;
                 idx = (time - AttackStart) % AttackPeriod / AttackPeriod;
+                FacingAngle = AttackAngle;
             } else if (MovementVector != Vector2.Zero) {
-                action = AnimationType.Walk;
+                var walkPer = 0.5f / MovementVector.Length;
+                walkPer = walkPer + (400 - walkPer % 400);
+
+                if (MovementVector.X > ZeroLimit || MovementVector.X < NegZeroLimit || MovementVector.Y > ZeroLimit || MovementVector.Y < NegZeroLimit) {
+                    FacingAngle = MathF.Atan2(MovementVector.Y, MovementVector.X);
+                    action = AnimationType.Walk;
+                } else {
+                    action = AnimationType.Stand;
+                }
+                
+                idx = time % walkPer / walkPer;
             }
+
+            texture = TextureData.AnimatedTextures.TextureFromFacing(FacingAngle, action, (float)idx, out attackFrame, out flipped);
+
         }
 
+        attackFrame = flipped = false;
         return texture;
     }
 
     // we should move this shit somewhere else too
-    public void AnimateCharacter() {
+    public void AnimateCharacter(double time) {
         var dx = TickPosition.X - Position.X;
         var dy = TickPosition.Y - Position.Y;
 
@@ -502,8 +523,10 @@ public class Entity {
 
                 break;
         }
+
+        Texture = GetTexture(time, out var attackFrame, out Flipped);
         
-        RenderBaseType.SetTexture(Texture, CurrentFrameIndex == 5);
+        RenderBaseType.SetTexture(Texture, attackFrame);
     }
 
     public AtlasData GetFrameData(int direction, int frame) {

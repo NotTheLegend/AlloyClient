@@ -12,6 +12,7 @@ using AlloyClient.Rendering.Types;
 using AlloyClient.State;
 using AlloyClient.Utils;
 using Common;
+using Common.Structs;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Objects;
@@ -176,7 +177,7 @@ public class Player : Entity {
             }
 
             if (TextureData.HasAnimationData && this == Map.LocalPlayer) {
-                AnimateCharacter();
+                AnimateCharacter(time);
             }
 
             WalkTo((float) (Position.X + dt * MovementVector.X), (float) (Position.Y + dt * MovementVector.Y));
@@ -298,6 +299,28 @@ public class Player : Entity {
 
         #endregion
 
+    }
+
+    public override AtlasData GetTexture(double time, out bool attackFrame, out bool flipped) {
+        var texture = new AtlasData();
+        
+        var action = AnimationType.Stand;
+        var idx = 0d;
+        
+        if (time < AttackStart + AttackPeriod) {
+            action = AnimationType.Attack;
+            idx = (time - AttackStart) % AttackPeriod / AttackPeriod;
+            FacingAngle = AttackAngle;
+        } else if (MovementVector != Vector2.Zero) {
+            var walkPer = 3.5f / GetMoveSpeed();
+            FacingAngle = MathF.Atan2(MovementVector.Y, MovementVector.X);
+            action = AnimationType.Walk;
+            idx = time % walkPer / walkPer;
+        }
+
+        texture = TextureData.AnimatedTextures.TextureFromFacing(FacingAngle, action, (float) idx, out attackFrame, out flipped);
+
+        return texture;
     }
 
     private void SetPlayerSkinTemplate(ushort skin) {
