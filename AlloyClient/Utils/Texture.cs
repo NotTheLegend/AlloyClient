@@ -47,7 +47,7 @@ public static class TextureHelper {
     extension(AnimationAtlasData data) {
 
         public AtlasData TextureFromFacing(float angle, AnimationType action, float idx, out bool attackFrame, out bool flipped) {
-            var ca = MathUtils.BoundToPi(angle - Camera.CameraAngle);
+            var ca = MathUtils.BoundToPi(angle - -Camera.CameraAngle);
             var sec = (int) (ca / MathHelper.PiOver4 + 4) % 8;
 
             var frames = sec switch {
@@ -59,7 +59,7 @@ public static class TextureHelper {
             };
 
             flipped = sec switch {
-                0 or 1 or 6 or 7 => true,
+                0 or 7 => true,
                 _ => false
             };
             
