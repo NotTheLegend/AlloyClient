@@ -1,6 +1,7 @@
 ﻿using System;
 using AlloyClient.Game.Components.Hud;
 using AlloyClient.Game.Components.Hud.Chat;
+using AlloyClient.Game.Components.Hud.OldChat;
 using AlloyClient.Game.Components.Hud.Panels;
 using AlloyClient.Game.Components.Options;
 using AlloyClient.Networking;
@@ -210,25 +211,25 @@ public sealed class UserInput : Sprite {
                 break;
             // Chat //
             case true when Settings.Chat.CheckValue(key):
-                ChatView.OnChatKey.Dispatch();
+                ChatBox.OnChatKey.Dispatch();
                 break;
             case true when Settings.ChatCommand.CheckValue(key):
-                ChatView.OnChatOpen.Dispatch("/");
+                ChatBox.OnChatOpen.Dispatch("/");
                 break;
             case true when Settings.TellKey.CheckValue(key):
-                ChatView.OnChatOpen.Dispatch("/tell ");
+                ChatBox.OnChatOpen.Dispatch("/tell ");
                 break;
             case true when Settings.GuildChat.CheckValue(key):
-                ChatView.OnChatOpen.Dispatch("/g ");
+                ChatBox.OnChatOpen.Dispatch("/g ");
                 break;
             case true when Settings.PartyChat.CheckValue(key):
-                ChatView.OnChatOpen.Dispatch("/p ");
+                ChatBox.OnChatOpen.Dispatch("/p ");
                 break;
             case true when Settings.ChatHistoryUp.CheckValue(key):
-                ChatView.OnChatHistoryUp.Dispatch();
+                ChatBox.OnChatHistoryUp.Dispatch();
                 break;
             case true when Settings.ChatHistoryDown.CheckValue(key):
-                ChatView.OnChatHistoryDown.Dispatch();
+                ChatBox.OnChatHistoryDown.Dispatch();
                 break;
             
         }

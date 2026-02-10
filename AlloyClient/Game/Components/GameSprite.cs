@@ -1,13 +1,10 @@
 ﻿using AlloyClient.Game.Components.Hud;
-using AlloyClient.Game.Components.Hud.Chat;
 using AlloyClient.State;
 using AlloyClient.Ui.Character;
 using AlloyClient.Ui.Chat;
 using AlloyClient.UiLib.Core;
-using AlloyClient.Display;
+using AlloyClient.Game.Components.Hud.Chat;
 using AlloyClient.Ui.Components.Elements;
-using AlloyClient.UiLib;
-using AlloyClient.Utils;
 
 namespace AlloyClient.Game.Components;
 
@@ -15,14 +12,14 @@ public sealed class GameSprite : Sprite {
 
     public readonly UserInput UserInput;
     public readonly HudView Hud;
-    private readonly ChatView _chat;
+    private readonly ChatBox _chat;
 
     public GameSprite() {
         AddChild(UserInput = new UserInput());
         AddChild(new ChatLayer());
         AddChild(new NotificationLayer());
         AddChild(Hud = new HudView());
-        AddChild(_chat= new ChatView());
+        AddChild(_chat= new ChatBox());
         AddChild(new DebugStats());
 
         Map.GameSprite = this;

@@ -4,7 +4,6 @@ using AlloyClient.UiLib.Core;
 using AlloyClient.UiLib.Data;
 using AlloyClient.UiLib.Enums;
 using AlloyClient.UiLib.Rendering;
-using Common;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
 
@@ -295,7 +294,15 @@ public sealed class TextInput : Sprite {
         }
         */
     }
-    
+
+    public bool HasText(bool ignoreWhitespace) {
+        if (ignoreWhitespace) {
+            return !string.IsNullOrWhiteSpace(_inputText.ToString());
+        }
+        
+        return _inputText.Length > 0;
+    }
+
     public void Focus() {
         if (ActiveInput != this) {
             ActiveInput?.UnFocus();
@@ -307,10 +314,7 @@ public sealed class TextInput : Sprite {
         _caretIndex = -1;
         _onFocus?.Invoke();
 
-        if (_isDefaultText) {
-            _inputText.Clear();
-            _isDefaultText = false;
-        }
+        ClearIfDefault();
         
         AddEventListener(Event.EnterFrame, OnFrameEnter);
         
@@ -328,8 +332,7 @@ public sealed class TextInput : Sprite {
             _inputText.Clear();
         
         if (_inputText.Length == 0) {
-            _isDefaultText = true;
-            _inputText.Append(_defaultText);
+            SetDefault();
         }
         
         RemoveEventListener(Event.EnterFrame, OnFrameEnter);
@@ -338,6 +341,8 @@ public sealed class TextInput : Sprite {
     }
     
     public void InsertText(string text) {
+        ClearIfDefault();
+        
         if (_caretIndex == -1) {
             _inputText.Append(text);
         } else {
@@ -346,5 +351,31 @@ public sealed class TextInput : Sprite {
         }
         
         FillData();
+    }
+
+    public void SetText(string text) {
+        if (text == string.Empty) {
+            SetDefault();
+            return;
+        }
+
+        ClearIfDefault();
+        _inputText.Append(text);
+        FillData();
+    }
+
+    private void ClearIfDefault() {
+        if (!_isDefaultText) {
+            return;
+        }
+        
+        _inputText.Clear();
+        _isDefaultText = false;
+    }
+
+    private void SetDefault() {
+        _inputText.Clear();
+        _inputText.Append(_defaultText);
+        _isDefaultText = true;
     }
 }

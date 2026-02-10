@@ -1,6 +1,6 @@
 ﻿using AlloyClient.UiLib.BuiltIn;
 
-namespace AlloyClient.Game.Components.Hud.Chat;
+namespace AlloyClient.Game.Components.Hud.OldChat;
 
 public static class ChatFormats {
     public static readonly TextConfig NormalFormat;

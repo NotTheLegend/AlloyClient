@@ -2,10 +2,8 @@ using AlloyClient.UiLib.BuiltIn;
 using AlloyClient.UiLib.Core;
 using AlloyClient.UiLib.Enums;
 using AlloyClient.Utils;
-using AlloyClient.Data;
-using AlloyClient.Models;
 
-namespace AlloyClient.Game.Components.Hud.Chat;
+namespace AlloyClient.Game.Components.Hud.OldChat;
 
 // TODO:
 // NumStars icon

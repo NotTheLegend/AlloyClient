@@ -1,5 +1,5 @@
 ﻿using AlloyClient.Game;
-using AlloyClient.Game.Components.Hud.Chat;
+using AlloyClient.Game.Components.Hud.OldChat;
 using AlloyClient.Ui.Chat;
 
 namespace AlloyClient.Networking.Packets.Incoming;
