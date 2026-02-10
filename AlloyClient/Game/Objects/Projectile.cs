@@ -97,7 +97,7 @@ public sealed class Projectile {
         } else if (!_projDesc.NoRotation) {
             var direction = newPos - _position;
             var angle = MathF.Atan2(direction.Y, direction.X);
-            Rotation = angle + MathHelper.PiOver2 + Camera.CameraAngle + _angleCorrection;
+            Rotation = angle + Camera.CameraAngle + _angleCorrection;
         }
 
         // Only do HitTest 60/s instead of 5000+/s lol
