@@ -95,20 +95,12 @@ public class Entity {
 
     #endregion
 
-    public int Timer;
-
     public RenderBase RenderBaseType;
 
     public TextureData TextureData;
 
     public AtlasData Texture;
-
-    public AnimationType AnimationType;
-
-    public FaceDirection LocalFaceDirection = FaceDirection.None;
-
-    public Stopwatch AnimationTimer = new();
-    public int CurrentFrameIndex;
+    
     public bool Flipped;
 
     public float FacingAngle;
@@ -191,47 +183,34 @@ public class Entity {
                 var tickDt = dt * 0.004;
                 var pX = tickDt * TickPosition.X + (1 - tickDt) * Position.X;
                 var pY = tickDt * TickPosition.Y + (1 - tickDt) * Position.Y;
-                MoveTo((float)pX, (float)pY);
-
-                AnimationType = AnimationType.Walk;
-            }
-            else {
+                MoveTo((float) pX, (float) pY);
+            } else {
                 MovementVector.X = 0;
                 MovementVector.Y = 0;
-                AnimationType = AnimationType.Stand;
             }
-        }
-        else {
-            if (MovementVector is not { X: 0, Y: 0 }) {
+        } else {
+            if (MovementVector is not {X: 0, Y: 0}) {
                 if (LastTickId >= Map.LastTickId) {
                     var tickDt = time - LastTickUpdateTime;
                     var pX = PositionAtTick.X + tickDt * MovementVector.X;
                     var pY = PositionAtTick.Y + tickDt * MovementVector.Y;
-                    MoveTo((float)pX, (float)pY);
-                }
-                else {
+                    MoveTo((float) pX, (float) pY);
+                } else {
                     MovementVector.X = 0;
                     MovementVector.Y = 0;
                     MoveTo(TickPosition.X, TickPosition.Y);
                 }
-            }
-            else {
+            } else {
                 MovementVector.X = 0;
                 MovementVector.Y = 0;
             }
-        }
-
-        Timer = (int)time;
-
-        if (Timer < AttackStart + AttackPeriod) {
-            AnimationType = AnimationType.Attack;
         }
 
         // add wall support here at some point
         if (TextureData.HasAnimationData) {
             AnimateCharacter(time);
         }
-        
+
         Effect?.Update(time, dt);
 
         RenderBaseType.SetPosition(Position.X, Position.Y, Z);
@@ -454,156 +433,8 @@ public class Entity {
 
     // we should move this shit somewhere else too
     public void AnimateCharacter(double time) {
-        var dx = TickPosition.X - Position.X;
-        var dy = TickPosition.Y - Position.Y;
-
-        var localPlayer = this == Map.LocalPlayer;
-        var movementAngle = localPlayer ? MathF.Atan2(MovementVector.Y, MovementVector.X) : MathF.Atan2(dy, dx);
-        var camFlipped = Math.Abs(Settings.CameraAngle - MathHelper.Pi) < MathHelper.PiOver2;
-        var moveFlipped = Math.Abs(movementAngle) > MathHelper.PiOver2;
-        var isPlayer = this is Player;// facing right/down no idea what to call the var
-
-        Flipped = (!camFlipped && moveFlipped || (camFlipped && !moveFlipped)) && !isPlayer;
-        var directionalIndex = isPlayer ? GetCharacterFrameIndex(movementAngle, Settings.CameraAngle, localPlayer) : 0;
-
-        switch (AnimationType) {
-            case AnimationType.Stand:
-                Texture = GetFrameData(directionalIndex, 0);
-                CurrentFrameIndex = 0;
-                break;
-            case AnimationType.Walk:
-                if (!AnimationTimer.IsRunning) {
-                    AnimationTimer.Start();
-                }
-
-                var distSqr = dx * dx + dy * dy;
-                var duration = 200; // - distSqr * 10;
-
-                if (AnimationTimer.ElapsedMilliseconds > duration) {
-                    CurrentFrameIndex = CurrentFrameIndex == 1 ? 2 : 1;
-
-                    Texture = GetFrameData(directionalIndex, CurrentFrameIndex);
-                    
-                    if (Texture.W == 0 || Texture.H == 0) // some sheets have a blank frame 2
-                        Texture = GetFrameData(directionalIndex, 0);
-                    
-                    AnimationTimer.Restart();
-                }
-
-                break;
-            case AnimationType.Attack:
-                if (!AnimationTimer.IsRunning) {
-                    AnimationTimer.Start();
-                }
-
-                float timer = 5000;
-
-                if (this is Player player) {
-                    if (player.Timer < player.AttackStart + player.AttackPeriod) {
-                        //timer = (player.Timer - player.AttackStart) % player.AttackPeriod / player.AttackPeriod;
-                    }
-                    //else
-                        //player.IsShooting = false;
-                }
-                else {
-                    if (Timer < AttackStart + AttackPeriod) {
-                        //timer = (Timer - AttackStart) % AttackPeriod / AttackPeriod;
-                    }
-                    //else
-                        //IsShooting = false;
-                }
-
-                if (AnimationTimer.ElapsedMilliseconds > timer * 1000) {
-                    CurrentFrameIndex = CurrentFrameIndex == 4 ? 5 : 4;
-
-                    Texture = GetFrameData(directionalIndex, CurrentFrameIndex);
-                    
-                    AnimationTimer.Restart();
-                }
-
-                break;
-        }
-
         Texture = GetTexture(time, out var attackFrame, out Flipped);
-        
         RenderBaseType.SetTexture(Texture, attackFrame);
-    }
-
-    public AtlasData GetFrameData(int direction, int frame) {
-        return direction switch {
-            0 => TextureData.AnimatedTextures.FaceRight[frame], // Right/Left
-            1 => TextureData.AnimatedTextures.FaceDown[frame], // Down
-            2 => TextureData.AnimatedTextures.FaceUp[frame], // Up
-            _ => TextureData.AnimatedTextures.FaceRight[0]
-        };
-    }
-
-    private int GetCharacterFrameIndex(float movementAngle, float cameraAngle, bool localPlayer) {
-        Flipped = false;
-        var correctedFacingAngle = MathUtils.WrapAngle(movementAngle - cameraAngle);
-        var rotationAngle = (MathHelper.DegreesToRadians(correctedFacingAngle) + 360) % 360;
-
-        //if (IsShooting) {
-        //    return GetDirectionFromAttackAngle(AttackAngle, Settings.CameraAngle.Value);
-        //}
-        
-        if (LocalFaceDirection != FaceDirection.None) {
-            switch (LocalFaceDirection) {
-                case FaceDirection.Right:
-                    return 0;
-                case FaceDirection.Left:
-                    Flipped = true;
-                    return 0;
-                case FaceDirection.Down:
-                    return 1;
-                case FaceDirection.Up:
-                    return 2;
-            }
-        }
-
-        switch ((int)rotationAngle) {
-            case < 45 or >= 315:
-                if (localPlayer)
-                    LocalFaceDirection = FaceDirection.Right;
-
-                return 0; // right
-
-            case >= 135 and < 225:
-                if (localPlayer)
-                    LocalFaceDirection = FaceDirection.Left;
-
-                Flipped = true;
-                return 0; // left
-
-            case >= 45 and < 135:
-                if (localPlayer)
-                    LocalFaceDirection = FaceDirection.Down;
-
-                return 1; // down
-
-            case >= 225 and < 315:
-                if (localPlayer)
-                    LocalFaceDirection = FaceDirection.Up;
-
-                return 2; // up
-        }
-    }
-
-    private int GetDirectionFromAttackAngle(float attackAngle, float cameraAngle) {
-        float relativeAttackAngle = attackAngle - cameraAngle;
-        relativeAttackAngle = MathUtils.NormalizeAngle(relativeAttackAngle);
-
-        switch (relativeAttackAngle) {
-            case >= -MathF.PI / 4 and < MathF.PI / 4:
-                return 0;
-            case >= MathF.PI / 4 and < 3 * MathF.PI / 4:
-                return 1;
-            case >= -3 * MathF.PI / 4 and < -MathF.PI / 4:
-                return 2; 
-            default:
-                Flipped = true;
-                return 0;
-        }
     }
 
     private void SetAltTexture(int index) {

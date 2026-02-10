@@ -36,8 +36,6 @@ public class Player : Entity {
 
     public int SinkLevel;
 
-    public int Timer;
-
     public bool Locked;
 
     public bool Ignored;
@@ -169,12 +167,6 @@ public class Player : Entity {
             //     MovementVector.X = MovementVector.X - Tile.GroundProperties.Animate.Dx / 1000;
             //     MovementVector.Y = MovementVector.Y - Tile.GroundProperties.Animate.Dy / 1000;
             // }
-
-            Timer = (int) time;
-
-            if (Timer < AttackStart + AttackPeriod) {
-                AnimationType = AnimationType.Attack;
-            }
 
             if (TextureData.HasAnimationData && this == Map.LocalPlayer) {
                 AnimateCharacter(time);
@@ -328,7 +320,7 @@ public class Player : Entity {
 
         TextureData = ObjectLibrary.TypeToTextureData[skin];
         Texture = TextureData.HasAnimationData ? TextureData.AnimatedTextures.FaceRight[0] : TextureData.GetTexture();
-        RenderBaseType.SetTexture(Texture, CurrentFrameIndex == 5);
+        RenderBaseType.SetTexture(Texture, false);
     }
 
     private void WalkTo(float x, float y) {
