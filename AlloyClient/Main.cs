@@ -237,6 +237,8 @@ public class Main {
         Toolkit.Window.Destroy(Window);
         _running = false;
     }
+
+    public static double GetTime() => GameTime.TotalMs;
     
     public static GameTime GameTime { get; private set; }
     

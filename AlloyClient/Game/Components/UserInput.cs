@@ -1,14 +1,12 @@
 ﻿using System;
 using AlloyClient.Game.Components.Hud;
 using AlloyClient.Game.Components.Hud.Chat;
-using AlloyClient.Game.Components.Hud.OldChat;
 using AlloyClient.Game.Components.Hud.Panels;
 using AlloyClient.Game.Components.Options;
 using AlloyClient.Networking;
 using AlloyClient.Networking.Packets.Outgoing;
 using AlloyClient.State;
 using AlloyClient.UiLib.Core;
-using AlloyClient.Utils;
 using Common;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
@@ -92,6 +90,7 @@ public sealed class UserInput : Sprite {
         _moveDown = 0;
         _moveLeft = 0;
         _moveRight = 0;
+        Map.LocalPlayer?.SetRelativeMovement(0, 0, 0);
     }
 
     private void OnFrameEnter() {
@@ -185,7 +184,7 @@ public sealed class UserInput : Sprite {
                 Settings.CameraAngle = 0;
                 break;
             case true when Settings.Options.CheckValue(key):
-                ClearInput();
+                ClearMovement();
                 OptionsView.Toggle();
                 break;
             // Inventory //
@@ -211,18 +210,23 @@ public sealed class UserInput : Sprite {
                 break;
             // Chat //
             case true when Settings.Chat.CheckValue(key):
-                ChatBox.OnChatKey.Dispatch();
+                ClearMovement();
+                ChatBox.OnChatOpen.Dispatch("");
                 break;
             case true when Settings.ChatCommand.CheckValue(key):
+                ClearMovement();
                 ChatBox.OnChatOpen.Dispatch("/");
                 break;
             case true when Settings.TellKey.CheckValue(key):
+                ClearMovement();
                 ChatBox.OnChatOpen.Dispatch("/tell ");
                 break;
             case true when Settings.GuildChat.CheckValue(key):
+                ClearMovement();
                 ChatBox.OnChatOpen.Dispatch("/g ");
                 break;
             case true when Settings.PartyChat.CheckValue(key):
+                ClearMovement();
                 ChatBox.OnChatOpen.Dispatch("/p ");
                 break;
             case true when Settings.ChatHistoryUp.CheckValue(key):

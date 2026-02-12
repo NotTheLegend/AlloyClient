@@ -1,5 +1,5 @@
 ﻿using AlloyClient.Game;
-using AlloyClient.Game.Components.Hud.OldChat;
+using AlloyClient.Game.Components.Hud.Chat;
 using AlloyClient.Ui.Chat;
 
 namespace AlloyClient.Networking.Packets.Incoming;
@@ -33,13 +33,7 @@ public class Text : IncomingPacket<Text> {
     }
 
     public override void Handle() {
-        ChatView.QueueChatLine(new ChatLineData {
-            Name = Name,
-            ObjectId = ObjectId,
-            NumStars = NumStars,
-            Recipient = Recipient,
-            Txt = Txt
-        });
+        ChatBox.AddChatLine.Dispatch(new ChatBoxLineData(Main.GetTime(), Name, NumStars, Recipient, Txt));
 
         if (Map.Entities.TryGetValue(ObjectId, out var en)) {
             ChatLayer.QueueSpeech(new SpeechData(en, Txt, Recipient));

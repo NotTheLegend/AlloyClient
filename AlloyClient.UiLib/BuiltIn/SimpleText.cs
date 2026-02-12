@@ -33,7 +33,7 @@ public sealed class SimpleText : Sprite {
     
     private float _fontScale;
     private float _outlineThickness;
-    private float _firstLineOffset;
+    private float _lineWrapStart;
     private readonly int _maxWidth;
     private readonly BitmapFont _font;
 
@@ -75,7 +75,7 @@ public sealed class SimpleText : Sprite {
 
     private void FillData() {
         var scale = _fontScale;
-        var zero = new Vector2(_firstLineOffset, _font.Ascender * scale);
+        var zero = new Vector2(0f, _font.Ascender * scale);
         var lastSpaceIndex = 0;
         var boundWidth = 0f;
         var boundHeight = _font.Descender * scale;
@@ -91,7 +91,7 @@ public sealed class SimpleText : Sprite {
                 case '\n':
                     if (zero.X > boundWidth)
                         boundWidth = zero.X;
-                    zero.X = 0f;
+                    zero.X = _lineWrapStart;
                     boundHeight += _font.LineHeight * scale;
                     zero.Y += _font.LineHeight * scale;
                     continue;
@@ -133,7 +133,7 @@ public sealed class SimpleText : Sprite {
                     boundWidth = zero.X;
                 }
                 
-                zero.X = 0f;
+                zero.X = _lineWrapStart;
                 boundHeight += _font.LineHeight * scale;
                 zero.Y += _font.LineHeight * scale;
                 continue;
@@ -189,7 +189,8 @@ public sealed class SimpleText : Sprite {
         Rebuild();
     }
 
-    public void OffsetFirstLineBy(float value) {
-        _firstLineOffset = value;
+    public void OffsetLineWrapBy(float x) {
+        _lineWrapStart = x;
+        Rebuild();
     }
 }

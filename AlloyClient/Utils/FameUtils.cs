@@ -14,11 +14,18 @@ public static class FameUtils {
 
     public static readonly int[] StarFameRequirements = [20, 150, 400, 800, 2000];
     
-    public static int ClassCount => ObjectLibrary.TypeToClassProps.Count;
-    public static int MaxStars => ClassCount * StarFameRequirements.Length;
+    public static readonly int ClassCount;
+
+    public static readonly int MaxStars;
+
+    static FameUtils() {
+        ClassCount = ObjectLibrary.TypeToClassProps.Count;
+        MaxStars = ClassCount * StarFameRequirements.Length;
+    }
+    
 
     public static int FameToStar(int fame) {
-        int star = 0;
+        var star = 0;
         while (star < StarFameRequirements.Length && fame >= StarFameRequirements[star]) {
             star++;
         }
@@ -26,11 +33,11 @@ public static class FameUtils {
     }
 
     public static int NextStarFame(int bestFame, int currentFame) {
-        int fame = Math.Max(bestFame, currentFame);
+        var fame = Math.Max(bestFame, currentFame);
         return StarFameRequirements.FirstOrDefault(s => s > fame, -1);
     }
 
-    public static ColorTransform StarsToColorTransform(int numStars) {
+    public static ColorTransform StarsToColor(int numStars) {
         if (numStars < ClassCount)
             return Transforms.LightBlue;
         if (numStars < ClassCount * 2)
@@ -44,23 +51,8 @@ public static class FameUtils {
         return Transforms.Default;
     }
     
-    public static Sprite StarsToIcon(int numStars) {
-        var bg = new ObjectRect(new ObjectRectConfig {
-            Texture = TextureHelper.FromUiAtlas("BlackCircle"),
-            Width = 18,
-            Height = 18,
-        });
-        bg.ColorTransformation = Transforms.HalfTransparent;
-        var star = new ObjectRect(new ObjectRectConfig {
-            Texture = TextureHelper.FromUiAtlas("CharacterList/StarGraphic"),
-            Width = 16,
-            Height = 16,
-            Anchor = UiAnchor.Middle,
-            X = bg.Width / 2,
-            Y = bg.Height / 2,
-        });
-        bg.AddChild(star);
-        star.ColorTransformation = StarsToColorTransform(numStars);
-        return bg;
-    }
+    
+    
+    
+    
 }

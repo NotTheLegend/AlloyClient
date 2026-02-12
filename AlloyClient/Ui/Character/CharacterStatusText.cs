@@ -1,4 +1,5 @@
-﻿using AlloyClient.Game;
+﻿using System;
+using AlloyClient.Game;
 using AlloyClient.Game.Objects;
 using AlloyClient.State;
 using AlloyClient.UiLib.BuiltIn;
@@ -41,7 +42,6 @@ public class CharacterStatusText : Sprite {
         AddChild(txt);
 
         SetAnchor(UiAnchor.MiddleBottom);
-        //AddEventListener(Event.EnterFrame, OnFrameEnter); todo: <---- (also broadcast is broken)
         AddEventListener(Event.AddedToStage, () => { AddEventListener(Event.EnterFrame, OnFrameEnter); });
         AddEventListener(Event.RemovedFromStage, () => { RemoveEventListener(Event.EnterFrame, OnFrameEnter); });
 }
@@ -68,14 +68,22 @@ public class CharacterStatusText : Sprite {
         
         var w = Camera.VisibleTileRadius.X;
         var h = Camera.VisibleTileRadius.Y;
-
-        var x = MathUtils.Map(_owner.Position.X - Camera.Position.X, -w, w, 0f, Settings.ScreenWidth - Camera.HudOffset);
-        var y = MathUtils.Map(_owner.Position.Y + _owner.HeightOffset + Camera.Position.Y, -h, h, 0f, Settings.ScreenHeight);
         
+        var s = MathF.Sin(-Settings.CameraAngle);
+        var c = MathF.Cos(-Settings.CameraAngle);
+
+        var x = _owner.Position.X - Camera.Position.X;
+        var y = _owner.Position.Y + _owner.HeightOffset + Camera.Position.Y;
+            
+        var x1 = x * c - y * s;
+        var y1 = x * s + y * c;
+
+        var newX = MathUtils.Map(x1, -w, w, 0f, Settings.ScreenWidth - Camera.HudOffset);
+        var newY = MathUtils.Map(y1, -h, h, 0f, Settings.ScreenHeight);
         var drift = elapsedTime / _lifetime * MaxDrift;
 
-        X = (int)x;
-        Y = (int)(y - drift);
+        X = (int)newX;
+        Y = (int)newY + (int)drift;
         
         var remainingLifetime = _lifetime - elapsedTime;
         Alpha = (float)(remainingLifetime / _lifetime);

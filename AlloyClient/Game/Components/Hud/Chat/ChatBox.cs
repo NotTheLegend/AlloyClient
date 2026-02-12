@@ -1,52 +1,54 @@
-﻿using AlloyClient.Networking;
+﻿using System;
+using AlloyClient.Networking;
 using AlloyClient.Networking.Packets.Outgoing;
 using AlloyClient.State;
 using AlloyClient.UiLib.BuiltIn;
 using AlloyClient.UiLib.Core;
 using AlloyClient.UiLib.Enums;
+using AlloyClient.UiLib.Extra;
 using AlloyClient.UiLib.Signals;
 using Common;
 
 namespace AlloyClient.Game.Components.Hud.Chat;
 
 public class ChatBox : Sprite {
+    public const int MaxWidth = Settings.DefaultScreenWidth / 2;
+    private const int MaxHeight = Settings.DefaultScreenHeight / 2 - 2;
+    private const int MaxLines = 7;
+    private const int LinePadding = 4;
 
-    private const int MaxWidth = Settings.DefaultScreenWidth / 2;
-    private const int MaxHeight = Settings.DefaultScreenHeight / 2;
+    public static readonly SingleSignal<ChatBoxLineData> AddChatLine = new();
     
-    public static readonly Signal OnChatKey = new(); // todo: merge chatkey & chatopen together
     public static readonly Signal<string> OnChatOpen = new();
     public static readonly Signal OnChatHistoryUp = new();
     public static readonly Signal OnChatHistoryDown = new();
 
-    private readonly RollingList<ChatBoxLine> _lines = new(100);
-    
+    private readonly RollingList<ChatBoxLineData> _lines = new(100);
+
+    private readonly Container _chatContainer;
     private readonly TextInput _chatInput;
     private bool _inFocus;
-    
     private string _recentTeller = string.Empty;
+    
+    
+    private readonly Timer _timer = new(1000);
+
+    private int _lineOffset;
+    private bool _showMax;
 
     public ChatBox() {
         Y = Settings.DefaultScreenHeight;
         SetAnchor(UiAnchor.LeftBottom);
 
-        var t = new ColorRect(new ColorRectConfig {
+        _chatContainer = new Container(new ContainerConfig {
             Width = MaxWidth,
             Height = MaxHeight,
-            Color = 0,
-            Alpha = 0.5f
+            EnableClip = false
         });
-        //AddChild(t); // todo: replace with chat history
-
-        var container = new Container(new ContainerConfig {
-            Width = MaxWidth,
-            Height = MaxHeight,
-            EnableClip = true
-        });
-        AddChild(container);
+        AddChild(_chatContainer);
         
         _chatInput = new TextInput(new InputConfig {
-            Y = t.Height,
+            Y = MaxHeight,
             FontSize = 18,
             FontType = FontType.Bold,
             OutlineThickness = 3,
@@ -61,28 +63,78 @@ public class ChatBox : Sprite {
     }
     
     private void AddHandlers() {
-        OnChatKey.Add(HandleChatKey);
+        AddChatLine.Set(AddChatBoxLine);
         OnChatOpen.Add(HandleChatOpen);
-        //OnChatHistoryUp.Add(_chatContainer.PageUp);
-        //OnChatHistoryDown.Add(_chatContainer.PageDown);
-        //AddEventListener(Event.EnterFrame, OnFrameEnter);
+        OnChatHistoryUp.Add(OnPageUp);
+        OnChatHistoryDown.Add(OnPageDown);
+        _timer.AddEventListener(TimerEvent.Timer, Refresh);
+        _timer.Start();
     }
 
     private void RemoveHandlers() {
-        OnChatKey.Remove(HandleChatKey);
+        AddChatLine.Remove();
         OnChatOpen.Remove(HandleChatOpen);
-        //OnChatHistoryUp.Remove(_chatContainer.PageUp);
-        //OnChatHistoryDown.Remove(_chatContainer.PageDown);
-        //RemoveEventListener(Event.EnterFrame, OnFrameEnter);
+        OnChatHistoryUp.Remove(OnPageUp);
+        OnChatHistoryDown.Remove(OnPageDown);
+        _timer.RemoveEventListener(TimerEvent.Timer, Refresh);
+        _timer.Stop();
+    }
+
+    private void OnPageUp() {
+        if (_showMax) {
+            _lineOffset = Math.Max(0,Math.Min(_lines.Count - MaxLines ,_lineOffset + MaxLines));
+        } else {
+            _showMax = true;
+        }
+        
+        Refresh();
+    }
+
+    private void OnPageDown() {
+        if (_lineOffset == 0) {
+            _showMax = false;
+        } else {
+            _lineOffset = Math.Max(0, _lineOffset - MaxLines);
+        }
+        
+        Refresh();
+    }
+
+    private void AddChatBoxLine(ChatBoxLineData data) {
+        _lines.Add(data);
+        Refresh();
+    }
+
+    private void Refresh() {
+        _chatContainer.RemoveChildren();
+
+        var now = Main.GetTime();
+        var yPos = MaxHeight;
+
+        var startLine = Math.Max(0, _lines.Count - _lineOffset) - 1;
+        var endLine = Math.Max(0, _lines.Count - _lineOffset - MaxLines - 1);
+
+        for (var i = startLine; i >= endLine; i--) {
+            var line = _lines[i];
+            if (!_showMax && now > line.Time + 20000) {
+                continue;
+            }
+                
+            var sprite = line.Sprite;
+            sprite.X = 3;
+            sprite.Y = yPos -= sprite.Height + LinePadding;
+
+            _chatContainer.AddChild(line.Sprite);
+        }
     }
 
     private void HandleChatKey() {
         if (_inFocus) {
             var hasText = _chatInput.HasText(true);
             if (hasText) {
-                var text = PlayerText.CreatePacket();
-                text.Text = _chatInput.Text;
-                Client.QueuePacket(text);
+                var textPacket = PlayerText.CreatePacket();
+                textPacket.Text = _chatInput.Text;
+                Client.QueuePacket(textPacket);
             }
             
             OnKeyUnfocus(hasText);
@@ -92,8 +144,14 @@ public class ChatBox : Sprite {
     }
 
     private void HandleChatOpen(string text) {
-        if (text == "/tell " && !string.IsNullOrWhiteSpace(_recentTeller))
+        if (text == string.Empty) {
+            HandleChatKey();
+            return;
+        }
+
+        if (text == "/tell " && !string.IsNullOrWhiteSpace(_recentTeller)) {
             text = $"/tell {_recentTeller} ";
+        }
         
         _chatInput.SetText(text);
         OnKeyFocus();
@@ -130,5 +188,4 @@ public class ChatBox : Sprite {
             HandleChatKey();
         }
     }
-    
 }
