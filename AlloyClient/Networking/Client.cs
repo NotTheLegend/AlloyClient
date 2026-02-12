@@ -333,6 +333,7 @@ public static class Client {
         }
         
         Sound.Music.Stop();
+        Map.Reset();
         ScreenManager.FadeTo(new CharacterListScreen());
     }
 
@@ -343,7 +344,6 @@ public static class Client {
         hello.GameId = -1;
         hello.Username = login.Username;
         hello.Password = login.Password;
-        hello.Key = [];
         hello.MapJSON = "";
         QueuePacket(hello);
     }
