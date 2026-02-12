@@ -157,7 +157,13 @@ public sealed class OptionsView : Overlay {
     }
 
     private void OnHome() {
+        Reset();
         CloseOverlay();
         Client.Disconnect();
+        Map.Reset();
+    }
+
+    private void Reset() {
+        _open = false;
     }
 }
