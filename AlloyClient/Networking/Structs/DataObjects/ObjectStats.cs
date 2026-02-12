@@ -31,7 +31,7 @@ public struct ObjectStats : IDataObject {
         writer.Write(Id);
         Position.Write(writer);
 
-        writer.Write((short)Stats.Count);
+        writer.Write((byte)Stats.Count);
 
         foreach (var statData in Stats) {
             statData.Write(writer);

@@ -62,9 +62,7 @@ public class NewTick : IncomingPacket<NewTick> {
         }
         en.UpdateStats(stats.Stats);
 
-        if (TickTime != 0) {
-            en.OnTickPosition(stats.Position.X, stats.Position.Y, TickTime, TickId, isPlayer);
-        }
+        en.OnTickPosition(stats.Position.X, stats.Position.Y, TickTime, TickId, isPlayer);
     }
 
     public override string ToString() {

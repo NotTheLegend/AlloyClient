@@ -63,6 +63,10 @@ public class AccountOverlay : Sprite {
         _container.RemoveChildren();
 
         var account = GlobalData.Get<AccountData>();
+        if (account == null) { // We're not properly logged in
+            CreateLogin();
+            return;
+        }
         
         var nameConfig = new TextConfig { Text = $"logged in as {account.Name} - ", FontSize = 24 };
         var nameText = new SimpleText(nameConfig);
