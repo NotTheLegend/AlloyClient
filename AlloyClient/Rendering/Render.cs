@@ -48,25 +48,25 @@ public static partial class Render {
     private static StorageBuffer<VertexObject> _entityDataBuffer;
     
 
-    public static unsafe void FirstTimeInit() {
+    public static unsafe void FirstTimeInit(Sampler atlas) {
         // Shaders
         _shaderGround = ContentReader.LoadShader("Shaders/Ground", TileDefines);
-        _shaderGround.SetValue("GameTexture", Main.Atlas.Texture);
+        _shaderGround.SetValue("GameTexture", atlas);
 
         _shaderShadow = ContentReader.LoadShader("Shaders/Shadow", ShadowDefines);
         
         _shaderModel = ContentReader.LoadShader("Shaders/Model");
-        _shaderModel.SetValue("GameTexture", Main.Atlas.Texture);
+        _shaderModel.SetValue("GameTexture", atlas);
         
         _shaderObject = ContentReader.LoadShader("Shaders/Object", ObjectDefines);
-        _shaderObject.SetValue("GameTexture", Main.Atlas.Texture);
+        _shaderObject.SetValue("GameTexture", atlas);
         
         _shaderObject.SetValue("PixelRange", UiRender.MyriadPro.PixelRange);
         _shaderObject.SetValue("TextTextureSize", new Vector2(UiRender.MyriadPro.Atlas.Width, UiRender.MyriadPro.Atlas.Height));
-        _shaderObject.SetValue("TextTexture", UiRender.MyriadPro.Atlas);
+        _shaderObject.SetValue("TextTexture", UiRender.MyriadPro.Sampler);
 
         _shaderParticle = ContentReader.LoadShader("Shaders/Particle");
-        _shaderParticle.SetValue("GameTexture", Main.Atlas.Texture);
+        _shaderParticle.SetValue("GameTexture", atlas);
         
         _defaultVao = new VertexArrayObject();
         

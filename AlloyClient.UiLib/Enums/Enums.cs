@@ -19,12 +19,13 @@ public enum TextureType : byte {
     Color = 0,
     GameAtlas = 1,
     UiAtlas = 2,
-    UiSlice = 3,
-    Text = 4,
-    TitleBackground = 5,
-    TitleGraphic = 6,
-    Minimap = 7,
-    Ellipse = 8,
+    UiAtlasLinear = 3,
+    UiSlice = 4,
+    Text = 5,
+    TitleBackground = 6,
+    TitleGraphic = 7,
+    Minimap = 8,
+    Ellipse = 9,
 }
 
 public enum CollisionType : byte {

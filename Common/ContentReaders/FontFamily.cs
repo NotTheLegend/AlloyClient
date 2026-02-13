@@ -24,7 +24,6 @@ public class FontFamily {
         var png = ArrayPool<byte>.Shared.Rent(length);
         reader.Read(png, 0, length);
         var texture = new Texture(png);
-        texture.SetFilter(TextureFilter.Linear);
         ArrayPool<byte>.Shared.Return(png);
         
         var fontFamily = new Dictionary<string, FontData>();

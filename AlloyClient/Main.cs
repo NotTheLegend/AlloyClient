@@ -12,6 +12,7 @@ using AlloyClient.Screens;
 using AlloyClient.State;
 using AlloyClient.Ui;
 using AlloyClient.UiLib;
+using AlloyClient.UiLib.Data;
 using AlloyClient.UiLib.Enums;
 using AlloyClient.UiLib.Extra;
 using AlloyClient.UiLib.Signals;
@@ -100,15 +101,16 @@ public class Main {
         MinimapTexture.Init(out var mapTexture);
         var titleBackground = ContentReader.LoadTexture("TitleScreen/TitleScreenBackground.png");
         var titleGraphic = ContentReader.LoadTexture("TitleScreen/TitleScreenGraphic.png");
-        var font = ContentReader.LoadFont("Fonts/MyriadPro/MyriadPro.msdf");
+        var font = new BitmapFamily(ContentReader.LoadFont("Fonts/MyriadPro/MyriadPro.msdf"));
         
         // Set texture units
-        Atlas.Texture.BindToTextureUnit(0);
-        UiAtlas.Texture.BindToTextureUnit(1);
-        mapTexture.BindToTextureUnit(2);
-        titleBackground.BindToTextureUnit(3);
-        titleGraphic.BindToTextureUnit(4);
-        font.Texture.BindToTextureUnit(5);
+        var gameAtlasSampler = new Sampler(Atlas.Texture, 0);
+        var uiAtlasSampler = new Sampler(UiAtlas.Texture, 1);
+        var uiAtlasLinear = new Sampler(UiAtlas.Texture, TextureFilter.Linear, 2);
+        var mapTextureSampler = new Sampler(mapTexture, 3);
+        var titleBackgroundSampler = new Sampler(titleBackground, 4);
+        var titleGraphicSampler = new Sampler(titleGraphic, 5);
+        font.Sampler.Bind(6);
         
         ModelData.Load();
         // AssetParser.LoadAssets();
@@ -123,13 +125,14 @@ public class Main {
         //UiRender needs to be loaded first so Render can pull font data from it
         UiRender.ConfigureAndLoad(settings, out var stage);
         UiRender.RegisterFont(font);
-        UiRender.RegisterTexture(TextureType.GameAtlas, Atlas.Texture);
-        UiRender.RegisterTexture(TextureType.UiAtlas, UiAtlas.Texture);
-        UiRender.RegisterTexture(TextureType.Minimap, mapTexture);
-        UiRender.RegisterTexture(TextureType.TitleBackground, titleBackground);
-        UiRender.RegisterTexture(TextureType.TitleGraphic, titleGraphic);
+        UiRender.RegisterTexture(TextureType.GameAtlas, gameAtlasSampler);
+        UiRender.RegisterTexture(TextureType.UiAtlas, uiAtlasSampler);
+        UiRender.RegisterTexture(TextureType.UiAtlasLinear, uiAtlasLinear);
+        UiRender.RegisterTexture(TextureType.Minimap, mapTextureSampler);
+        UiRender.RegisterTexture(TextureType.TitleBackground, titleBackgroundSampler);
+        UiRender.RegisterTexture(TextureType.TitleGraphic, titleGraphicSampler);
         
-        Render.FirstTimeInit();
+        Render.FirstTimeInit(gameAtlasSampler);
 
         SliceLibrary.Load();
         

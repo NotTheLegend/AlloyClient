@@ -16,6 +16,7 @@ out vec4 FragColor;
 
 uniform sampler2D GameAtlasTexture;
 uniform sampler2D UiAtlasTexture;
+uniform sampler2D UiAtlasTextureLinear;
 uniform sampler2D MinimapTexture;
 
 uniform float PixelRange;
@@ -32,12 +33,13 @@ const float TextTypeSmall = 1.0;
 const float IdColor = 0.0;
 const float IdGameAtlas = 1.0;
 const float IdUiAtlas = 2.0;
-const float IdUiSlice = 3.0;
-const float IdText = 4.0;
-const float IdTitleBackground = 5.0;
-const float IdTitleGraphic = 6.0;
-const float IdMinimap = 7.0;
-const float IdEllipse = 8.0;
+const float IdUiAtlasLinear = 3.0;
+const float IdUiSlice = 4.0;
+const float IdText = 5.0;
+const float IdTitleBackground =6.0;
+const float IdTitleGraphic = 7.0;
+const float IdMinimap = 8.0;
+const float IdEllipse = 9.0;
 
 vec4 unpackColor(uint color) {
     return vec4(
@@ -214,6 +216,8 @@ void main() {
         pixel = RenderOutline();
     } else if (type == IdUiAtlas) {
         pixel = RenderNoOutline(UiAtlasTexture);
+    } else if (type == IdUiAtlasLinear) {
+        pixel = RenderNoOutline(UiAtlasTextureLinear);// todo: msdfa sampling
     } else if (type == IdUiSlice) {
         pixel = slice();
     } else if (type == IdText) {

@@ -56,22 +56,25 @@ public static class UiRender {
         OnResize(settings.Screen);
     }
 
-    public static void RegisterTexture(TextureType textureId, Texture texture) {
+    public static void RegisterTexture(TextureType textureId, Sampler sampler) {
         switch (textureId) {
             case TextureType.GameAtlas:
-                UiShader.SetValue("GameAtlasTexture", texture);
+                UiShader.SetValue("GameAtlasTexture", sampler);
                 break;
             case TextureType.UiAtlas:
-                UiShader.SetValue("UiAtlasTexture", texture);
+                UiShader.SetValue("UiAtlasTexture", sampler);
+                break;
+            case TextureType.UiAtlasLinear:
+                UiShader.SetValue("UiAtlasTextureLinear", sampler);
                 break;
             case TextureType.TitleBackground:
-                UiShader.SetValue("TitleBackgroundTexture", texture);
+                UiShader.SetValue("TitleBackgroundTexture", sampler);
                 break;
             case TextureType.TitleGraphic:
-                UiShader.SetValue("TitleGraphicTexture", texture);
+                UiShader.SetValue("TitleGraphicTexture", sampler);
                 break;
             case TextureType.Minimap:
-                UiShader.SetValue("MinimapTexture", texture);
+                UiShader.SetValue("MinimapTexture", sampler);
                 break;
             case TextureType.Text:
                 throw new ArgumentOutOfRangeException(nameof(textureId), textureId, "Text is handled through 'RegisterFont'");
@@ -80,12 +83,12 @@ public static class UiRender {
         }
     }
 
-    public static void RegisterFont(FontFamily font) {
-        MyriadPro = new BitmapFamily(font);
+    public static void RegisterFont(BitmapFamily font) {
+        MyriadPro = font;
         
         UiShader.SetValue("PixelRange", MyriadPro.PixelRange);
         UiShader.SetValue("TextTextureSize", new Vector2(MyriadPro.Atlas.Width, MyriadPro.Atlas.Height));
-        UiShader.SetValue("TextTexture", MyriadPro.Atlas);
+        UiShader.SetValue("TextTexture", MyriadPro.Sampler);
     }
 
     private static void OnResize(Vector2i screen) {

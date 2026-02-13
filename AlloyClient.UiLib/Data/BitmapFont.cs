@@ -11,6 +11,8 @@ namespace AlloyClient.UiLib.Data;
 public class BitmapFamily {
 
     public readonly Texture Atlas;
+
+    public readonly Sampler Sampler;
     
     public readonly Dictionary<FontType, BitmapFont> Fonts = [];
 
@@ -18,6 +20,7 @@ public class BitmapFamily {
 
     public BitmapFamily(FontFamily data) {
         Atlas = data.Texture;
+        Sampler = new Sampler(Atlas, TextureFilter.Linear);
 
         foreach (var kvp in data.FontData) {
             if (!Enum.TryParse(kvp.Key, out FontType type)) {
