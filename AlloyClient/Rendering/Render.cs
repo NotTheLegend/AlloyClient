@@ -3,6 +3,7 @@ using AlloyClient.Engine.Graphics;
 using AlloyClient.Engine.Graphics.Buffers;
 using AlloyClient.Game;
 using AlloyClient.Rendering.VertexData;
+using AlloyClient.State;
 using AlloyClient.UiLib;
 using Common;
 using Common.ContentReaders;
@@ -115,6 +116,7 @@ public static partial class Render {
         _shaderObject.SetValue("ViewMatrix", Camera.ViewMatrix);
         _shaderObject.SetValue("ProjMatrix", Camera.ProjectionMatrix);
         _shaderObject.SetValue("BillMatrix", Camera.BillboardMatrix);
+        _shaderObject.SetValue("Zoom", Settings.CameraZoom);
         
         _shaderParticle.SetValue("WorldMatrix", Camera.WorldMatrix);
         _shaderParticle.SetValue("ViewMatrix", Camera.ViewMatrix);

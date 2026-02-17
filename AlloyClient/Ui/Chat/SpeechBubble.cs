@@ -74,7 +74,7 @@ public sealed class SpeechBubble : Sprite {
         if (_owner == null) return;
         if ((_lifetime -= gameTime.ElapsedMs) <= 0) Parent.RemoveChild(this);
 
-        Scale = new Vector2(Settings.CameraZoom / 96f);
+        Scale = new Vector2(Settings.CameraZoom);
         
         var w = Camera.VisibleTileRadius.X;
         var h = Camera.VisibleTileRadius.Y;

@@ -122,7 +122,7 @@ public sealed class UserInput : Sprite {
         if (Map.LocalPlayer == null) return;
         
         if (args.ShiftKey) {
-            Settings.CameraZoom = Math.Clamp(Settings.CameraZoom += Settings.ScaleFactor * args.Delta, Settings.MinCameraZoom, Settings.MaxCameraZoom);
+            Settings.CameraZoom = Math.Clamp(Settings.CameraZoom += 0.1f * args.Delta, Settings.MinCameraZoom, Settings.MaxCameraZoom);
             Logger.Info($"Camera zoom: {Settings.CameraZoom.Value}");
             Camera.SetZoom(Settings.CameraZoom);
         } else {

@@ -41,9 +41,8 @@ public static class Settings {
     public const int DefaultScreenWidth = 1280;
     public const int DefaultScreenHeight = 720;
 
-    public const int ScaleFactor = 8;
-    public const int MinCameraZoom = 24;
-    public const int MaxCameraZoom = 400;
+    public const float MinCameraZoom = 0.5f;
+    public const float MaxCameraZoom = 5;
     
     // ReSharper disable FieldCanBeMadeReadOnly.Global
 #pragma warning disable CA2211
@@ -107,7 +106,7 @@ public static class Settings {
     public static ValueSetting<bool> MovementInterpolation = true;
 
     public static ValueSetting<float> CameraAngle = 0f;
-    public static ValueSetting<float> CameraZoom = 40;
+    public static ValueSetting<float> CameraZoom = 1;
 
     public static ValueSetting<float> RotateSpeed = 0.003f;
 
@@ -225,7 +224,7 @@ public static class Settings {
         MovementInterpolation.SetValue(true);
 
         CameraAngle.SetValue(0f);
-        CameraZoom.SetValue(40);
+        CameraZoom.SetValue(1);
 
         RotateSpeed.SetValue(0.003f);
 

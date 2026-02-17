@@ -75,6 +75,7 @@ public static class Camera {
         ViewMatrix.Row3 = new Vector4(-x, y, -12, 1);
 
         ViewMatrix *= Matrix4.CreateRotationZ(-CameraAngle);
+        ViewMatrix *= Matrix4.CreateScale(100);
         ViewMatrix *= ZoomMatrix;
 
         //TODO: make bb mat a 2x2 instead of 4x4 
@@ -83,7 +84,7 @@ public static class Camera {
         BillboardMatrix[1, 0] = s;
         BillboardMatrix[1, 1] = c;
 
-        VisibleTileRadius = new Vector2((Settings.ScreenWidth - HudOffset) / Settings.CameraZoom, Settings.ScreenHeight / Settings.CameraZoom);
+        VisibleTileRadius = new Vector2((Settings.ScreenWidth - HudOffset) * Settings.CameraZoom, Settings.ScreenHeight * Settings.CameraZoom);
     }
 
     // Only tested on MapEditor

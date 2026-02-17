@@ -22,6 +22,7 @@ uniform sampler2D GameTexture;
 uniform float PixelRange;
 uniform vec2 TextTextureSize;
 uniform sampler2D TextTexture;
+uniform float Zoom;
 
 const float TypeGameObject = 0.0;
 const float TypeText = 3.0;
@@ -40,29 +41,86 @@ float samp(vec2 uv, vec2 dx, vec2 dy) {
     return textureGrad(GameTexture, uv, dx, dy).a;
 }
 
+bool inBounds(vec2 uv, vec2 minUV, vec2 maxUV){
+    if (uv.x < minUV.x ||
+    uv.x > maxUV.x ||
+    uv.y < minUV.y ||
+    uv.y > maxUV.y)
+    {
+        return false;
+    }
+    return true;
+}
+
 vec4 GetGameObject() {
     vec2 uv = map(vsInput.BaseUV, vsInput.UV.xy, vsInput.UV.xy + vsInput.UV.zw);
     vec2 dx = dFdx(uv);
     vec2 dy = dFdy(uv);
     vec4 color = textureGrad(GameTexture, uv, dx, dy);
-    color.rgb -= vsInput.Extra.Shade * 0.241 * clamp(0.4 - vsInput.BaseUV.y, 0.0 , 0.4);
+    color.rgb -= vsInput.Extra.Shade * 0.241 * clamp(vsInput.BaseUV.y - 0.4, 0.0, 0.4);
 
     if (color.a > 0) {
         return color;
     }
 
+    vec2 minUV = vsInput.UV.xy;
+    vec2 maxUV = vsInput.UV.xy + vsInput.UV.zw;
+
     float offX = length(dx);
     float offY = length(dy);
-    
-    float alpha = max(0.0, samp(uv + vec2(offX, -offY), dx, dy));
-    alpha = max(alpha, samp(uv + vec2(offX, offY), dx, dy));
-    alpha = max(alpha, samp(uv + vec2(-offX, -offY), dx, dy));
-    alpha = max(alpha, samp(uv + vec2(-offX, offY), dx, dy));
 
-    if (alpha > 0) {
-        return vec4(vsInput.Color.rgb, 1);
-    }
+    float outlineSize = max(1, Zoom); // Outline params
+    float outlineAlpha = 0.0;
     
+    float glowAlpha = 0.0; // Glow params
+    float glowSize = max(6.0, Zoom * 6.0);
+    float maxDist = glowSize * max(offX, offY);
+
+    // Draw outline & glow
+    for (float i = 1; i <= glowSize; i++) {
+        float ox = offX * i;
+        float oy = offY * i;
+        vec2 offsets[8] = vec2[](
+            vec2(-ox, -oy), // Top-left
+            vec2(0.0, -oy), // Top-middle
+            vec2(ox, -oy), // Top-right
+            vec2(ox, 0.0), // Right-middle
+            vec2(ox, oy), // Bottom-right
+            vec2(0.0, oy), // Bottom-middle
+            vec2(-ox, oy), // Bottom-left
+            vec2(-ox, 0.0)// Left-middle
+        );
+        
+        for (int j = 0; j < 8; j++) {
+            vec2 sampleUV = uv + offsets[j];
+            if (!inBounds(sampleUV, minUV, maxUV)) {
+                continue;
+            }
+
+            float a = samp(sampleUV, dx, dy);
+            if (a > 0){
+                float dist = length(offsets[j]);
+                float normalized = dist / maxDist;
+
+                float alpha = 0.8 * exp(-normalized * 4.0);
+
+                glowAlpha = max(glowAlpha, alpha);
+            }
+            
+            if (i <= outlineSize){
+                outlineAlpha = max(outlineAlpha, a);
+            }
+        }
+    }
+
+    if (outlineAlpha > 0.0) {
+        return vec4(vsInput.Color.rgb, 1.0);
+    }
+
+    if (glowAlpha > 0.0) {
+        return vec4(vsInput.Color.rgb, glowAlpha);
+    }
+
     discard;
 }
 
@@ -99,7 +157,7 @@ void main() {
     }
 
     outputColor.a *= vsInput.Extra.Alpha;
-    if(outputColor.a == 0) {
+    if (outputColor.a == 0) {
         discard;
     }
 

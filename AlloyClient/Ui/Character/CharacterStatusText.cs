@@ -64,7 +64,7 @@ public class CharacterStatusText : Sprite {
             return;
         }
         
-        Scale = new Vector2(Settings.CameraZoom / 96f);
+        Scale = new Vector2(Settings.CameraZoom);
         
         var w = Camera.VisibleTileRadius.X;
         var h = Camera.VisibleTileRadius.Y;

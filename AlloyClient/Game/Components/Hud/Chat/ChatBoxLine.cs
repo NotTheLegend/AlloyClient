@@ -19,7 +19,7 @@ public class ChatBoxLineData {
         Name = name;
         NumStars = numStars;
         Recipient = recipient;
-        ToMe = recipient == Map.LocalPlayer.Name;
+        ToMe = recipient == Map.LocalPlayer?.Name;
         Text = text;
 
         Sprite = new ChatBoxLine(this);
