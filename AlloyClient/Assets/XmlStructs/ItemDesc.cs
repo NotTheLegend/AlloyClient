@@ -92,12 +92,15 @@ public class StatBoostDesc(XElement xml) {
 }
 
 public class ProjectileDesc {
+
+    public XElement Root { get; }
+    
     public readonly int BulletType;
     public readonly string ObjectId;
     public readonly float Speed;
     public readonly int MinDamage;
     public readonly int MaxDamage;
-    public readonly float LifetimeMS;
+    public readonly int LifetimeMS;
     public readonly ParticleTrailDesc Trail;
     public readonly bool MultiHit;
     public readonly bool PassesCover;
@@ -113,9 +116,10 @@ public class ProjectileDesc {
     public readonly float Magnitude;
 
     public ProjectileDesc(XElement xml) {
+        Root = xml;
         BulletType = xml.GetAttribute<int>("id");
         ObjectId = xml.GetValue<string>("ObjectId");
-        LifetimeMS = xml.GetValue<float>("LifetimeMS");
+        LifetimeMS = (int)xml.GetValue<float>("LifetimeMS");
         Speed = xml.GetValue<float>("Speed", 100);
 
         var dmg = xml.Element("Damage");

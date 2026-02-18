@@ -7,6 +7,16 @@ public static class MathUtils {
     
     private static readonly Random Random = new();
 
+    public static float Deg2Rad(this float deg)
+    {
+        return deg * (MathF.PI / 180f);
+    }
+    
+    public static float? Deg2Rad(this float? deg)
+    {
+        return deg * (MathF.PI / 180f);
+    }
+    
     public static Vector2 RotatePoint(Vector2 point, Vector2 pivot, float angle) {
         var cosTheta = (float)Math.Cos(angle);
         var sinTheta = (float)Math.Sin(angle);

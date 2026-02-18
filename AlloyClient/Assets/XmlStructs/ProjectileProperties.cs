@@ -1,36 +1,37 @@
 using System.Xml.Linq;
 using AlloyClient.Game.Objects.Util;
+using AlloyClient.Networking.Packets.Incoming;
 using Common;
 
 namespace AlloyClient.Assets.XmlStructs;
 
 public sealed class ProjectileProperties {
     
-    public readonly int BulletType;
-    public readonly string ObjectId;
-    public readonly float LifetimeMs;
-    public readonly float Speed;
-    public readonly float RealSpeed;
-    public readonly int Size;
-    public readonly int MinDamage;
-    public readonly int MaxDamage;
-    public readonly ConditionEffectIndex[] Effects;
-    public readonly bool MultiHit;
-    public readonly bool PassesCover;
-    public readonly bool ArmorPiercing;
-    public readonly bool ParticleTrail;
-    public readonly bool Wavy;
-    public readonly bool Parametric;
-    public readonly bool Boomerang;
-    public readonly float Amplitude;
-    public readonly float Frequency;
-    public readonly float Magnitude;
-    public readonly bool NoRotation;
+    public int BulletType {get; private set;}
+    public string ObjectId {get; private set;}
+    public float LifetimeMs {get; private set;}
+    public float Speed {get; private set;}
+    public float RealSpeed {get; private set;}
+    public int Size {get; private set;}
+    public int MinDamage {get; private set;}
+    public int MaxDamage {get; private set;}
+    public ConditionEffectIndex[] Effects {get; private set;}
+    public bool MultiHit {get; private set;}
+    public bool PassesCover {get; private set;}
+    public bool ArmorPiercing {get; private set;}
+    public bool ParticleTrail {get; private set;}
+    public bool Wavy {get; private set;}
+    public bool Parametric {get; private set;}
+    public bool Boomerang {get; private set;}
+    public float Amplitude {get; private set;}
+    public float Frequency {get; private set;}
+    public float Magnitude {get; private set;}
+    public bool NoRotation {get; private set;}
+    public uint ParticleTrailColor {get; private set;}
+    public int ParticleTrailLifetime {get; private set;}
+    public float ParticleTrailIntensity {get; private set;}
 
-    public readonly uint ParticleTrailColor;
-    public readonly int ParticleTrailLifetime;
-    public readonly float ParticleTrailIntensity;
-
+    private ProjectileProperties() {}
     public ProjectileProperties(XElement e) {
         BulletType = e.GetAttribute<int>("id");
         ObjectId = e.GetValue<string>("ObjectId");
@@ -59,5 +60,17 @@ public sealed class ProjectileProperties {
             ParticleTrailLifetime = attr.GetAttribute("lifetimeMS", 600);
             ParticleTrailIntensity = attr.GetAttribute("intensity", 0.3f);
         }
+    }
+
+    public static ProjectileProperties FromEnemyShoot(EnemyShoot shoot) {
+        return new ProjectileProperties() {
+            BulletType = shoot.ProjType,
+            LifetimeMs = shoot.Lifetime,
+            MinDamage = shoot.Damage,
+            MaxDamage = shoot.Damage,
+            MultiHit = shoot.MultiHit,
+            PassesCover = shoot.PassesCover,
+            ArmorPiercing = shoot.ArmorPiercing
+        };
     }
 }
