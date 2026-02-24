@@ -147,18 +147,59 @@ vec4 RenderOutline() {
     if (input.Extra1.w == -1)
         discard;
 
+    vec4 outlineColor = unpackColor(input.Override);
+    
     float offX = length(dx);
     float offY = length(dy);
+    
+    float scale = min(4, input.Extra2.z / 50.0); // Extra2.z is the texture height 
 
-    float alpha = max(0.0, samp(uv + vec2(offX, -offY), dx, dy));
-    alpha = max(alpha, samp(uv + vec2(offX, offY), dx, dy));
-    alpha = max(alpha, samp(uv + vec2(-offX, -offY), dx, dy));
-    alpha = max(alpha, samp(uv + vec2(-offX, offY), dx, dy));
+    float outlineSize = round(max(1, scale)); // Outline params
+    float outlineAlpha = 0.0;
 
-    vec4 outline = unpackColor(input.Override);
+    float glowAlpha = 0.0; // Glow params
+    float glowSize = round(max(8.0, 6.0 * scale));
+    float maxDist = glowSize * max(offX, offY);
 
-    if (alpha > 0) {
-        return vec4(outline.rgb, 1);
+    // Draw outline & glow
+    for (float i = 1; i <= glowSize; i++) {
+        float ox = offX * i;
+        float oy = offY * i;
+        vec2 offsets[8] = vec2[](
+        vec2(-ox, -oy), // Top-left
+        vec2(0.0, -oy), // Top-middle
+        vec2(ox, -oy), // Top-right
+        vec2(ox, 0.0), // Right-middle
+        vec2(ox, oy), // Bottom-right
+        vec2(0.0, oy), // Bottom-middle
+        vec2(-ox, oy), // Bottom-left
+        vec2(-ox, 0.0)// Left-middle
+        );
+
+        for (int j = 0; j < 8; j++) {
+            vec2 sampleUV = uv + offsets[j];
+            float a = samp(sampleUV, dx, dy);
+            if (a > 0){
+                float dist = length(offsets[j]);
+                float normalized = dist / maxDist;
+
+                float alpha = 0.8 * exp(-normalized * 4.0);
+
+                glowAlpha = max(glowAlpha, alpha);
+            }
+
+            if (i <= outlineSize){
+                outlineAlpha = max(outlineAlpha, a);
+            }
+        }
+    }
+
+    if (outlineAlpha > 0.0) {
+        return vec4(outlineColor.rgb, 1.0);
+    }
+
+    if (glowAlpha > 0.0) {
+        return vec4(outlineColor.rgb, glowAlpha);
     }
 
     discard;

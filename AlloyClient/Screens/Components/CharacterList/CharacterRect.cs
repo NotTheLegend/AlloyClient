@@ -134,7 +134,7 @@ public sealed class CharacterRect : Container
 
             var charPortrait = new ObjectRect(new ObjectRectConfig
             {
-                Texture = TextureHelper.Create(atlasData, TextureType.GameAtlas, false),
+                Texture = TextureHelper.Create(atlasData, TextureType.GameAtlas),
                 Width = 50,
                 Height = 50,
                 Anchor = UiAnchor.Middle,

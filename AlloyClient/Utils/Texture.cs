@@ -36,7 +36,7 @@ public static class TextureHelper {
     }
 
     public static TextureInfo Create(AtlasData uv, TextureType type, bool padding = true) {
-        if (padding) uv.RemovePadding();
+        if (!padding) uv.RemovePadding();
         return new TextureInfo(uv.ToPosition(), type);
     }
 
