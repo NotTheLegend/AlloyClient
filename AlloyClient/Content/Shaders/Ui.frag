@@ -10,7 +10,7 @@ in VS_OUT {
     vec4 Extra1;
     vec4 Extra2;
     vec4 ColorTransform;
-} input;
+} inp;
 
 out vec4 FragColor;
 
@@ -64,8 +64,8 @@ float scale(float val, vec2 rect, float border, float borderTex) {
 
 vec4 slice() {
     vec2 uv;
-    uv.x = scale(input.UVCoords.x, input.Extra1.xy, input.Extra2.z, input.Extra2.x);
-    uv.y = scale(input.UVCoords.y, input.Extra1.zw, input.Extra2.w, input.Extra2.y);
+    uv.x = scale(inp.UVCoords.x, inp.Extra1.xy, inp.Extra2.z, inp.Extra2.x);
+    uv.y = scale(inp.UVCoords.y, inp.Extra1.zw, inp.Extra2.w, inp.Extra2.y);
     return texture(UiAtlasTexture, uv);
 }
 
@@ -100,18 +100,18 @@ float GetOpacityFromDistance(float signedDistance, vec2 Jdx, vec2 Jdy) {
 }
 
 vec4 RenderText() {
-    vec4 mtsdf = texture(TextTexture, input.UVCoords);
+    vec4 mtsdf = texture(TextTexture, inp.UVCoords);
     float dist = median(mtsdf.r, mtsdf.g, mtsdf.b) - 0.5;
-    float pxRange = screenPxRange(input.UVCoords);
+    float pxRange = screenPxRange(inp.UVCoords);
 
     float bodyDist = dist * pxRange;
     float glowDist = mtsdf.a;
-    float glowSize = input.Extra1.x / PixelRange;
+    float glowSize = inp.Extra1.x / PixelRange;
     float bodyAlpha;
     float glowAlpha;
 
-    if (input.Extra1.y == TextTypeSmall) {
-        vec2 pixelCoord = input.UVCoords * TextTextureSize;
+    if (inp.Extra1.y == TextTypeSmall) {
+        vec2 pixelCoord = inp.UVCoords * TextTextureSize;
         vec2 Jdx = dFdx(pixelCoord);
         vec2 Jdy = dFdy(pixelCoord);
         bodyAlpha = GetOpacityFromDistance(bodyDist, Jdx, Jdy);
@@ -121,7 +121,7 @@ vec4 RenderText() {
         glowAlpha = glowDist * glowSize;
     }
 
-    vec4 color = mix(unpackColor(input.Override), unpackColor(input.Color), bodyAlpha);
+    vec4 color = mix(unpackColor(inp.Override), unpackColor(inp.Color), bodyAlpha);
     float alpha = bodyAlpha + glowAlpha;
     return vec4(color.rgb, alpha);
 }
@@ -131,86 +131,93 @@ float samp(vec2 uv, vec2 dx, vec2 dy) {
 }
 
 vec4 RenderOutline() {
-    vec2 uv = input.UVCoords;
+    vec2 uv = inp.UVCoords;
     vec2 dx = dFdx(uv);
     vec2 dy = dFdy(uv);
     vec4 color = textureGrad(GameAtlasTexture, uv, dx, dy);
-    
-    if (input.UVCoords.y > input.Extra1.x) {
-        color.rgb -= 0.241 * (((input.UVCoords.y - input.Extra1.y) / input.Extra1.z) - 0.4);
+
+    if (inp.UVCoords.y > inp.Extra1.x) {
+        color.rgb -= 0.241 * (((inp.UVCoords.y - inp.Extra1.y) / inp.Extra1.z) - 0.4);
     }
 
     if (color.a > 0) {
         return color;
     }
 
-    if (input.Extra1.w == -1)
+    if (inp.Extra1.w == -1 && inp.Extra2.z == -1){ // Outline and glow disabled
         discard;
+    }
 
-    vec4 outlineColor = unpackColor(input.Override);
+    vec4 outlineColor = unpackColor(inp.Override);
+    float scale = min(4, inp.Extra2.y / 60.0); // Extra2.y is the texture height 
     
-    float offX = length(dx);
-    float offY = length(dy);
-    
-    float scale = min(4, input.Extra2.z / 50.0); // Extra2.z is the texture height 
+    vec2 texSize = vec2(textureSize(GameAtlasTexture, 0));
+    ivec2 currentTexel = ivec2(uv * texSize);
 
-    float outlineSize = round(max(1, scale)); // Outline params
+    float pxW = length(dx);
+    float pxH = length(dy);
+    float invPxW = 1.0 / pxW;
+    float invPxH = 1.0 / pxH;
+    vec2 invPx = vec2(1.0 / pxW, 1.0 / pxH);
+
+    float outlineSize = floor(max(1, scale));
+    float glowSize = max(6, 6.0 * scale);
+
+    // Base directions (unit steps in screen space), scaled by i in the loop
+    vec2 dirs[8] = vec2[](
+    -dx - dy, -dy, dx - dy, dx,
+    dx + dy,  dy, -dx + dy, -dx
+    );
+
     float outlineAlpha = 0.0;
+    float nearestDist = 999.0;
 
-    float glowAlpha = 0.0; // Glow params
-    float glowSize = round(max(8.0, 6.0 * scale));
-    float maxDist = glowSize * max(offX, offY);
-
-    // Draw outline & glow
-    for (float i = 1; i <= glowSize; i++) {
-        float ox = offX * i;
-        float oy = offY * i;
-        vec2 offsets[8] = vec2[](
-        vec2(-ox, -oy), // Top-left
-        vec2(0.0, -oy), // Top-middle
-        vec2(ox, -oy), // Top-right
-        vec2(ox, 0.0), // Right-middle
-        vec2(ox, oy), // Bottom-right
-        vec2(0.0, oy), // Bottom-middle
-        vec2(-ox, oy), // Bottom-left
-        vec2(-ox, 0.0)// Left-middle
-        );
-
+    for (float i = 1; i <= glowSize && outlineAlpha == 0.0; i++) {
         for (int j = 0; j < 8; j++) {
-            vec2 sampleUV = uv + offsets[j];
-            float a = samp(sampleUV, dx, dy);
-            if (a > 0){
-                float dist = length(offsets[j]);
-                float normalized = dist / maxDist;
-
-                float alpha = 0.8 * exp(-normalized * 4.0);
-
-                glowAlpha = max(glowAlpha, alpha);
+            vec2 sampleUV = uv + dirs[j] * i;
+            ivec2 neighborTexel = ivec2(sampleUV * texSize);
+            if (neighborTexel == currentTexel){
+                continue;
             }
 
-            if (i <= outlineSize){
-                outlineAlpha = max(outlineAlpha, a);
+            if (texelFetch(GameAtlasTexture, neighborTexel, 0).a == 0){
+                continue;
             }
+
+            // Distance from fragment to nearest point on solid texel
+            vec2 nearestPoint = clamp(uv, vec2(neighborTexel) / texSize, vec2(neighborTexel + ivec2(1)) / texSize);
+            vec2 distPx = abs(uv - nearestPoint) * invPx;
+
+            if (max(distPx.x, distPx.y) <= outlineSize) {
+                outlineAlpha = 1.0;
+                break;
+            }
+
+            nearestDist = min(nearestDist, length(distPx));
         }
     }
 
-    if (outlineAlpha > 0.0) {
+    if (inp.Extra1.w != -1 && outlineAlpha > 0.0){
         return vec4(outlineColor.rgb, 1.0);
     }
 
-    if (glowAlpha > 0.0) {
-        return vec4(outlineColor.rgb, glowAlpha);
+    if (inp.Extra2.z != -1 && nearestDist < 999.0) {
+        float normalized = nearestDist / glowSize;
+        float glowAlpha = 0.8 * exp(-normalized * 4) * (1.0 - smoothstep(0.8, 1.0, normalized));
+        if (glowAlpha > 0.0){
+            return vec4(outlineColor.rgb, glowAlpha);
+        }
     }
 
     discard;
 }
 
 vec4 RenderNoOutline(sampler2D tex) {
-    return texture(tex, input.UVCoords);
+    return texture(tex, inp.UVCoords);
 }
 
 vec4 RenderMinimap() {
-    vec2 coords = input.UVCoords;
+    vec2 coords = inp.UVCoords;
     if (coords.x < 0 || coords.x > 1 || coords.y < 0 || coords.y > 1) {
         return vec4(0, 0, 0, 1);
     }
@@ -219,14 +226,14 @@ vec4 RenderMinimap() {
 }
 
 vec4 RenderEllipse() {
-    float rx = input.Extra1.x - input.Extra1.z, ry = input.Extra1.y - input.Extra1.z;
-    float x = input.UVCoords.x, y = input.UVCoords.y;
+    float rx = inp.Extra1.x - inp.Extra1.z, ry = inp.Extra1.y - inp.Extra1.z;
+    float x = inp.UVCoords.x, y = inp.UVCoords.y;
 
     float inner = x * x / (rx * rx) + y * y / (ry * ry);
-    rx = input.Extra1.x; ry = input.Extra1.y;
+    rx = inp.Extra1.x; ry = inp.Extra1.y;
     float outline = x * x / (rx * rx) + y * y / (ry * ry);
     if (x * x / (rx * rx) + y * y / (ry * ry) > 1)
-        return vec4(0, 0, 0, 0);
+    return vec4(0, 0, 0, 0);
     float color_val;
 
     if (inner > 1) {
@@ -235,21 +242,21 @@ vec4 RenderEllipse() {
         color_val = 0;
     }
 
-    return mix(unpackColor(input.Color), unpackColor(input.Override), color_val);
+    return mix(unpackColor(inp.Color), unpackColor(inp.Override), color_val);
 }
 
 void main() {
     vec4 pixel = vec4(0);
-    
-    
+
+
     //TODO: replace pos1 with gl_FragCoord and send screen coords in scissor instead
-    if (input.Position1.x < input.Scissor.x || input.Position1.x > input.Scissor.z || input.Position1.y < input.Scissor.w || input.Position1.y > input.Scissor.y) {
+    if (inp.Position1.x < inp.Scissor.x || inp.Position1.x > inp.Scissor.z || inp.Position1.y < inp.Scissor.w || inp.Position1.y > inp.Scissor.y) {
         discard;
     }
-    
-    vec4 color = unpackColor(input.Color);
 
-    float type = input.Info.x;
+    vec4 color = unpackColor(inp.Color);
+
+    float type = inp.Info.x;
 
     if (type == IdColor) {
         pixel = color;
@@ -274,16 +281,16 @@ void main() {
     }
 
     if (color.a > 0 && type != IdColor && type != IdText && type != IdEllipse)
-        pixel *= color;
-    
-    vec4 add = floor(input.ColorTransform / 1000.0);
-    vec4 mult = input.ColorTransform - add * 1000.0;
+    pixel *= color;
+
+    vec4 add = floor(inp.ColorTransform / 1000.0);
+    vec4 mult = inp.ColorTransform - add * 1000.0;
 
     pixel = clamp(pixel, vec4(0.0), vec4(1.0));
 
     pixel = mult * pixel;
     pixel += add / 255.0;
 
-    pixel.a *= input.Info.y;
+    pixel.a *= inp.Info.y;
     FragColor = pixel;
 }

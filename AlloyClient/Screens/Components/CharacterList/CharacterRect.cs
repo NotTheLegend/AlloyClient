@@ -195,7 +195,8 @@ public sealed class CharacterRect : Container
                 Width = 50,
                 Height = 50,
                 Anchor = UiAnchor.Middle,
-                OutlineEnabled = false
+                OutlineEnabled = false,
+                GlowEnabled = false
             });
             charPortrait.X = Width / 2;
             charPortrait.Y = charNameText.Height + charPortrait.Height / 2 + 25;
