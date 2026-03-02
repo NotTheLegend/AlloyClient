@@ -87,6 +87,11 @@ vec4 GetGameObject() {
     float nearestDist = 999.0;
 
     for (float i = 1; i <= glowSize && outlineAlpha == 0.0; i++) {
+        bool belowTexel = ((vsInput.UV.y + vsInput.UV.w) * texSize.y) - ((uv.y - (outlineSize * pxH)) * texSize.y) < 1;
+        if (i > outlineSize && belowTexel){ // Don't draw glow on the bottom
+            discard;
+        }
+        
         for (int j = 0; j < 8; j++) {
             vec2 sampleUV = uv + dirs[j] * i;
             if (!inBounds(sampleUV, minUV, maxUV)){
