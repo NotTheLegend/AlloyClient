@@ -48,6 +48,9 @@ public static partial class Render {
     private static VertexObject[] _entityData;
     private static StorageBuffer<VertexObject> _entityDataBuffer;
     
+    private static VertexObject[] _outlineGlowData;
+    private static StorageBuffer<VertexObject> _outlineGlowDataBuffer;
+    
 
     public static unsafe void FirstTimeInit(Sampler atlas) {
         // Shaders
@@ -93,6 +96,9 @@ public static partial class Render {
         
         _entityData = new VertexObject[BufferSize];
         _entityDataBuffer = new StorageBuffer<VertexObject>(BufferSize);
+        
+        _outlineGlowData = new VertexObject[BufferSize];
+        _outlineGlowDataBuffer = new StorageBuffer<VertexObject>(BufferSize);
         
         BuildParticleBuffers();
     }

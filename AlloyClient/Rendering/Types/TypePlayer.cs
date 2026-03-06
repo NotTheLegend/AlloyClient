@@ -79,7 +79,7 @@ public sealed class TypePlayer : RenderBase {
         
         Entity.HeightOffset = -0.5f * Scale.Y * k + Scale.W * k;
         
-        Render.DrawEntity(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color));
+        Render.DrawEntity(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color), true);
         var y = 0.1f;
         if (_player != Map.LocalPlayer) {
             _typeName.Draw(y);

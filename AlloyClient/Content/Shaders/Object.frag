@@ -23,6 +23,10 @@ uniform float PixelRange;
 uniform vec2 TextTextureSize;
 uniform sampler2D TextTexture;
 uniform float Zoom;
+uniform int RenderPass; // 0 = opaque, 1 = transparent
+
+const int OpaquePass = 0;
+const int TransparentPass = 1;
 
 const float TypeGameObject = 0.0;
 const float TypeText = 3.0;
@@ -53,66 +57,80 @@ bool inBounds(vec2 uv, vec2 minUV, vec2 maxUV){
 }
 
 vec4 GetGameObject() {
-    vec2 uv = map(vsInput.BaseUV, vsInput.UV.xy, vsInput.UV.xy + vsInput.UV.zw);
+    const float INV_TEX_SIZE = 1.0 / 4096.0;
+
+    // uvMax precomputed once, reused in map() and as loop bounds
+    vec2 uvMax = vsInput.UV.xy + vsInput.UV.zw;
+    vec2 uv = map(vsInput.BaseUV, vsInput.UV.xy, uvMax);
     vec2 dx = dFdx(uv);
     vec2 dy = dFdy(uv);
     vec4 color = textureGrad(GameTexture, uv, dx, dy);
-    color.rgb -= vsInput.Extra.Shade * 0.241 * clamp(vsInput.BaseUV.y - 0.4, 0.0, 0.4);
-
-    if (color.a > 0){
-        return color;
+    if (RenderPass == OpaquePass){
+        if (color.a > 0.0){
+            color.rgb -= vsInput.Extra.Shade * 0.241 * clamp(vsInput.BaseUV.y - 0.4, 0.0, 0.4);
+            return color;
+        }
+        discard;
     }
 
-    vec2 texSize = vec2(textureSize(GameTexture, 0));
-    ivec2 currentTexel = ivec2(uv * texSize);
+    if (color.a > 0.0){
+        discard;
+    }
 
     float pxW = length(dx);
     float pxH = length(dy);
     vec2 invPx = vec2(1.0 / pxW, 1.0 / pxH);
 
-    float pixelsInOneTexel = max(1.0 / length(dx * texSize.x), 1.0 / length(dy * texSize.y));
-    float outlineSize = floor(max(1, Zoom));
-    float glowSize = max(6, pixelsInOneTexel);
+    // Reuses invPx instead of recomputing length(dx * 4096.0) from scratch
+    float pixelsInOneTexel = max(invPx.x, invPx.y) * INV_TEX_SIZE;
+    float outlineSize = floor(max(1.0, Zoom));
+    float glowSize = max(6.0, pixelsInOneTexel);
 
-    vec2 minUV = vsInput.UV.xy;
-    vec2 maxUV = vsInput.UV.xy + vsInput.UV.zw;
+    ivec2 currentTexel = ivec2(uv * 4096.0);
+    vec2  minUV = vsInput.UV.xy;
 
-    // Base directions (unit steps in screen space), scaled by i in the loop
     vec2 dirs[8] = vec2[](
-    -dx - dy, -dy, dx - dy, dx,
+    -dx - dy, -dy, dx - dy,  dx,
     dx + dy,  dy, -dx + dy, -dx
     );
 
-    float outlineAlpha = 0.0;
-    float nearestDist = 999.0;
+    // Hoisted out — does not depend on i or j
+    bool belowTexel = (uvMax.y - uv.y + outlineSize * pxH) * 4096.0 < 1.0;
 
-    for (float i = 1; i <= glowSize && outlineAlpha == 0.0; i++) {
-        bool belowTexel = ((vsInput.UV.y + vsInput.UV.w) * texSize.y) - ((uv.y - (outlineSize * pxH)) * texSize.y) < 1;
-        if (i > outlineSize && belowTexel){ // Don't draw glow on the bottom
+    bool foundOutline = false;
+    float nearestDist = 999.0;
+    int glowSizeInt = int(glowSize);
+    int outlineSizeInt = int(outlineSize);
+
+    for (int i = 1; i <= glowSizeInt && !foundOutline; i++) {
+        if (i > outlineSizeInt && belowTexel) {
             discard;
         }
-        
+
+        float fi = float(i);
         for (int j = 0; j < 8; j++) {
-            vec2 sampleUV = uv + dirs[j] * i;
-            if (!inBounds(sampleUV, minUV, maxUV)){
+            vec2 sampleUV = uv + dirs[j] * fi;
+            if (!inBounds(sampleUV, minUV, uvMax)){
                 continue;
             }
 
-            ivec2 neighborTexel = ivec2(sampleUV * texSize);
+            ivec2 neighborTexel = ivec2(sampleUV * 4096.0);
             if (neighborTexel == currentTexel){
                 continue;
             }
-
-            if (texelFetch(GameTexture, neighborTexel, 0).a == 0){
+            
+            if (texelFetch(GameTexture, neighborTexel, 0).a == 0.0){
                 continue;
             }
 
-            // Distance from fragment to nearest point on solid texel
-            vec2 nearestPoint = clamp(uv, vec2(neighborTexel) / texSize, vec2(neighborTexel + ivec2(1)) / texSize);
+            // Multiply instead of divide for texel->UV conversion
+            vec2 nearestPoint = clamp(uv,
+            vec2(neighborTexel)            * INV_TEX_SIZE,
+            vec2(neighborTexel + ivec2(1)) * INV_TEX_SIZE);
             vec2 distPx = abs(uv - nearestPoint) * invPx;
 
             if (max(distPx.x, distPx.y) <= outlineSize) {
-                outlineAlpha = 1.0;
+                foundOutline = true;
                 break;
             }
 
@@ -120,13 +138,13 @@ vec4 GetGameObject() {
         }
     }
 
-    if (outlineAlpha > 0.0){
+    if (foundOutline){
         return vec4(vsInput.Color.rgb, 1.0);
     }
 
     if (nearestDist < 999.0) {
         float normalized = nearestDist / glowSize;
-        float glowAlpha = 0.8 * exp(-normalized * 4) * (1.0 - smoothstep(0.8, 1.0, normalized));
+        float glowAlpha  = 0.8 * exp(-normalized * 4.0) * (1.0 - smoothstep(0.8, 1.0, normalized));
         if (glowAlpha > 0.0){
             return vec4(vsInput.Color.rgb, glowAlpha);
         }
