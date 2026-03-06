@@ -23,6 +23,7 @@ void main() {
     float c = cos(iExtra.x);
 
     vec4 pos = vec4(Position.xy * mat2(c, -s, s, c), Position.z, 1);
+    pos = vec4((pos.xy - 0.5) * 1.005 + 0.5, pos.zw);
     pos.xyz += iPosition;
     
     output1.BaseUV = BaseUV;

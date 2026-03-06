@@ -48,8 +48,9 @@ void main() {
     int verId = gl_VertexID % 6;
     
     InstanceData data = instanceBuffer.data[instanceId];
-    
+
     vec4 inputPosition = vec4(tilePos[verId], 0, 1);
+    inputPosition.xy = (inputPosition.xy - 0.5) * 1.002 + 0.5;
     inputPosition.xy += data.Position.xy;
     gl_Position = inputPosition * WorldMatrix * ViewMatrix * ProjMatrix;
 
