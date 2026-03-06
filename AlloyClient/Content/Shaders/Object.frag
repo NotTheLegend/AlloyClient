@@ -65,15 +65,18 @@ vec4 GetGameObject() {
     vec2 dx = dFdx(uv);
     vec2 dy = dFdy(uv);
     vec4 color = textureGrad(GameTexture, uv, dx, dy);
+    color.rgb -= vsInput.Extra.Shade * 0.241 * clamp(vsInput.BaseUV.y - 0.4, 0.0, 0.4);
     if (RenderPass == OpaquePass){
-        if (color.a > 0.0){
-            color.rgb -= vsInput.Extra.Shade * 0.241 * clamp(vsInput.BaseUV.y - 0.4, 0.0, 0.4);
-            return color;
+        if (color.a < 1.0 || vsInput.Extra.Alpha < 1.0){
+            discard;
         }
-        discard;
+        return color;
     }
 
-    if (color.a > 0.0){
+    if (color.a >= 1.0){
+        if (vsInput.Extra.Alpha < 1.0){
+            return color;
+        }
         discard;
     }
 

@@ -313,8 +313,9 @@ public class Entity {
                     }
                     InventoryUpdate.Dispatch(index);
                     break;
-                case StatsType.Effects:
+                case StatsType.Condition1:
                     ConditionEffects = (ConditionEffects)stat.Value;
+                    RenderBaseType.Extra.Alpha = HasConditionEffect(ConditionEffects.Invisible) ? 0.5f : 1;
                     break;
                 case StatsType.Name:
                     Name = stat.Text;
