@@ -35,7 +35,7 @@ public class TypeBar : SubRenderBase {
     public override void Draw(float yOffset) {
         _bgScale.W = yOffset;
         Scale.W = yOffset;
-        Render.DrawEntity(new VertexObject(Parent.Position, UV, _bgScale, Rotation, Extra.Data, _bgColor));
         Render.DrawEntity(new VertexObject(Parent.Position, UV, Scale, Rotation, Extra.Data, Color));
+        Render.DrawEntity(new VertexObject(Parent.Position, UV, _bgScale, Rotation, Extra.Data, _bgColor));
     }
 }

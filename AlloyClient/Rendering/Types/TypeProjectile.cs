@@ -46,7 +46,7 @@ public sealed class TypeProjectile : RenderBase {
         var k = Size / 100f;
         Rotation = new Vector4(s, c, k, -1f);
         
-        Render.DrawEntity(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color), true); // TODO: proj outline toggle?
+        Render.DrawEntity(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color));
     }
 
     public override void DrawShadow() {

@@ -26,7 +26,7 @@ uniform float Zoom;
 uniform int RenderPass; // 0 = opaque, 1 = transparent
 
 const int OpaquePass = 0;
-const int TransparentPass = 1;
+const int OutlineGlowPass = 1;
 
 const float TypeGameObject = 0.0;
 const float TypeText = 3.0;
