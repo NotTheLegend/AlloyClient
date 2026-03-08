@@ -150,23 +150,6 @@ public static class Map {
 
         #endregion
 
-        //TODO: use tile shader for these
-        /* #region GroundObjects
-
-        if (EntityStorage.TryGetValue(ModelType.PbTile, out var ground)) {
-            Render.StartDrawEntity();
-            Render.SetEntityModel(ModelType.PbTile);
-
-            foreach (var type in ground) {
-                if (type.Visible)
-                    type.Draw();
-            }
-
-            Render.FlushBufferEntity();
-        }
-
-        #endregion */
-
         #region Shadows
 
         if (EntityStorage.TryGetValue(ModelType.PbObject, out var go)) {
