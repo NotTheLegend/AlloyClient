@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using AlloyClient.Assets;
 using AlloyClient.State;
 using AlloyClient.Utils;
@@ -14,6 +15,7 @@ public static class Program {
         
         AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+        // CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
         Settings.LoadSettings();
         
