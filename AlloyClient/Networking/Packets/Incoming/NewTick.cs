@@ -7,28 +7,29 @@ using Common;
 namespace AlloyClient.Networking.Packets.Incoming;
 
 public class NewTick : IncomingPacket<NewTick> {
-    public int TickId;
-    public int TickTime;
-    public ObjectStats[] ObjectStats;
-
+    
     public override PacketId PacketId => PacketId.NewTick;
+    
+    private static ObjectStats[] _statsBuffer = new ObjectStats[256];
+    public int ObjectStatsCount;
+    public ObjectStats[] ObjectStats => _statsBuffer;
 
     public override void Reset() {
-        TickId = 0;
-        TickTime = 0;
-        ObjectStats = null;
+        ObjectStatsCount = 0;
     }
 
     public override void Read(NetworkReader reader) {
-        //TickId = reader.ReadInt32();
-        //TickTime = reader.ReadInt32();
+        Structs.DataObjects.ObjectStats.StatsPoolIndex = 0;
+        
+        ObjectStatsCount = reader.ReadInt16();
+        EnsureCapacity(ref _statsBuffer, ObjectStatsCount);
+        for (int i = 0; i < ObjectStatsCount; i++)
+            _statsBuffer[i].Read(reader);
+    }
 
-        ObjectStats = new ObjectStats[reader.ReadInt16()];
-
-        for (var i = 0; i < ObjectStats.Length; i++) {
-            ObjectStats[i] = new ObjectStats();
-            ObjectStats[i].Read(reader);
-        }
+    private static void EnsureCapacity<T>(ref T[] array, int needed) {
+        if (array.Length < needed)
+            array = new T[needed * 2];
     }
 
     public override void Handle() {
@@ -48,11 +49,8 @@ public class NewTick : IncomingPacket<NewTick> {
             Map.LocalPlayer.OnMove();
         }
 
-        foreach (var stats in ObjectStats) {
-            ProcessObjectStats(stats, isLocalPlayer);
-        }
-
-        Map.LastTickId = TickId;
+        for (int i = 0; i < ObjectStatsCount; i++)
+            ProcessObjectStats(_statsBuffer[i], isLocalPlayer);
     }
 
     private void ProcessObjectStats(ObjectStats stats, bool isPlayer) {
@@ -60,12 +58,12 @@ public class NewTick : IncomingPacket<NewTick> {
             Logger.Warn($"[NewTick] Unable to lookup id: {stats.Id}");
             return;
         }
-        en.UpdateStats(stats.Stats);
+        en.UpdateStats(Structs.DataObjects.ObjectStats.StatsPool, stats.StatOffset, stats.StatCount);
 
-        en.OnTickPosition(stats.Position.X, stats.Position.Y, TickTime, TickId, isPlayer);
+        en.OnTickPosition(stats.Position.X, stats.Position.Y, 0, 0, isPlayer);
     }
 
     public override string ToString() {
-        return $"TickId: {TickId}, TickTime: {TickTime}, ObjectStats: {ObjectStats}";
+        return $"ObjectStats: {ObjectStats}";
     }
 }

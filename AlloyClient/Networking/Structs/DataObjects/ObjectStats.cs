@@ -1,16 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace AlloyClient.Networking.Structs.DataObjects;
 
 public struct ObjectStats : IDataObject {
     public int Id;
     public Position Position;
-    public List<StatData> Stats;
+    public int StatOffset;
+    public int StatCount;
+    
+    public static StatData[] StatsPool = new StatData[4096];
+    public static int StatsPoolIndex = 0; // resets each packet
 
     public void Reset() {
         Id = 0;
         Position.Reset();
-        Stats = null;
+        StatOffset = 0;
+        StatCount = 0;
     }
 
     public void Read(NetworkReader reader) {
@@ -18,27 +24,28 @@ public struct ObjectStats : IDataObject {
         Position.Read(reader);
 
         var len = reader.ReadByte();
-        Stats = new List<StatData>(len);
+        StatOffset = StatsPoolIndex;
+        StatCount = len;
 
-        for (var i = 0; i < len; i++) {
-            var statData = new StatData();
-            statData.Read(reader);
-            Stats.Add(statData);
-        }
+        if (StatsPoolIndex + len > StatsPool.Length)
+            Array.Resize(ref StatsPool, (StatsPoolIndex + len) * 2);
+
+        for (int i = 0; i < len; i++)
+            StatsPool[StatsPoolIndex++].Read(reader);
     }
 
     public void Write(NetworkWriter writer) {
         writer.Write(Id);
         Position.Write(writer);
 
-        writer.Write((byte)Stats.Count);
+        writer.Write((byte)StatCount);
 
-        foreach (var statData in Stats) {
-            statData.Write(writer);
+        for (var i = 0; i < StatCount; i++) {
+            StatsPool[StatOffset + i].Write(writer);
         }
     }
 
     public override string ToString() {
-        return $"Id: {Id}, Position: {Position}, Stats: {Stats}";
+        return $"Id: {Id}, Position: {Position}";
     }
 }

@@ -1,4 +1,5 @@
-﻿using AlloyClient.Assets.Libraries;
+﻿using System.Collections.Concurrent;
+using AlloyClient.Assets.Libraries;
 using AlloyClient.Game;
 using AlloyClient.Game.Objects;
 using AlloyClient.Networking.Packets.Outgoing;
@@ -9,49 +10,59 @@ using Common;
 namespace AlloyClient.Networking.Packets.Incoming;
 
 public class Update : IncomingPacket<Update> {
-    public TileData[] Tiles;
-    public ObjectDef[] NewObjs;
-    public int[] Drops;
-
+    
     public override PacketId PacketId => PacketId.Update;
+    
+    private static TileData[]  _tilesBuffer   = new TileData[256];
+    private static ObjectDef[] _newObjsBuffer = new ObjectDef[256];
+    private static int[]       _dropsBuffer   = new int[256];
+
+    public int TileCount;
+    public int NewObjCount;
+    public int DropCount;
+
+    public TileData[]  Tiles   => _tilesBuffer;
+    public ObjectDef[] NewObjs => _newObjsBuffer;
+    public int[]       Drops   => _dropsBuffer;
 
     public override void Reset() {
-        Tiles = null;
-        NewObjs = null;
-        Drops = null;
+        TileCount = NewObjCount = DropCount = 0;
     }
 
     public override void Read(NetworkReader reader) {
-        Tiles = new TileData[reader.ReadInt16()];
+        ObjectDef.StatsPoolIndex = 0;
+        
+        TileCount = reader.ReadInt16();
+        EnsureCapacity(ref _tilesBuffer, TileCount);
+        for (int i = 0; i < TileCount; i++)
+            _tilesBuffer[i].Read(reader);
 
-        for (var i = 0; i < Tiles.Length; i++) {
-            Tiles[i] = new TileData();
-            Tiles[i].Read(reader);
+        NewObjCount = reader.ReadInt16();
+        EnsureCapacity(ref _newObjsBuffer, NewObjCount);
+        for (int i = 0; i < NewObjCount; i++)
+            _newObjsBuffer[i].Read(reader);
+
+        DropCount = reader.ReadInt16();
+        EnsureCapacity(ref _dropsBuffer, DropCount);
+        for (int i = 0; i < DropCount; i++) {
+            _dropsBuffer[i] = reader.ReadInt32();
+            _ = reader.ReadBoolean();
         }
-
-        NewObjs = new ObjectDef[reader.ReadInt16()];
-
-        for (var i = 0; i < NewObjs.Length; i++) {
-            NewObjs[i] = new ObjectDef();
-            NewObjs[i].Read(reader);
-        }
-
-        Drops = new int[reader.ReadInt16()];
-
-        for (var i = 0; i < Drops.Length; i++) {
-            Drops[i] = reader.ReadInt32();
-            _ = reader.ReadBoolean();//todo: expelode?
-        }
+    }
+    
+    private static void EnsureCapacity<T>(ref T[] array, int needed) {
+        if (array.Length < needed)
+            array = new T[needed * 2]; // double to avoid frequent resizes
     }
 
     public override void Handle() {
         Client.QueuePacket(UpdateAck.CreatePacket());
 
-        foreach (var tile in Tiles) {
-            Map.SetTileData(tile.X, tile.Y, tile.Type);
-        }
+        for (int i = 0; i < TileCount; i++)
+            Map.SetTileData(Tiles[i].X, Tiles[i].Y, Tiles[i].Type);
 
-        foreach (var newObj in NewObjs) {
+        for (int i = 0; i < NewObjCount; i++) {
+            var newObj = NewObjs[i];
             Entity entity;
 
             if (!ObjectLibrary.TypeToObjectProps.TryGetValue(newObj.ObjectType, out var props)) {
@@ -80,7 +91,7 @@ public class Update : IncomingPacket<Update> {
 
             entity.SetPos(newObj.Position.X, newObj.Position.Y);
 
-            entity.UpdateStats(newObj.Stats);
+            entity.UpdateStats(ObjectDef.StatsPool, newObj.StatOffset, newObj.StatCount);
             entity.OnTickPosition(newObj.Position.X, newObj.Position.Y, 0, 0, props.IsPlayer);
 
             if (newObj.Id == Map.LocalPlayerId) {
@@ -88,9 +99,8 @@ public class Update : IncomingPacket<Update> {
             }
         }
 
-        foreach (var dropId in Drops) {
-            Map.RemoveEntity(dropId);
-        }
+        for (int i = 0; i < DropCount; i++)
+            Map.RemoveEntity(Drops[i]);
     }
 
     public override string ToString() {

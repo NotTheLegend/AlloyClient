@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace AlloyClient.Networking.Structs.DataObjects;
 
@@ -6,13 +7,18 @@ public struct ObjectDef : IDataObject {
     public ushort ObjectType;
     public int Id;
     public Position Position;
-    public List<StatData> Stats;
+    public int StatOffset; // where in StatsPool this entity's stats begin
+    public int StatCount;
+    
+    public static StatData[] StatsPool = new StatData[4096];
+    public static int StatsPoolIndex = 0; // resets each packet
 
     public void Reset() {
         ObjectType = 0;
         Id = 0;
         Position.Reset();
-        Stats = null;
+        StatOffset = 0;
+        StatCount = 0;
     }
 
     public void Read(NetworkReader reader) {
@@ -21,13 +27,14 @@ public struct ObjectDef : IDataObject {
         Position.Read(reader);
 
         var len = reader.ReadByte();
-        Stats = new List<StatData>(len);
+        StatOffset = StatsPoolIndex;
+        StatCount = len;
 
-        for (var i = 0; i < len; i++) {
-            var statData = new StatData();
-            statData.Read(reader);
-            Stats.Add(statData);
-        }
+        if (StatsPoolIndex + len > StatsPool.Length)
+            Array.Resize(ref StatsPool, (StatsPoolIndex + len) * 2);
+
+        for (int i = 0; i < len; i++)
+            StatsPool[StatsPoolIndex++].Read(reader);
     }
 
     public void Write(NetworkWriter writer) {
@@ -35,14 +42,14 @@ public struct ObjectDef : IDataObject {
         writer.Write(Id);
         Position.Write(writer);
 
-        writer.Write((short)Stats.Count);
+        writer.Write((short)StatCount);
 
-        foreach (var statData in Stats) {
-            statData.Write(writer);
+        for (var i = 0; i < StatCount; i++) {
+            StatsPool[StatOffset + i].Write(writer);
         }
     }
 
     public override string ToString() {
-        return $"ObjectType: {ObjectType}, Id: {Id}, Position: {Position}, Stats: {Stats}";
+        return $"ObjectType: {ObjectType}, Id: {Id}, Position: {Position}";
     }
 }

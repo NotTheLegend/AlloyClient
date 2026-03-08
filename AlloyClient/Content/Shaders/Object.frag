@@ -105,7 +105,8 @@ vec4 GetGameObject() {
     int glowSizeInt = int(glowSize);
     int outlineSizeInt = int(outlineSize);
 
-    for (int i = 1; i <= glowSizeInt && !foundOutline; i++) {
+    int stepSize = int(ceil(Zoom * 2));
+    for (int i = 1; i <= glowSizeInt && !foundOutline; i += stepSize) {
         if (i > outlineSizeInt && belowTexel) {
             discard;
         }
