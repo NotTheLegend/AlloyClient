@@ -50,8 +50,12 @@
         <Message Text="Restoring dotnet tools" Importance="High" />
         <Exec Command="dotnet tool restore" />
     </Target>
-    
+
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="$(SolutionDir)\ContentBuilder\bin\ContentBuilder.exe $(ProjectDir) $(TargetDir) &quot;Content&quot;" />
+        <Exec Condition="$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))"
+              Command="$(SolutionDir)\ContentBuilder\bin\ContentBuilder.exe $(ProjectDir) $(TargetDir) &quot;Content&quot;" />
+
+        <Exec Condition="$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))"
+              Command="$(SolutionDir)/ContentBuilder/bin/ContentBuilder $(ProjectDir) $(TargetDir) &quot;Content&quot;" />
     </Target>
 </Project>

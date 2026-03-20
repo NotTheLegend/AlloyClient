@@ -11,10 +11,12 @@ public static class FontBuilder {
 
     private static string _genPath;
 
+    private static bool _notWindows;
+
     public static void Process(FolderSettings settings, Paths paths) {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-            Console.WriteLine("SKIPPING FONTS, NON SUPPORTED OS USED");
-            return;
+            Console.WriteLine("User is not using Windows. Running required executables through Wine.");
+            _notWindows = true;
         }
         
         Init();
@@ -28,8 +30,8 @@ public static class FontBuilder {
     
     public static void Process(FileSettings settings, Paths paths) {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-            Console.WriteLine("SKIPPING FONTS, NON SUPPORTED OS USED");
-            return;
+            Console.WriteLine("User is not using Windows. Running required executables through Wine.");
+            _notWindows = true;
         }
         
         Init();
@@ -108,11 +110,22 @@ public static class FontBuilder {
 
         args += $" -type mtsdf -charset \"{charsetPath}\" -imageout \"{atlasPath}\" -dimensions 4096 4096 -size 64 -pxrange {outlineSize} -json \"{jsonPath}\" -yorigin top";
         
-        var startInfo = new ProcessStartInfo(_genPath) {
-            UseShellExecute = false,
-            RedirectStandardOutput = true,
-            Arguments = args
-        };
+        
+        ProcessStartInfo startInfo;
+        if (_notWindows) {
+            startInfo = new ProcessStartInfo("wine") {
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                Arguments = _genPath + " " + args
+            };
+        } else {
+            startInfo = new ProcessStartInfo(_genPath) {
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                Arguments = args
+            };
+        }
+
         var process = System.Diagnostics.Process.Start(startInfo);
         if (process == null) {
             throw new InvalidOperationException("Could not start msdf-atlas-gen.exe");
