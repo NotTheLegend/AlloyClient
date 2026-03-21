@@ -48,7 +48,6 @@ public static partial class Render {
     private static VertexObject[] _entityData;
     private static StorageBuffer<VertexObject> _entityDataBuffer;
     
-
     public static unsafe void FirstTimeInit(Sampler atlas) {
         // Shaders
         _shaderGround = ContentReader.LoadShader("Shaders/Ground", TileDefines);

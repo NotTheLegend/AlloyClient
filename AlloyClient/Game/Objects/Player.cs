@@ -187,12 +187,13 @@ public class Player : Entity {
         return true;
     }
 
-    public override void UpdateStats(List<StatData> statData) {
-        base.UpdateStats(statData);
+    public override void UpdateStats(StatData[] statData, int offset, int count) {
+        base.UpdateStats(statData, offset, count);
 
         #region Parse StatData
 
-        foreach (var stat in statData) {
+        for (var i = 0; i < count; i++) {
+            var stat = statData[offset + i];
             switch (stat.Type) {
                 case StatsType.MaximumMp:
                     MaxMp = stat.Value;
@@ -264,7 +265,8 @@ public class Player : Entity {
                     FameGoal = stat.Value;
                     break;
                 case StatsType.Guild:
-                    Guild = stat.Text;
+                    if (Guild != stat.Text)
+                        Guild = string.Intern(stat.Text);
                     break;
                 case StatsType.GuildRank:
                     GuildRank = stat.Value;

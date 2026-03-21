@@ -167,7 +167,7 @@ public static class AtlasBuilder {
         var adList = new AtlasData[len];
         for (var i = 0; i < len; i++) {
             var curSrcX = i * cutWidth % image.Width;
-            var curSrcY = i * cutHeight / image.Width * cutHeight;
+            var curSrcY = i * cutWidth / image.Width * cutHeight;
 
             if (CutHaveData(image, curSrcX, curSrcY, cutWidth, cutHeight)) {
                 rectList[i].w = cutWidth + Padding * 2;
@@ -203,7 +203,7 @@ public static class AtlasBuilder {
             var curAtlasX = rect.x + Padding;
             var curAtlasY = rect.y + Padding;
             var curSrcX = i * cutWidth % image.Width;
-            var curSrcY = i * cutHeight / image.Width * cutHeight;
+            var curSrcY = i * cutWidth / image.Width * cutHeight;
             var colorCounts = new Dictionary<Color, int>();
 
             for (var j = 0; j < cutSize; j++) {

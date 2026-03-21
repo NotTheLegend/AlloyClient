@@ -14,26 +14,17 @@ in GROUND_OUTPUT {
 
 out vec4 FragColor;
 
-float map(float value, float newMin, float newMax) {
-    float val = abs(mod((value + 1), 1.0)) * (newMax - newMin) + newMin;
-    return clamp(val, newMin, newMax);
-}
-
-vec2 map(vec2 values, vec2 newMins, vec2 newMaxs) {
-    return vec2(map(values.x, newMins.x, newMaxs.x), map(values.y, newMins.y, newMaxs.y));
-}
-
 void main() {
-    vec2 uv = map(vsInput.coreUV, vsInput.UV.xy, vsInput.UV.xy + vsInput.UV.zw);
-    vec2 dx = dFdx(uv);
-    vec2 dy = dFdy(uv);
-    vec4 ogColor = textureGrad(GameTexture, uv, dx, dy);
-    
-    if (vsInput.Mask.x > -1.0){
-        vec2 maskCoords = map(vsInput.baseUV, vsInput.Mask.xy, vsInput.Mask.xy + vsInput.Mask.zw);
-        vec2 mdx = dFdx(maskCoords);
-        vec2 mdy = dFdy(maskCoords);
-        float alpha = textureGrad(GameTexture, maskCoords, mdx, mdy).a;
+    vec2 tileTexelSize = round(vsInput.UV.zw * 4096.0);
+    vec2 tileTexelOrigin = round(vsInput.UV.xy * 4096.0);
+    vec2 wrappedTexels = floor(fract(vsInput.coreUV) * tileTexelSize);
+    vec4 ogColor = texture(GameTexture, (tileTexelOrigin + wrappedTexels + 0.5) / 4096.0);
+
+    if (vsInput.Mask.x > -1.0) {
+        vec2 maskTexelSize = round(vsInput.Mask.zw * 4096.0);
+        vec2 maskTexelOrigin = round(vsInput.Mask.xy * 4096.0);
+        vec2 maskTexels = floor(vsInput.baseUV * maskTexelSize);
+        float alpha = texture(GameTexture, (maskTexelOrigin + maskTexels + 0.5) / 4096.0).a;
         ogColor.a = alpha;
     }
 

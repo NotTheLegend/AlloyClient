@@ -275,8 +275,9 @@ public class Entity {
         }
     }
 
-    public virtual void UpdateStats(List<StatData> statData) {
-        foreach (var stat in statData) {
+    public virtual void UpdateStats(StatData[] statData, int offset, int count) {
+        for (var i = 0; i < count; i++) {
+            var stat = statData[offset + i];
             switch (stat.Type) {
                 case StatsType.MaximumHp:
                     MaxHp = stat.Value;
@@ -313,12 +314,15 @@ public class Entity {
                     }
                     InventoryUpdate.Dispatch(index);
                     break;
-                case StatsType.Effects:
+                case StatsType.Condition1:
                     ConditionEffects = (ConditionEffects)stat.Value;
+                    RenderBaseType.Extra.Alpha = HasConditionEffect(ConditionEffects.Invisible) ? 0.5f : 1;
                     break;
                 case StatsType.Name:
-                    Name = stat.Text;
-                    RenderBaseType.SetName(stat.Text);
+                    if (Name != stat.Text) {
+                        Name = string.Intern(stat.Text);
+                        RenderBaseType.SetName(stat.Text);
+                    }
                     break;
                 case StatsType.Texture1:
                     if (stat.Value == Texture1Id) {

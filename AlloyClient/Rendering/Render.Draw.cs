@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using AlloyClient.Assets;
 using AlloyClient.Rendering.VertexData;
+using Common;
 using OpenTK.Graphics.OpenGL;
 
 namespace AlloyClient.Rendering;
@@ -139,13 +141,27 @@ public static partial class Render {
     }
 
     public static void FlushBufferEntity() {
-        if (_entityCount < 1) {
-            return;
-        }
-        
+        if (_entityCount < 1) return;
+
+        // Pass 1: opaque pixels only — depth writes ON, no blend
         _entityDataBuffer.SetData(_entityData.AsSpan(0, _entityCount));
         
+        GL.DepthMask(true);
+        GL.DepthFunc(DepthFunction.Less);
+        GL.Disable(EnableCap.Blend);
+        _shaderObject.SetValue("RenderPass", 0);
         GL.DrawArrays(PrimitiveType.Triangles, 0, _entityCount * 6);
+
+        // Pass 2: glow/outline pixels only — depth writes OFF, test still rejects hidden glows
+        GL.DepthMask(false);
+        GL.DepthFunc(DepthFunction.Lequal);
+        GL.Enable(EnableCap.Blend);
+        _shaderObject.SetValue("RenderPass", 1);
+        GL.DrawArrays(PrimitiveType.Triangles, 0, _entityCount * 6);
+
+        // Restore
+        GL.DepthMask(true);
+
         _entityCount = 0;
     }
 

@@ -6,6 +6,10 @@ uniform mat4 WorldMatrix;
 uniform mat4 ViewMatrix;
 uniform mat4 ProjMatrix;
 uniform mat4 BillMatrix;
+uniform int RenderPass;
+
+const int OpaquePass = 0;
+const int OutlineGlowPass = 1;
 
 const vec2 objPos[6] = vec2[6](
     vec2(-0.5, 0.5),
@@ -95,6 +99,11 @@ void main() {
     int verId = gl_VertexID % 6;
 
     InstanceData data = instanceBuffer.data[instanceId];
+
+    if (RenderPass == OutlineGlowPass && data.Extra.Type != TypeGameObject){
+        gl_Position = vec4(2, 0, 0, 0); // Discard vertex
+        return;
+    }
 
     vec4 position = vec4(objPos[verId], 0, 1);
     position.xy *= data.Scale.xy;
