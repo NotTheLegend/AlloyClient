@@ -1,4 +1,5 @@
 ﻿#version 460 core
+precision highp float;
 
 struct extra {
     float Type;
@@ -97,7 +98,6 @@ vec4 GetGameObject() {
     dx + dy,  dy, -dx + dy, -dx
     );
 
-    // Hoisted out — does not depend on i or j
     bool belowTexel = (uvMax.y - uv.y + outlineSize * pxH) * 4096.0 < 1.0;
 
     bool foundOutline = false;
@@ -127,7 +127,6 @@ vec4 GetGameObject() {
                 continue;
             }
 
-            // Multiply instead of divide for texel->UV conversion
             vec2 nearestPoint = clamp(uv,
             vec2(neighborTexel)            * INV_TEX_SIZE,
             vec2(neighborTexel + ivec2(1)) * INV_TEX_SIZE);

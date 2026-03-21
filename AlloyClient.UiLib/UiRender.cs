@@ -49,7 +49,7 @@ public static class UiRender {
         
         EventQueue.EventRaised += HandleEvents;
 
-        UiShader = ContentReader.LoadShader("shaders/Ui");
+        UiShader = ContentReader.LoadShader("Shaders/Ui");
         
         SpriteRender.Init();
         
@@ -125,7 +125,6 @@ public static class UiRender {
         
         switch (args) {
             case KeyDownEventArgs e:
-                if (e.IsRepeat) break;
                 KeyboardInput.SetKeyDown(e);
                 break;
             case KeyUpEventArgs e:
