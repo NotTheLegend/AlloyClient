@@ -15,7 +15,7 @@ using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Objects;
 
-public sealed class Projectile {
+public sealed class Projectile : IResettable {
 
     private const double HitTestDelayMs = 16;
     
@@ -74,7 +74,28 @@ public sealed class Projectile {
         RenderBaseType.SetSize(Size);
         RenderBaseType.SetTexture(GetTexture());
     }
-    
+
+    public bool IsInPool { get; set; }
+
+    public void Reset() {
+        _bulletId = 0;
+        _damage = 0;
+        _angle = 0f;
+        _ownerId = 0;
+        _damagePlayers = false;
+        _objDesc = null;
+        _projDesc = null;
+        _startTime = 0;
+        _lastHitTest = 0;
+        _angleCorrection = 0f;
+        _startPosition = Vector2.Zero;
+        _position = Vector2.Zero;
+        _hitEntities.Clear();
+        Rotation = 0f;
+        Size = 0;
+        RenderBaseType = null;
+    }
+
     public AtlasData GetTexture() {
         var textureData = ObjectLibrary.TypeToTextureData[_objDesc.ObjectType];
         return textureData.HasAnimationData ? textureData.AnimatedTextures.FaceRight[0] : textureData.GetTexture();
