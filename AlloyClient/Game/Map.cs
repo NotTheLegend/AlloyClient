@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using AlloyClient.Assets;
 using AlloyClient.Game.Components;
 using AlloyClient.Game.Components.Hud;
@@ -11,7 +10,6 @@ using AlloyClient.Rendering;
 using AlloyClient.Rendering.Types;
 using AlloyClient.Rendering.VertexData;
 using AlloyClient.UiLib.Signals;
-using AlloyClient.Utils;
 using Common;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
@@ -104,8 +102,9 @@ public static class Map {
             var proj = Projectiles[i];
             if (proj.Update(time, dt, matrix))
                 continue;
-            ObjectPools.Projectiles.Push(proj);
+            
             EntityStorage.Remove(proj);
+            ObjectPools.Projectiles.Push(proj);
 
             var idx = Projectiles.Count - 1;
             Projectiles[i] = Projectiles[idx];
@@ -239,6 +238,8 @@ public static class Map {
         }
     }
 
+    private static readonly MapTile[] RebuildData = new MapTile[9];
+
     public static void SetTileData(int x, int y, ushort type) {
         var tile = GetTile(x, y);
         if (tile == null) {
@@ -246,6 +247,25 @@ public static class Map {
         }
 
         tile.SetType(type);
+        
+        for (var y1 = y - 1; y1 <= y + 1; y1++){
+            for (var x1 = x - 1; x1 <= x + 1; x1++) {
+                RebuildTile(GetTile(x1, y1));
+            }
+        }
+        
+        Array.Clear(RebuildData);
+    }
+
+    private static void RebuildTile(MapTile tile) {
+        var idx = 0;
+        for (var y1 = tile.Y - 1; y1 <= tile.Y + 1; y1++){
+            for (var x1 = tile.X - 1; x1 <= tile.X + 1; x1++) {
+                RebuildData[idx++] = GetTile(x1, y1);
+            }
+        }
+        
+        tile.Rebuild(RebuildData);
     }
 
     public static void AddParticleEffect(ParticleEffect effect) {

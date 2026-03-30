@@ -82,6 +82,10 @@ public sealed class TextureData {
     public AtlasData? EditorTexture;
     public Color DominantColor = Color.Transparent;
 
+    public TextureData EdgeTexture;
+    public TextureData CornerTexture;
+    public TextureData InnerCornerTexture;
+
     public TextureData(XElement xml) {
         if (xml.GetElement("Texture", out var elem)) {
             Texture = Main.Atlas.GetAtlasData(elem.GetValue<string>("File"), (int) elem.GetValue<uint>("Index"));
@@ -118,6 +122,18 @@ public sealed class TextureData {
 
         if (xml.GetElement("EditorTexture", out elem)) {
             EditorTexture = Main.Atlas.GetAtlasData(elem.GetValue<string>("File"), elem.GetValue<int>("Index"));
+        }
+
+        if (xml.GetElement("Edge", out elem)) {
+            EdgeTexture = new TextureData(elem);
+        }
+        
+        if (xml.GetElement("Corner", out elem)) {
+            CornerTexture = new TextureData(elem);
+        }
+        
+        if (xml.GetElement("InnerCorner", out elem)) {
+            InnerCornerTexture = new TextureData(elem);
         }
     }
 

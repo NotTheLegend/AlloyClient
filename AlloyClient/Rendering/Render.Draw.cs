@@ -24,10 +24,11 @@ public static partial class Render {
         LastDrawCountTiles = 0;
         _tileCount = 0;
     }
-
-    public static void DrawNewTile(TileData data) {
-        _tileData[_tileCount] = data;
-        _tileCount++;
+    
+    public static void DrawTiles(ReadOnlySpan<TileData> data) {
+        var span = new Span<TileData>(_tileData, _tileCount, data.Length);
+        data.CopyTo(span);
+        _tileCount += data.Length;
     }
 
     public static void EndNewDrawTile() {
