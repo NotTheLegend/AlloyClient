@@ -66,7 +66,6 @@ public static partial class Render {
         _shaderObject.SetValue("TextTexture", UiRender.MyriadPro.Sampler);
 
         _shaderParticle = ContentReader.LoadShader("Shaders/Particle");
-        _shaderParticle.SetValue("GameTexture", atlas);
         
         _defaultVao = new VertexArrayObject();
         
