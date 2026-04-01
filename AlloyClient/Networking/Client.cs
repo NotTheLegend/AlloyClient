@@ -22,6 +22,48 @@ public enum ConnectionState {
     Connected
 }
 
+public class SocketSendState {
+    public NetworkWriter Writer { get; private set; }
+    public MemoryStream Stream { get; private set; }
+    public byte[] SocketBuffer { get; private set; } = new byte[Client.SEND_BUFFER_SIZE];
+    public int LastValidIndex { get; set; } // End position of the packet that still fits within buffer size
+    public int Offset { get; set; }
+
+    public SocketSendState() {
+        Stream = new MemoryStream();
+        Writer = new NetworkWriter(Stream);
+    }
+
+    public int
+        PacketBegin() // Returns the start of the packet bytes in the buffer. NEVER use this without locking the SocketSendState instance
+    {
+        var begin = (int)Stream.Position;
+        Stream.Position += 5; // Leave 5 bytes for the header
+        return begin;
+    }
+
+    public void PacketEnd(int begin, PacketId pkt) {
+        var length = (int)Stream.Position - begin;
+        Stream.Position -= length; // Write the header [length][id]
+        Writer.Write(length);
+        Writer.Write((byte)pkt);
+        Stream.Position += length - 5; // Go to the next position after packet body to write the next packet
+
+        if (Stream.Position - Offset < Client.SEND_BUFFER_SIZE)
+            LastValidIndex = (int)Stream.Position;
+
+        //Logger.Debug($"WRITING {pkt} DATA TO BUFFER");
+    }
+
+    public void Reset() {
+        lock (this) {
+            LastValidIndex = 0;
+            Offset = 0;
+            Stream.SetLength(0);
+        }
+    }
+}
+
 public static class Client {
     public const int RECV_BUFFER_SIZE = 0x40000;
     public const int SEND_BUFFER_SIZE = 0x10000;
@@ -34,28 +76,29 @@ public static class Client {
 
     public static bool IsReconnecting;
 
-    private static readonly SocketAsyncEventArgs _receiveSAEA;
-    private static readonly SocketReceiveState _receiveState;
-    private static readonly SocketAsyncEventArgs _sendSAEA;
-    private static readonly SocketSendState _sendState;
-    
+    public static readonly SocketSendState SendState = new();
+
+    private static readonly byte[] _readBuffer = new byte[RECV_BUFFER_SIZE];
+    private static readonly NetworkReader _reader = new NetworkReader(new MemoryStream(_readBuffer));
+    private static readonly SocketAsyncEventArgs _send = new();
+    private static readonly SocketAsyncEventArgs _receive = new();
     private static Socket _socket;
+    private static int _bytesRead;
     private static TcpClient _tcp;
+    private static bool _pendingSend;
 
     static Client() {
-        _sendState = new SocketSendState();
-        _receiveState = new SocketReceiveState();
-
-        _sendSAEA = new SocketAsyncEventArgs();
-        _sendSAEA.Completed += ProcessSend;
-
-        _receiveSAEA = new SocketAsyncEventArgs();
-        _receiveSAEA.Completed += ProcessReceive;
+        _receive.SetBuffer(_readBuffer, 0, RECV_BUFFER_SIZE);
+        _receive.Completed += ProcessReceive;
+        _send.SetBuffer(SendState.SocketBuffer, 0, SEND_BUFFER_SIZE);
+        _send.Completed += ProcessSend;
     }
 
     private static void Reset() {
-        _sendState.Reset();
-        _receiveState.Reset();
+        _bytesRead = 0;
+        _pendingSend = false;
+        _reader.BaseStream.Seek(0, SeekOrigin.Begin);
+        SendState.Reset();
     }
 
     public static async void Connect(string ip, ushort port) {
@@ -94,37 +137,32 @@ public static class Client {
 
         SendHello();
 
-        Task.Run(ReceiveLoop);
+        StartReceive();
     }
 
-    private static void ReceiveLoop()
-    {
-        while (true) {
-            if (State == ConnectionState.Disconnected || !_socket.Connected) {
-                Disconnect("Unknown");
-                return;
+    private static void StartReceive() {
+        if (State == ConnectionState.Disconnected || !_socket.Connected) {
+            Disconnect("Unknown");
+            return;
+        }
+
+        // Some exceptions from the SAEA.SetBuffer method and from the Socket.ReceiveAsync() method
+        // can't be avoided in certain situations, so a try-catch block is required.
+        try {
+            _receive.SetBuffer(_bytesRead, RECV_BUFFER_SIZE - _bytesRead);
+
+            if (!_socket.ReceiveAsync(_receive)) {
+                ProcessReceive(null, _receive);
             }
-
-            _receiveState.PrepareSAEA(_receiveSAEA);
-
-            if (_socket.ReceiveAsync(_receiveSAEA))
-                break;
-
-            if (!HandleReceive(_receiveSAEA))
-                break;
+        } catch {
+            // ignored
         }
     }
 
-    private static void ProcessReceive(object sender, SocketAsyncEventArgs args)
-    {
-        if (HandleReceive(args))
-            ReceiveLoop();
-    }
-    
-    private static bool HandleReceive(SocketAsyncEventArgs args) {
+    private static void ProcessReceive(object sender, SocketAsyncEventArgs args) {
         if (State == ConnectionState.Disconnected || !_socket.Connected) {
             Disconnect("Unknown");
-            return false;
+            return;
         }
 
         // Check for any errors during the operation
@@ -136,33 +174,54 @@ public static class Client {
             }
 
             Disconnect(msg);
-            return false;
+            return;
         }
 
-        if (args.BytesTransferred == 0) {
+        var bytesReceived = args.BytesTransferred;
+        if (bytesReceived == 0) {
             Disconnect("Remote host closed connection.");
-            return false;
+            return;
         }
         
-        Log.Debug($"RECEIVED {args.BytesTransferred} bytes");
-        _receiveState.OnDataReceived(args.BytesTransferred);
+        // Log.Debug("Reading...");
 
-        while (_receiveState.TryReadPacket(out var result))
-        {
-            var pktId = (PacketId)result.Item1;
-            try {
-                Log.Debug($"RECEIVING {pktId}");
-                var pkt = PacketUtils.CreateIncomingPacket(pktId);
-                pkt.Read(result.Item2);
-                IncomingQueue.Enqueue(pkt);
-            }
-            catch (Exception ex)
+        // Start reading a new packet
+        var bytesNotRead = bytesReceived;
+        while (bytesNotRead > 0) {
+            var start = (int)_reader.BaseStream.Position;
+
+            var length = _reader.ReadInt32(); // We always start reading from the beginning
+            // Log.Debug($"Start: {start} Length: {length} BytesNotRead: {bytesNotRead} BytesRead: {_bytesRead}");
+            
+            var read = Math.Min(length - _bytesRead, bytesNotRead); // Bytes read in this current iteration
+            _bytesRead += read;
+
+            if (_bytesRead < length) // This means we still have bytes to read that we haven't received in this call
             {
-                Log.Error($"Error handling message {pktId}: {ex.Message}");
+                Buffer.BlockCopy(_readBuffer, start, _readBuffer, 0,
+                    _bytesRead); // Move this many bytes to the beginning of the buffer
+                break;
             }
+
+            var packetId = (PacketId)_reader.ReadByte();
+            var pkt = PacketUtils.CreateIncomingPacket(packetId);
+            try {
+                // Log.Debug($"RECEIVING {packetId} ({_bytesRead} bytes)");
+                pkt.Read(_reader);
+                IncomingQueue.Enqueue(pkt);
+            } catch (Exception e) {
+                Log.Error(e.ToString());
+            }
+
+            _reader.BaseStream.Seek(start + _bytesRead, SeekOrigin.Begin); // In case we failed processing, go to the end of the packet
+            _bytesRead = 0;
+
+            bytesNotRead -= read;
         }
 
-        return true;
+        _reader.BaseStream.Seek(0, SeekOrigin.Begin);
+
+        StartReceive();
     }
 
     public static void Tick() {
@@ -177,15 +236,50 @@ public static class Client {
     }
 
     private static void SendPendingPackets() {
-        if (State == ConnectionState.Disconnected || !_socket.Connected) {
+        if (State == ConnectionState.Disconnected || _pendingSend) {
             return;
         }
 
-        if (_sendState.BeginSend()) {
-            _sendState.PrepareSAEA(_sendSAEA);
+        int count;
+        lock (SendState) {
+            if (SendState.LastValidIndex == 0) {
+                return;
+            }
 
-            if (!_socket.SendAsync(_sendSAEA))
-                ProcessSend(null, _sendSAEA);
+            count = SendState.LastValidIndex - SendState.Offset;
+
+            switch (count) {
+                case 0:
+                    return;
+                case >= SEND_BUFFER_SIZE:
+                    Log.Error($"Exceeded buffer size: {count} ({SEND_BUFFER_SIZE})");
+                    return;
+            }
+
+            var streamBuffer = SendState.Stream.GetBuffer();
+            Buffer.BlockCopy(streamBuffer, SendState.Offset, SendState.SocketBuffer, 0, count);
+
+            var pos = (int)SendState.Stream.Position;
+            if (SendState.LastValidIndex - pos == 0) // Emptied the stream
+            {
+                SendState.Stream.Position = 0;
+                SendState.LastValidIndex = 0;
+                SendState.Offset = 0;
+            } else {
+                SendState.Offset = SendState.LastValidIndex;
+                SendState.LastValidIndex = pos;
+            }
+        }
+
+        _pendingSend = true;
+        _send.SetBuffer(0, count);
+
+        try {
+            if (_socket != null && !_socket.SendAsync(_send)) {
+                ProcessSend(null, _send);
+            }
+        } catch {
+            // ignored
         }
     }
 
@@ -195,22 +289,29 @@ public static class Client {
             return;
         }
 
-        if (args.SocketError != SocketError.Success)
-        {
-            Disconnect($"Send Error: {args.SocketError}");
+        var error = args.SocketError;
+        if (error != SocketError.Success && error != SocketError.IOPending) {
+            string msg = null;
+            if (error != SocketError.ConnectionReset) {
+                msg = $"Send SocketError.{error}";
+            }
+
+            Disconnect(msg);
             return;
         }
 
-        _sendState.OnDataSent(args.BytesTransferred);
+        _pendingSend = false;
     }
 
     public static void QueuePacket(IOutgoingPacket pkt) {
         if (pkt.PacketId == PacketId.Unknown)
             return;
         
-        lock (_sendState) {
-            _sendState.WritePacket(pkt, (byte)pkt.PacketId);
-            Log.Debug($"SENDING {pkt.PacketId}");
+        lock (SendState) {
+            var begin = SendState.PacketBegin();
+            pkt.Write(SendState.Writer);
+            SendState.PacketEnd(begin, pkt.PacketId);
+            // Log.Debug($"SENDING {pkt.PacketId}");
         }
     }
 
@@ -222,6 +323,7 @@ public static class Client {
 
             _tcp?.Close();
             _socket?.Close();
+            _reader.BaseStream.Seek(0, SeekOrigin.Begin);
 
             Log.Info($"Disconnecting client {(message != null ? $"({message})" : "")}");
 
