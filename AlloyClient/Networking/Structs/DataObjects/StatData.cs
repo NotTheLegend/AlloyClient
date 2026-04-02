@@ -80,14 +80,14 @@ public struct StatData : IDataObject {
     {
         return type switch
         {
-            StatsType.CriticalChance => true,
-            StatsType.DodgeChance => true,
-            StatsType.CriticalChanceBonus => true,
-            StatsType.DodgeChanceBonus => true,
-            StatsType.AttackSpeed => true,
-            StatsType.AttackSpeedBonus => true,
-            StatsType.Speed => true,
-            StatsType.SpeedBonus => true,
+            // StatsType.CriticalChance => true,
+            // StatsType.DodgeChance => true,
+            // StatsType.CriticalChanceBonus => true,
+            // StatsType.DodgeChanceBonus => true,
+            // StatsType.AttackSpeed => true,
+            // StatsType.AttackSpeedBonus => true,
+            // StatsType.Speed => true,
+            // StatsType.SpeedBonus => true,
             _ => false
         };
     }
