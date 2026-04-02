@@ -2,33 +2,32 @@
 namespace AlloyClient.Game.Objects;
 
 public static class ObjectPools {
-
     public static readonly ObjectPool<Projectile> Projectiles = new();
 }
 
-public sealed class ObjectPool<T>(int capacity = 1000) where T : new() {
+// any object you want to pool needs to impliment this interface :p
+public interface IResettable {
+    void Reset();
+    bool IsInPool { get; set; }
+}
 
-    private readonly List<T> pool = [];
-
-    private int count;
-
-    public int GetCount() => count;
+public sealed class ObjectPool<T>(int initialCapacity = 1000) where T : IResettable, new() {
+    private readonly List<T> _pool = new(initialCapacity);
 
     public T Pop() {
-        if (count < 1)
-            return new T();
-
-        var obj = pool[0];
-        pool.RemoveAt(0);
-        count--;
+        if (_pool.Count < 1) return new T();
+        var obj = _pool[^1];
+        _pool.RemoveAt(_pool.Count - 1);
+        obj.IsInPool = false;
         return obj;
     }
 
     public void Push(T obj) {
-        if (count >= capacity)
-            return;
-        
-        pool.Add(obj);
-        count++;
+        if (obj.IsInPool) return;
+        obj.Reset();
+        obj.IsInPool = true;
+        _pool.Add(obj);
     }
+
+    public int Count => _pool.Count;
 }

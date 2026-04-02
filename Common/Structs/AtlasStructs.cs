@@ -1,12 +1,21 @@
-﻿using OpenTK.Mathematics;
+﻿using System.Runtime.InteropServices;
+using OpenTK.Mathematics;
 
 namespace Common.Structs;
 
-public struct AtlasData {
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct AtlasData : IEquatable<AtlasData> {
     public float U;
     public float V;
     public float W;
     public float H;
+
+    private AtlasData(float u, float v, float w, float h) {
+        U = u;
+        V = v;
+        W = w;
+        H = h;
+    }
 
     public static AtlasData FromRaw(int u, int v, int w, int h) {
         return new AtlasData {
@@ -28,6 +37,17 @@ public struct AtlasData {
         if (removePad) RemovePadding();
         return new Vector4(U, V, W, H);
     }
+
+    public AtlasData Rotate(int steps) {
+        steps = (steps % 4 + 4) % 4;
+        return steps switch {
+            0 => new AtlasData(U, V, W, H),
+            1 => new AtlasData(V + H, U, -H, W),
+            2 => new AtlasData(U + W, V + H, -W, -H),
+            3 => new AtlasData(V, U + W, H, -W),
+            _ => new AtlasData(U, V, W, H)
+        };
+    }
     
     public int RawU() {
         return (int)(U * AtlasConfig.AtlasWidth);
@@ -46,7 +66,7 @@ public struct AtlasData {
     }
 
     public static bool operator ==(AtlasData left, AtlasData right) {
-        return left.U == right.U && left.V == right.V && left.W == right.W && left.H == right.H;
+        return left.Equals(right);
     }
 
     public static bool operator !=(AtlasData left, AtlasData right) {

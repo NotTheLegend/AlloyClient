@@ -1,20 +1,20 @@
 ﻿#version 460 core
 
-uniform sampler2D GameTexture;
-
 out vec4 FragColor;
 
 in vec2 BaseUV;
 in vec4 Color;
 
-void main() {
-    // todo: improve outlines to new system
-    if (BaseUV.x < 0.1 || BaseUV.x > 0.9 || BaseUV.y < 0.1 || BaseUV.y > 0.9) {
-        FragColor = vec4(0, 0, 0, 1);
-    } else if (Color.w > -1) {
-        FragColor = texture(GameTexture, Color.xy);
-    } else {
-        FragColor = vec4(Color.xyz, 1);
-    }
-}
+const vec4 outline = vec4(0, 0, 0, 1);
 
+void main() {
+    float scale = 1;
+    float ddx = abs(dFdx(BaseUV.x));
+    float ddy = abs(dFdy(BaseUV.y));
+    float dx = ddx * (0.1 / ddx);
+    float dy = ddy * (0.1 / ddy);
+    
+    vec4 color = vec4(Color.xyz, 1);
+    color = mix(color, outline, BaseUV.x - dx <= 0 || BaseUV.y - dy <= 0 || BaseUV.x + dx >= 1 || BaseUV.y + dy >= 1);
+    FragColor = color;
+}

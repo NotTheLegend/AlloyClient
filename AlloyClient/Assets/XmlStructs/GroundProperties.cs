@@ -23,6 +23,10 @@ public class GroundProperties {
     public readonly bool Sink;
     public readonly bool Sinking;
     public readonly bool RandomOffset;
+    
+    public readonly bool HasEdge;
+    public readonly bool SameTypeEdgeMode;
+    
 
     public GroundProperties(XElement e) {
         ObjectType = e.GetAttribute<ushort>("type");
@@ -42,6 +46,8 @@ public class GroundProperties {
         Sink = e.GetValue<bool>("Sink");
         Sinking = e.GetValue<bool>("Sinking");
         RandomOffset = e.HasElement("RandomOffset");
+        HasEdge = e.HasElement("Edge");
+        SameTypeEdgeMode = e.HasElement("SameTypeEdgeMode");
     }
 }
 

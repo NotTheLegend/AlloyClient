@@ -1,6 +1,6 @@
 ﻿<Atlas source="Sheets">
     <Image name="cursors" w="32" h="32">Cursors.png</Image>
-    <Image name="tileAlphaBlend" w="8" h="8">AlphaBlendTile.png</Image>
+    <Image name="tileAlphaBlend" w="8" h="8">AlphaTileBlends.png</Image>
     <Image name="invisible" w="8" h="8">invisible.png</Image>
     <Image name="lofiChar8x8" w="8" h="8">LofiChar.png</Image>
     <Image name="lofiChar16x16" w="16" h="16">LofiChar.png</Image>

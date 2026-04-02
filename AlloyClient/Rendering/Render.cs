@@ -14,7 +14,7 @@ namespace AlloyClient.Rendering;
 public static partial class Render {
     
     private const int BufferSize = 1000;
-    private const int TileBufferSize = (int) (Map.TileRenderDistance * Map.TileRenderDistance * MathHelper.Pi) * 3;
+    private const int TileBufferSize = (int) (Map.TileRenderDistance * Map.TileRenderDistance * MathHelper.Pi) * 4;
     private const int ShadowBufferSize = 4096;
     
     private static readonly (string, string)[] TileDefines = [("TileBuffer", $"{TileBufferSize}")];
@@ -66,7 +66,6 @@ public static partial class Render {
         _shaderObject.SetValue("TextTexture", UiRender.MyriadPro.Sampler);
 
         _shaderParticle = ContentReader.LoadShader("Shaders/Particle");
-        _shaderParticle.SetValue("GameTexture", atlas);
         
         _defaultVao = new VertexArrayObject();
         
