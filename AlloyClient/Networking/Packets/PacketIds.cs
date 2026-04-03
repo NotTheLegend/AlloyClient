@@ -50,7 +50,7 @@ public enum PacketId : byte
     PlaySound = 45,
     Reskin = 46,
     GotoAck = 47,
-    ConstellationsTrial = 48,
+    ServerProjectileProps = 48,
     ConstellationsSave = 49,
     OptionsChanged = 50,
     StatsApply = 51,

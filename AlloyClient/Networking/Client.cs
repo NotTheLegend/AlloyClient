@@ -144,14 +144,13 @@ public static class Client {
             return false;
         }
         
-        Log.Debug($"RECEIVED {args.BytesTransferred} bytes");
         _receiveState.OnDataReceived(args.BytesTransferred);
 
         while (_receiveState.TryReadPacket(out var result))
         {
             var pktId = (PacketId)result.Item1;
             try {
-                Log.Debug($"RECEIVING {pktId}");
+                // Log.Debug($"RECEIVING {pktId}");
                 var pkt = PacketUtils.CreateIncomingPacket(pktId);
                 pkt.Read(result.Item2);
                 IncomingQueue.Enqueue(pkt);
@@ -210,7 +209,7 @@ public static class Client {
         
         lock (_sendState) {
             _sendState.WritePacket(pkt, (byte)pkt.PacketId);
-            Log.Debug($"SENDING {pkt.PacketId}");
+            // Log.Debug($"SENDING {pkt.PacketId}");
         }
     }
 

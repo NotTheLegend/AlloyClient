@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Xml.Linq;
 using AlloyClient.Game.Objects.Util;
 using AlloyClient.Networking.Packets.Incoming;
@@ -15,7 +16,7 @@ public sealed class ProjectileProperties {
     public int Size {get; private set;}
     public int MinDamage {get; private set;}
     public int MaxDamage {get; private set;}
-    public ConditionEffectIndex[] Effects {get; private set;}
+    public (ConditionEffectIndex, int)[] Effects {get; private set;}
     public bool MultiHit {get; private set;}
     public bool PassesCover {get; private set;}
     public bool ArmorPiercing {get; private set;}
@@ -41,7 +42,7 @@ public sealed class ProjectileProperties {
         Size = e.GetValue<int>("Size", -1);
         MinDamage = e.HasElement("Damage") ? e.GetValue<int>("Damage") : e.GetValue<int>("MinDamage");
         MaxDamage = e.HasElement("Damage") ? e.GetValue<int>("Damage") : e.GetValue<int>("MaxDamage");
-        //Effects = e.Elements("ConditionEffect").Select(x => (uint) ConditionEffect.GetConditionEffectFromName(x.Value)).ToList();
+        Effects = e.Elements("ConditionEffect").Select(x => (ConditionEffectUtil.GetConditionEffectFromName(x.Value), (int)(x.GetAttribute<float>("duration") * 1000))).ToArray();
         MultiHit = e.HasElement("MultiHit");
         PassesCover = e.HasElement("PassesCover");
         ArmorPiercing = e.HasElement("ArmorPiercing");
@@ -62,15 +63,17 @@ public sealed class ProjectileProperties {
         }
     }
 
-    public static ProjectileProperties FromEnemyShoot(EnemyShoot shoot) {
-        return new ProjectileProperties() {
-            BulletType = shoot.ProjType,
-            LifetimeMs = shoot.Lifetime,
-            MinDamage = shoot.Damage,
-            MaxDamage = shoot.Damage,
-            MultiHit = shoot.MultiHit,
-            PassesCover = shoot.PassesCover,
-            ArmorPiercing = shoot.ArmorPiercing
+    public static ProjectileProperties FromServer(ServerProjectileProps props) {
+        return new ProjectileProperties()
+        {
+            BulletType = props.ProjId,
+            ObjectId = props.ObjectId,
+            LifetimeMs = props.Lifetime,
+            Size = props.Size,
+            Effects = props.Effects,
+            MultiHit = props.MultiHit,
+            PassesCover = props.PassesCover,
+            ArmorPiercing = props.ArmorPiercing
         };
     }
 }

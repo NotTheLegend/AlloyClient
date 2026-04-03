@@ -36,7 +36,7 @@ public class SocketReceiveState : IDisposable
                 Buffer.BlockCopy(_buffer, _bytesRead, _buffer, 0, _bytesAvailable);
             _bytesRead = 0;
         }
-        Logger.Debug($"Preparing read: {_bytesRead} bytes read | {_bytesAvailable} available | {_buffer.Length} max");
+        // Logger.Debug($"Preparing read: {_bytesRead} bytes read | {_bytesAvailable} available | {_buffer.Length} max");
         args.SetBuffer(_buffer, _bytesAvailable, _buffer.Length - _bytesAvailable);
     }
 
