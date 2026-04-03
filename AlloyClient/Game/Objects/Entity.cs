@@ -156,9 +156,7 @@ public class Entity {
             "DoubleWall" => new TypeWall(this, ModelType.PbDoubleWall),
             "DoubleWall2" => new TypeWall(this, ModelType.PbDoubleWall), // ModelType.PbDoubleWall2
             "TripleWall" => new TypeWall(this, ModelType.PbDoubleWall), // ModelType.PbTripleWall
-            "GameObject" => new TypeGameObject(this), // ModelType.PbTripleWall
-            "Character" => new TypeGameObject(this), // ModelType.PbTripleWall
-            _ => new TypeNullObject()
+            _ => new TypeGameObject(this)
         };
     }
 
