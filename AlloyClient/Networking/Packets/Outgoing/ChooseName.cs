@@ -9,7 +9,7 @@ public class ChooseName : OutgoingPacket<ChooseName> {
         Name = string.Empty;
     }
 
-    public override void Write(NetworkWriter writer) {
+    public override void Write(ref SpanWriter writer) {
         writer.WriteUTF(Name);
     }
 

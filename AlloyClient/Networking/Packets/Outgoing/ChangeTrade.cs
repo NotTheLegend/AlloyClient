@@ -11,7 +11,7 @@ public class ChangeTrade : OutgoingPacket<ChangeTrade> {
         Offers = Array.Empty<bool>();
     }
 
-    public override void Write(NetworkWriter writer) {
+    public override void Write(ref SpanWriter writer) {
         writer.Write((short)Offers.Length);
 
         foreach (var offer in Offers) {

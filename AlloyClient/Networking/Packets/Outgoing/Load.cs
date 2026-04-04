@@ -9,7 +9,7 @@ public class Load : OutgoingPacket<Load> {
         CharId = 0;
     }
 
-    public override void Write(NetworkWriter writer) {
+    public override void Write(ref SpanWriter writer) {
         writer.Write(CharId);
     }
 

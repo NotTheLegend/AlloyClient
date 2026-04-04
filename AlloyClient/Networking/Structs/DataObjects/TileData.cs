@@ -11,13 +11,13 @@ public struct TileData : IDataObject {
         Type = 0;
     }
 
-    public void Read(NetworkReader reader) {
+    public void Read(ref SpanReader reader) {
         X = reader.ReadInt16();
         Y = reader.ReadInt16();
         Type = reader.ReadUInt16();
     }
 
-    public void Write(NetworkWriter writer) {
+    public void Write(ref SpanWriter writer) {
         writer.Write(X);
         writer.Write(Y);
         writer.Write(Type);

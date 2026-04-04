@@ -19,7 +19,7 @@ public class Hello : OutgoingPacket<Hello> {
         MapJSON = string.Empty;
     }
 
-    public override void Write(NetworkWriter writer) {
+    public override void Write(ref SpanWriter writer) {
         writer.WriteUTF(BuildVersion);
         writer.Write(GameId);
         writer.WriteUTF(Username);

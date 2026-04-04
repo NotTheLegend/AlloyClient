@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using AlloyClient.Networking;
+using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Objects.ProjectilePaths;
 
@@ -62,27 +63,14 @@ public class ProjectilePath
     }
 
     /// <summary>
-    ///     Sets the projectile info for all segments in this path.
-    /// </summary>
-    /// <param name="info">Projectile Info.</param>
-    public void SetInfo(ProjectileInfo info)
-    {
-        Info = info;
-        foreach (var segment in projectilePathSegments)
-        {
-            segment.SetInfo(info);
-        }
-    }
-
-    /// <summary>
     ///     Calculate the position offset of a projectile on this path based on the time since the projectile started.
     /// </summary>
     /// <param name="relativeElapsed">Time since the projectile started</param>
     /// <returns>Position offset of the projectile from its start position.</returns>
-    public Vector2 PositionAt(int relativeElapsed)
+    public Vector2 PositionAt(float relativeElapsed)
     {
         var segmentEnd = 0;
-        var segmentsTotal = 0;
+        var segmentsTotal = 0f;
         var startPos = Vector2.Zero; // Origin
         foreach (var segment in projectilePathSegments)
         {
@@ -90,6 +78,7 @@ public class ProjectilePath
             if (relativeElapsed <= segmentEnd)
             {
                 var ret = segment.PositionAt(relativeElapsed - segmentsTotal); // Position offset relative to the segment start
+                // Console.WriteLine($"Segment pos: {ret} ({segment.Type}: {segment.Speed}, {segment.LifetimeMs}, {segment.Angle})");
                 return startPos + ret; // Position offset relative to the path start
             }
 
@@ -110,11 +99,19 @@ public class ProjectilePath
         return new ProjectilePath(projectilePathSegments);
     }
 
-    public static ProjectilePath Read(NetworkReader rdr) {
+    public void SetInfo(ProjectileInfo info) {
+        Info = info;
+        foreach (var segment in projectilePathSegments)
+        {
+            segment.SetInfo(info);
+        }
+    }
+
+    public static ProjectilePath Read(ref SpanReader rdr) {
         var ret = new ProjectilePath();
         var segmentCount = rdr.ReadInt32();
         for (var i = 0; i < segmentCount; i++) {
-            var segment = ProjectilePathSegment.ReadNew(rdr);
+            var segment = ProjectilePathSegment.ReadNew(ref rdr);
             ret.RegisterSegment(segment);
         }
 

@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using AlloyClient.State;
 using AlloyClient.Utils;
+using Common;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
@@ -89,9 +90,14 @@ public static class Camera {
 
     // Only tested on MapEditor
     public static Vector3 ScreenToWorld(Vector2 mouse) {
-        
-        var mat = Matrix4.Invert(WorldMatrix * ViewMatrix * ProjectionMatrix);
-        
+        Matrix4 mat;
+        try {
+            mat = Matrix4.Invert(WorldMatrix * ViewMatrix * ProjectionMatrix);
+        } catch (InvalidOperationException e) {
+            Logger.Error($"Matrix invert error: {e}");
+            return Vector3.Zero;
+        }
+
         var x = MathUtils.Map(mouse.X, 0, Viewport.X, -1, 1);
         var y = MathUtils.Map(mouse.Y, Viewport.Y, 0, -1, 1);
         

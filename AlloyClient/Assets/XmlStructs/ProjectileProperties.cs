@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Xml.Linq;
+using AlloyClient.Game.Objects.ProjectilePaths;
 using AlloyClient.Game.Objects.Util;
 using AlloyClient.Networking.Packets.Incoming;
 using Common;
@@ -7,6 +8,8 @@ using Common;
 namespace AlloyClient.Assets.XmlStructs;
 
 public sealed class ProjectileProperties {
+
+    public readonly XElement Root;
     
     public int BulletType {get; private set;}
     public string ObjectId {get; private set;}
@@ -31,9 +34,11 @@ public sealed class ProjectileProperties {
     public uint ParticleTrailColor {get; private set;}
     public int ParticleTrailLifetime {get; private set;}
     public float ParticleTrailIntensity {get; private set;}
+    public ProjectilePath Path { get; private set; }
 
     private ProjectileProperties() {}
     public ProjectileProperties(XElement e) {
+        Root = e;
         BulletType = e.GetAttribute<int>("id");
         ObjectId = e.GetValue<string>("ObjectId");
         LifetimeMs = e.GetValue<float>("LifetimeMS");
@@ -61,6 +66,15 @@ public sealed class ProjectileProperties {
             ParticleTrailLifetime = attr.GetAttribute("lifetimeMS", 600);
             ParticleTrailIntensity = attr.GetAttribute("intensity", 0.3f);
         }
+        
+        if (e.Element("Path") != null)
+        {
+            Path = new ProjectilePath();
+            foreach (var elem in e.Elements("Path"))
+                Path.RegisterSegment(ProjectilePathSegment.ParsePath(elem));
+        }
+        else
+            Path = ProjectilePathSegment.ParsePath(this).ToPath();
     }
 
     public static ProjectileProperties FromServer(ServerProjectileProps props) {

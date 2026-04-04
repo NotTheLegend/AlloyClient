@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Assets.XmlStructs;
+using AlloyClient.Game.Objects.ProjectilePaths;
 using AlloyClient.Game.Objects.Util;
 using AlloyClient.Networking;
 using AlloyClient.Networking.Packets.Outgoing;
@@ -21,53 +22,43 @@ public sealed class Projectile : IResettable {
     
     private readonly float _jitter = Random.Shared.NextSingle() * 0.00002f - 0.00001f;
 
-    private byte _bulletId;
-
-    private int _damage;
-
-    private float _angle;
-
-    private int _ownerId;
-
-    private bool _damagePlayers;
-
-    private ObjectProperties _objDesc;
-
-    private ProjectileProperties _projDesc;
-
-    private double _startTime;
-
-    private float _angleCorrection;
-
-    private Vector2 _startPosition;
-
-    private Vector2 _position;
-    
-    public float Rotation;
-
-    public int Size;
-
-    private readonly HashSet<int> _hitEntities = [];
-    
     public RenderBase RenderBaseType;
-
+    public float Rotation;
+    public int Size;
+    
+    public ushort BulletId;
+    private int _damage;
+    public float Angle;
+    private int _ownerId;
+    private bool _damagePlayers;
+    private ObjectProperties _objDesc;
+    private ProjectileProperties _projDesc;
+    private double _startTime;
+    private float _angleCorrection;
+    private Vector2 _startPosition;
+    private Vector2 _position;
     private double _lastHitTest;
+    public ProjectilePath Path;
+    
+    private readonly HashSet<int> _hitEntities = [];
 
-    public void Reset(byte id, int dmg, float angle, Entity entity, ObjectProperties objDesc, ProjectileProperties projDesc) {
-        _bulletId = id;
+    public void Reset(ushort id, int dmg, float angle, Entity entity, ObjectProperties objDesc, ProjectileProperties projDesc, ProjectilePath path, Vector2 offsetPos) {
+        BulletId = id;
         _damage = dmg;
-        _angle = angle;
+        Angle = angle;
         _ownerId = entity.ObjectId;
         _damagePlayers = entity is not Player;
         _objDesc = objDesc;
         _projDesc = projDesc;
+        Path = path;
+        Path.SetInfo(new ProjectileInfo() { LifetimeMs = Path.LifetimeMs, ProjId = id, ShootAngle = angle.Deg2Rad(), StartPos = entity.Position + offsetPos});
 
         Size = _projDesc.Size > 0 ? _projDesc.Size : 100;
 
         _startTime = Main.GameTime.TotalMs;
         _lastHitTest = 0;
         _angleCorrection = _objDesc.AngleCorrection * MathF.PI / 4;
-        _position = _startPosition = entity.Position;
+        _position = _startPosition = entity.Position + offsetPos;
         
         _hitEntities.Clear();
         RenderBaseType = new TypeProjectile();
@@ -78,9 +69,9 @@ public sealed class Projectile : IResettable {
     public bool IsInPool { get; set; }
 
     public void Reset() {
-        _bulletId = 0;
+        BulletId = 0;
         _damage = 0;
-        _angle = 0f;
+        Angle = 0f;
         _ownerId = 0;
         _damagePlayers = false;
         _objDesc = null;
@@ -104,13 +95,15 @@ public sealed class Projectile : IResettable {
     public bool Update(double time, double dt, DepthMatrix matrix) {
         var elapsed = (float)(time - _startTime);
 
-        if (elapsed > _projDesc.LifetimeMs) {
+        if (elapsed > Path.LifetimeMs) {
             return false;
         }
         
         UpdateVisibility(matrix);
-        
-        var newPos = PositionAt(elapsed);
+
+        var deltaPos = PositionAt(elapsed);
+        var newPos = _startPosition + deltaPos;
+        // Console.WriteLine($"Proj pos: {newPos} ({_startPosition}|{deltaPos})");
 
         // Use smart projectile rotation if the projectile does not have its own rotation speed or the NoRotation tag
         if (_objDesc.Rotation != 0) {
@@ -190,7 +183,7 @@ public sealed class Projectile : IResettable {
             NotificationLayer.AddStatusText(target, $"-{_damage}", 0xFF0000, 1000, 0);
             
             var hit = PlayerHit.CreatePacket();
-            hit.BulletId = _bulletId;
+            hit.BulletId = BulletId;
             hit.ObjectId = _ownerId;
             
             Client.QueuePacket(hit);
@@ -212,7 +205,7 @@ public sealed class Projectile : IResettable {
         
         var hit1 = EnemyHit.CreatePacket();
         hit1.Time = (int)time;
-        hit1.BulletId = _bulletId;
+        hit1.BulletId = BulletId;
         hit1.TargetId = enemy.ObjectId;
         hit1.Killed = enemy.Hp <= _damage;
         
@@ -226,95 +219,6 @@ public sealed class Projectile : IResettable {
     }
 
     private Vector2 PositionAt(float elapsed) {
-        var finalPosition = _startPosition;
-        
-        // Projectiles cannot have multiple pattern effects at the same time
-        // I'll keep it behaving like flash client
-        if (_projDesc.Wavy) {
-            return ApplyWavyEffect(finalPosition, elapsed);
-        }
-
-        if (_projDesc.Parametric) {
-            return ApplyParametricEffect(finalPosition, elapsed);
-        }
-
-        if (_projDesc.Boomerang) {
-            return ApplyBoomerangEffect(finalPosition, elapsed);
-        }
-
-        if (_projDesc.Amplitude != 0) {
-            return ApplyAmplitude(finalPosition, elapsed);
-        }
-        
-        // Straight projectile
-        var distance = elapsed * _projDesc.Speed;
-        
-        finalPosition.X += distance * MathF.Cos(_angle);
-        finalPosition.Y += distance * MathF.Sin(_angle);
-
-        return finalPosition;
-    }
-
-    private Vector2 ApplyWavyEffect(Vector2 origin, float elapsed) {
-        var distance = elapsed * _projDesc.Speed;
-        var phase = _bulletId % 2 * MathF.PI;
-        
-        var period = 6 * MathF.PI;
-        var amplitude = MathF.PI / 64;
-        var theta = _angle + amplitude * MathF.Sin(phase + period + elapsed / 1000);
-
-        origin.X += distance * MathF.Cos(theta);
-        origin.Y += distance * MathF.Cos(theta);
-            
-        return origin;
-    }
-
-    private Vector2 ApplyParametricEffect(Vector2 origin, float elapsed) {
-        var t = elapsed / _projDesc.LifetimeMs * 2 * MathF.PI;
-
-        var x = MathF.Sin(t) * (_bulletId % 2 == 0 ? -1 : 1);
-        var y = MathF.Sin(2 * t) * (_bulletId % 4 < 2 ? 1 : -1);
-
-        origin.X += (x * MathF.Cos(_angle) - y * MathF.Sin(_angle)) * _projDesc.Magnitude;
-        origin.Y += (x * MathF.Sin(_angle) + y * MathF.Cos(_angle)) * _projDesc.Magnitude;
-
-        return origin;
-    }
-    
-    private Vector2 ApplyBoomerangEffect(Vector2 origin, float elapsed) {
-        var distance = elapsed * _projDesc.Speed;
-        var phase = _bulletId % 2 * MathF.PI;
-        
-        var halfwayDistance = _projDesc.LifetimeMs * _projDesc.Speed / 2;
-            
-        if (distance > halfwayDistance) 
-            distance = halfwayDistance - (distance - halfwayDistance);
-
-        origin.X += distance * MathF.Cos(_angle);
-        origin.Y += distance * MathF.Sin(_angle);
-
-        if (_projDesc.Amplitude != 0) {
-            var deflection = _projDesc.Amplitude * MathF.Sin(phase + elapsed / _projDesc.LifetimeMs * _projDesc.Frequency * 2 * MathF.PI);
-            origin.X += deflection * MathF.Cos(_angle + MathF.PI / 2);
-            origin.Y += deflection * MathF.Sin(_angle + MathF.PI / 2);
-        }
-        
-        return origin;
-    }
-    
-    private Vector2 ApplyAmplitude(Vector2 origin, float elapsed) {
-        var distance = elapsed * _projDesc.Speed;
-        
-        origin.X += distance * MathF.Cos(_angle);
-        origin.Y += distance * MathF.Sin(_angle);
-        
-        if (_projDesc.Amplitude != 0) {
-            var phase = _bulletId % 2 * MathF.PI;
-            var deflection = _projDesc.Amplitude * MathF.Sin(phase + elapsed / _projDesc.LifetimeMs * _projDesc.Frequency * 2 * MathF.PI);
-            origin.X += deflection * MathF.Cos(_angle + MathF.PI / 2);
-            origin.Y += deflection * MathF.Sin(_angle + MathF.PI / 2);
-        }
-
-        return origin;
+        return Path.PositionAt(elapsed);
     }
 }

@@ -1,7 +1,7 @@
 ﻿#region
 
 using System;
-using System.Numerics;
+using OpenTK.Mathematics;
 
 #endregion
 
@@ -15,7 +15,7 @@ public class LinePath : ProjectilePathSegment
         : base(PathType.LinePath, speed, angle, lifetimeMs, timeOffset, mods)
     { }
 
-    public override Vector2 PositionAt(int elapsedLifetimeMs)
+    public override Vector2 PositionAt(float elapsedLifetimeMs)
     {
         var p = Vector2.Zero;
         if (TimeOffset > 0 && elapsedLifetimeMs < TimeOffset)

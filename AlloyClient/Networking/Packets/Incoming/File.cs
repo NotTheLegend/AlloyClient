@@ -11,7 +11,7 @@ public class File : IncomingPacket<File> {
         Bytes = null;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         Name = reader.ReadUTF();
         var bytesLen = reader.ReadInt32();
 

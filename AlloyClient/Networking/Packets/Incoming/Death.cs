@@ -18,7 +18,7 @@ public class Death : IncomingPacket<Death> {
         KilledBy = string.Empty;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         AccountId = reader.ReadInt32();
         CharId = reader.ReadInt32();
         KilledBy = reader.ReadUTF();

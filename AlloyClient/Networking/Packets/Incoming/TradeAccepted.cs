@@ -11,7 +11,7 @@ public class TradeAccepted : IncomingPacket<TradeAccepted> {
         YourOffer = null;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         MyOffer = new bool[reader.ReadInt16()];
 
         for (var i = 0; i < MyOffer.Length; i++) {

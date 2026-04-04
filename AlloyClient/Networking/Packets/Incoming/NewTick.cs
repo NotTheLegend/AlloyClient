@@ -18,13 +18,13 @@ public class NewTick : IncomingPacket<NewTick> {
         ObjectStatsCount = 0;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         Structs.DataObjects.ObjectStats.StatsPoolIndex = 0;
         
         ObjectStatsCount = reader.ReadInt16();
         EnsureCapacity(ref _statsBuffer, ObjectStatsCount);
         for (int i = 0; i < ObjectStatsCount; i++)
-            _statsBuffer[i].Read(reader);
+            _statsBuffer[i].Read(ref reader);
     }
 
     private static void EnsureCapacity<T>(ref T[] array, int needed) {

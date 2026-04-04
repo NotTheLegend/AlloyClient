@@ -1,7 +1,7 @@
 ﻿#region
 
 using System;
-using System.Numerics;
+using OpenTK.Mathematics;
 using AlloyClient.Networking;
 
 #endregion
@@ -27,7 +27,7 @@ public class ChangeSpeedPath : ProjectilePathSegment
         Repeat = repeat;
     }
 
-    public override Vector2 PositionAt(int elapsedLifetimeMs)
+    public override Vector2 PositionAt(float elapsedLifetimeMs)
     {
         var p = Vector2.Zero;
         if (TimeOffset > 0 && elapsedLifetimeMs < TimeOffset)
@@ -54,9 +54,9 @@ public class ChangeSpeedPath : ProjectilePathSegment
         return p;
     }
 
-    public override void Read(NetworkReader rdr)
+    public override void Read(ref SpanReader rdr)
     {
-        base.Read(rdr);
+        base.Read(ref rdr);
         Increment = rdr.ReadSingle();
         Cooldown = rdr.ReadInt32();
         CooldownOffset = rdr.ReadInt32();

@@ -1,7 +1,7 @@
 ﻿#region
 
 using System;
-using System.Numerics;
+using OpenTK.Mathematics;
 using AlloyClient.Networking;
 
 #endregion
@@ -22,7 +22,7 @@ public class AmplitudePath : ProjectilePathSegment
         this.frequency = frequency;
     }
 
-    public override Vector2 PositionAt(int elapsedLifetimeMs)
+    public override Vector2 PositionAt(float elapsedLifetimeMs)
     {
         var p = Vector2.Zero;
         if (TimeOffset > 0 && elapsedLifetimeMs < TimeOffset)
@@ -43,9 +43,9 @@ public class AmplitudePath : ProjectilePathSegment
         return p;
     }
 
-    public override void Read(NetworkReader rdr)
+    public override void Read(ref SpanReader rdr)
     {
-        base.Read(rdr);
+        base.Read(ref rdr);
         amplitude = rdr.ReadSingle();
         frequency = rdr.ReadSingle();
     }

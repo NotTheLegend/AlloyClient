@@ -15,7 +15,7 @@ public struct TradeItem : IDataObject {
         ItemData = null;
     }
 
-    public void Read(NetworkReader reader) {
+    public void Read(ref SpanReader reader) {
         Item = reader.ReadInt32();
         SlotType = reader.ReadInt32();
         Tradeable = reader.ReadBoolean();
@@ -23,12 +23,12 @@ public struct TradeItem : IDataObject {
         ItemData = reader.ReadUTF();
     }
 
-    public void Write(NetworkWriter writer) {
+    public void Write(ref SpanWriter writer) {
         writer.Write(Item);
         writer.Write(SlotType);
         writer.Write(Tradeable);
         writer.Write(Included);
-        writer.Write(ItemData);
+        writer.WriteUTF(ItemData);
     }
 
     public override string ToString() {

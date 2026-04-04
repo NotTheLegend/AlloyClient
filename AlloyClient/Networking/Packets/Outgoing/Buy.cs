@@ -9,7 +9,7 @@ public class Buy : OutgoingPacket<Buy> {
         ObjectId = 0;
     }
 
-    public override void Write(NetworkWriter writer) {
+    public override void Write(ref SpanWriter writer) {
         writer.Write(ObjectId);
     }
 

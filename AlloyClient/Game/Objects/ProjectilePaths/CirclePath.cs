@@ -1,7 +1,7 @@
 ﻿#region
 
 using System;
-using System.Numerics;
+using OpenTK.Mathematics;
 using AlloyClient.Networking;
 using AlloyClient.Utils;
 
@@ -21,7 +21,7 @@ public class CirclePath : ProjectilePathSegment
         this.radius = radius;
     }
 
-    public override Vector2 PositionAt(int elapsedLifetimeMs)
+    public override Vector2 PositionAt(float elapsedLifetimeMs)
     {
         var p = Vector2.Zero;
         if (TimeOffset > 0 && elapsedLifetimeMs < TimeOffset)
@@ -41,9 +41,9 @@ public class CirclePath : ProjectilePathSegment
         return p;
     }
 
-    public override void Read(NetworkReader rdr)
+    public override void Read(ref SpanReader rdr)
     {
-        base.Read(rdr);
+        base.Read(ref rdr);
         radius = rdr.ReadSingle();
     }
 

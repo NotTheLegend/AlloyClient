@@ -21,10 +21,10 @@ public struct ObjectDef : IDataObject {
         StatCount = 0;
     }
 
-    public void Read(NetworkReader reader) {
+    public void Read(ref SpanReader reader) {
         ObjectType = reader.ReadUInt16();
         Id = reader.ReadInt32();
-        Position.Read(reader);
+        Position.Read(ref reader);
 
         var len = reader.ReadByte();
         StatOffset = StatsPoolIndex;
@@ -34,18 +34,18 @@ public struct ObjectDef : IDataObject {
             Array.Resize(ref StatsPool, (StatsPoolIndex + len) * 2);
 
         for (int i = 0; i < len; i++)
-            StatsPool[StatsPoolIndex++].Read(reader);
+            StatsPool[StatsPoolIndex++].Read(ref reader);
     }
 
-    public void Write(NetworkWriter writer) {
+    public void Write(ref SpanWriter writer) {
         writer.Write(ObjectType);
         writer.Write(Id);
-        Position.Write(writer);
+        Position.Write(ref writer);
 
         writer.Write((short)StatCount);
 
         for (var i = 0; i < StatCount; i++) {
-            StatsPool[StatOffset + i].Write(writer);
+            StatsPool[StatOffset + i].Write(ref writer);
         }
     }
 

@@ -11,13 +11,13 @@ public struct ObjectSlot : IDataObject {
         ObjectType = 0;
     }
 
-    public void Read(NetworkReader reader) {
+    public void Read(ref SpanReader reader) {
         ObjectId = reader.ReadInt32();
         SlotId = reader.ReadByte();
         ObjectType = reader.ReadUInt16();
     }
 
-    public void Write(NetworkWriter writer) {
+    public void Write(ref SpanWriter writer) {
         writer.Write(ObjectId);
         writer.Write(SlotId);
         writer.Write(ObjectType);

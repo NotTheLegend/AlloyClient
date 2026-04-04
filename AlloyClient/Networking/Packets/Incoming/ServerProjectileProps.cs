@@ -36,11 +36,11 @@ public class ServerProjectileProps : IncomingPacket<ServerProjectileProps> {
         Effects = null;
     }
 
-    public override void Read(NetworkReader reader) {
-        var start = reader.BaseStream.Position;
+    public override void Read(ref SpanReader reader) {
+        var start = reader.Position;
         ContainerType = reader.ReadUInt16();
         ProjId = reader.ReadByte();
-        ObjectId = reader.ReadString();
+        ObjectId = reader.ReadUTF();
         Lifetime = reader.ReadSingle();
         MultiHit = reader.ReadBoolean();
         PassesCover = reader.ReadBoolean();
@@ -50,7 +50,7 @@ public class ServerProjectileProps : IncomingPacket<ServerProjectileProps> {
         for (var i = 0; i < Effects.Length; i++)
             Effects[i] = ((ConditionEffectIndex)reader.ReadUInt16(), reader.ReadInt32());
 
-        var bytes = (int)(reader.BaseStream.Position - start);
+        var bytes = reader.Position - start;
         Interlocked.Add(ref TotalBytes, bytes);
         Interlocked.Increment(ref TotalCount);
         Console.WriteLine($"{TotalCount} ServerProjectileProps: {TotalBytes} bytes");

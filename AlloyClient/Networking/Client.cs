@@ -146,13 +146,14 @@ public static class Client {
         
         _receiveState.OnDataReceived(args.BytesTransferred);
 
-        while (_receiveState.TryReadPacket(out var result))
+        while (_receiveState.PacketReady())
         {
-            var pktId = (PacketId)result.Item1;
-            try {
+            var pktId = (PacketId)_receiveState.ReadPacket(out var rdr);
+            try
+            {
                 // Log.Debug($"RECEIVING {pktId}");
                 var pkt = PacketUtils.CreateIncomingPacket(pktId);
-                pkt.Read(result.Item2);
+                pkt.Read(ref rdr);
                 IncomingQueue.Enqueue(pkt);
             }
             catch (Exception ex)
@@ -180,27 +181,34 @@ public static class Client {
             return;
         }
 
-        if (_sendState.BeginSend()) {
-            _sendState.PrepareSAEA(_sendSAEA);
+        if (!_sendState.TryBeginSend(_sendSAEA))
+            return;
 
-            if (!_socket.SendAsync(_sendSAEA))
-                ProcessSend(null, _sendSAEA);
-        }
+        if (!_socket.SendAsync(_sendSAEA))
+            ProcessSend(null, _sendSAEA);
     }
 
     private static void ProcessSend(object sender, SocketAsyncEventArgs args) {
-        if (State == ConnectionState.Disconnected || !_socket.Connected) {
-            Disconnect("Unknown");
-            return;
-        }
-
-        if (args.SocketError != SocketError.Success)
+        while (true)
         {
-            Disconnect($"Send Error: {args.SocketError}");
-            return;
-        }
+            if (State == ConnectionState.Disconnected)
+            {
+                Disconnect("Unknown");
+                break;
+            }
 
-        _sendState.OnDataSent(args.BytesTransferred);
+            if (args.SocketError != SocketError.Success)
+            {
+                Disconnect($"Send Error: {args.SocketError}");
+                break;
+            }
+
+            if (_sendState.OnDataSent(args))
+                if (_socket.SendAsync(_sendSAEA))
+                    break;
+
+            break;
+        }
     }
 
     public static void QueuePacket(IOutgoingPacket pkt) {

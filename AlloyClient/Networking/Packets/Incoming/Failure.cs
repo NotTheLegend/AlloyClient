@@ -11,7 +11,7 @@ public class Failure : IncomingPacket<Failure> {
         ErrorDescription = null;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         ErrorId = reader.ReadInt32();
         ErrorDescription = reader.ReadUTF();
     }

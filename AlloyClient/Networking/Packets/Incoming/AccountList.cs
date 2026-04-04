@@ -13,7 +13,7 @@ public class AccountList : IncomingPacket<AccountList> {
         AccountIds = null;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         AccountListId = reader.ReadInt32();
 
         AccountIds = new int[reader.ReadInt16()];

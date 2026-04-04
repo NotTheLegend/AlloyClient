@@ -21,11 +21,11 @@ public class ServerPlayerShoot : IncomingPacket<ServerPlayerShoot> {
         Damage = 0;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         BulletId = reader.ReadByte();
         OwnerId = reader.ReadInt32();
         ContainerType = reader.ReadInt32();
-        StartingPos.Read(reader);
+        StartingPos.Read(ref reader);
         Angle = reader.ReadSingle();
         Damage = reader.ReadInt16();
     }

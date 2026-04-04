@@ -1,7 +1,7 @@
 ﻿#region
 
 using System.Linq;
-using System.Numerics;
+using OpenTK.Mathematics;
 using AlloyClient.Networking;
 
 #endregion
@@ -22,7 +22,7 @@ public class CombinedPath : ProjectilePathSegment
         _lifetimeMs = segments.Max(i => i.TimeOffset + i.LifetimeMs);
     }
 
-    public override Vector2 PositionAt(int elapsedLifetimeMs)
+    public override Vector2 PositionAt(float elapsedLifetimeMs)
     {
         var p = Vector2.Zero;
         if (TimeOffset > 0 && elapsedLifetimeMs < TimeOffset)
@@ -52,17 +52,17 @@ public class CombinedPath : ProjectilePathSegment
         return p;
     }
 
-    public override void Read(NetworkReader rdr)
+    public override void Read(ref SpanReader rdr)
     {
         _segments = new ProjectilePathSegment[rdr.ReadByte()];
         for (var i = 0; i < _segments.Length; i++) {
-            _segments[i] = ReadNew(rdr);
+            _segments[i] = ReadNew(ref rdr);
         }
 
         TimeOffset = rdr.ReadInt32();
         _mods = rdr.ReadInt32();
     }
-
+    
     public override void SetInfo(ProjectileInfo info)
     {
         base.SetInfo(info);
@@ -71,7 +71,7 @@ public class CombinedPath : ProjectilePathSegment
             segment.SetInfo(info);
         }
     }
-
+    
     public override ProjectilePathSegment Clone()
     {
         return new CombinedPath(TimeOffset, (ProjectilePathSegment[])_segments.Clone());

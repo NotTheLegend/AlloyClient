@@ -11,7 +11,7 @@ public class Ping : IncomingPacket<Ping> {
         RTT = 0;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         RTT = reader.ReadInt32();
     }
 

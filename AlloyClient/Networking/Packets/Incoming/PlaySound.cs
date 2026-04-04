@@ -11,7 +11,7 @@ public class PlaySound : IncomingPacket<PlaySound> {
         SoundId = 0;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         OwnerId = reader.ReadInt32();
         SoundId = reader.ReadInt32();
     }

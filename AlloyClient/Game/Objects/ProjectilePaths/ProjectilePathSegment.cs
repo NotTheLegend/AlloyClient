@@ -1,10 +1,10 @@
 using System;
-using System.Numerics;
 using System.Xml.Linq;
 using AlloyClient.Assets.XmlStructs;
 using AlloyClient.Networking;
 using AlloyClient.Utils;
 using Common;
+using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Objects.ProjectilePaths;
 
@@ -80,7 +80,7 @@ public class ProjectilePathSegment
         return (_mods & (1 << (int)mod)) != 0;
     }
 
-    protected void ApplyModifiers(ref int elapsedLifetimeMs)
+    protected void ApplyModifiers(ref float elapsedLifetimeMs)
     {
         if (HasMod(PathSegmentModifier.Boomerang))
             if (elapsedLifetimeMs > LifetimeMs / 2)
@@ -95,7 +95,7 @@ public class ProjectilePathSegment
     /// <param name="elapsedLifetimeMs">Time since the start of the segment.</param>
     /// <returns>The position offset relative to the segment's start position.</returns>
     /// <exception cref="NotImplementedException">Throws exception if not implemented in a derived class.</exception>
-    public virtual Vector2 PositionAt(int elapsedLifetimeMs)
+    public virtual Vector2 PositionAt(float elapsedLifetimeMs)
     {
         throw new NotImplementedException();
     }
@@ -109,15 +109,17 @@ public class ProjectilePathSegment
         return PositionAt(LifetimeMs);
     }
 
-    public virtual void Read(NetworkReader rdr) {
+    public virtual void Read(ref SpanReader rdr) {
         Speed = rdr.ReadSingle();
         LifetimeMs = rdr.ReadInt32();
         _angle = rdr.ReadSingle();
+        if (float.IsNaN(_angle.Value))
+            _angle = null;
         TimeOffset = rdr.ReadInt32();
         _mods = rdr.ReadInt32();
     }
     
-    public static ProjectilePathSegment ReadNew(NetworkReader rdr) {
+    public static ProjectilePathSegment ReadNew(ref SpanReader rdr) {
         var type = (PathType)rdr.ReadByte();
         ProjectilePathSegment ret = type switch {
             PathType.AcceleratePath => new AcceleratePath(),
@@ -131,15 +133,10 @@ public class ProjectilePathSegment
             PathType.WavyPath => new WavyPath(),
             _ => null
         };
-        ret?.Read(rdr);
+        ret?.Read(ref rdr);
         return ret;
     }
-
-    public virtual void SetInfo(ProjectileInfo info)
-    {
-        Info = info;
-    }
-
+    
     /// <summary>
     ///     Clones itself into a new instance. Required since a behavior references a segment, and then that segment will be
     ///     reused,
@@ -150,34 +147,84 @@ public class ProjectilePathSegment
     {
         return new ProjectilePathSegment(0, 0);
     }
+    
+    public virtual void SetInfo(ProjectileInfo info)
+    {
+        Info = info;
+    }
 
+    public static ProjectilePathSegment ParsePath(XElement pathElement)
+    {
+        if (pathElement == null)
+            return new LinePath(10, null, 100);
+
+        var pathName = pathElement.Value;
+        var lifeTimeMs = pathElement.GetAttribute<int>("lifetimeMs");
+        switch (pathName)
+        {
+            case "Line":
+                var speed = pathElement.GetAttribute<float>("speed");
+                return new LinePath(speed, null, lifeTimeMs);
+            case "Wavy":
+                speed = pathElement.GetAttribute<float>("speed");
+                return new WavyPath(speed, null, lifeTimeMs);
+            case "Boomerang":
+                speed = pathElement.GetAttribute<float>("speed");
+                return new BoomerangPath(speed, null, lifeTimeMs);
+            case "Circle":
+                var rps = pathElement.GetAttribute<float>("rotationsPerSecond");
+                var radius = pathElement.GetAttribute<float>("radius");
+                return new CirclePath(rps, radius, null, lifeTimeMs);
+            case "Amplitude":
+                speed = pathElement.GetAttribute<float>("speed");
+                var amplitude = pathElement.GetAttribute<float>("amplitude");
+                var frequency = pathElement.GetAttribute<float>("frequency");
+                return new AmplitudePath(speed, amplitude, frequency, null, lifeTimeMs);
+            case "Accelerate":
+                speed = pathElement.GetAttribute<float>("speed");
+                return new AcceleratePath(speed, null, lifeTimeMs);
+            case "Decelerate":
+                speed = pathElement.GetAttribute<float>("speed");
+                return new DeceleratePath(speed, null, lifeTimeMs);
+            case "ChangeSpeed":
+                speed = pathElement.GetAttribute<float>("speed");
+                var inc = pathElement.GetAttribute<float>("inc");
+                var cooldown = pathElement.GetAttribute<int>("cooldown");
+                var cooldownOffset = pathElement.GetAttribute<int>("cooldownOffset");
+                var repeat = pathElement.GetAttribute<int>("repeat");
+                return new ChangeSpeedPath(speed, inc, cooldown, null, lifeTimeMs, cooldownOffset, repeat);
+        }
+
+        return null;
+    }
+    
     /// <summary>
     ///     Parse a projectile desc into a projectile path.
     /// </summary>
     /// <param name="projDesc">Projectile Desc.</param>
     /// <returns>Projectile path segment.</returns>
-    public static ProjectilePathSegment ParsePath(ProjectileDesc projDesc)
+    public static ProjectilePathSegment ParsePath(ProjectileProperties projDesc)
     {
         // No path defined, import path from old system
         ProjectilePathSegment path;
         if (projDesc.Root.HasElement("Amplitude") || projDesc.Root.HasElement("Frequency"))
         {
-            path = new AmplitudePath(projDesc.Speed, projDesc.Amplitude, projDesc.Frequency, null, projDesc.LifetimeMS);
+            path = new AmplitudePath(projDesc.Speed, projDesc.Amplitude, projDesc.Frequency, null, (int)projDesc.LifetimeMs);
         }
         // else if (projDesc.Parametric) {
         //     path = new ParametricPath(projDesc.Speed);
         // }
         else if (projDesc.Wavy)
         {
-            path = new WavyPath(projDesc.Speed, null, projDesc.LifetimeMS);
+            path = new WavyPath(projDesc.Speed, null, (int)projDesc.LifetimeMs);
         }
         else if (projDesc.Boomerang)
         {
-            path = new BoomerangPath(projDesc.Speed, null, projDesc.LifetimeMS);
+            path = new BoomerangPath(projDesc.Speed, null, (int)projDesc.LifetimeMs);
         }
         else
         {
-            path = new LinePath(projDesc.Speed, null, projDesc.LifetimeMS);
+            path = new LinePath(projDesc.Speed, null, (int)projDesc.LifetimeMs);
         }
 
         return path;

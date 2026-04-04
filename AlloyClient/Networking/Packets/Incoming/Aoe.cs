@@ -22,8 +22,8 @@ public class Aoe : IncomingPacket<Aoe> {
         OrigType= 0;
     }
 
-    public override void Read(NetworkReader reader) {
-        Pos.Read(reader);
+    public override void Read(ref SpanReader reader) {
+        Pos.Read(ref reader);
         Radius = reader.ReadSingle();
         Damage = reader.ReadUInt16();
         Effect = (ConditionEffectIndex)reader.ReadByte();

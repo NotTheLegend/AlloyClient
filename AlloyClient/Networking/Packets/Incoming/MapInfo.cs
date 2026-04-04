@@ -29,7 +29,7 @@ public class MapInfo : IncomingPacket<MapInfo> {
         ShowDisplays = false;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         Width = reader.ReadInt32();
         Height = reader.ReadInt32();
         Name = reader.ReadUTF();

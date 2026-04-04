@@ -12,8 +12,8 @@ public class Move : OutgoingPacket<Move> {
         NewPosition.Reset();
     }
 
-    public override void Write(NetworkWriter writer) {
-        NewPosition.Write(writer);
+    public override void Write(ref SpanWriter writer) {
+        NewPosition.Write(ref writer);
     }
 
     public override string ToString() {

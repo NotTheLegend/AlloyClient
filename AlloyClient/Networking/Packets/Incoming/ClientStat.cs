@@ -11,7 +11,7 @@ public class ClientStat : IncomingPacket<ClientStat> {
         Value = 0;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         Name = reader.ReadUTF();
         Value = reader.ReadInt32();
     }

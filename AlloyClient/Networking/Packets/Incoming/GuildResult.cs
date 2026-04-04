@@ -11,7 +11,7 @@ public class GuildResult : IncomingPacket<GuildResult> {
         Text = null;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         Success = reader.ReadBoolean();
         Text = reader.ReadUTF();
     }

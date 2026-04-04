@@ -13,7 +13,7 @@ public class EditAccountList : OutgoingPacket<EditAccountList> {
         ObjectId = 0;
     }
 
-    public override void Write(NetworkWriter writer) {
+    public override void Write(ref SpanWriter writer) {
         writer.Write(AccountListId);
         writer.Write(Add);
         writer.Write(ObjectId);

@@ -13,7 +13,7 @@ public class CreateSuccess : IncomingPacket<CreateSuccess> {
         CharId = 0;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         ObjectId = reader.ReadInt32();
         CharId = reader.ReadInt32();
     }

@@ -17,7 +17,7 @@ public struct StatData : IDataObject {
         DataObject = null;
     }
 
-    public void Read(NetworkReader reader) {
+    public void Read(ref SpanReader reader) {
         Type = (StatsType)reader.ReadByte();
 
         if (IsStringStat(Type)) {
@@ -29,11 +29,11 @@ public struct StatData : IDataObject {
         }
     }
 
-    public void Write(NetworkWriter writer) {
+    public void Write(ref SpanWriter writer) {
         writer.Write((byte)Type);
 
         if (IsStringStat(Type)) {
-            writer.Write(Text);
+            writer.WriteUTF(Text);
         }
         else {
             writer.Write(Value);

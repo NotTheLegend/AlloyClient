@@ -15,9 +15,9 @@ public class Goto : IncomingPacket<Goto> {
         Pos.Reset();
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         ObjectId = reader.ReadInt32();
-        Pos.Read(reader);
+        Pos.Read(ref reader);
     }
 
     public override void Handle() {
