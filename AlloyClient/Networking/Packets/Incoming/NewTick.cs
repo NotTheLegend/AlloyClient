@@ -33,8 +33,6 @@ public class NewTick : IncomingPacket<NewTick> {
     }
 
     public override void Handle() {
-        var isLocalPlayer = false;
-
         if (Map.LocalPlayer != null) {
             var move = Move.CreatePacket();
             move.NewPosition = new Position {
@@ -43,24 +41,21 @@ public class NewTick : IncomingPacket<NewTick> {
             };
 
             Client.QueuePacket(move);
-
-            isLocalPlayer = true;
-
             Map.LocalPlayer.OnMove();
         }
 
         for (int i = 0; i < ObjectStatsCount; i++)
-            ProcessObjectStats(_statsBuffer[i], isLocalPlayer);
+            ProcessObjectStats(_statsBuffer[i]);
     }
 
-    private void ProcessObjectStats(ObjectStats stats, bool isPlayer) {
+    private void ProcessObjectStats(ObjectStats stats) {
         if (!Map.Entities.TryGetValue(stats.Id, out var en)) {
             Logger.Warn($"[NewTick] Unable to lookup id: {stats.Id}");
             return;
         }
         en.UpdateStats(Structs.DataObjects.ObjectStats.StatsPool, stats.StatOffset, stats.StatCount);
 
-        en.OnTickPosition(stats.Position.X, stats.Position.Y, 0, 0, isPlayer);
+        en.OnTickPosition(stats.Position.X, stats.Position.Y, 0, 0, stats.Id == Map.LocalPlayerId);
     }
 
     public override string ToString() {

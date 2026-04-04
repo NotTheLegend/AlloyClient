@@ -407,6 +407,8 @@ public class Entity {
         
         var texture = new AtlasData();
         var action = AnimationType.Stand;
+        attackFrame = flipped = false;
+        
         if (TextureData.HasAnimationData) {
             var idx = 0d;
             if (time < AttackStart + AttackPeriod) {
@@ -428,10 +430,8 @@ public class Entity {
                 idx = time % walkPer / walkPer;
             }
 
-            return TextureData.AnimatedTextures.TextureFromFacing(FacingAngle, action, (float)idx, out attackFrame, out flipped);
+            texture = TextureData.AnimatedTextures.TextureFromFacing(FacingAngle, action, (float)idx, out attackFrame, out flipped);
         }
-
-        attackFrame = flipped = false;
         return texture;
     }
 

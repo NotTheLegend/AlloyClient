@@ -326,6 +326,9 @@ public static class AtlasBuilder {
                 for (var j = 0; j < framesPerRow; j++) {
                     var rect = rectList[i];
                     frames[j] = AtlasData.FromRaw(rect.x, rect.y, rect.w, rect.h);
+                    if (j == 2 && (rect.w == 0 || rect.h == 0)) {
+                        frames[j] = frames[0];
+                    }
                     i++;
                 }
 
