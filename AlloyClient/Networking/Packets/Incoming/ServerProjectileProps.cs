@@ -58,7 +58,7 @@ public class ServerProjectileProps : IncomingPacket<ServerProjectileProps> {
 
     public override void Handle() {
         var objDesc = ObjectLibrary.TypeToObjectProps[ContainerType];
-        objDesc.Projectiles.Add(ProjId, ProjectileProperties.FromServer(this));
+        objDesc.Projectiles[ProjId] = ProjectileProperties.FromServer(this);
     }
 
     public override string ToString() {

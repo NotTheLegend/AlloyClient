@@ -19,9 +19,9 @@ public class SocketSendState : IDisposable
     
     public SocketSendState()
     {
-        _sendBuffer = ArrayPool<byte>.Shared.Rent(0x20000);
+        _sendBuffer = ArrayPool<byte>.Shared.Rent(0x10000);
         Array.Clear(_sendBuffer);
-        _writeBuffer = ArrayPool<byte>.Shared.Rent(0x20000);
+        _writeBuffer = ArrayPool<byte>.Shared.Rent(0x10000);
         Array.Clear(_writeBuffer);
     }
 

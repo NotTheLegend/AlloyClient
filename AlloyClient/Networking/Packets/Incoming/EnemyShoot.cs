@@ -61,7 +61,7 @@ public class EnemyShoot : IncomingPacket<EnemyShoot> {
             _log.Error($"Projectile '{ProjectileIndex}' not found for {en.Name}");
             return;
         }
-
+        
         if (!ObjectLibrary.IdToObjectType.TryGetValue(projProps.ObjectId, out var objType)) {
             _log.Error($"Projectile '{projProps.ObjectId}' not found in GameData.");
             return;

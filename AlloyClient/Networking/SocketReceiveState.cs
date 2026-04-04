@@ -11,7 +11,7 @@ public class SocketReceiveState : IDisposable {
     private byte[] _buffer;
     private int _bytesAvailable;
     private int _bytesRead;
-    private const int BUFFER_SIZE = 0x20000;
+    private const int BUFFER_SIZE = 0x40000;
 
     public SocketReceiveState() {
         // Rent memory from the shared pool
