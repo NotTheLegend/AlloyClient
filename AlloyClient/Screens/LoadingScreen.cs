@@ -8,8 +8,6 @@ using AlloyClient.UiLib.BuiltIn;
 using AlloyClient.UiLib.Core;
 using AlloyClient.UiLib.Enums;
 using AlloyClient.UiLib.Extra;
-using AlloyClient.Models;
-using AlloyClient.Utils;
 
 namespace AlloyClient.Screens;
 

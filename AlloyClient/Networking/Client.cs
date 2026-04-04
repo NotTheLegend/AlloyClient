@@ -12,7 +12,6 @@ using AlloyClient.Networking.Packets.Outgoing;
 using AlloyClient.Screens;
 using AlloyClient.State;
 using AlloyClient.Utils;
-using AlloyClient.Models;
 using Common;
 
 namespace AlloyClient.Networking;

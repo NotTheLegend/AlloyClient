@@ -6,8 +6,6 @@ using AlloyClient.Ui.Components.Panels;
 using AlloyClient.UiLib.BuiltIn;
 using AlloyClient.UiLib.BuiltIn.Buttons;
 using AlloyClient.UiLib.Enums;
-using AlloyClient.UiLib.Extra;
-using AlloyClient.Models;
 using AlloyClient.UiLib.Core;
 
 namespace AlloyClient.Screens.Components.Containers;
