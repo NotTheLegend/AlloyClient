@@ -410,11 +410,12 @@ public class Entity {
         if (TextureData.HasAnimationData) {
             var idx = 0d;
             if (time < AttackStart + AttackPeriod) {
+                attackFrame = true;
                 action = AnimationType.Attack;
                 idx = (time - AttackStart) % AttackPeriod / AttackPeriod;
                 FacingAngle = AttackAngle;
             } else if (MovementVector != Vector2.Zero) {
-                var walkPer = 0.5f / MovementVector.Length;
+                var walkPer = 0.5f / (MovementVector.Length * 4);
                 walkPer = walkPer + (400 - walkPer % 400);
 
                 if (MovementVector.X > ZeroLimit || MovementVector.X < NegZeroLimit || MovementVector.Y > ZeroLimit || MovementVector.Y < NegZeroLimit) {
@@ -427,8 +428,7 @@ public class Entity {
                 idx = time % walkPer / walkPer;
             }
 
-            texture = TextureData.AnimatedTextures.TextureFromFacing(FacingAngle, action, (float)idx, out attackFrame, out flipped);
-
+            return TextureData.AnimatedTextures.TextureFromFacing(FacingAngle, action, (float)idx, out attackFrame, out flipped);
         }
 
         attackFrame = flipped = false;
