@@ -58,7 +58,9 @@ public enum ModelType {
     PbWall,
     PbDoubleWall,
     PbDoubleWall2,
-    PbTripleWall
+    PbTripleWall,
+    
+    Count
 }
 
 public static partial class ModelData {

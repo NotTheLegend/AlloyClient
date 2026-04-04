@@ -107,7 +107,7 @@ public sealed class Projectile : IResettable {
 
         // Use smart projectile rotation if the projectile does not have its own rotation speed or the NoRotation tag
         if (_objDesc.Rotation != 0) {
-            Rotation = elapsed / _objDesc.Rotation; 
+            Rotation = elapsed / _objDesc.Rotation;
         } else if (!_projDesc.NoRotation) {
             var direction = newPos - _position;
             var angle = MathF.Atan2(direction.Y, direction.X);
