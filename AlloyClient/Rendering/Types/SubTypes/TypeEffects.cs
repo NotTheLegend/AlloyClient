@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AlloyClient.Game.Objects;
 using AlloyClient.Game.Objects.Util;
 using AlloyClient.Rendering.VertexData;
@@ -26,7 +27,7 @@ public class TypeEffects : SubRenderBase {
         Extra = new ExtraData(RenderConfig.TypeEffect, RenderConfig.Shade);
     }
     
-    public override void Draw(float yOffset) {
+    public override void Draw(float yOffset, List<VertexObject> targets) {
         Scale.W = -0.5f;
 
         var effects = (uint)(Entity.ConditionEffects & ~ConditionEffectUtil.IconlessEffects);
@@ -47,7 +48,7 @@ public class TypeEffects : SubRenderBase {
 
             var p = new Vector3(pos.X - x, pos.Y + y, pos.Z);
             
-            Render.DrawEntity(new VertexObject(p, ConditionEffectUtil.EffectIcons[(ConditionEffects)(1 << i)][0], Scale, Rotation, Extra.Data, Color));
+            targets.Add(new VertexObject(p, ConditionEffectUtil.EffectIcons[(ConditionEffects)(1 << i)][0], Scale, Rotation, Extra.Data, Color));
             num -= Size * 2;
         }
     }

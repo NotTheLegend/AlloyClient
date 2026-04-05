@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Runtime.InteropServices;
 using AlloyClient.Assets;
 using AlloyClient.Rendering.VertexData;
 using Common;
@@ -15,7 +18,6 @@ public static partial class Render {
     private static int _tileCount;
     private static int _shadowCount;
     private static int _modelCount;
-    private static int _entityCount;
     private static ModelType _entityModel;
 
     #region Render Tile
@@ -126,44 +128,40 @@ public static partial class Render {
 
     public static void StartDrawEntity() {
         LastDrawCountEntities = 0;
-        _entityCount = 0;
         
         _shaderObject.Apply();
         _entityDataBuffer.BindToIndex(0);
     }
 
-    public static void DrawEntity(VertexObject vertexObject) {
-        _entityData[_entityCount] = vertexObject;
-        _entityCount++;
+    public static void FlushBufferEntity(List<VertexObject> targets) {
+        if (targets.Count < 1) return;
 
-        if (_entityCount == _entityData.Length) {
-            FlushBufferEntity();
-        }
-    }
-
-    public static void FlushBufferEntity() {
-        if (_entityCount < 1) return;
-
-        // Pass 1: opaque pixels only — depth writes ON, no blend
-        _entityDataBuffer.SetData(_entityData.AsSpan(0, _entityCount));
+        var chunks = 1 + targets.Count / _entityData.Length;
+        var span = CollectionsMarshal.AsSpan(targets);
+        span.Sort();
         
-        GL.DepthMask(true);
-        GL.DepthFunc(DepthFunction.Less);
-        GL.Disable(EnableCap.Blend);
-        _shaderObject.SetValue("RenderPass", 0);
-        GL.DrawArrays(PrimitiveType.Triangles, 0, _entityCount * 6);
+        for (var i = 0; i < chunks; i++) {
+            // Pass 1: opaque pixels only — depth writes ON, no blend
+            var start = i * _entityData.Length;
+            var len = Math.Min(_entityData.Length, span.Length - start);
+            _entityDataBuffer.SetData(span.Slice(start, len));
 
-        // Pass 2: glow/outline pixels only — depth writes OFF, test still rejects hidden glows
-        GL.DepthMask(false);
-        GL.DepthFunc(DepthFunction.Lequal);
-        GL.Enable(EnableCap.Blend);
-        _shaderObject.SetValue("RenderPass", 1);
-        GL.DrawArrays(PrimitiveType.Triangles, 0, _entityCount * 6);
+            GL.DepthMask(true);
+            GL.DepthFunc(DepthFunction.Less);
+            GL.Disable(EnableCap.Blend);
+            _shaderObject.SetValue("RenderPass", 0);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, len * 6);
 
-        // Restore
-        GL.DepthMask(true);
+            // Pass 2: glow/outline pixels only — depth writes OFF, test still rejects hidden glows
+            GL.DepthMask(false);
+            GL.DepthFunc(DepthFunction.Lequal);
+            GL.Enable(EnableCap.Blend);
+            _shaderObject.SetValue("RenderPass", 1);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, len * 6);
 
-        _entityCount = 0;
+            // Restore
+            GL.DepthMask(true);
+        }
     }
 
     #endregion

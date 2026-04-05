@@ -59,6 +59,8 @@ public static class Map {
     private static int _particleCount;
     private static readonly ParticleData[] Particles = new ParticleData[30000];
 
+    private static readonly List<VertexObject> _renderTargets = [];
+
     public static void InitMap(int width, int height, string name, string display, int diff, uint seed, int background, bool allowTp, bool showDisplays) {
         Width = width;
         Height = height;
@@ -175,6 +177,8 @@ public static class Map {
 
         #region Entities
         
+        _renderTargets.Clear();
+        
         Render.StartDrawModel();
 
         for (var i = 0; i < EntityStorage.Types.Length; i++) {
@@ -186,7 +190,7 @@ public static class Map {
 
             foreach (var entity in list) {
                 if (entity.Visible) {
-                    entity.Draw();
+                    entity.Draw(_renderTargets);
                     Render.LastDrawCountEntities++;
                 }
 
@@ -198,17 +202,15 @@ public static class Map {
         GL.Disable(EnableCap.CullFace);
         
         Render.StartDrawEntity();
-
-        var sortedEntities = EntityStorage[ModelType.PbObject]
-            .Where(e => e.Visible)
-            .Order();
         
-        foreach (var type in sortedEntities) {
-            type.Draw();
-            Render.LastDrawCountEntities++;
+        foreach (var type in EntityStorage[ModelType.PbObject]) {
+            if (type.Visible) {
+                type.Draw(_renderTargets);
+            }
         }
 
-        Render.FlushBufferEntity();
+        Render.FlushBufferEntity(_renderTargets);
+        Render.LastDrawCountEntities += _renderTargets.Count;
 
         #endregion
 

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using AlloyClient.Assets;
 using AlloyClient.Engine.Common;
 using AlloyClient.Game.Objects;
+using AlloyClient.Rendering.VertexData;
 using Common;
 using Common.Structs;
 using OpenTK.Mathematics;
@@ -65,7 +67,7 @@ public abstract class RenderBase : IComparable<RenderBase> {
 
     public void SetSize(float size) => Size = size;
 
-    public abstract void Draw();
+    public abstract void Draw(List<VertexObject> targets);
     
     public virtual void DrawShadow() { }
 
@@ -100,7 +102,7 @@ public abstract class SubRenderBase {
 
     public void SetAlpha(float alpha) => Extra.Alpha = alpha;
     
-    public abstract void Draw(float yOffset);
+    public abstract void Draw(float yOffset, List<VertexObject> targets);
 }
 
 public struct ExtraData {

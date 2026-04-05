@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AlloyClient.Assets;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Game.Objects;
@@ -69,7 +70,7 @@ public sealed class TypeWall : RenderBase {
         UV = texture.ToVector4(true);
     }
 
-    public override void Draw() {
+    public override void Draw(List<VertexObject> targets) {
         Render.DrawModel(new VertexModel(Position, UV, new Vector3(0, _sortId, RenderConfig.Shade)));
     }
 }
