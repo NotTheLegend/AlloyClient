@@ -13,7 +13,7 @@ namespace AlloyClient.Rendering;
 
 public static partial class Render {
     
-    private const int BufferSize = 1000;
+    private const int BufferSize = 10000;
     private const int TileBufferSize = (int) (Map.TileRenderDistance * Map.TileRenderDistance * MathHelper.Pi) * 4;
     private const int ShadowBufferSize = 4096;
     

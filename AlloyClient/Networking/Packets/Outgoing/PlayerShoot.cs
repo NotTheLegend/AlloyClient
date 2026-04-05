@@ -27,9 +27,9 @@ public class PlayerShoot : OutgoingPacket<PlayerShoot> {
         IsServerShoot = false;
     }
 
-    public override void Write(NetworkWriter writer) {
+    public override void Write(ref SpanWriter writer) {
         writer.Write(Angle);
-        StartingPos.Write(writer);
+        StartingPos.Write(ref writer);
         writer.Write(Time);
         writer.Write(IsServerShoot);
         if (IsServerShoot) {

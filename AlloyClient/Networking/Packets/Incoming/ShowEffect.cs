@@ -20,87 +20,87 @@ public class ShowEffect : IncomingPacket<ShowEffect> {
         Color.Reset();
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         EffectType = (EffectType)reader.ReadByte();
 
         switch (EffectType) {
             case EffectType.Heal:
                 TargetObjectId = reader.ReadInt32();
-                Color.Read(reader);
+                Color.Read(ref reader);
                 break;
             case EffectType.Teleport:
-                Pos1.Read(reader);
+                Pos1.Read(ref reader);
                 break;
             case EffectType.Stream:
-                Pos1.Read(reader);
-                Pos2.Read(reader);
-                Color.Read(reader);
+                Pos1.Read(ref reader);
+                Pos2.Read(ref reader);
+                Color.Read(ref reader);
                 break;
             case EffectType.Throw:
                 TargetObjectId = reader.ReadInt32();
-                Pos1.Read(reader);
-                Color.Read(reader);
+                Pos1.Read(ref reader);
+                Color.Read(ref reader);
                 break;
             case EffectType.Nova:
                 TargetObjectId = reader.ReadInt32();
-                Color.Read(reader);
-                Pos1.Read(reader);
+                Color.Read(ref reader);
+                Pos1.Read(ref reader);
                 break;
             case EffectType.Poison:
                 TargetObjectId = reader.ReadInt32();
-                Color.Read(reader);
+                Color.Read(ref reader);
                 break;
             case EffectType.Trail:
                 TargetObjectId = reader.ReadInt32();
-                Pos1.Read(reader);
-                Color.Read(reader);
+                Pos1.Read(ref reader);
+                Color.Read(ref reader);
                 break;
             case EffectType.Burst:
                 TargetObjectId = reader.ReadInt32();
-                Pos1.Read(reader);
-                Pos2.Read(reader);
-                Color.Read(reader);
+                Pos1.Read(ref reader);
+                Pos2.Read(ref reader);
+                Color.Read(ref reader);
                 break;
             case EffectType.Flow:
                 TargetObjectId = reader.ReadInt32();
-                Pos1.Read(reader);
-                Color.Read(reader);
+                Pos1.Read(ref reader);
+                Color.Read(ref reader);
                 break;
             case EffectType.Trap:
                 TargetObjectId = reader.ReadInt32();
-                Color.Read(reader);
+                Color.Read(ref reader);
                 break;
             case EffectType.Lightning:
                 TargetObjectId = reader.ReadInt32();
-                Pos1.Read(reader);
-                Color.Read(reader);
+                Pos1.Read(ref reader);
+                Color.Read(ref reader);
                 break;
             case EffectType.Collapse:
                 TargetObjectId = reader.ReadInt32();
-                Pos1.Read(reader);
-                Pos2.Read(reader);
-                Color.Read(reader);
+                Pos1.Read(ref reader);
+                Pos2.Read(ref reader);
+                Color.Read(ref reader);
                 break;
             case EffectType.ConeBlast:
                 TargetObjectId = reader.ReadInt32();
-                Pos1.Read(reader);
-                Color.Read(reader);
+                Pos1.Read(ref reader);
+                Color.Read(ref reader);
                 break;
             case EffectType.Earthquake:
-                Pos1.Read(reader);
+                Pos1.Read(ref reader);
                 break;
             case EffectType.Flashing:
                 TargetObjectId = reader.ReadInt32();
-                Color.Read(reader);
+                Color.Read(ref reader);
                 break;
             case EffectType.ObjectToss:
                 TargetObjectId = reader.ReadInt32();
-                Pos1.Read(reader);
-                Pos2.Read(reader);
+                Pos1.Read(ref reader);
+                Pos2.Read(ref reader);
                 break;
             case EffectType.Vortex:
                 TargetObjectId = reader.ReadInt32();
-                Color.Read(reader);
+                Color.Read(ref reader);
                 break;
             case EffectType.FadeToBlack:
                 break;

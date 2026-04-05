@@ -378,7 +378,7 @@ public class Player : Entity {
             var bId = GetBulletId();
             var proj = ObjectPools.Projectiles.Pop();
             var dmg = MathUtils.RandomInt(projProps.MinDamage, projProps.MaxDamage);
-            proj.Reset(bId, dmg, angle, this, objProps, projProps);
+            proj.Reset(bId, dmg, angle, this, objProps, projProps, projProps.Path, Position);
             Map.AddProjectile(proj);
             
             var shoot = PlayerShoot.CreatePacket();

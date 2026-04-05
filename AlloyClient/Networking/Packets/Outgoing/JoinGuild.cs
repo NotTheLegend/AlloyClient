@@ -9,7 +9,7 @@ public class JoinGuild : OutgoingPacket<JoinGuild> {
         GuildName = string.Empty;
     }
 
-    public override void Write(NetworkWriter writer) {
+    public override void Write(ref SpanWriter writer) {
         writer.WriteUTF(GuildName);
     }
 

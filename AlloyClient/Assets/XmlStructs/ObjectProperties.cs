@@ -13,8 +13,7 @@ public class ObjectProperties {
     public readonly string DisplayId;
     public readonly string DisplayName;
     
-    public readonly List<ProjectileProperties> Projectiles;
-    public readonly Dictionary<int, ProjectileProperties> ProjectilesDict;
+    public readonly Dictionary<byte, ProjectileProperties> Projectiles;
     
     public readonly PlayerProperties PlayerProperties;
 
@@ -62,11 +61,9 @@ public class ObjectProperties {
         DisplayName = string.IsNullOrWhiteSpace(DisplayId) ? ObjectId : DisplayId;
         
         Projectiles = [];
-        ProjectilesDict = [];
         foreach (var proj in e.Elements("Projectile")) {
             var props = new ProjectileProperties(proj);
-            Projectiles.Add(props);
-            ProjectilesDict.TryAdd(props.BulletType, props);
+            Projectiles.TryAdd((byte)props.BulletType, props);
         }
         NumProjectiles = e.GetValue("NumProjectiles", 1);
         ArcGap = e.GetValue("ArcGap", 11.25f);

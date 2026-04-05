@@ -11,12 +11,12 @@ public struct Position : IDataObject {
         Y = f1;
     }
 
-    public void Read(NetworkReader reader) {
+    public void Read(ref SpanReader reader) {
         X = reader.ReadSingle();
         Y = reader.ReadSingle();
     }
 
-    public void Write(NetworkWriter writer) {
+    public void Write(ref SpanWriter writer) {
         writer.Write(X);
         writer.Write(Y);
     }

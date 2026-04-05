@@ -13,10 +13,10 @@ public class Pic : IncomingPacket<Pic> {
         Bytes = null;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         Width = reader.ReadInt32();
         Height = reader.ReadInt32();
-        Bytes = reader.ReadBytes(Width * Height * 4);
+        Bytes = reader.ReadBytes(Width * Height * 4).ToArray();
     }
 
     public override void Handle() {

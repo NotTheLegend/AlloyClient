@@ -11,8 +11,8 @@ public class InvDrop : OutgoingPacket<InvDrop> {
         SlotObject.Reset();
     }
 
-    public override void Write(NetworkWriter writer) {
-        SlotObject.Write(writer);
+    public override void Write(ref SpanWriter writer) {
+        SlotObject.Write(ref writer);
     }
 
     public override string ToString() {

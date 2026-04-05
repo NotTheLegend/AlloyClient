@@ -9,7 +9,7 @@ public class QuestObjId : IncomingPacket<QuestObjId> {
         CurrentQuestObjectId = 0;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         CurrentQuestObjectId = reader.ReadInt32();
     }
 

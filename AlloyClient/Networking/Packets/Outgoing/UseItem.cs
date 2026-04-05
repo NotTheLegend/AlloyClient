@@ -18,10 +18,10 @@ public class UseItem : OutgoingPacket<UseItem> {
         Time = 0;
     }
 
-    public override void Write(NetworkWriter writer) {
+    public override void Write(ref SpanWriter writer) {
         writer.Write(Time);
-        SlotObject.Write(writer);
-        ItemUsePos.Write(writer);
+        SlotObject.Write(ref writer);
+        ItemUsePos.Write(ref writer);
         writer.Write(UseType);
     }
 

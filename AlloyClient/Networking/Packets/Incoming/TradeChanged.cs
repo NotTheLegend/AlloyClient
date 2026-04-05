@@ -9,7 +9,7 @@ public class TradeChanged : IncomingPacket<TradeChanged> {
         Offer = null;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         Offer = new bool[reader.ReadInt16()];
 
         for (var i = 0; i < Offer.Length; i++) {

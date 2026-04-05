@@ -11,7 +11,7 @@ public class GlobalNotification : IncomingPacket<GlobalNotification> {
         Text = null;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         Type = reader.ReadInt32();
         Text = reader.ReadUTF();
     }

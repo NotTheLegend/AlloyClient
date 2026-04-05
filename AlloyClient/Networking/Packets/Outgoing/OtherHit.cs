@@ -15,7 +15,7 @@ public class OtherHit : OutgoingPacket<OtherHit> {
         TargetId = 0;
     }
 
-    public override void Write(NetworkWriter writer) {
+    public override void Write(ref SpanWriter writer) {
         writer.Write(Time);
         writer.Write(BulletId);
         writer.Write(ObjectId);

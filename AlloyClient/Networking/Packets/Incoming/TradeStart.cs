@@ -15,11 +15,11 @@ public class TradeStart : IncomingPacket<TradeStart> {
         YourItems = null;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         MyItems = new TradeItem[reader.ReadInt16()];
 
         for (var i = 0; i < MyItems.Length; i++) {
-            MyItems[i].Read(reader);
+            MyItems[i].Read(ref reader);
         }
 
         YourName = reader.ReadUTF();
@@ -27,7 +27,7 @@ public class TradeStart : IncomingPacket<TradeStart> {
         YourItems = new TradeItem[reader.ReadInt16()];
 
         for (var i = 0; i < YourItems.Length; i++) {
-            YourItems[i].Read(reader);
+            YourItems[i].Read(ref reader);
         }
     }
 

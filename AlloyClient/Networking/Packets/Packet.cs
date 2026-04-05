@@ -13,12 +13,12 @@ public interface IPacket {
 }
 
 public interface IIncomingPacket : IPacket {
-    void Read(NetworkReader reader);
+    void Read(ref SpanReader reader);
     void Handle();
 }
 
 public interface IOutgoingPacket : IPacket {
-    void Write(NetworkWriter writer);
+    void Write(ref SpanWriter writer);
 }
 
 public abstract class BasePacket<T> : IPacket where T : BasePacket<T>, new() {
@@ -45,12 +45,12 @@ public abstract class BasePacket<T> : IPacket where T : BasePacket<T>, new() {
 }
 
 public abstract class IncomingPacket<T> : BasePacket<T>, IIncomingPacket where T : IncomingPacket<T>, new() {
-    public abstract void Read(NetworkReader reader);
+    public abstract void Read(ref SpanReader reader);
     public abstract void Handle();
 }
 
 public abstract class OutgoingPacket<T> : BasePacket<T>, IOutgoingPacket where T : OutgoingPacket<T>, new() {
-    public abstract void Write(NetworkWriter writer);
+    public abstract void Write(ref SpanWriter writer);
 }
 
 // ReSharper disable SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
@@ -91,6 +91,7 @@ public static class PacketUtils {
             PacketId.TradeRequested => TradeRequested.CreatePacket(),
             PacketId.TradeStart => TradeStart.CreatePacket(),
             PacketId.Update => Update.CreatePacket(),
+            PacketId.ServerProjectileProps => ServerProjectileProps.CreatePacket(),
             _ => throw new ArgumentException($"Unsupported packet ID: {packetId}")
         };
     }

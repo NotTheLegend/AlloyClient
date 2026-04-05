@@ -11,7 +11,7 @@ public class BuyResult : IncomingPacket<BuyResult> {
         ResultString = null;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         Result = reader.ReadInt32();
         ResultString = reader.ReadUTF();
     }

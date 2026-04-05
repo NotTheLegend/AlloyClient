@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using AlloyClient.Assets;
 using AlloyClient.Game.Components;
 using AlloyClient.Game.Components.Hud;
@@ -57,6 +59,8 @@ public static class Map {
     private static int _particleCount;
     private static readonly ParticleData[] Particles = new ParticleData[30000];
 
+    private static readonly List<VertexObject> _renderTargets = [];
+
     public static void InitMap(int width, int height, string name, string display, int diff, uint seed, int background, bool allowTp, bool showDisplays) {
         Width = width;
         Height = height;
@@ -97,7 +101,7 @@ public static class Map {
             ParticleGenerators[i] = ParticleGenerators[ParticleGenCount];
             ParticleGenerators[ParticleGenCount] = null;
         }
-        
+
         for (var i = Projectiles.Count - 1; i >= 0; i--) {
             var proj = Projectiles[i];
             if (proj.Update(time, dt, matrix))
@@ -151,15 +155,13 @@ public static class Map {
 
         #region Shadows
 
-        if (EntityStorage.TryGetValue(ModelType.PbObject, out var go)) {
-            Render.StartDrawShadow();
+        Render.StartDrawShadow();
 
-            foreach (var type in go) {
-                type.DrawShadow();
-            }
-
-            Render.EndShadowDraw();
+        foreach (var type in EntityStorage[ModelType.PbObject]) {
+            type.DrawShadow();
         }
+
+        Render.EndShadowDraw();
 
         #endregion
 
@@ -175,16 +177,20 @@ public static class Map {
 
         #region Entities
         
+        _renderTargets.Clear();
+        
         Render.StartDrawModel();
 
-        foreach (var kvp in EntityStorage) {
-            if (kvp.Key == ModelType.Null || kvp.Key == ModelType.PbObject) continue;
+        for (var i = 0; i < EntityStorage.Types.Length; i++) {
+            var type = (ModelType)i;
+            var list = EntityStorage.Types[i];
+            if (type == ModelType.Null || type == ModelType.PbObject) continue;
 
-            Render.SetEntityModel(kvp.Key);
+            Render.SetEntityModel(type);
 
-            foreach (var entity in kvp.Value) {
+            foreach (var entity in list) {
                 if (entity.Visible) {
-                    entity.Draw();
+                    entity.Draw(_renderTargets);
                     Render.LastDrawCountEntities++;
                 }
 
@@ -196,19 +202,15 @@ public static class Map {
         GL.Disable(EnableCap.CullFace);
         
         Render.StartDrawEntity();
-
-        if (EntityStorage.TryGetValue(ModelType.PbObject, out var entities)) {
-            entities.Sort();
-
-            foreach (var type in entities) {
-                if (type.Visible) {
-                    type.Draw();
-                    Render.LastDrawCountEntities++;
-                }
+        
+        foreach (var type in EntityStorage[ModelType.PbObject]) {
+            if (type.Visible) {
+                type.Draw(_renderTargets);
             }
-
-            Render.FlushBufferEntity();
         }
+
+        Render.FlushBufferEntity(_renderTargets);
+        Render.LastDrawCountEntities += _renderTargets.Count;
 
         #endregion
 
@@ -378,14 +380,25 @@ public static class Map {
     }
 }
 
-public class RenderStorage : Dictionary<ModelType, List<RenderBase>> {
+public class RenderStorage {
+    public readonly HashSet<RenderBase>[] Types = new HashSet<RenderBase>[(int)ModelType.Count];
+
+    public HashSet<RenderBase> this[ModelType modelType] => Types[(int)modelType];
+    
+    public RenderStorage() {
+        for (var i = 0; i < Types.Length; i++)
+            Types[i] = new HashSet<RenderBase>();
+    }
+
+    public void Clear() {
+        for (var i = 0; i < Types.Length; i++)
+            Types[i].Clear();
+    }
+    
     public void Add(Entity entity) {
         var type = entity.RenderBaseType;
-        if (!ContainsKey(type.ModelType)) {
-            base[type.ModelType] = [];
-        }
-
-        base[type.ModelType].Add(type);
+        var list = Types[(int)type.ModelType];
+        list.Add(type);
 
         switch (type) {
             case TypeWall w:
@@ -396,11 +409,9 @@ public class RenderStorage : Dictionary<ModelType, List<RenderBase>> {
     
     public void Add(Projectile proj) {
         var type = proj.RenderBaseType;
-        if (!ContainsKey(type.ModelType)) {
-            base[type.ModelType] = [];
-        }
+        var list = Types[(int)type.ModelType];
 
-        base[type.ModelType].Add(type);
+        list.Add(type);
     }
 
     private void Add(RenderBase type) {
@@ -408,20 +419,15 @@ public class RenderStorage : Dictionary<ModelType, List<RenderBase>> {
             return;
         }
 
-        if (!ContainsKey(type.ModelType)) {
-            base[type.ModelType] = [];
-        }
-
-        base[type.ModelType].Add(type);
+        var list = Types[(int)type.ModelType];
+        list.Add(type);
     }
 
     public void Remove(Entity entity) {
         var type = entity.RenderBaseType;
-        if (!ContainsKey(type.ModelType)) {
-            return;
-        }
+        var list = Types[(int)type.ModelType];
 
-        base[type.ModelType].Remove(type);
+        list.Remove(type);
 
         if (type is TypeWall w) {
             Remove(w.Top);
@@ -430,18 +436,14 @@ public class RenderStorage : Dictionary<ModelType, List<RenderBase>> {
     
     public void Remove(Projectile proj) {
         var type = proj.RenderBaseType;
-        if (!ContainsKey(type.ModelType)) {
-            return;
-        }
+        var list = Types[(int)type.ModelType];
 
-        base[type.ModelType].Remove(type);
+        list.Remove(type);
     }
 
     private void Remove(RenderBase type) {
-        if (!ContainsKey(type.ModelType)) {
-            return;
-        }
+        var list = Types[(int)type.ModelType];
 
-        base[type.ModelType].Remove(type);
+        list.Remove(type);
     }
 }

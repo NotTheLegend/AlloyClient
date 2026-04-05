@@ -9,7 +9,7 @@ public class PlayerText : OutgoingPacket<PlayerText> {
         Text = string.Empty;
     }
 
-    public override void Write(NetworkWriter writer) {
+    public override void Write(ref SpanWriter writer) {
         writer.WriteUTF(Text);
     }
 

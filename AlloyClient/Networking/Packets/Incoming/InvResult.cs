@@ -11,7 +11,7 @@ public class InvResult : IncomingPacket<InvResult> {
         Result = 0;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         Result = reader.ReadInt32();
     }
 

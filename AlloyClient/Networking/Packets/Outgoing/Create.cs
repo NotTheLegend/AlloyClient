@@ -11,7 +11,7 @@ public class Create : OutgoingPacket<Create> {
         SkinType = 0;
     }
 
-    public override void Write(NetworkWriter writer) {
+    public override void Write(ref SpanWriter writer) {
         writer.Write(ClassType);
         writer.Write(SkinType);
     }

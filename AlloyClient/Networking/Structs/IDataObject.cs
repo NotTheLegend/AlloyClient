@@ -2,6 +2,6 @@
 
 public interface IDataObject {
     public void Reset();
-    public void Read(NetworkReader reader);
-    public void Write(NetworkWriter writer);
+    public void Read(ref SpanReader reader);
+    public void Write(ref SpanWriter writer);
 }

@@ -13,7 +13,7 @@ public class AcceptTrade : OutgoingPacket<AcceptTrade> {
         YourOffer = Array.Empty<bool>();
     }
 
-    public override void Write(NetworkWriter writer) {
+    public override void Write(ref SpanWriter writer) {
         writer.Write((short)MyOffer.Length);
 
         foreach (var b in MyOffer) {

@@ -13,9 +13,9 @@ public class AoeAck : OutgoingPacket<AoeAck> {
         Pos.Reset();
     }
 
-    public override void Write(NetworkWriter writer) {
+    public override void Write(ref SpanWriter writer) {
         writer.Write(Time);
-        Pos.Write(writer);
+        Pos.Write(ref writer);
     }
 
     public override string ToString() {

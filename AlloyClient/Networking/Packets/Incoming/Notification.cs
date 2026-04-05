@@ -15,10 +15,10 @@ public class Notification : IncomingPacket<Notification> {
         Color.Reset();
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         ObjectId = reader.ReadInt32();
         Message = reader.ReadUTF();
-        Color.Read(reader);
+        Color.Read(ref reader);
     }
 
     public override void Handle() {

@@ -6,7 +6,7 @@ public class Escape : OutgoingPacket<Escape> {
     public override void Reset() {
     }
 
-    public override void Write(NetworkWriter writer) {
+    public override void Write(ref SpanWriter writer) {
     }
 
     public override string ToString() {

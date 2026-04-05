@@ -3,7 +3,7 @@
 public class EnemyHit : OutgoingPacket<EnemyHit> {
 
     public int Time;
-    public byte BulletId;
+    public ushort BulletId;
     public int TargetId;
     public bool Killed;
 
@@ -16,7 +16,7 @@ public class EnemyHit : OutgoingPacket<EnemyHit> {
         Killed = false;
     }
 
-    public override void Write(NetworkWriter writer) {
+    public override void Write(ref SpanWriter writer) {
         writer.Write(Time);
         writer.Write(BulletId);
         writer.Write(TargetId);

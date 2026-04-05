@@ -12,7 +12,7 @@ public class Pong : OutgoingPacket<Pong> {
         Time = 0;
     }
 
-    public override void Write(NetworkWriter writer) {
+    public override void Write(ref SpanWriter writer) {
         writer.Write(Serial);
         writer.Write(Time);
     }

@@ -1,4 +1,5 @@
-﻿using AlloyClient.Assets;
+﻿using System.Collections.Generic;
+using AlloyClient.Assets;
 using AlloyClient.Game.Objects;
 using AlloyClient.Rendering.VertexData;
 using Common.Structs;
@@ -44,7 +45,7 @@ public sealed class TypeGroundObject : RenderBase {
     
     public override void SetName(string name) { }
 
-    public override void Draw() {
-        Render.DrawEntity(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color));
+    public override void Draw(List<VertexObject> targets) {
+        targets.Add(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color));
     }
 }

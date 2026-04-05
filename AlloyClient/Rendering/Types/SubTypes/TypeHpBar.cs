@@ -1,4 +1,5 @@
-﻿using AlloyClient.Engine.Common;
+﻿using System.Collections.Generic;
+using AlloyClient.Engine.Common;
 using AlloyClient.Game.Objects;
 using AlloyClient.Rendering.VertexData;
 using OpenTK.Mathematics;
@@ -38,10 +39,10 @@ public class TypeHpBar : SubRenderBase {
         Scale.X = 0.68f * percent;
     }
     
-    public override void Draw(float yOffset) {
+    public override void Draw(float yOffset, List<VertexObject> targets) {
         _bgScale.W = yOffset;
         Scale.W = yOffset;
-        Render.DrawEntity(new VertexObject(Parent.Position, UV, Scale, Rotation, Extra.Data, Color));
-        Render.DrawEntity(new VertexObject(Parent.Position, UV, _bgScale, Rotation, Extra.Data, _bgColor));
+        targets.Add(new VertexObject(Parent.Position, UV, Scale, Rotation, Extra.Data, Color));
+        targets.Add(new VertexObject(Parent.Position, UV, _bgScale, Rotation, Extra.Data + new Vector4(0, 0.001f, 0, 0), _bgColor));
     }
 }

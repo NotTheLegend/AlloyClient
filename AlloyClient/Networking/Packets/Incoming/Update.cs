@@ -29,18 +29,18 @@ public class Update : IncomingPacket<Update> {
         TileCount = NewObjCount = DropCount = 0;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         ObjectDef.StatsPoolIndex = 0;
         
         TileCount = reader.ReadInt16();
         EnsureCapacity(ref _tilesBuffer, TileCount);
         for (int i = 0; i < TileCount; i++)
-            _tilesBuffer[i].Read(reader);
+            _tilesBuffer[i].Read(ref reader);
 
         NewObjCount = reader.ReadInt16();
         EnsureCapacity(ref _newObjsBuffer, NewObjCount);
         for (int i = 0; i < NewObjCount; i++)
-            _newObjsBuffer[i].Read(reader);
+            _newObjsBuffer[i].Read(ref reader);
 
         DropCount = reader.ReadInt16();
         EnsureCapacity(ref _dropsBuffer, DropCount);

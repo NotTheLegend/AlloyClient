@@ -237,10 +237,6 @@ public class Entity {
             return false;
         }
         
-        if (tile.OccupiedObject != null && tile.OccupiedObject.Properties.OccupySquare) {
-            return false;
-        }
-
         Position.X = x;
         Position.Y = y;
 
@@ -407,14 +403,17 @@ public class Entity {
         
         var texture = new AtlasData();
         var action = AnimationType.Stand;
+        attackFrame = flipped = false;
+        
         if (TextureData.HasAnimationData) {
             var idx = 0d;
             if (time < AttackStart + AttackPeriod) {
+                attackFrame = true;
                 action = AnimationType.Attack;
                 idx = (time - AttackStart) % AttackPeriod / AttackPeriod;
                 FacingAngle = AttackAngle;
             } else if (MovementVector != Vector2.Zero) {
-                var walkPer = 0.5f / MovementVector.Length;
+                var walkPer = 0.5f / (MovementVector.Length * 4);
                 walkPer = walkPer + (400 - walkPer % 400);
 
                 if (MovementVector.X > ZeroLimit || MovementVector.X < NegZeroLimit || MovementVector.Y > ZeroLimit || MovementVector.Y < NegZeroLimit) {
@@ -428,10 +427,7 @@ public class Entity {
             }
 
             texture = TextureData.AnimatedTextures.TextureFromFacing(FacingAngle, action, (float)idx, out attackFrame, out flipped);
-
         }
-
-        attackFrame = flipped = false;
         return texture;
     }
 

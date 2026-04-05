@@ -11,7 +11,7 @@ public class NameResult : IncomingPacket<NameResult> {
         ErrorText = null;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         Success = reader.ReadBoolean();
         ErrorText = reader.ReadUTF();
     }

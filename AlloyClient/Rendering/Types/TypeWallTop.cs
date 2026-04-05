@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AlloyClient.Assets;
 using AlloyClient.Rendering.VertexData;
 using Common.Structs;
@@ -47,7 +48,7 @@ public sealed class TypeWallTop : RenderBase {
     
     public override void SetName(string name) { }
 
-    public override void Draw() {
+    public override void Draw(List<VertexObject> targets) {
         Render.DrawModel(new VertexModel(Position, UV, new Vector3(0, _sortId, RenderConfig.NoShade)));
     }
 }

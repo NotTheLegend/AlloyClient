@@ -23,7 +23,7 @@ public class Text : IncomingPacket<Text> {
         Txt = null;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         Name = reader.ReadUTF();
         ObjectId = reader.ReadInt32();
         NumStars = reader.ReadInt32();

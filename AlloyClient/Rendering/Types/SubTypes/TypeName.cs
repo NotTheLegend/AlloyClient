@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using AlloyClient.Engine.Common;
 using AlloyClient.Game.Objects;
 using AlloyClient.Rendering.VertexData;
@@ -74,11 +75,11 @@ public class TypeName : SubRenderBase {
         Color = new Color(0xFC, 0xDF, 0, 1);
     }
     
-    public override void Draw(float yOffset) {
+    public override void Draw(float yOffset, List<VertexObject> targets) {
         for (var index = 0; index < _glyphs.Length; index++) {
             var g = _glyphs[index];
             g.Scale.W += yOffset;
-            Render.DrawEntity(new VertexObject(Parent.Position, g.UV, g.Scale, Rotation, Extra.Data, Color));
+            targets.Add(new VertexObject(Parent.Position, g.UV, g.Scale, Rotation, Extra.Data, Color));
         }
     }
     

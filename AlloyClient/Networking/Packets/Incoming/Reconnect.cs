@@ -14,7 +14,7 @@ public class Reconnect : IncomingPacket<Reconnect> {
         GameId = 0;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         GameId = reader.ReadInt32();
     }
 

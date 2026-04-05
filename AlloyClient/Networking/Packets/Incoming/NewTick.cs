@@ -18,13 +18,13 @@ public class NewTick : IncomingPacket<NewTick> {
         ObjectStatsCount = 0;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         Structs.DataObjects.ObjectStats.StatsPoolIndex = 0;
         
         ObjectStatsCount = reader.ReadInt16();
         EnsureCapacity(ref _statsBuffer, ObjectStatsCount);
         for (int i = 0; i < ObjectStatsCount; i++)
-            _statsBuffer[i].Read(reader);
+            _statsBuffer[i].Read(ref reader);
     }
 
     private static void EnsureCapacity<T>(ref T[] array, int needed) {
@@ -33,8 +33,6 @@ public class NewTick : IncomingPacket<NewTick> {
     }
 
     public override void Handle() {
-        var isLocalPlayer = false;
-
         if (Map.LocalPlayer != null) {
             var move = Move.CreatePacket();
             move.NewPosition = new Position {
@@ -43,24 +41,21 @@ public class NewTick : IncomingPacket<NewTick> {
             };
 
             Client.QueuePacket(move);
-
-            isLocalPlayer = true;
-
             Map.LocalPlayer.OnMove();
         }
 
         for (int i = 0; i < ObjectStatsCount; i++)
-            ProcessObjectStats(_statsBuffer[i], isLocalPlayer);
+            ProcessObjectStats(_statsBuffer[i]);
     }
 
-    private void ProcessObjectStats(ObjectStats stats, bool isPlayer) {
+    private void ProcessObjectStats(ObjectStats stats) {
         if (!Map.Entities.TryGetValue(stats.Id, out var en)) {
             Logger.Warn($"[NewTick] Unable to lookup id: {stats.Id}");
             return;
         }
         en.UpdateStats(Structs.DataObjects.ObjectStats.StatsPool, stats.StatOffset, stats.StatCount);
 
-        en.OnTickPosition(stats.Position.X, stats.Position.Y, 0, 0, isPlayer);
+        en.OnTickPosition(stats.Position.X, stats.Position.Y, 0, 0, stats.Id == Map.LocalPlayerId);
     }
 
     public override string ToString() {

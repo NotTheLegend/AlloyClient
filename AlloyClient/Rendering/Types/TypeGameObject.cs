@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AlloyClient.Assets;
 using AlloyClient.Engine.Common;
 using AlloyClient.Game.Objects;
@@ -61,7 +62,7 @@ public sealed class TypeGameObject : RenderBase {
 
     public override void SetName(string name) { }
 
-    public override void Draw() {
+    public override void Draw(List<VertexObject> targets) {
         var s = MathF.Sin(-Entity.Rotation);
         var c = MathF.Cos(-Entity.Rotation);
         var k = Entity.Size / 100f;
@@ -70,7 +71,7 @@ public sealed class TypeGameObject : RenderBase {
         
         Entity.HeightOffset = -1 * Scale.Y * k + Scale.W * k;
         
-        Render.DrawEntity(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color));
+        targets.Add(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color));
         
         if (Entity.Properties.Static) return;
         
@@ -78,10 +79,10 @@ public sealed class TypeGameObject : RenderBase {
 
         if (Entity.MaxHp != 0) {
             _hpBar.SetFill(1f * Entity.Hp / Entity.MaxHp);
-            _hpBar.Draw(y);
+            _hpBar.Draw(y, targets);
         }
         
-        _effects.Draw(Entity.HeightOffset);
+        _effects.Draw(Entity.HeightOffset, targets);
     }
 
     public override void DrawShadow() {

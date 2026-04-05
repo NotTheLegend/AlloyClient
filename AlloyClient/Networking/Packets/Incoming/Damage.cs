@@ -23,7 +23,7 @@ public class Damage : IncomingPacket<Damage> {
         ObjectId = 0;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         TargetId = reader.ReadInt32();
 
         byte c = reader.ReadByte();

@@ -11,7 +11,7 @@ public class TradeDone : IncomingPacket<TradeDone> {
         Description = null;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         Code = reader.ReadInt32();
         Description = reader.ReadUTF();
     }

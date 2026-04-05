@@ -29,7 +29,7 @@ public static class Settings {
     //public const string AppEngineAddress = "204.13.235.158";
     public const string AssetUrl = "https://domain-of-magica.github.io";
 
-    public const string AppEnginePort = "80";
+    public const string AppEnginePort = "8080";
     public const string AppEngineUrl = $"http://{AppEngineAddress}:{AppEnginePort}";
 
     public const int AppEngineTimeout = 10000;

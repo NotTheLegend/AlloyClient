@@ -16,7 +16,7 @@ public class AllyShoot : IncomingPacket<AllyShoot> {
         Angle = 0;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         BulletId = reader.ReadByte();
         OwnerId = reader.ReadInt32();
         ContainerType = reader.ReadUInt16();

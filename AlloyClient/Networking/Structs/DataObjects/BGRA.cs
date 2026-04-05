@@ -13,14 +13,14 @@ public struct ARGB(uint bgra) : IDataObject {
         A = 0;
     }
 
-    public void Read(NetworkReader reader) {
+    public void Read(ref SpanReader reader) {
         A = reader.ReadByte();
         R = reader.ReadByte();
         G = reader.ReadByte();
         B = reader.ReadByte();
     }
 
-    public void Write(NetworkWriter writer) {
+    public void Write(ref SpanWriter writer) {
         writer.Write(A);
         writer.Write(R);
         writer.Write(G);

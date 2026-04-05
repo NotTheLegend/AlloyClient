@@ -9,7 +9,7 @@ public class TradeRequested : IncomingPacket<TradeRequested> {
         Name = null;
     }
 
-    public override void Read(NetworkReader reader) {
+    public override void Read(ref SpanReader reader) {
         Name = reader.ReadUTF();
     }
 

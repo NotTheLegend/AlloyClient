@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AlloyClient.Assets;
 using AlloyClient.Engine.Common;
 using AlloyClient.Game;
@@ -70,7 +71,7 @@ public sealed class TypePlayer : RenderBase {
         _typeName.SetTextures();
     }
 
-    public override void Draw() {
+    public override void Draw(List<VertexObject> targets) {
         var s = MathF.Sin(-Entity.Rotation);
         var c = MathF.Cos(-Entity.Rotation);
         var k = Entity.Size / 100f;
@@ -79,19 +80,19 @@ public sealed class TypePlayer : RenderBase {
         
         Entity.HeightOffset = -0.5f * Scale.Y * k + Scale.W * k;
         
-        Render.DrawEntity(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color));
+        targets.Add(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color));
         var y = 0.1f;
         if (_player != Map.LocalPlayer) {
-            _typeName.Draw(y);
+            _typeName.Draw(y, targets);
             y += _typeName.Height;
         }
         
         _hpBar.SetFill(1f * _player.Hp / _player.MaxHp);
-        _hpBar.Draw(y);
+        _hpBar.Draw(y, targets);
         y += _hpBar.Height;
-        _mpBar.Draw(y);
+        _mpBar.Draw(y, targets);
         
-        _effects.Draw(Entity.HeightOffset);
+        _effects.Draw(Entity.HeightOffset, targets);
         
     }
 

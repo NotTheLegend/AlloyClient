@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using AlloyClient.Engine.Common;
 using AlloyClient.Engine.Graphics.Buffers;
 using OpenTK.Mathematics;
@@ -6,7 +7,7 @@ using OpenTK.Mathematics;
 namespace AlloyClient.Rendering.VertexData;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct VertexObject(Vector3 position, Vector4 uv, Vector4 scale, Vector4 rotation, Vector4 extra, Color color) : IBufferData<VertexObject> {
+public struct VertexObject(Vector3 position, Vector4 uv, Vector4 scale, Vector4 rotation, Vector4 extra, Color color) : IBufferData<VertexObject>, IComparable<VertexObject> {
     public Vector4 Position = new (position, 1);
     public Vector4 UV = uv;
     public Vector4 Scale = scale;
@@ -47,5 +48,17 @@ public struct VertexObject(Vector3 position, Vector4 uv, Vector4 scale, Vector4 
 
     public bool Equals(VertexObject other) {
         return Position.Equals(other.Position) && UV.Equals(other.UV) && Scale.Equals(other.Scale) && Rotation.Equals(other.Rotation) && Extra.Equals(other.Extra) && Color.Equals(other.Color);
+    }
+    
+    public int CompareTo(VertexObject other) {
+        if (Extra.Y < other.Extra.Y) {
+            return 1;
+        }
+
+        if (Extra.Y > other.Extra.Y) {
+            return -1;
+        }
+        
+        return 0;
     }
 }

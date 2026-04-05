@@ -1,4 +1,6 @@
-﻿using AlloyClient.Assets;
+﻿using System.Collections.Generic;
+using AlloyClient.Assets;
+using AlloyClient.Rendering.VertexData;
 using Common.Structs;
 
 namespace AlloyClient.Rendering.Types;
@@ -24,5 +26,5 @@ public sealed class TypeNullObject : RenderBase {
     
     public override void SetName(string name) { }
     
-    public override void Draw() { }
+    public override void Draw(List<VertexObject> targets) { }
 }

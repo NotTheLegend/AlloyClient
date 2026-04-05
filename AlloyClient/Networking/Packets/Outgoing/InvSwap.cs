@@ -17,11 +17,11 @@ public class InvSwap : OutgoingPacket<InvSwap> {
         SlotObj2.Reset();
     }
 
-    public override void Write(NetworkWriter writer) {
+    public override void Write(ref SpanWriter writer) {
         writer.Write(Time);
-        Position.Write(writer);
-        SlotObj1.Write(writer);
-        SlotObj2.Write(writer);
+        Position.Write(ref writer);
+        SlotObj1.Write(ref writer);
+        SlotObj2.Write(ref writer);
     }
 
     public override string ToString() {

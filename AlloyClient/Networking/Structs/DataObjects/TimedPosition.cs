@@ -10,14 +10,14 @@ public struct TimedPosition : IDataObject {
         Position.Reset();
     }
 
-    public void Read(NetworkReader reader) {
+    public void Read(ref SpanReader reader) {
         Time = reader.ReadInt32();
-        Position.Read(reader);
+        Position.Read(ref reader);
     }
 
-    public void Write(NetworkWriter writer) {
+    public void Write(ref SpanWriter writer) {
         writer.Write(Time);
-        Position.Write(writer);
+        Position.Write(ref writer);
     }
 
     public override string ToString() {
