@@ -43,6 +43,6 @@ public class TypeHpBar : SubRenderBase {
         _bgScale.W = yOffset;
         Scale.W = yOffset;
         targets.Add(new VertexObject(Parent.Position, UV, Scale, Rotation, Extra.Data, Color));
-        targets.Add(new VertexObject(Parent.Position, UV, _bgScale, Rotation, Extra.Data + new Vector4(0, 0.1f, 0, 0), _bgColor));
+        targets.Add(new VertexObject(Parent.Position, UV, _bgScale, Rotation, Extra.Data + new Vector4(0, 0.001f, 0, 0), _bgColor));
     }
 }
