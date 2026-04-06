@@ -73,17 +73,18 @@ public class CharacterStatusText : Sprite {
         var c = MathF.Cos(-Settings.CameraAngle);
 
         var x = _owner.Position.X - Camera.Position.X;
-        var y = _owner.Position.Y + _owner.HeightOffset + Camera.Position.Y;
+        var y = _owner.Position.Y + Camera.Position.Y;
             
         var x1 = x * c - y * s;
         var y1 = x * s + y * c;
 
         var newX = MathUtils.Map(x1, -w, w, 0f, Settings.ScreenWidth - Camera.HudOffset);
         var newY = MathUtils.Map(y1, -h, h, 0f, Settings.ScreenHeight);
-        var drift = elapsedTime / _lifetime * MaxDrift;
+        var offset = _owner.HeightOffset / (h + h) * Settings.ScreenHeight;
+        var drift = elapsedTime / _lifetime / (h + h) * Settings.ScreenHeight;
 
         X = (int)newX;
-        Y = (int)newY + (int)drift;
+        Y = (int)newY - (int)drift + (int)offset;
         
         var remainingLifetime = _lifetime - elapsedTime;
         Alpha = (float)(remainingLifetime / _lifetime);

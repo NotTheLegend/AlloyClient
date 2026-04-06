@@ -85,7 +85,7 @@ public static class Camera {
         BillboardMatrix[1, 0] = s;
         BillboardMatrix[1, 1] = c;
 
-        VisibleTileRadius = new Vector2((Settings.ScreenWidth - HudOffset) * Settings.CameraZoom, Settings.ScreenHeight * Settings.CameraZoom);
+        VisibleTileRadius = new Vector2((Settings.ScreenWidth - HudOffset) / (100.0f * Settings.CameraZoom), Settings.ScreenHeight / (100.0f * Settings.CameraZoom));
     }
 
     // Only tested on MapEditor
