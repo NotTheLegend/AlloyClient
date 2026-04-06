@@ -24,6 +24,7 @@ public class ProjectilePath
     {
         baseSegment.LifetimeMs = lifetimeMs;
         projectilePathSegments.Add(baseSegment);
+        _lifetimeMs += lifetimeMs;
     }
 
     /// <summary>
@@ -35,6 +36,7 @@ public class ProjectilePath
         foreach (var segment in projectilePathSegments)
         {
             this.projectilePathSegments.Add(segment.Clone());
+            _lifetimeMs += segment.LifetimeMs;
         }
     }
 
@@ -43,10 +45,11 @@ public class ProjectilePath
     /// </summary>
     public int SegmentCount => projectilePathSegments.Count;
 
+    private int _lifetimeMs = 0;
     /// <summary>
     ///     Gets the total lifetime of this path.
     /// </summary>
-    public int LifetimeMs => projectilePathSegments.Sum(p => p.LifetimeMs);
+    public int LifetimeMs => _lifetimeMs;
 
     /// <summary>
     ///     Gets or sets the projectile info for this path.
@@ -60,6 +63,7 @@ public class ProjectilePath
     public void RegisterSegment(ProjectilePathSegment segment)
     {
         projectilePathSegments.Add(segment);
+        _lifetimeMs += segment.LifetimeMs;
     }
 
     /// <summary>
@@ -101,9 +105,10 @@ public class ProjectilePath
 
     public void SetInfo(ProjectileInfo info) {
         Info = info;
-        foreach (var segment in projectilePathSegments)
-        {
+        foreach (var segment in projectilePathSegments) {
+            _lifetimeMs -= segment.LifetimeMs;
             segment.SetInfo(info);
+            _lifetimeMs += segment.LifetimeMs;
         }
     }
 
