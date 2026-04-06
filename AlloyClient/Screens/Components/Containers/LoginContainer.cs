@@ -11,6 +11,9 @@ using AlloyClient.UiLib.Core;
 namespace AlloyClient.Screens.Components.Containers;
 
 public class LoginContainer : Overlay {
+
+    public static readonly EventType<Event> LoginEvent = "loginSuccess";
+    
     private readonly TextInput _emailInput;
     private readonly TextInput _passwordInput;
 
@@ -60,6 +63,6 @@ public class LoginContainer : Overlay {
             return;
         }
         CloseOverlay();
-        DispatchEvent(new Event("loginSuccess"));
+        DispatchEvent(new Event(LoginEvent));
     }
 }

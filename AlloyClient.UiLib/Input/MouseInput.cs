@@ -8,13 +8,13 @@ namespace AlloyClient.UiLib.Input;
 
 internal static class MouseInput {
 
-    private static readonly string[] EventTypes = [
+    private static readonly EventType<MouseEvent>[] EventTypes = [
         MouseEvent.LeftDown, MouseEvent.MiddleDown, MouseEvent.RightDown,
         MouseEvent.LeftUp, MouseEvent.MiddleUp, MouseEvent.RightUp,
         MouseEvent.MouseMove, MouseEvent.ScrollVertical, MouseEvent.ScrollHorizontal
     ];
 
-    internal static readonly Queue<string> Events = [];
+    internal static readonly Queue<EventType<MouseEvent>> Events = [];
 
     private static MouseButtonFlags _prevMouseState;
     private static MouseButtonFlags _mouseState;
@@ -60,7 +60,7 @@ internal static class MouseInput {
 
     internal static Vector2i GetMousePosition() => new((int) _mousePosition.X, (int)_mousePosition.Y);
 
-    private static string ButtonToEvent(MouseButton button, bool down) => button switch {
+    private static EventType<MouseEvent> ButtonToEvent(MouseButton button, bool down) => button switch {
         MouseButton.Button1 => down ? MouseEvent.LeftDown : MouseEvent.LeftUp,
         MouseButton.Button2 => down ? MouseEvent.RightDown : MouseEvent.RightUp,
         MouseButton.Button3 => down ? MouseEvent.MiddleDown : MouseEvent.MiddleUp,
@@ -69,7 +69,7 @@ internal static class MouseInput {
         MouseButton.Button6 => "",
         MouseButton.Button7 => "",
         MouseButton.Button8 => "", //TODO: extra mouse buttons
-
+        _ => throw new ArgumentOutOfRangeException(nameof(button), button, null)
     };
 
     private static MouseButtonFlags ButtonToFlag(MouseButton button) => button switch {
@@ -81,36 +81,6 @@ internal static class MouseInput {
         MouseButton.Button6 => MouseButtonFlags.Button6,
         MouseButton.Button7 => MouseButtonFlags.Button7,
         MouseButton.Button8 => MouseButtonFlags.Button8,
+        _ => throw new ArgumentOutOfRangeException(nameof(button), button, null)
     };
-
-
-    internal static bool CheckEvent(string type) {
-        return type switch {
-            MouseEvent.LeftDown => WasButtonDown(MouseEvent.LeftClick),
-            MouseEvent.MiddleDown => WasButtonDown(MouseEvent.MiddleClick),
-            MouseEvent.RightDown => WasButtonDown(MouseEvent.RightClick),
-            MouseEvent.LeftUp => WasButtonUp(MouseEvent.LeftClick),
-            MouseEvent.MiddleUp => WasButtonUp(MouseEvent.MiddleClick),
-            MouseEvent.RightUp => WasButtonUp(MouseEvent.RightClick),
-            _ => throw new NotSupportedException()
-        };
-    }
-
-    private static bool WasButtonDown(string eventId) {
-        return GetMouseButtonState(_mouseState, eventId) && !GetMouseButtonState(_prevMouseState, eventId);
-    }
-
-    private static bool WasButtonUp(string eventId) {
-        return GetMouseButtonState(_mouseState, eventId) && !GetMouseButtonState(_prevMouseState, eventId);
-    }
-
-    private static bool GetMouseButtonState(MouseButtonFlags input, string eventId) {
-        return eventId switch {
-            MouseEvent.LeftClick => (input & MouseButtonFlags.Button1) != 0,
-            MouseEvent.MiddleClick => (input & MouseButtonFlags.Button3) != 0,
-            MouseEvent.RightClick => (input & MouseButtonFlags.Button2) != 0,
-            _ => throw new ArgumentOutOfRangeException(nameof(eventId), eventId, null)
-        };
-
-    }
 }

@@ -10,6 +10,8 @@ using Common;
 namespace AlloyClient.UiLib.Core;
 
 public abstract class EventManager {
+
+    private static readonly HashSet<EventType<Event>> BroadcastEvents = [Event.EnterFrame];
     
     internal EventManager() { }
 
@@ -37,7 +39,7 @@ public abstract class EventManager {
     
     private readonly Dictionary<string, Queue<EventData>> _pending = [];
 
-    private readonly Queue<string> _pendingClicks = [];
+    private readonly Queue<EventType<MouseEvent>> _pendingClicks = [];
 
     
 
@@ -93,10 +95,8 @@ public abstract class EventManager {
             QueueTaskFinish(() => callback(t.Result, GetStatus(t)));
         });
     }
-
-    public void AddEventListener(string type, Delegate callback, bool capture = false) {
-        ValidateAgainstBuiltIn(type, callback);
-
+    
+    public void AddEventListener<T>(EventType<T> type, Action callback, bool capture = false) where T : Event {
         var listener = new Listener(callback, capture);
         if (_eventMap.TryGetValue(type, out var listeners) && listeners.Contains(listener))
             return;
@@ -104,26 +104,44 @@ public abstract class EventManager {
         HandleListener(new EventData(type, listener, QueueState.Add));
     }
     
-    public void RemoveEventListener(string type, Delegate callback, bool capture = false) {
+    public void AddEventListener<T>(EventType<T> type, Action<Event> callback, bool capture = false) where T : Event {
+        var listener = new Listener(callback, capture);
+        if (_eventMap.TryGetValue(type, out var listeners) && listeners.Contains(listener))
+            return;
+        
+        HandleListener(new EventData(type, listener, QueueState.Add));
+    }
+
+    public void AddEventListener<T>(EventType<T> type, Action<T> callback, bool capture = false) where T : Event {
+        var listener = new Listener(callback, capture);
+        if (_eventMap.TryGetValue(type, out var listeners) && listeners.Contains(listener))
+            return;
+        
+        HandleListener(new EventData(type, listener, QueueState.Add));
+    }
+    
+    public void RemoveEventListener<T>(EventType<T> type, Action callback, bool capture = false) where T : Event {
         var listener = new Listener(callback, capture);
         if (!_eventMap.TryGetValue(type, out var listeners)) return;
         if (!listeners.Contains(listener)) return;
         
         HandleListener(new EventData(type, listener, QueueState.Remove));
     }
-
-    private static void ValidateAgainstBuiltIn(string type, Delegate callback) {
-        switch (callback) {
-            case Action:
-            case Action<Event>:
-                return;
-            case Action<KeyboardEvent> when !KeyboardEvent.ValidateType(type):
-            case Action<MouseEvent> when !MouseEvent.ValidateType(type):
-            case Action<ResizeEvent> when !ResizeEvent.ValidateType(type):
-                throw new InvalidCallbackException("Invalid signature for defined callback");
-            default:
-                return;
-        }
+    
+    public void RemoveEventListener<T>(EventType<T> type, Action<Event> callback, bool capture = false) where T : Event {
+        var listener = new Listener(callback, capture);
+        if (!_eventMap.TryGetValue(type, out var listeners)) return;
+        if (!listeners.Contains(listener)) return;
+        
+        HandleListener(new EventData(type, listener, QueueState.Remove));
+    }
+    
+    public void RemoveEventListener<T>(EventType<T> type, Action<T> callback, bool capture = false) where T : Event {
+        var listener = new Listener(callback, capture);
+        if (!_eventMap.TryGetValue(type, out var listeners)) return;
+        if (!listeners.Contains(listener)) return;
+        
+        HandleListener(new EventData(type, listener, QueueState.Remove));
     }
 
     private void HandleListener(EventData pending) {
@@ -174,10 +192,9 @@ public abstract class EventManager {
         }
     }
 
-    private static bool IsBroadcast(string id) => id switch {
-        Event.EnterFrame => true,
-        _ => false
-    };
+    private static bool IsBroadcast(EventType<Event> type) {
+        return BroadcastEvents.Contains(type);
+    }
 
     private void HandlePending(string type) {
         if (!_pending.TryGetValue(type, out var queue))
@@ -215,29 +232,29 @@ public abstract class EventManager {
     private static Sprite _middleTarget;
     private static Sprite _rightTarget;
 
-    private void CheckClicks(string type) {
+    private void CheckClicks(EventType<MouseEvent> type) {
         var sprite = this as Sprite;
-        switch (type) {
-            case MouseEvent.LeftDown:
+        switch (type.Id) {
+            case MouseEvent.LeftDownKey:
                 _leftTarget = sprite;
                 break;
-            case MouseEvent.LeftUp:
+            case MouseEvent.LeftUpKey:
                 if (_leftTarget == sprite)
                     _pendingClicks.Enqueue(MouseEvent.LeftClick);
                 _leftTarget = null;
                 break;
-            case MouseEvent.MiddleDown:
+            case MouseEvent.MiddleDownKey:
                 _middleTarget = sprite;
                 break;
-            case MouseEvent.MiddleUp:
+            case MouseEvent.MiddleUpKey:
                 if (_middleTarget == sprite)
                     _pendingClicks.Enqueue(MouseEvent.MiddleClick);
                 _middleTarget = null;
                 break;
-            case MouseEvent.RightDown:
+            case MouseEvent.RightDownKey:
                 _rightTarget = sprite;
                 break;
-            case MouseEvent.RightUp:
+            case MouseEvent.RightUpKey:
                 if (_rightTarget == sprite)
                     _pendingClicks.Enqueue(MouseEvent.RightClick);
                 _rightTarget = null;
@@ -322,8 +339,8 @@ public abstract class EventManager {
         if (!has || listeners.Count < 1)
             return false;
 
-        if (MouseEvent.ValidateType(@event.Type))
-            return InvokeMouseEvent(@event as MouseEvent, listeners, phase);
+        if (@event is MouseEvent mouseEvent)
+            return InvokeMouseEvent(mouseEvent, listeners, phase);
         
         @event.SetCurrentTarget(this as Sprite);
         @event.Phase = phase;

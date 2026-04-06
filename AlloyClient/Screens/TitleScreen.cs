@@ -62,7 +62,7 @@ public class TitleScreen : TitleScreenBase {
             ScreenManager.FadeTo(new CharacterListScreen());
         } else {
             var login = new LoginContainer();
-            login.AddEventListener("loginSuccess", Overlay.OnLogin);
+            login.AddEventListener(LoginContainer.LoginEvent, Overlay.OnLogin);
             OverlayManager.Set(login);
         }
     }

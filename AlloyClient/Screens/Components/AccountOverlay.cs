@@ -51,7 +51,7 @@ public class AccountOverlay : Sprite {
 
         var loginConfig = new TextButtonConfig { Text = "login", FontSize = 24, OnClicked = () => {
             var login = new LoginContainer();
-            login.AddEventListener("loginSuccess", OnLogin);
+            login.AddEventListener(LoginContainer.LoginEvent, OnLogin);
             OverlayManager.Set(login);
         }, FontType = FontType.Bold, X = dashText.X + dashText.Width };
         var loginButton = new TextButton(loginConfig);
