@@ -8,21 +8,10 @@
         <LangVersion>preview</LangVersion>
 
         <EnablePreviewFeatures>true</EnablePreviewFeatures>
-
-        <ApplicationIcon>Icon.ico</ApplicationIcon>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <RunPostBuildEvent>Always</RunPostBuildEvent>
 		<DisableFastUpToDateCheck>True</DisableFastUpToDateCheck>
     </PropertyGroup>
-    
-    <ItemGroup>
-        <EmbeddedResource Include="Icon.bmp">
-            <LogicalName>Icon.bmp</LogicalName>
-        </EmbeddedResource>
-        <EmbeddedResource Include="Icon.ico">
-            <LogicalName>Icon.ico</LogicalName>
-        </EmbeddedResource>
-    </ItemGroup>
     
     <ItemGroup>
         <None Remove="AlloyClient.csproj.DotSettings" />

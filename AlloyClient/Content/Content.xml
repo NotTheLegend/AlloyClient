@@ -1,7 +1,6 @@
 ﻿<Content Verbose="False">
     <Builder type="Copy">
         <Folder ext="*.xml">Xmls</Folder>
-        <File>Icon.bmp</File>
         <Folder ext="*.png">TitleScreen</Folder>
     </Builder>
 
