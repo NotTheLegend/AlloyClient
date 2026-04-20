@@ -2,6 +2,7 @@
     <Builder type="Copy">
         <Folder ext="*.xml">Xmls</Folder>
         <Folder ext="*.png">TitleScreen</Folder>
+		<Folder>Sound</Folder>
     </Builder>
 
     <Builder type="Font">

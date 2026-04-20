@@ -26,6 +26,7 @@
     </ItemGroup>
     
     <ItemGroup>
+      <ProjectReference Include="..\Alloy.Audio\Alloy.Audio.csproj" />
       <ProjectReference Include="..\Common\Common.csproj" />
       <ProjectReference Include="..\ContentBuilder\ContentBuilder.csproj">
 		<Private>False</Private>
