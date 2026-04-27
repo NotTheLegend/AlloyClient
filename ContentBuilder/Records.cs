@@ -1,9 +1,8 @@
-﻿using System.Xml.Linq;
-using Assimp;
+﻿using System.Numerics;
+using System.Xml.Linq;
 using Common;
 using Common.Structs;
 using StbImageSharp;
-using StbImageWriteSharp;
 
 namespace ContentBuilder;
 
@@ -11,7 +10,7 @@ public record struct FolderSettings(string Folder, string Ext);
 
 public record struct FileSettings(string File);
 
-public record ModelData(List<int> Indices, List<Vector3D> Vertices, List<Vector3D> Normals, List<Vector2D> UV, bool HasUv) {
+public record ModelData(List<int> Indices, List<Vector3> Vertices, List<Vector3> Normals, List<Vector2> UV, bool HasUv) {
     
     public void Write(BinaryWriter writer) {
         var len = Indices.Count;
