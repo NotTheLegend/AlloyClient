@@ -1,4 +1,5 @@
-﻿using Assimp;
+﻿using System.Numerics;
+using SharpAssimp;
 
 namespace ContentBuilder.Builders;
 
@@ -87,9 +88,9 @@ public static class FbxBuilder {
 
     private static ModelData ProcessScene(Scene scene) {
         List<int> ind = [];
-        List<Vector3D> vert = [];
-        List<Vector3D> norm = [];
-        List<Vector2D> uv = [];
+        List<Vector3> vert = [];
+        List<Vector3> norm = [];
+        List<Vector2> uv = [];
 
         // hardcoded af but im not doing a full fbx load cuz rotmg models are just 1 mesh with no skeleton
         var m = scene.Meshes[scene.RootNode.Children[0].MeshIndices[0]];
@@ -111,9 +112,9 @@ public static class FbxBuilder {
             }
 
             if (hasUV) {
-                uv.Add(new Vector2D(m.TextureCoordinateChannels[0][i].X, m.TextureCoordinateChannels[0][i].Y));
+                uv.Add(new Vector2(m.TextureCoordinateChannels[0][i].X, m.TextureCoordinateChannels[0][i].Y));
             } else {
-                uv.Add(new Vector2D(0f));
+                uv.Add(new Vector2(0f));
             }
         }
 
