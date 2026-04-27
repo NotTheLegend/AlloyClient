@@ -15,6 +15,7 @@ void main() {
     float dy = ddy * (0.1 / ddy);
     
     vec4 color = vec4(Color.xyz, 1);
-    color = mix(color, outline, BaseUV.x - dx <= 0 || BaseUV.y - dy <= 0 || BaseUV.x + dx >= 1 || BaseUV.y + dy >= 1);
+    float val = float(BaseUV.x - dx <= 0 || BaseUV.y - dy <= 0 || BaseUV.x + dx >= 1 || BaseUV.y + dy >= 1);
+    color = mix(color, outline, val);
     FragColor = color;
 }
