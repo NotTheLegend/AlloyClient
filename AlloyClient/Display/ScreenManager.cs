@@ -1,9 +1,9 @@
 ﻿using System;
 using AlloyClient.Game;
 using AlloyClient.State;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.Core;
-using AlloyClient.UiLib.Extra;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Extra;
 using Alloy.Common;
 using OpenTK.Platform;
 

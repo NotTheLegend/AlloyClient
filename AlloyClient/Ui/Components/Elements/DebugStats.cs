@@ -1,10 +1,10 @@
 ﻿using System;
 using AlloyClient.Game;
 using AlloyClient.Rendering;
-using AlloyClient.UiLib;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.Core;
-using AlloyClient.UiLib.Enums;
+using Alloy.UiLib;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Enums;
 using Alloy.Common;
 using AlloyClient.Utils;
 

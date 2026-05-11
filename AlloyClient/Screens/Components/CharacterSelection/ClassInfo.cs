@@ -2,8 +2,8 @@
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Game.Components.Hud.Inventory;
 using AlloyClient.State;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.Enums;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.Enums;
 using AlloyClient.Utils;
 using Alloy.Common;
 

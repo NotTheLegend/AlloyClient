@@ -1,4 +1,4 @@
-﻿using AlloyClient.UiLib.Core;
+﻿using Alloy.UiLib.Core;
 
 namespace AlloyClient.Game.Components.Hud;
 

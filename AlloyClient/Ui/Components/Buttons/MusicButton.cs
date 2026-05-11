@@ -1,8 +1,8 @@
 ﻿using AlloyClient.State;
-using AlloyClient.UiLib.BuiltIn.Buttons;
-using AlloyClient.UiLib.Core;
-using AlloyClient.UiLib.Data;
-using AlloyClient.UiLib.Enums;
+using Alloy.UiLib.BuiltIn.Buttons;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Data;
+using Alloy.UiLib.Enums;
 using AlloyClient.Utils;
 
 namespace AlloyClient.Ui.Components.Buttons;

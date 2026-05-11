@@ -1,9 +1,9 @@
 ﻿using System;
 using AlloyClient.State;
 using AlloyClient.Ui;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.Core;
-using AlloyClient.UiLib.Enums;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Enums;
 
 namespace AlloyClient.Game.Components.Hud;
 

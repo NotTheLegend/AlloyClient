@@ -2,7 +2,7 @@
 using AlloyClient.State;
 using AlloyClient.Ui.Character;
 using AlloyClient.Ui.Chat;
-using AlloyClient.UiLib.Core;
+using Alloy.UiLib.Core;
 using AlloyClient.Game.Components.Hud.Chat;
 using AlloyClient.Ui.Components.Elements;
 

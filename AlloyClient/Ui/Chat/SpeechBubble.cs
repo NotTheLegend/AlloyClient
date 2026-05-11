@@ -2,9 +2,9 @@
 using AlloyClient.Game;
 using AlloyClient.Game.Objects;
 using AlloyClient.State;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.Core;
-using AlloyClient.UiLib.Enums;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Enums;
 using OpenTK.Mathematics;
 using AlloyClient.Utils;
 

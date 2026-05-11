@@ -11,7 +11,7 @@ using AlloyClient.ParticleEffects;
 using AlloyClient.Rendering;
 using AlloyClient.Rendering.Types;
 using AlloyClient.State;
-using AlloyClient.UiLib.Signals;
+using Alloy.UiLib.Signals;
 using AlloyClient.Utils;
 using Alloy.Common;
 using Alloy.Common.Structs;

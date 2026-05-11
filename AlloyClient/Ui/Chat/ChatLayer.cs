@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using AlloyClient.UiLib.Core;
+using Alloy.UiLib.Core;
 using Alloy.Common;
 
 namespace AlloyClient.Ui.Chat;

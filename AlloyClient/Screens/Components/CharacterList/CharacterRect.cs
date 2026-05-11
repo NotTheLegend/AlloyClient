@@ -3,10 +3,10 @@ using AlloyClient.Assets.Libraries;
 using AlloyClient.Data;
 using AlloyClient.Display;
 using AlloyClient.Game;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.BuiltIn.Buttons;
-using AlloyClient.UiLib.Enums;
-using AlloyClient.UiLib.Extra;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.BuiltIn.Buttons;
+using Alloy.UiLib.Enums;
+using Alloy.UiLib.Extra;
 using AlloyClient.Utils;
 
 namespace AlloyClient.Screens.Components.CharacterList;

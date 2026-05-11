@@ -3,10 +3,10 @@ using AlloyClient.Display;
 using AlloyClient.State;
 using AlloyClient.Ui.Components.Dialogs;
 using AlloyClient.Ui.Components.Panels;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.BuiltIn.Buttons;
-using AlloyClient.UiLib.Enums;
-using AlloyClient.UiLib.Core;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.BuiltIn.Buttons;
+using Alloy.UiLib.Enums;
+using Alloy.UiLib.Core;
 
 namespace AlloyClient.Screens.Components.Containers;
 

@@ -1,9 +1,9 @@
 ﻿using System;
 using AlloyClient.Data;
 using AlloyClient.State;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.Core;
-using AlloyClient.UiLib.Enums;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Enums;
 
 namespace AlloyClient.Screens.Components;
 

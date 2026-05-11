@@ -1,5 +1,5 @@
 ﻿using AlloyClient.Ui.Components.Tooltips;
-using AlloyClient.UiLib.Core;
+using Alloy.UiLib.Core;
 
 namespace AlloyClient.Display;
 

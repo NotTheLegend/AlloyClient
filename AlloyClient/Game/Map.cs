@@ -11,7 +11,7 @@ using AlloyClient.ParticleEffects;
 using AlloyClient.Rendering;
 using AlloyClient.Rendering.Types;
 using AlloyClient.Rendering.VertexData;
-using AlloyClient.UiLib.Signals;
+using Alloy.UiLib.Signals;
 using Alloy.Common;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;

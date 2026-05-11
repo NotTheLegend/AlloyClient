@@ -4,7 +4,7 @@ using AlloyClient.Game.Components.Options.OptionTypes;
 using AlloyClient.State;
 using AlloyClient.State.SettingTypes;
 using AlloyClient.Ui.Components.Scrollbars;
-using AlloyClient.UiLib.BuiltIn;
+using Alloy.UiLib.BuiltIn;
 
 namespace AlloyClient.Game.Components.Options;
 

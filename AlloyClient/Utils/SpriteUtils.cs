@@ -1,6 +1,6 @@
 ﻿using System;
-using AlloyClient.UiLib.Core;
-using AlloyClient.UiLib.Extra;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Extra;
 
 namespace AlloyClient.Utils;
 

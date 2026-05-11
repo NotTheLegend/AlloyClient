@@ -1,5 +1,5 @@
 ﻿using AlloyClient.Display;
-using AlloyClient.UiLib.Core;
+using Alloy.UiLib.Core;
 
 namespace AlloyClient.Ui.Components.Panels;
 

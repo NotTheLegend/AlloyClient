@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 using AlloyClient.Assets.Libraries;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.Core;
-using AlloyClient.UiLib.Enums;
-using AlloyClient.UiLib.Extra;
-using AlloyClient.UiLib;
-using AlloyClient.UiLib.Data;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Enums;
+using Alloy.UiLib.Extra;
+using Alloy.UiLib;
+using Alloy.UiLib.Data;
 
 namespace AlloyClient.Utils;
 

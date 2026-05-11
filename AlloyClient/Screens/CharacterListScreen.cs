@@ -9,10 +9,10 @@ using AlloyClient.Screens.Components.Containers;
 using AlloyClient.State;
 using AlloyClient.Ui.Components.Buttons;
 using AlloyClient.Ui.Components.Scrollbars;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.BuiltIn.Buttons;
-using AlloyClient.UiLib.Enums;
-using AlloyClient.UiLib.Extra;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.BuiltIn.Buttons;
+using Alloy.UiLib.Enums;
+using Alloy.UiLib.Extra;
 using AlloyClient.Utils;
 
 namespace AlloyClient.Screens;

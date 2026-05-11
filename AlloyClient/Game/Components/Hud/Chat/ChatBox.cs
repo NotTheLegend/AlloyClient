@@ -2,11 +2,11 @@
 using AlloyClient.Networking;
 using AlloyClient.Networking.Packets.Outgoing;
 using AlloyClient.State;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.Core;
-using AlloyClient.UiLib.Enums;
-using AlloyClient.UiLib.Extra;
-using AlloyClient.UiLib.Signals;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Enums;
+using Alloy.UiLib.Extra;
+using Alloy.UiLib.Signals;
 using Alloy.Common;
 
 namespace AlloyClient.Game.Components.Hud.Chat;

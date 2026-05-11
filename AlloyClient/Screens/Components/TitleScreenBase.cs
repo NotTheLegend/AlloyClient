@@ -2,9 +2,9 @@
 using AlloyClient.State;
 using AlloyClient.Ui.Components.Buttons;
 using AlloyClient.Ui.Components.Graphics;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.Core;
-using AlloyClient.UiLib.Enums;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Enums;
 
 namespace AlloyClient.Screens.Components;
 

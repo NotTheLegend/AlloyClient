@@ -32,7 +32,7 @@
 		<CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
 		<ReferenceOutputAssembly>False</ReferenceOutputAssembly>
       </ProjectReference>
-      <ProjectReference Include="..\AlloyClient.UiLib\AlloyClient.UiLib.csproj" />
+      <ProjectReference Include="..\Alloy.UiLib\Alloy.UiLib.csproj" />
     </ItemGroup>
     
     <Target Name="RestoreDotnetTools" BeforeTargets="Restore">

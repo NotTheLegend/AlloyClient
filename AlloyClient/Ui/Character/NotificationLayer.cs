@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using AlloyClient.Game.Objects;
-using AlloyClient.UiLib.Core;
+using Alloy.UiLib.Core;
 using Alloy.Common;
 
 namespace AlloyClient.Ui.Character;

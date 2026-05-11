@@ -1,7 +1,7 @@
 ﻿using System;
-using AlloyClient.UiLib.Core;
-using AlloyClient.UiLib.Enums;
-using AlloyClient.UiLib.Rendering;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Enums;
+using Alloy.UiLib.Rendering;
 using OpenTK.Mathematics;
 using AlloyClient.Utils;
 

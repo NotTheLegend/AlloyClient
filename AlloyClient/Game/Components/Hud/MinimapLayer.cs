@@ -1,9 +1,9 @@
 ﻿using Alloy.Engine.Common;
 using AlloyClient.Game.Objects;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.Core;
-using AlloyClient.UiLib.Enums;
-using AlloyClient.UiLib.Rendering;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Enums;
+using Alloy.UiLib.Rendering;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Components.Hud;

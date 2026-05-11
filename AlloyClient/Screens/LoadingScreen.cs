@@ -4,10 +4,10 @@ using AlloyClient.Assets;
 using AlloyClient.Display;
 using AlloyClient.State;
 using AlloyClient.Ui.Components.Graphics;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.Core;
-using AlloyClient.UiLib.Enums;
-using AlloyClient.UiLib.Extra;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Enums;
+using Alloy.UiLib.Extra;
 
 namespace AlloyClient.Screens;
 

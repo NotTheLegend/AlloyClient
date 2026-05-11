@@ -6,7 +6,7 @@ using AlloyClient.Game.Components.Options;
 using AlloyClient.Networking;
 using AlloyClient.Networking.Packets.Outgoing;
 using AlloyClient.State;
-using AlloyClient.UiLib.Core;
+using Alloy.UiLib.Core;
 using Alloy.Common;
 using OpenTK.Mathematics;
 using OpenTK.Platform;

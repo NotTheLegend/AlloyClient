@@ -1,8 +1,8 @@
 ﻿using System;
 using AlloyClient.State.SettingTypes;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.Core;
-using AlloyClient.UiLib.Enums;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Enums;
 using Alloy.Common;
 using OpenTK.Mathematics;
 using OpenTK.Platform;

@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using Alloy.Engine.Common;
 using AlloyClient.Game.Objects;
 using AlloyClient.Rendering.VertexData;
-using AlloyClient.UiLib;
-using AlloyClient.UiLib.Enums;
+using Alloy.UiLib;
+using Alloy.UiLib.Enums;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering.Types.SubTypes;

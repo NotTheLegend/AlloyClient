@@ -1,4 +1,4 @@
-﻿using AlloyClient.UiLib.Extra;
+﻿using Alloy.UiLib.Extra;
 
 namespace AlloyClient.Utils;
 

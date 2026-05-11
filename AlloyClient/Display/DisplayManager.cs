@@ -1,5 +1,5 @@
-﻿using AlloyClient.UiLib;
-using AlloyClient.UiLib.Core;
+﻿using Alloy.UiLib;
+using Alloy.UiLib.Core;
 using Alloy.Common;
 
 namespace AlloyClient.Display;

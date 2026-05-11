@@ -4,9 +4,9 @@ using AlloyClient.Screens.Components;
 using AlloyClient.Screens.Components.Containers;
 using AlloyClient.State;
 using AlloyClient.Ui.Components.Buttons;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.Core;
-using AlloyClient.UiLib.Enums;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Enums;
 
 namespace AlloyClient.Screens;
 

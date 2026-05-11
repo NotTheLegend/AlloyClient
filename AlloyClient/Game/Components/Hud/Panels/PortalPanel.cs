@@ -2,10 +2,10 @@ using System;
 using AlloyClient.Game.Objects;
 using AlloyClient.Networking;
 using AlloyClient.Networking.Packets.Outgoing;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.BuiltIn.Buttons;
-using AlloyClient.UiLib.Core;
-using AlloyClient.UiLib.Enums;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.BuiltIn.Buttons;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Enums;
 using Alloy.Common;
 
 namespace AlloyClient.Game.Components.Hud.Panels;

@@ -1,7 +1,7 @@
 ﻿using AlloyClient.State;
 using AlloyClient.Ui.Components.Panels;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.Core;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.Core;
 using AlloyClient.Utils;
 
 namespace AlloyClient.Display;

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using AlloyClient.Ui.Components.Dialogs;
-using AlloyClient.UiLib.Core;
-using AlloyClient.UiLib.Extra;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Extra;
 using Alloy.Common;
 
 namespace AlloyClient.Display;

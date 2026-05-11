@@ -1,7 +1,7 @@
 ﻿using System;
 using AlloyClient.State.SettingTypes;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.Enums;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.Enums;
 
 namespace AlloyClient.Game.Components.Options.OptionTypes;
 

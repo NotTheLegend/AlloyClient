@@ -1,11 +1,11 @@
 using AlloyClient.Data;
 using AlloyClient.Display;
 using AlloyClient.Screens.Components.Containers;
-using AlloyClient.UiLib.BuiltIn;
-using AlloyClient.UiLib.BuiltIn.Buttons;
-using AlloyClient.UiLib.Core;
-using AlloyClient.UiLib.Enums;
-using AlloyClient.UiLib.Extra;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.BuiltIn.Buttons;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Enums;
+using Alloy.UiLib.Extra;
 
 namespace AlloyClient.Screens.Components;
 

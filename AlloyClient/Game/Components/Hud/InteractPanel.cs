@@ -1,8 +1,8 @@
 ﻿using AlloyClient.Game.Components.Hud.Panels;
 using AlloyClient.Game.Objects;
 using AlloyClient.Game.Objects.Util;
-using AlloyClient.UiLib.Core;
-using AlloyClient.UiLib.Signals;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Signals;
 
 namespace AlloyClient.Game.Components.Hud;
 
