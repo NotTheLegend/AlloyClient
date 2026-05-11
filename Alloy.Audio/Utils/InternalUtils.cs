@@ -65,5 +65,9 @@ internal static class InternalUtils {
         internal static void SourceQueueBuffer(int source, int buffer) {
             AL.SourceQueueBuffers(source, 1, MemoryMarshal.Cast<int, uint>(MemoryMarshal.CreateReadOnlySpan(ref buffer, 1)));
         }
+
+        internal static void SourceUnqueueBuffer(int source, int buffer) {
+            AL.SourceUnqueueBuffers(source, 1, MemoryMarshal.CreateSpan(ref buffer, 1));
+        }
     }
 }

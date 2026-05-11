@@ -37,10 +37,11 @@ public class AudioEngine {
 
     public void PlayLocalSong(string song, float fadeDuration = 2f) {
         //TODO: move file checks here, and optional .ogg to song
-        _engine.EnqueueCommand(new EngineCommand(AllTypes.MusicLocal, fadeDuration, song));
+        _engine.EnqueueCommand(new EngineCommand(AllTypes.MusicLocal, fadeDuration * 1000f, song));
     }
     
     public void PlayLocalEffect(string effect) {
+        //TODO: move file checks here, and optional .ogg to song
         //TODO: add min delay check for repeating effects
         _engine.EnqueueCommand(new EngineCommand(AllTypes.EffectLocal, effect));
     }

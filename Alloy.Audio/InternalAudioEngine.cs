@@ -10,9 +10,9 @@ internal class InternalAudioEngine {
     
     public const int TotalMaxSources = 32;
     private readonly string _localContentPath;
-    private readonly string _webContentPath;
-    private readonly SourcePool _songPool;
-    private readonly SourcePool _effectPool;
+    private readonly string _webContentPath; // TODO: web loaded sound
+    private readonly SourcePool<Music> _songPool;
+    private readonly SourcePool<Effect> _effectPool;
     private readonly CancellationToken _cancelToken;
     private readonly Lock _commandLock = new();
     private readonly Queue<EngineCommand> _commandQueue = [];
@@ -24,9 +24,9 @@ internal class InternalAudioEngine {
     private ALCDevice _currentDevice = ALCDevice.Null;
     private ALCContext _currentContext = ALCContext.Null;
 
-    private float _gainMaster;
-    private float _gainMusic;
-    private float _gainEffect;
+    private float _gainMaster = 1f;
+    private float _gainMusic = 1f;
+    private float _gainEffect = 1f;
     private Music _currentSong;
 
     internal InternalAudioEngine(CancellationToken cancelToken, string localPath, string webPath, int maxSongSources = 4, int maxEffectSources = 28) {
@@ -41,8 +41,8 @@ internal class InternalAudioEngine {
         _localContentPath = localPath;
         _webContentPath = webPath;
         
-        _songPool = new SourcePool(maxSongSources);
-        _effectPool = new SourcePool(maxEffectSources);
+        _songPool = new SourcePool<Music>(maxSongSources);
+        _effectPool = new SourcePool<Effect>(maxEffectSources);
     }
 
     public void EnqueueCommand(EngineCommand command) {
@@ -51,28 +51,25 @@ internal class InternalAudioEngine {
     }
 
     public void Run() {
-        // these dont need to be on audio thread
+        //TODO: load/save device to settings
         var defaultDevice = ALC.GetDefaultDevice();
 
         _currentDevice = ALC.OpenDevice(defaultDevice);
         _currentContext = ALC.CreateContext(_currentDevice, []);
         ALC.MakeContextCurrent(_currentContext);
         
-        _songPool.Initialize();
-        _effectPool.Initialize();
+        InitPools();
 
         var stopwatch = Stopwatch.StartNew();
         var totalMs = 0d;
-        var deltaMs = 0d;
 
         while (!_cancelToken.IsCancellationRequested) {
             HandleCommands(totalMs);
             
-            deltaMs = stopwatch.Elapsed.TotalMilliseconds;
-            totalMs += deltaMs;
+            totalMs += stopwatch.Elapsed.TotalMilliseconds;
             stopwatch.Restart();
             
-            Loop(totalMs, deltaMs);
+            Loop(totalMs);
             
             Thread.Sleep(16);
         }
@@ -102,16 +99,16 @@ internal class InternalAudioEngine {
         }
     }
 
-    private void Loop(double totalMs, double deltaMs) {
+    private void Loop(double totalMs) {
         foreach (var music in _activeMusic) {
             music.Update(totalMs, _gainMusic);
-            // TODO: remove stale tracks
-        }
+        } // im doing this the lazy way
+        _activeMusic.RemoveAll(music => { var stale = music.Stale; if (stale) { _songPool.Push(music); } return stale; });
         
         foreach (var effect in _activeEffect) {
-            effect.Update(totalMs, _gainMusic);
-            // TODO: remove stale tracks
-        }
+            effect.Update(totalMs, _gainEffect);
+        } // im doing this the lazy way (again)
+        _activeEffect.RemoveAll(effect => { var stale = effect.Stale; if (stale) { _effectPool.Push(effect); } return stale; });
     }
 
     private void ClearCache(CacheType source) {
@@ -148,7 +145,7 @@ internal class InternalAudioEngine {
     }
 
     private void PlayLocalSong(string file, float fade, double time) {
-        if (!_songPool.TryPop(out var source)) {
+        if (!_songPool.TryPop(out var music)) {
             Console.WriteLine($"Failed to play song {file}, no free sources");
             return;
         }
@@ -170,17 +167,18 @@ internal class InternalAudioEngine {
             vorbis = Vorbis.FromMemory(data);
         }
 
-        var song = new Music(vorbis, source);
-        song.SetFade(time, fade, FadeType.In);
-        _activeMusic.Add(song);
+        music.SetVorbis(vorbis);
+        music.SetFade(time, fade, FadeType.In);
+        music.Play();
+        _activeMusic.Add(music);
         
         _currentSong?.SetFade(time, fade, FadeType.Out);
         _currentSong?.EndAt(time + fade);
-        _currentSong = song;
+        _currentSong = music;
     }
 
     private void PlayLocalEffect(string file) {
-        if (!_effectPool.TryPop(out var source)) {
+        if (!_effectPool.TryPop(out var effect)) {
             Console.WriteLine($"Failed to play song {file}, no free sources");
             return;
         }
@@ -206,7 +204,18 @@ internal class InternalAudioEngine {
             _effectCache[file] = buffer;
         }
 
-        var effect = new Effect(source, buffer);
+        effect.SetBuffer(buffer);
+        effect.Play();
         _activeEffect.Add(effect);
+    }
+
+    private void InitPools() {
+        for (var i = 0; i < _songPool.Capacity; i++) {
+            _songPool.Push(new Music());
+        }
+        
+        for (var i = 0; i < _effectPool.Capacity; i++) {
+            _effectPool.Push(new Effect());
+        }
     }
 }

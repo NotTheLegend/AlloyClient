@@ -38,65 +38,84 @@ internal readonly struct EngineCommand {
     }
 }
 
-internal class Effect {
-    
-    private readonly int _source;
-    private readonly int _buffer;
-    
-    public Effect(int source, int buffer) {
-        _source = source;
-        _buffer = buffer;
-        
-        AL.SourceQueueBuffer(_source, _buffer);
+internal interface IAudioType {
+    void Play();
+    void Update(double totalMs, float gain);
+}
+
+internal class Effect : IAudioType, IPoolable {
+    public bool Stale { get; private set; } = false;
+    private readonly int _source = AL.GenSource();
+    private int _buffer;
+
+    public void SetBuffer(int buffer) => _buffer = buffer;
+
+    public void Play() {
+        AL.Sourcei(_source, SourcePNameI.Buffer, _buffer);
         AL.SourcePlay(_source);
-        var state = (SourceState)AL.GetSourcei(_source, SourceGetPNameI.SourceState);
-        Console.WriteLine(state);
     }
-    
+
+    public void Reset() {
+        Stale = false;
+        _buffer = 0;
+    }
+
     public void Update(double totalMs, float gain) {
         var state = (SourceState)AL.GetSourcei(_source, SourceGetPNameI.SourceState);
         
-        Console.WriteLine(state);
-        
-        if (state != SourceState.Playing) {
+        if (state == SourceState.Stopped) {
+            Stale = true;
+            AL.Sourcei(_source, SourcePNameI.Buffer, 0);
             return;
         }
-        ////todo add gain and improve fade
-        //HandleFade(totalMs);
-        //HandleBuffers();
+        
+        AL.Sourcef(_source, SourcePNameF.Gain, gain); // Probably not ideal to set gain every update cycle but i cbf
     }
 }
 
-internal class Music {
-
+internal class Music : IAudioType, IPoolable {
     private const int NumBuffers = 4;
     
-    private readonly Vorbis _vorbis;
+    public bool Stale { get; private set; } = false;
+    
     private readonly int _source;
     private readonly int[] _buffers = new int[4];
-    private readonly int _bytesPerFrame;
-    private readonly Format _format;
+    
+    private Vorbis _vorbis;
+    private int _bytesPerFrame;
+    private Format _format;
 
     private double _fadeStart;
     private double _fadeDuration;
     private double _fadeEnd;
     private FadeType _fadeType;
+    private double _endTime = -1;
 
-    public Music(Vorbis song, int source) {
-        _vorbis = song;
-        _source = source;
-        _bytesPerFrame = song.Channels * sizeof(short);
-        _format = GetFormat(_vorbis);
-        
+    public Music() {
+        _source = AL.GenSource();
         AL.GenBuffers(NumBuffers, _buffers);
+    }
+
+    public void SetVorbis(Vorbis vorbis) {
+        _vorbis = vorbis;
+        _bytesPerFrame = vorbis.Channels * sizeof(short);
+        _format = InternalUtils.GetChannelFormat(vorbis.Channels);
         
         for (var i = 0; i < NumBuffers; i++) {
             _vorbis.SubmitBuffer();
             AL.BufferData(_buffers[i], _format, ref _vorbis.SongBuffer[0], _vorbis.Decoded * _bytesPerFrame, _vorbis.SampleRate);
         }
-        
+    }
+
+    public void Play() {
         AL.SourceQueueBuffers(_source, NumBuffers, _buffers);
         AL.SourcePlay(_source);
+    }
+    
+    public void Reset() {
+        Stale = false;
+        _vorbis = null;
+        _endTime = -1;
     }
 
     public void SetFade(double start, double duration, FadeType type) {
@@ -107,17 +126,26 @@ internal class Music {
     }
 
     public void EndAt(double endTime) {
-        
+        _endTime = endTime;
     }
 
     public void Update(double totalMs, float gain) {
+        if (_endTime > 0 && totalMs > _endTime) {
+            AL.SourceStop(_source);
+        }
+        
         var state = (SourceState)AL.GetSourcei(_source, SourceGetPNameI.SourceState);
 
-        if (state != SourceState.Playing) {
+        if (state == SourceState.Stopped) {
+            Stale = true;
+            DequeueBuffers();
             return;
         }
-        //todo add gain and improve fade
-        HandleFade(totalMs);
+        
+        //TODO: improve fade control maybe
+        gain *= GetFade(totalMs);
+        AL.Sourcef(_source, SourcePNameF.Gain, gain);
+        
         HandleBuffers();
     }
 
@@ -143,9 +171,9 @@ internal class Music {
         }
     }
 
-    private void HandleFade(double totalMs) {
+    private float GetFade(double totalMs) {
         if (totalMs > _fadeEnd) {
-            return;
+            return _fadeType == FadeType.In ? 1f : 0f;
         }
 
         var gain = Math.Clamp((totalMs - _fadeStart) / _fadeDuration, 0d, 1d);
@@ -153,16 +181,18 @@ internal class Music {
         if (_fadeType == FadeType.Out) {
             gain = 1 - gain;
         }
-        
-        AL.Sourcef(_source, SourcePNameF.Gain, (float)gain);
-        AL.Sourcef(_source, SourcePNameF.Gain, (float)gain);
+
+        return (float)gain;
     }
 
-    private Format GetFormat(Vorbis vorbis) {
-        switch (vorbis.Channels) {
-            case 1: return Format.FormatMono16;
-            case 2: return Format.FormatStereo16;
-            default: throw new ArgumentOutOfRangeException(nameof(vorbis), vorbis.Channels, "Not mono or stereo");
+    private void DequeueBuffers() {
+        AL.GetSourcei(_source, SourceGetPNameI.BuffersQueued, out var queued);
+
+        if (queued <= 0) {
+            return;
         }
+
+        Span<int> temp = stackalloc int[queued];
+        AL.SourceUnqueueBuffers(_source, queued, temp);
     }
 }
