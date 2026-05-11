@@ -8,6 +8,7 @@
         <LangVersion>preview</LangVersion>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<AssemblyName>ContentBuilder</AssemblyName>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
