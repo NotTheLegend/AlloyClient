@@ -160,6 +160,7 @@ internal class InternalAudioEngine {
 
             var data = File.ReadAllBytes(path);
             vorbis = Vorbis.FromMemory(data);
+            _oggCache[file] = vorbis;
         }
 
         music.SetVorbis(vorbis);
