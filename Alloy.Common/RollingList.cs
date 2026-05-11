@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Common;
+namespace Alloy.Common;
 
 public sealed class RollingList<T>(uint capacity) : IEnumerable<T> {
     

@@ -5,8 +5,8 @@ using AlloyClient.Game;
 using AlloyClient.Rendering.VertexData;
 using AlloyClient.State;
 using AlloyClient.UiLib;
-using Common;
-using Common.ContentReaders;
+using Alloy.Common;
+using Alloy.Common.ContentReaders;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering;

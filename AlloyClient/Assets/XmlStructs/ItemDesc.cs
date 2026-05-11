@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 using AlloyClient.Game.Objects.Util;
-using Common;
+using Alloy.Common;
 
 namespace AlloyClient.Assets.XmlStructs;
 

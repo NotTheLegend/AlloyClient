@@ -1,6 +1,6 @@
 ﻿using AlloyClient.UiLib.Extra;
 using AlloyClient.UiLib.Input;
-using Common;
+using Alloy.Common;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.UiLib.Core;

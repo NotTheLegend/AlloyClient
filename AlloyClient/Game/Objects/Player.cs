@@ -11,8 +11,8 @@ using AlloyClient.Rendering;
 using AlloyClient.Rendering.Types;
 using AlloyClient.State;
 using AlloyClient.Utils;
-using Common;
-using Common.Structs;
+using Alloy.Common;
+using Alloy.Common.Structs;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Objects;

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Alloy.Engine.Graphics;
 using AlloyClient.UiLib.Enums;
-using Common.ContentReaders;
-using Common.Structs;
+using Alloy.Common.ContentReaders;
+using Alloy.Common.Structs;
 
 namespace AlloyClient.UiLib.Data;
 

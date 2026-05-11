@@ -3,7 +3,7 @@ using System.Buffers;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
-using Common;
+using Alloy.Common;
 
 namespace AlloyClient.Networking;
 

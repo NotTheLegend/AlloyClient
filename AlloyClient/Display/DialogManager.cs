@@ -2,7 +2,7 @@
 using AlloyClient.Ui.Components.Dialogs;
 using AlloyClient.UiLib.Core;
 using AlloyClient.UiLib.Extra;
-using Common;
+using Alloy.Common;
 
 namespace AlloyClient.Display;
 

@@ -5,7 +5,7 @@ using AlloyClient.UiLib.Data;
 using AlloyClient.UiLib.Enums;
 using AlloyClient.UiLib.Input;
 using AlloyClient.UiLib.Rendering;
-using Common.ContentReaders;
+using Alloy.Common.ContentReaders;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
 

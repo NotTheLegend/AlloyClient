@@ -7,7 +7,7 @@ using System.Xml;
 using AlloyClient.Data;
 using AlloyClient.State.SettingTypes;
 using AlloyClient.Utils;
-using Common;
+using Alloy.Common;
 using Newtonsoft.Json;
 using OpenTK.Platform;
 

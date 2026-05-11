@@ -3,7 +3,7 @@ using System.Xml.Linq;
 using AlloyClient.Game.Objects.ProjectilePaths;
 using AlloyClient.Game.Objects.Util;
 using AlloyClient.Networking.Packets.Incoming;
-using Common;
+using Alloy.Common;
 
 namespace AlloyClient.Assets.XmlStructs;
 

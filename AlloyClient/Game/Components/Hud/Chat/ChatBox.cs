@@ -7,7 +7,7 @@ using AlloyClient.UiLib.Core;
 using AlloyClient.UiLib.Enums;
 using AlloyClient.UiLib.Extra;
 using AlloyClient.UiLib.Signals;
-using Common;
+using Alloy.Common;
 
 namespace AlloyClient.Game.Components.Hud.Chat;
 

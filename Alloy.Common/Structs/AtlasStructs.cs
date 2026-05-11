@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using OpenTK.Mathematics;
 
-namespace Common.Structs;
+namespace Alloy.Common.Structs;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct AtlasData : IEquatable<AtlasData> {

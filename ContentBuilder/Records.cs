@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using System.Xml.Linq;
-using Common;
-using Common.Structs;
+using Alloy.Common;
+using Alloy.Common.Structs;
 using StbImageSharp;
 
 namespace ContentBuilder;

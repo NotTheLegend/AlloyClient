@@ -1,4 +1,4 @@
-﻿namespace Common;
+﻿namespace Alloy.Common;
 
 public static class AtlasConfig {
     public const float AtlasWidth = 4096f;

@@ -4,7 +4,7 @@ using AlloyClient.State;
 using AlloyClient.UiLib.BuiltIn;
 using AlloyClient.UiLib.Core;
 using AlloyClient.UiLib.Extra;
-using Common;
+using Alloy.Common;
 using OpenTK.Platform;
 
 namespace AlloyClient.Display;

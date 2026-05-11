@@ -5,7 +5,7 @@ using AlloyClient.UiLib.Enums;
 using AlloyClient.UiLib.Input;
 using AlloyClient.UiLib.Utils;
 using AlloyClient.UiLib.BuiltIn;
-using Common;
+using Alloy.Common;
 
 namespace AlloyClient.UiLib.Core;
 

@@ -12,7 +12,7 @@ using AlloyClient.Rendering;
 using AlloyClient.Rendering.Types;
 using AlloyClient.Rendering.VertexData;
 using AlloyClient.UiLib.Signals;
-using Common;
+using Alloy.Common;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 

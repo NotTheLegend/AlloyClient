@@ -3,7 +3,7 @@ using System.Xml.Linq;
 using AlloyClient.Assets.XmlStructs;
 using AlloyClient.Networking;
 using AlloyClient.Utils;
-using Common;
+using Alloy.Common;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Objects.ProjectilePaths;

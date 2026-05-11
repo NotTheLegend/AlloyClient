@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 #endregion
 
-namespace Common
+namespace Alloy.Common
 {
     public class EasyTimer : IDisposable
     {

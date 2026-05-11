@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using AlloyClient.Assets;
 using AlloyClient.Rendering.VertexData;
-using Common;
+using Alloy.Common;
 using OpenTK.Graphics.OpenGL;
 
 namespace AlloyClient.Rendering;

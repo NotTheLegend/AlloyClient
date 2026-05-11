@@ -5,10 +5,10 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using Common.Structs;
+using Alloy.Common.Structs;
 using OpenTK.Mathematics;
 
-namespace Common;
+namespace Alloy.Common;
 
 public static class Utils {
 

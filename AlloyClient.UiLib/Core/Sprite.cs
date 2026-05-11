@@ -6,7 +6,7 @@ using AlloyClient.UiLib.Extra;
 using AlloyClient.UiLib.Input;
 using AlloyClient.UiLib.Rendering;
 using AlloyClient.UiLib.Utils;
-using Common;
+using Alloy.Common;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.UiLib.Core;

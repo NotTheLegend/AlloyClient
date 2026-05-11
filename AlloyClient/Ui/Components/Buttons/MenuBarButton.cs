@@ -1,7 +1,7 @@
 ﻿using System;
 using AlloyClient.UiLib.BuiltIn.Buttons;
 using AlloyClient.UiLib.Core;
-using Common;
+using Alloy.Common;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Ui.Components.Buttons;

@@ -7,7 +7,7 @@ using AlloyClient.Networking;
 using AlloyClient.Networking.Packets.Outgoing;
 using AlloyClient.State;
 using AlloyClient.UiLib.Core;
-using Common;
+using Alloy.Common;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
 

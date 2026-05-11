@@ -3,7 +3,7 @@ using AlloyClient.State.SettingTypes;
 using AlloyClient.UiLib.BuiltIn;
 using AlloyClient.UiLib.Core;
 using AlloyClient.UiLib.Enums;
-using Common;
+using Alloy.Common;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
 

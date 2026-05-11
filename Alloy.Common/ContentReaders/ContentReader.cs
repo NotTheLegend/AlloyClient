@@ -1,6 +1,6 @@
 ﻿using Alloy.Engine.Graphics;
 
-namespace Common.ContentReaders;
+namespace Alloy.Common.ContentReaders;
 
 public static class ContentReader {
 

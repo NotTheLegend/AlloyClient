@@ -2,7 +2,7 @@
 using AlloyClient.Networking.Packets.Outgoing;
 using AlloyClient.Networking.Structs.DataObjects;
 using AlloyClient.Utils;
-using Common;
+using Alloy.Common;
 
 namespace AlloyClient.Networking.Packets.Incoming;
 

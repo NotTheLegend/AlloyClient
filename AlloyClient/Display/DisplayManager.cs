@@ -1,6 +1,6 @@
 ﻿using AlloyClient.UiLib;
 using AlloyClient.UiLib.Core;
-using Common;
+using Alloy.Common;
 
 namespace AlloyClient.Display;
 

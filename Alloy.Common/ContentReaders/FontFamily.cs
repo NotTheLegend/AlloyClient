@@ -1,9 +1,9 @@
 ﻿using System.Buffers;
 using System.Text.Json;
+using Alloy.Common.Structs;
 using Alloy.Engine.Graphics;
-using Common.Structs;
 
-namespace Common.ContentReaders;
+namespace Alloy.Common.ContentReaders;
 
 public class FontFamily {
 

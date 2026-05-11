@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
-using Common;
+using Alloy.Common;
 
 namespace AlloyClient.Assets.XmlStructs;
 
@@ -121,7 +121,7 @@ public class ObjectProperties {
                     continue;
                 }
                 
-                var objectType = Convert.ToUInt16(clean, Common.Utils.GetBase(clean));
+                var objectType = Convert.ToUInt16(clean, Alloy.Common.Utils.GetBase(clean));
                 Equipment.Add(objectType);
             }
         }

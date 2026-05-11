@@ -8,7 +8,7 @@ using AlloyClient.Game.Components;
 using AlloyClient.Game.Objects;
 using AlloyClient.Rendering;
 using AlloyClient.Rendering.VertexData;
-using Common.Structs;
+using Alloy.Common.Structs;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Game;

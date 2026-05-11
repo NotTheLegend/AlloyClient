@@ -1,4 +1,4 @@
-﻿namespace Common;
+﻿namespace Alloy.Common;
 
 public readonly struct GameTime(double total, double elapsed) {
 

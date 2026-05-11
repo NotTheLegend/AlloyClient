@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using AlloyClient.UiLib.Core;
-using Common;
+using Alloy.Common;
 
 namespace AlloyClient.UiLib.Extra;
 

@@ -1,6 +1,6 @@
 ﻿using System;
 using AlloyClient.UiLib.Input;
-using Common;
+using Alloy.Common;
 using OpenTK.Mathematics;
 using AlloyClient.UiLib.Enums;
 

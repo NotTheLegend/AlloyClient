@@ -3,7 +3,7 @@ using AlloyClient.State;
 using AlloyClient.UiLib.BuiltIn;
 using AlloyClient.UiLib.Core;
 using AlloyClient.UiLib.Enums;
-using Common;
+using Alloy.Common;
 
 namespace AlloyClient.Game.Components.Hud;
 

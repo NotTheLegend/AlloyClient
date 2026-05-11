@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Common;
+namespace Alloy.Common;
 
 public enum LogLevel {
     Trace,

@@ -7,7 +7,7 @@ using AlloyClient.Game.Objects.ProjectilePaths;
 using AlloyClient.Game.Objects.Util;
 using AlloyClient.Networking.Structs.DataObjects;
 using AlloyClient.Utils;
-using Common;
+using Alloy.Common;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Networking.Packets.Incoming;

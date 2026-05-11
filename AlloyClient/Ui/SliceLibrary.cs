@@ -1,7 +1,7 @@
 ﻿using System;
 using AlloyClient.UiLib.BuiltIn;
 using AlloyClient.UiLib.Data;
-using Common;
+using Alloy.Common;
 using AlloyClient.Utils;
 using OpenTK.Mathematics;
 

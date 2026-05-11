@@ -6,8 +6,8 @@ using System.Xml.Linq;
 using Alloy.Engine.Common;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Assets.XmlStructs;
-using Common;
-using Common.Structs;
+using Alloy.Common;
+using Alloy.Common.Structs;
 
 namespace AlloyClient.Assets;
 

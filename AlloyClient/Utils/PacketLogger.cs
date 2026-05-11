@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using AlloyClient.Networking.Packets;
 using AlloyClient.State;
-using Common;
+using Alloy.Common;
 
 namespace AlloyClient.Utils;
 

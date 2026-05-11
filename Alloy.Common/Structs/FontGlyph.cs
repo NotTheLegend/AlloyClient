@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using OpenTK.Mathematics;
 
-namespace Common.Structs;
+namespace Alloy.Common.Structs;
 
 public struct FontGlyph {
     public char Character;

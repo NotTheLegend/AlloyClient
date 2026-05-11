@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using AlloyClient.Assets;
 using AlloyClient.Rendering.VertexData;
-using Common.Structs;
+using Alloy.Common.Structs;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering.Types;

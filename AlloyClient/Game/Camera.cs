@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using AlloyClient.State;
 using AlloyClient.Utils;
-using Common;
+using Alloy.Common;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 

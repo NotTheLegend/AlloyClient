@@ -2,7 +2,7 @@
 using AlloyClient.Assets;
 using AlloyClient.Game.Objects;
 using AlloyClient.Rendering.VertexData;
-using Common.Structs;
+using Alloy.Common.Structs;
 
 namespace AlloyClient.Rendering.Types;
 

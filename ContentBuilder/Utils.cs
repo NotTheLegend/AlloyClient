@@ -1,4 +1,4 @@
-﻿using Common.Structs;
+﻿using Alloy.Common.Structs;
 using StbImageSharp;
 
 namespace ContentBuilder;
