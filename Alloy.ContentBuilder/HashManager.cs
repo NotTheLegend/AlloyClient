@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Security.Cryptography;
 
-namespace ContentBuilder;
+namespace Alloy.ContentBuilder;
 
 public static class HashManager {
 

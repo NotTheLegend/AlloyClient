@@ -7,7 +7,7 @@ using StbImageWriteSharp;
 using StbRectPackSharp;
 using ColorComponents = StbImageSharp.ColorComponents;
 
-namespace ContentBuilder.Builders;
+namespace Alloy.ContentBuilder.Builders;
 
 public static class AtlasBuilder {
     

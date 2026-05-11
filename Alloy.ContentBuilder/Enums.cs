@@ -1,4 +1,4 @@
-﻿namespace ContentBuilder;
+﻿namespace Alloy.ContentBuilder;
 
 public enum Type {
     Error,

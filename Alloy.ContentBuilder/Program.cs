@@ -1,8 +1,8 @@
 ﻿// Comment/uncomment to toggle user debug mode
 //#define USER_DEBUG
 
-using ContentBuilder;
-using ContentBuilder.Builders;
+using Alloy.ContentBuilder;
+using Alloy.ContentBuilder.Builders;
 
 #if !USER_DEBUG
 if (args.Length != 3) {

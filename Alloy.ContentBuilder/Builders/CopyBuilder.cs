@@ -1,4 +1,4 @@
-﻿namespace ContentBuilder.Builders;
+﻿namespace Alloy.ContentBuilder.Builders;
 
 public static class CopyBuilder {
 

@@ -4,7 +4,7 @@ using Alloy.Common;
 using Alloy.Common.Structs;
 using StbImageSharp;
 
-namespace ContentBuilder;
+namespace Alloy.ContentBuilder;
 
 public record struct FolderSettings(string Folder, string Ext);
 

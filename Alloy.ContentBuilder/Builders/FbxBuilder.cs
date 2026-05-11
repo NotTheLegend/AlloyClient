@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using SharpAssimp;
 
-namespace ContentBuilder.Builders;
+namespace Alloy.ContentBuilder.Builders;
 
 public static class FbxBuilder {
 

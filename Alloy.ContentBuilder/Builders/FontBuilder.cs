@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using Alloy.Common;
 
-namespace ContentBuilder.Builders;
+namespace Alloy.ContentBuilder.Builders;
 
 public static class FontBuilder {
 

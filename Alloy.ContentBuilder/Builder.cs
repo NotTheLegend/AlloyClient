@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Xml.Linq;
 using Alloy.Common;
-using ContentBuilder.Builders;
+using Alloy.ContentBuilder.Builders;
 
-namespace ContentBuilder;
+namespace Alloy.ContentBuilder;
 
 public static class Builder {
 

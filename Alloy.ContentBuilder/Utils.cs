@@ -1,7 +1,7 @@
 ﻿using Alloy.Common.Structs;
 using StbImageSharp;
 
-namespace ContentBuilder;
+namespace Alloy.ContentBuilder;
 
 public static class Utils {
     public static void Write(this ImageResult image, BinaryWriter output) {

@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alloy.Common", "Alloy.Commo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alloy.UiLib", "Alloy.UiLib\Alloy.UiLib.csproj", "{ECD5DBCA-99D6-4B8E-954A-9E95D33E2BE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContentBuilder", "ContentBuilder\ContentBuilder.csproj", "{C320B980-46F2-454F-8A1D-7DC2B90DCDC4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alloy.ContentBuilder", "Alloy.ContentBuilder\Alloy.ContentBuilder.csproj", "{C320B980-46F2-454F-8A1D-7DC2B90DCDC4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alloy.Engine", "Alloy.Engine\Alloy.Engine.csproj", "{658ADE15-E858-4CC7-9AA0-FAF1333C721B}"
 EndProject
