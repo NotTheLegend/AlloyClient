@@ -134,6 +134,9 @@ public static class Map {
         if (pos != _lastPosition) {
             _lastPosition = pos;
             
+            // TEMP
+            Main.AudioEngine.PlayLocalEffect(@"Effects\weapon\blunt_dagger.ogg");
+            
             Render.StartNewDrawTile();
 
             for (var x = -TileRenderDistance; x < TileRenderDistance; x++) {

@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text;
 using OpenTK.Audio.OpenAL;
 using OpenTK.Audio.OpenAL.ALC;
@@ -9,7 +8,7 @@ namespace Alloy.Audio.Utils;
 
 internal static class InternalUtils {
 
-    public static string GetAudioBinaryPath() {
+    internal static string GetAudioBinaryPath() {
         var is64 = Environment.Is64BitProcess;
 
         string platform;
@@ -25,6 +24,14 @@ internal static class InternalUtils {
         }
 
         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @$"runtimes\{platform}\native\{file}");
+    }
+
+    internal static Format GetChannelFormat(int channels) {
+        return channels switch {
+            1 => Format.FormatMono16,
+            2 => Format.FormatStereo16,
+            _ => throw new ArgumentOutOfRangeException(nameof(channels), channels, "Not mono or stereo")
+        };
     }
 
     extension(ALC) {
@@ -53,6 +60,10 @@ internal static class InternalUtils {
     extension(AL) {
         internal static void SourceQueueBuffers(int source, int count, ReadOnlySpan<int> buffers) {
             AL.SourceQueueBuffers(source, count, MemoryMarshal.Cast<int, uint>(buffers));
+        }
+
+        internal static void SourceQueueBuffer(int source, int buffer) {
+            AL.SourceQueueBuffers(source, 1, MemoryMarshal.Cast<int, uint>(MemoryMarshal.CreateReadOnlySpan(ref buffer, 1)));
         }
     }
 }

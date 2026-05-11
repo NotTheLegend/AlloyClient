@@ -142,7 +142,7 @@ public class Main {
         DisplayManager.Init(stage);
         
         AudioEngine.Start();
-        AudioEngine.PlayLocalMusic(@"Music\sorc.ogg");
+        AudioEngine.PlayLocalSong(@"Music\sorc.ogg");
 
         ScreenManager.FadeToScreen(new LoadingScreen(), Easing.SineInOut, 1000, 0x0);
         //ScreenManager.SetScreen(new TestScreen());

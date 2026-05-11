@@ -20,6 +20,16 @@ internal class SourcePool {
         return _buffer[_index--];
     }
 
+    public bool TryPop(out int id) {
+        if (_index < 0) {
+            id = -1;
+            return false;
+        }
+        
+        id = _buffer[_index--];
+        return true;
+    }
+
     public void Push(int source) {
         _buffer[++_index] = source;
     }
