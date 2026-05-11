@@ -1,11 +1,9 @@
-﻿using AlloyClient.Sound;
-using AlloyClient.State;
+﻿using AlloyClient.State;
 using AlloyClient.UiLib.BuiltIn.Buttons;
 using AlloyClient.UiLib.Core;
 using AlloyClient.UiLib.Data;
 using AlloyClient.UiLib.Enums;
 using AlloyClient.Utils;
-using Common.Structs;
 
 namespace AlloyClient.Ui.Components.Buttons;
 
@@ -51,7 +49,7 @@ public class MusicButton : Sprite {
     private void OnClick() {
         _state = !_state;
         Settings.PlayMusic = _state;
-        Music.ToggleMusic(_state);
+        //TODO: add mute
         
         _button.ChangeTexture(_state ? _musicOn : _musicOff);
     }

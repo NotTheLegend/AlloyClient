@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Globalization;
 using System.Runtime;
-using AlloyClient.Assets;
 using AlloyClient.State;
-using AlloyClient.Utils;
 using Common;
 
 namespace AlloyClient;

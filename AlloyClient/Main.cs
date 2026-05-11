@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
 using AlloyClient.Assets;
+using Alloy.Audio;
 using AlloyClient.Display;
 using AlloyClient.Engine.Graphics;
 using AlloyClient.Game.Components;
@@ -31,9 +32,10 @@ public class Main {
 
     public static readonly SingleSignal<GraphicsOptions> GraphicsMode = new();
 
-    public static Main GameInstance;
-    public static Atlas Atlas;
-    public static Atlas UiAtlas;
+    public static Main GameInstance { get; private set; }
+    public static Atlas Atlas { get; private set; }
+    public static Atlas UiAtlas { get; private set; }
+    public static AudioEngine AudioEngine { get; private set; }
 
     public readonly WindowHandle Window;
     public readonly OpenGLContextHandle Context;
@@ -90,6 +92,7 @@ public class Main {
         }
         
         GraphicsMode.Set(SetGraphicOptions);
+        AudioEngine = new AudioEngine(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Content\Sound"), "");
     }
     
     [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH")]
@@ -138,7 +141,8 @@ public class Main {
         
         DisplayManager.Init(stage);
         
-        
+        AudioEngine.Start();
+        AudioEngine.PlayLocalSong(@"Music\sorc.ogg");
 
         ScreenManager.FadeToScreen(new LoadingScreen(), Easing.SineInOut, 1000, 0x0);
         //ScreenManager.SetScreen(new TestScreen());
@@ -229,8 +233,7 @@ public class Main {
     private void HandleEvents(PalHandle handle, PlatformEventType type, EventArgs args) {
         switch (args) {
             case CloseEventArgs:
-                Toolkit.Window.Destroy(Window);
-                _running = false;
+                Exit();
                 break;
             case FocusEventArgs e:
                 UserInput.SetWindowFocus(e.GotFocus);
@@ -241,6 +244,7 @@ public class Main {
     public void Exit() {
         Toolkit.Window.Destroy(Window);
         _running = false;
+        AudioEngine.StopAndDispose();
     }
 
     public static double GetTime() => GameTime.TotalMs;

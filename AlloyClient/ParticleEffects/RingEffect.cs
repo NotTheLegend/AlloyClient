@@ -1,11 +1,7 @@
 ﻿using AlloyClient.Game;
 using AlloyClient.Game.Objects;
-using NAudio.CoreAudioApi;
 using OpenTK.Mathematics;
 using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
 
 namespace AlloyClient.ParticleEffects;
 

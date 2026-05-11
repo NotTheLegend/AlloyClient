@@ -236,7 +236,6 @@ public static class Client {
             }
         }
         
-        Sound.Music.Stop();
         Map.Reset();
         ScreenManager.FadeTo(new CharacterListScreen());
     }
