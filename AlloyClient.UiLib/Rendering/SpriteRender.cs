@@ -1,6 +1,6 @@
 ﻿using System;
-using AlloyClient.Engine.Graphics;
-using AlloyClient.Engine.Graphics.Buffers;
+using Alloy.Engine.Graphics;
+using Alloy.Engine.Graphics.Buffers;
 using OpenTK.Graphics.OpenGL;
 
 namespace AlloyClient.UiLib.Rendering;

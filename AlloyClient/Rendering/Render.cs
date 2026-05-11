@@ -1,6 +1,6 @@
-﻿using AlloyClient.Assets;
-using AlloyClient.Engine.Graphics;
-using AlloyClient.Engine.Graphics.Buffers;
+﻿using Alloy.Engine.Graphics;
+using Alloy.Engine.Graphics.Buffers;
+using AlloyClient.Assets;
 using AlloyClient.Game;
 using AlloyClient.Rendering.VertexData;
 using AlloyClient.State;

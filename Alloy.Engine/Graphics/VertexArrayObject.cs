@@ -1,4 +1,4 @@
-﻿namespace AlloyClient.Engine.Graphics;
+﻿namespace Alloy.Engine.Graphics;
 
 public sealed class VertexArrayObject {
 

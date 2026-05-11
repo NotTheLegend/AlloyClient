@@ -1,6 +1,6 @@
 ﻿using System;
-using AlloyClient.Engine.Common;
-using AlloyClient.Engine.Graphics;
+using Alloy.Engine.Common;
+using Alloy.Engine.Graphics;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Components;

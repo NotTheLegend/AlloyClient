@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
 
-namespace AlloyClient.Engine.Common;
+namespace Alloy.Engine.Common;
 
 // MIT License - Copyright (C) The Mono.Xna Team
 

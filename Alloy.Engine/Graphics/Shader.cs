@@ -1,6 +1,6 @@
-﻿using AlloyClient.Engine.Graphics.Buffers;
+﻿using Alloy.Engine.Graphics.Buffers;
 
-namespace AlloyClient.Engine.Graphics;
+namespace Alloy.Engine.Graphics;
 
 public sealed class Shader {
 

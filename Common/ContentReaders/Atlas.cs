@@ -1,6 +1,6 @@
 ﻿using System.Buffers;
-using AlloyClient.Engine.Common;
-using AlloyClient.Engine.Graphics;
+using Alloy.Engine.Common;
+using Alloy.Engine.Graphics;
 using Common.Structs;
 
 namespace Common.ContentReaders;

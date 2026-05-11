@@ -1,5 +1,5 @@
 ﻿using System;
-using AlloyClient.Engine.Graphics.Buffers;
+using Alloy.Engine.Graphics.Buffers;
 using AlloyClient.Rendering.VertexData;
 using OpenTK.Graphics.OpenGL;
 

@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlloyClient.UiLib", "AlloyC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContentBuilder", "ContentBuilder\ContentBuilder.csproj", "{C320B980-46F2-454F-8A1D-7DC2B90DCDC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlloyClient.Engine", "AlloyClient.Engine\AlloyClient.Engine.csproj", "{658ADE15-E858-4CC7-9AA0-FAF1333C721B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alloy.Engine", "Alloy.Engine\Alloy.Engine.csproj", "{658ADE15-E858-4CC7-9AA0-FAF1333C721B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alloy.Audio", "Alloy.Audio\Alloy.Audio.csproj", "{8792F9F1-6BB2-4AF1-9A22-883EC257972D}"
 EndProject

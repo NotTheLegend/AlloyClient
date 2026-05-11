@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+using Alloy.Engine.Common;
 using AlloyClient.Assets;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Assets.XmlStructs;
-using AlloyClient.Engine.Common;
 using AlloyClient.Game.Objects.Enums;
 using AlloyClient.Game.Objects.Util;
 using AlloyClient.Networking.Enums;

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace AlloyClient.Engine.Graphics;
+namespace Alloy.Engine.Graphics;
 
 internal static class ShaderHelper {
 

@@ -1,8 +1,7 @@
 ﻿using System;
+using Alloy.Engine.Common;
 using AlloyClient.UiLib.Rendering;
-using Common;
 using OpenTK.Mathematics;
-using AlloyClient.UiLib.Enums;
 
 namespace AlloyClient.UiLib.Core;
 

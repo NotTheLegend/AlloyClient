@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using AlloyClient.Engine.Graphics;
+using Alloy.Engine.Graphics;
 using AlloyClient.UiLib.Enums;
 using Common.ContentReaders;
 using Common.Structs;

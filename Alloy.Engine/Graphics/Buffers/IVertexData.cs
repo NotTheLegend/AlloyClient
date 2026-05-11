@@ -1,3 +1,3 @@
-﻿namespace AlloyClient.Engine.Graphics.Buffers;
+﻿namespace Alloy.Engine.Graphics.Buffers;
 
 public interface IVertexData<T> : IBufferData<T> where T : unmanaged;

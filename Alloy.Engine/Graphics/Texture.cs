@@ -1,7 +1,7 @@
-﻿using AlloyClient.Engine.Common;
+﻿using Alloy.Engine.Common;
 using ReFuel.Stb;
 
-namespace AlloyClient.Engine.Graphics;
+namespace Alloy.Engine.Graphics;
 
 public sealed class Texture {
     

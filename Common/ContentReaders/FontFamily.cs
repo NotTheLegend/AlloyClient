@@ -1,6 +1,6 @@
 ﻿using System.Buffers;
 using System.Text.Json;
-using AlloyClient.Engine.Graphics;
+using Alloy.Engine.Graphics;
 using Common.Structs;
 
 namespace Common.ContentReaders;

@@ -12,6 +12,6 @@
         <PackageReference Include="ReFuel.StbImage" Version="2.1.0" />
     </ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\AlloyClient.Engine\AlloyClient.Engine.csproj" />
+	  <ProjectReference Include="..\Alloy.Engine\Alloy.Engine.csproj" />
 	</ItemGroup>
 </Project>

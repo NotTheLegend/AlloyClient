@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using AlloyClient.Engine.Common;
-using AlloyClient.Engine.Graphics.Buffers;
+using Alloy.Engine.Common;
+using Alloy.Engine.Graphics.Buffers;
 using AlloyClient.UiLib.Extra;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
