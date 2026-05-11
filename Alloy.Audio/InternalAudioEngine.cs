@@ -8,7 +8,6 @@ namespace Alloy.Audio;
 
 internal class InternalAudioEngine {
     
-    public const int TotalMaxSources = 32;
     private readonly string _localContentPath;
     private readonly string _webContentPath; // TODO: web loaded sound
     private readonly SourcePool<Music> _songPool;
@@ -30,10 +29,6 @@ internal class InternalAudioEngine {
     private Music _currentSong;
 
     internal InternalAudioEngine(CancellationToken cancelToken, string localPath, string webPath, int maxSongSources = 4, int maxEffectSources = 28) {
-        if (maxSongSources + maxEffectSources > TotalMaxSources) {
-            throw new Exception($"Total audio sources must not exceed {TotalMaxSources}, had {maxSongSources + maxEffectSources}");
-        }
-        
         OpenALLibraryNameContainer.OverridePath = InternalUtils.GetAudioBinaryPath();
 
         _cancelToken = cancelToken;
