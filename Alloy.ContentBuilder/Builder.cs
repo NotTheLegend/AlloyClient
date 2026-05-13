@@ -14,7 +14,7 @@ public static class Builder {
         Console.WriteLine("===== Content Builder Starting =====\n");
         
         
-        var content = Path.Combine(paths.Content, "Content.xml");
+        var content = Path.CombineAlt(paths.Content, "Content.xml");
 
         if (!File.Exists(content)) {
             throw new Exception($"Missing file 'Content.xml' at {paths.Content}");
@@ -43,11 +43,11 @@ public static class Builder {
             foreach (var loc in build.Elements()) {
                 switch (loc.Name.LocalName) {
                     case "File":
-                        RunBuilder(type, paths, new FileSettings(Path.Combine(paths.Content, loc.Value)));
+                        RunBuilder(type, paths, new FileSettings(Path.CombineAlt(paths.Content, loc.Value)));
                         break;
                     case "Folder":
                         var ext = loc.GetAttribute("ext", "*.*");
-                        RunBuilder(type, paths, new FolderSettings(Path.Combine(paths.Content, loc.Value), ext));
+                        RunBuilder(type, paths, new FolderSettings(Path.CombineAlt(paths.Content, loc.Value), ext));
                         break;
                     default:
                         Console.WriteLine($"Unknown location type of '{loc.Name.LocalName}'. Must be 'File' or 'Folder' ");

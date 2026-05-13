@@ -161,7 +161,7 @@ public static class Settings {
     public static readonly List<InputSetting> Inputs = [];
 
     static Settings() {
-        LocalFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), LocalFolderName);
+        LocalFolderPath = Path.CombineAlt(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), LocalFolderName);
         Directory.CreateDirectory(LocalFolderPath);
     }
 
@@ -386,7 +386,7 @@ public static class Settings {
     }
     
     public static void LoadLocalAccount() {
-        var filePath = Path.Combine(LocalFolderPath, AccountFileName);
+        var filePath = Path.CombineAlt(LocalFolderPath, AccountFileName);
 
         if (!File.Exists(filePath)) {
             Log.Debug("No local account data found");
@@ -452,7 +452,7 @@ public static class Settings {
         var jsonString = JsonConvert.SerializeObject(new Dictionary<string, string>{{"username", username}, {"password", password}});
 
         try {
-            File.WriteAllText(Path.Combine(LocalFolderPath, AccountFileName), jsonString);
+            File.WriteAllText(Path.CombineAlt(LocalFolderPath, AccountFileName), jsonString);
         } catch (Exception e) {
             Log.Error($"Failed to write to file {AccountFileName}: {e.Message}");
         }

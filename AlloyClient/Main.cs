@@ -92,12 +92,12 @@ public class Main {
         }
         
         GraphicsMode.Set(SetGraphicOptions);
-        AudioEngine = new AudioEngine(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Content\Sound"), "");
+        AudioEngine = new AudioEngine(Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, @"Content\Sound"), "");
     }
     
     [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH")]
     private void LoadContent() {
-        ContentReader.Init(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content"));
+        ContentReader.Init(Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, "Content"));
         
         Atlas = ContentReader.LoadAtlas("Game.atlas");
         UiAtlas = ContentReader.LoadAtlas("Ui.atlas");

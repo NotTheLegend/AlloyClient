@@ -58,7 +58,7 @@ public record Paths(string Content, string Output);
 
 public record StaticSheet(string File, string Lookup, int Width, int Height) {
     public static StaticSheet Parse(XElement xml, string path) {
-        var file = Path.Combine(path, xml.Value);
+        var file = Path.CombineAlt(path, xml.Value);
         var lookup = xml.GetAttribute("name", "ERROR");
         var w = xml.GetAttribute("w", -1);
         var h = xml.GetAttribute("h", -1);
@@ -68,7 +68,7 @@ public record StaticSheet(string File, string Lookup, int Width, int Height) {
 
 public record AnimatedSheet(string File, string Lookup, int Width, int Height, Grouping Grouping) {
     public static AnimatedSheet Parse(XElement xml, string path) {
-        var file = Path.Combine(path, xml.Value);
+        var file = Path.CombineAlt(path, xml.Value);
         var lookup = xml.GetAttribute("name", "ERROR");
         var w = xml.GetAttribute("w", -1);
         var h = xml.GetAttribute("h", -1);

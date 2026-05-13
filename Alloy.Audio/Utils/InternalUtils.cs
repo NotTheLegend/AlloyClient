@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
+using Alloy.Common;
 using OpenTK.Audio.OpenAL;
 using OpenTK.Audio.OpenAL.ALC;
 using StringName = OpenTK.Audio.OpenAL.ALC.StringName;
@@ -23,7 +24,7 @@ internal static class InternalUtils {
             throw new NotSupportedException($"The library name couldn't be resolved for the given platform ('{RuntimeInformation.OSDescription}').");
         }
 
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @$"runtimes\{platform}\native\{file}");
+        return Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, $"runtimes/{platform}/native/{file}");
     }
 
     internal static Format GetChannelFormat(int channels) {

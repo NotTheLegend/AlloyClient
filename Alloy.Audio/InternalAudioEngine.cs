@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Alloy.Audio.Utils;
+using Alloy.Common;
 using OpenTK.Audio.OpenAL;
 using OpenTK.Audio.OpenAL.ALC;
 using StbVorbisSharp;
@@ -146,7 +147,7 @@ internal class InternalAudioEngine {
         }
         
         if (!_oggCache.TryGetValue(file, out var vorbis)) {
-            var path = Path.Combine(_localContentPath, file);
+            var path = Path.CombineAlt(_localContentPath, file);
 
             if (Path.GetExtension(path) != ".ogg") {
                 Console.WriteLine($"Failed to play song {path}, not an '.ogg' file");
@@ -180,7 +181,7 @@ internal class InternalAudioEngine {
         }
 
         if (!_effectCache.TryGetValue(file, out var buffer)) {
-            var path = Path.Combine(_localContentPath, file);
+            var path = Path.CombineAlt(_localContentPath, file);
             
             if (Path.GetExtension(path) != ".ogg") {
                 Console.WriteLine($"Failed to play song {path}, not an '.ogg' file");

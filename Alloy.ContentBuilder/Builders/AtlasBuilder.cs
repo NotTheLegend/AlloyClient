@@ -20,7 +20,7 @@ public static class AtlasBuilder {
         
         var mainXml = XElement.Parse(File.ReadAllText(settings.File!));
         //var mask = mainXml.GetAttribute("mask", false);
-        var folder = Path.Combine(paths.Content, mainXml.GetAttribute("source", ""));
+        var folder = Path.CombineAlt(paths.Content, mainXml.GetAttribute("source", ""));
 
         var staticSheets = new List<StaticSheet>();
         var animatedSheets = new List<AnimatedSheet>();
@@ -102,7 +102,7 @@ public static class AtlasBuilder {
         
         // this whole thing is jank and i might deal with it later
 
-        var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"temp/{name}.png");
+        var path = Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, $"temp/{name}.png");
         
         var width = png.Width;
         var height = png.Height;

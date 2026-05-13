@@ -1,6 +1,7 @@
 ﻿// Comment/uncomment to toggle user debug mode
 //#define USER_DEBUG
 
+using Alloy.Common;
 using Alloy.ContentBuilder;
 using Alloy.ContentBuilder.Builders;
 
@@ -15,13 +16,13 @@ const string clientProjectPath = "E:\\Development\\Github\\AlloyClient\\AlloyCli
 const string clientProjectBin = "bin\\Debug\\net10.0"; // client build output path
 const string contentFolder = "Content"; // folder to read content from and write content to in bin path
 
-args = [clientProjectPath, Path.Combine(clientProjectPath, clientProjectBin), contentFolder];
+args = [clientProjectPath, Path.CombineAlt(clientProjectPath, clientProjectBin), contentFolder];
 #endif
         
-var outputPath = Path.Combine(args[1], args[2]);
-var contentPath = Path.Combine(args[0], args[2]);
-var binPath = Path.Combine(contentPath, "bin");
-var paths = new Paths(contentPath, Path.Combine(binPath, args[2]));
+var outputPath = Path.CombineAlt(args[1], args[2]);
+var contentPath = Path.CombineAlt(args[0], args[2]);
+var binPath = Path.CombineAlt(contentPath, "bin");
+var paths = new Paths(contentPath, Path.CombineAlt(binPath, args[2]));
 
 HashManager.Init(binPath);
 

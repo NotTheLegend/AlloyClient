@@ -16,4 +16,8 @@
       <PackageReference Include="StbVorbisSharp" Version="1.22.4" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Alloy.Common\Alloy.Common.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Security.Cryptography;
+using Alloy.Common;
 
 namespace Alloy.ContentBuilder;
 
@@ -13,7 +14,7 @@ public static class HashManager {
 
     public static void Init(string binPath) {
         var hashes = new Dictionary<string, string>();
-        var file = Path.Combine(binPath, FileName);
+        var file = Path.CombineAlt(binPath, FileName);
 
         if (!File.Exists(file)) {
             _oldHashes = new ReadOnlyDictionary<string, string>(hashes);
@@ -34,7 +35,7 @@ public static class HashManager {
     }
     
     public static void SaveHashes(string binPath) {
-        var file = Path.Combine(binPath, "content.hash");
+        var file = Path.CombineAlt(binPath, "content.hash");
         File.Delete(file);
         File.WriteAllLines(file, _currentHashes.Select(s => $"{s.Key};{s.Value}"));
     }

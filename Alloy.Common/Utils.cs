@@ -123,6 +123,12 @@ public static class Utils {
     
         public Vector4 ReadVector4() => new(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
     }
+
+    extension(Path) {
+        public static string CombineAlt(string path1, string path2) {
+            return Path.Combine(path1, path2).Replace('\\', '/');
+        }
+    }
     
     public static int[] FromCommaSepString(this string src, string delim = ", ") {
         return src == string.Empty ? [] : src.Split(delim).Select(int.Parse).ToArray();

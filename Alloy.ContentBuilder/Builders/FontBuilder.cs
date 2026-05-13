@@ -40,8 +40,8 @@ public static class FontBuilder {
     }
 
     private static void Init() {
-        _workPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        _genPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "msdf-atlas-gen-w64.exe");
+        _workPath = Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, "temp");
+        _genPath = Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, "msdf-atlas-gen-w64.exe");
 
         if (!File.Exists(_genPath)) {
             throw new Exception($"Missing atlas gen at {_genPath}");
@@ -65,7 +65,7 @@ public static class FontBuilder {
     private static void ProcessFile(string file, Paths paths) {
         var xml = XElement.Parse(File.ReadAllText(file));
         var group = xml.GetAttribute<string>("group");
-        var fontPaths = xml.Elements("FontPath").Select( i => (i.GetAttribute("type", "Normal"), Path.Combine(paths.Content, i.Value))).ToList();
+        var fontPaths = xml.Elements("FontPath").Select( i => (i.GetAttribute("type", "Normal"), Path.CombineAlt(paths.Content, i.Value))).ToList();
         var outlineSize = xml.GetValue("MaxOutlineSize", 16);
         
         if (CheckHash(file, fontPaths, paths)) {
@@ -92,9 +92,9 @@ public static class FontBuilder {
     }
     
     private static FontData BuildFontAtlas(string group, List<(string, string)> fonts, int outlineSize, string charSet) {
-        var charsetPath = Path.Combine(_workPath, $"{group}-charset.txt");
-        var jsonPath = Path.Combine(_workPath, $"{group}-layout.json");
-        var atlasPath = Path.Combine(_workPath, $"{group}-atlas.png");
+        var charsetPath = Path.CombineAlt(_workPath, $"{group}-charset.txt");
+        var jsonPath = Path.CombineAlt(_workPath, $"{group}-layout.json");
+        var atlasPath = Path.CombineAlt(_workPath, $"{group}-atlas.png");
         
         File.WriteAllText(charsetPath, charSet);
         
