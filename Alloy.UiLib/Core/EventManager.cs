@@ -239,8 +239,13 @@ public abstract class EventManager {
                 _leftTarget = sprite;
                 break;
             case MouseEvent.LeftUpKey:
-                if (_leftTarget == sprite)
+                if (_leftTarget == sprite) {
+                    if (TextInput.ActiveInput != null && sprite != TextInput.ActiveInput) {
+                        TextInput.ActiveInput.UnFocus();
+                    }
+                    
                     _pendingClicks.Enqueue(MouseEvent.LeftClick);
+                }
                 _leftTarget = null;
                 break;
             case MouseEvent.MiddleDownKey:

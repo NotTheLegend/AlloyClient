@@ -99,7 +99,7 @@ public sealed class TextInput : Sprite {
         _textBox = new NineSliceRect(rectConfig);
         AddChild(_textBox);
         
-        SetHitboxType(Enums.CollisionType.CustomNoScale);
+        SetHitboxType(CollisionType.CustomNoScale);
         
         AddEventListener(MouseEvent.LeftClick, OnMouseClick);
         
