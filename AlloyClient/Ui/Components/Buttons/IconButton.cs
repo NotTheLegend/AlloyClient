@@ -5,7 +5,7 @@ using Alloy.UiLib.Enums;
 using Alloy.UiLib.Rendering;
 using OpenTK.Mathematics;
 
-namespace Alloy.UiLib.BuiltIn.Buttons;
+namespace AlloyClient.Ui.Components.Buttons;
 
 public struct IconButtonConfig {
 

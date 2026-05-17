@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using AlloyClient.Game.Objects;
 using Alloy.UiLib.BuiltIn;
-using Alloy.UiLib.BuiltIn.Buttons;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Enums;
+using AlloyClient.Ui.Components.Buttons;
 using AlloyClient.Utils;
 
 namespace AlloyClient.Game.Components.Hud.Inventory

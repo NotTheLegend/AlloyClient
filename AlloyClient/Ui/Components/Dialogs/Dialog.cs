@@ -1,9 +1,9 @@
 ﻿using System;
 using AlloyClient.State;
 using Alloy.UiLib.BuiltIn;
-using Alloy.UiLib.BuiltIn.Buttons;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Enums;
+using AlloyClient.Ui.Components.Buttons;
 
 namespace AlloyClient.Ui.Components.Dialogs;
 

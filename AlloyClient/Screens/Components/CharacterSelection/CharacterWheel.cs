@@ -4,10 +4,10 @@ using System.Linq;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.State;
 using Alloy.UiLib.BuiltIn;
-using Alloy.UiLib.BuiltIn.Buttons;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Enums;
 using Alloy.Common;
+using AlloyClient.Ui.Components.Buttons;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Screens.Components.CharacterSelection;

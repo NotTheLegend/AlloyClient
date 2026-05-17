@@ -1,7 +1,6 @@
 ﻿using System;
 using AlloyClient.State;
 using Alloy.UiLib.BuiltIn;
-using Alloy.UiLib.BuiltIn.Buttons;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Enums;
 using Alloy.UiLib.Extra;
@@ -9,6 +8,7 @@ using Alloy.UiLib.Rendering;
 using Alloy.UiLib.Signals;
 using AlloyClient.Utils;
 using Alloy.Common;
+using AlloyClient.Ui.Components.Buttons;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Components.Hud;

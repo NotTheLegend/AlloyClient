@@ -3,10 +3,10 @@ using AlloyClient.Game.Objects;
 using AlloyClient.Networking;
 using AlloyClient.Networking.Packets.Outgoing;
 using Alloy.UiLib.BuiltIn;
-using Alloy.UiLib.BuiltIn.Buttons;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Enums;
 using Alloy.Common;
+using AlloyClient.Ui.Components.Buttons;
 
 namespace AlloyClient.Game.Components.Hud.Panels;
 

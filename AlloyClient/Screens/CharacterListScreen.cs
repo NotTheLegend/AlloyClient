@@ -10,7 +10,6 @@ using AlloyClient.State;
 using AlloyClient.Ui.Components.Buttons;
 using AlloyClient.Ui.Components.Scrollbars;
 using Alloy.UiLib.BuiltIn;
-using Alloy.UiLib.BuiltIn.Buttons;
 using Alloy.UiLib.Enums;
 using Alloy.UiLib.Extra;
 using AlloyClient.Utils;

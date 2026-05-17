@@ -4,9 +4,9 @@ using AlloyClient.Data;
 using AlloyClient.Display;
 using AlloyClient.Game;
 using Alloy.UiLib.BuiltIn;
-using Alloy.UiLib.BuiltIn.Buttons;
 using Alloy.UiLib.Enums;
 using Alloy.UiLib.Extra;
+using AlloyClient.Ui.Components.Buttons;
 using AlloyClient.Utils;
 
 namespace AlloyClient.Screens.Components.CharacterList;

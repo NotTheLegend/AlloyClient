@@ -1,8 +1,9 @@
 ﻿using System;
+using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Enums;
 
-namespace Alloy.UiLib.BuiltIn.Buttons;
+namespace AlloyClient.Ui.Components.Buttons;
 
 public struct TextButtonConfig {
     public string Text = "";
