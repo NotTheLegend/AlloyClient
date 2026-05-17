@@ -29,8 +29,8 @@ internal static class InternalUtils {
 
     internal static Format GetChannelFormat(int channels) {
         return channels switch {
-            1 => Format.FormatMono16,
-            2 => Format.FormatStereo16,
+            1 => Format.Mono16,
+            2 => Format.Stereo16,
             _ => throw new ArgumentOutOfRangeException(nameof(channels), channels, "Not mono or stereo")
         };
     }
@@ -55,12 +55,6 @@ internal static class InternalUtils {
             }
 
             return devices.ToArray();
-        }
-    }
-    
-    extension(AL) {
-        internal static void SourceQueueBuffers(int source, int count, ReadOnlySpan<int> buffers) {
-            AL.SourceQueueBuffers(source, count, MemoryMarshal.Cast<int, uint>(buffers));
         }
     }
 }

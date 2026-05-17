@@ -8,6 +8,6 @@
       <ProjectReference Include="..\Alloy.Common\Alloy.Common.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="OpenTK" Version="5.0.0-pre.15" />
+      <PackageReference Include="OpenTK" Version="5.0.0-pre.16" />
     </ItemGroup>
 </Project>

@@ -65,7 +65,7 @@ public class Main {
 
         EnableDebugOutput();
 
-        EventQueue.EventRaised += HandleEvents;
+        Toolkit.Event.EventRaised += HandleEvents;
         
         Initialize();
         LoadContent();
@@ -86,8 +86,8 @@ public class Main {
                 break;
             default:
                 var display = Toolkit.Window.GetDisplay(Window);
-                Toolkit.Display.GetResolution(display, out var width, out var height);
-                Toolkit.Window.SetClientPosition(Window, new Vector2i(width / 2 - Settings.ScreenWidth / 2, height / 2 - Settings.ScreenHeight / 2));
+                var res = Toolkit.Display.GetResolution(display);
+                Toolkit.Window.SetClientPosition(Window, new Vector2i(res.X / 2 - Settings.ScreenWidth / 2, res.Y / 2 - Settings.ScreenHeight / 2));
                 break;
         }
         
@@ -230,7 +230,7 @@ public class Main {
         }
     }
     
-    private void HandleEvents(PalHandle handle, PlatformEventType type, EventArgs args) {
+    private void HandleEvents(EventArgs args) {
         switch (args) {
             case CloseEventArgs:
                 Exit();

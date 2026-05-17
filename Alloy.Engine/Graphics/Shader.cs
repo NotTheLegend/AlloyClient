@@ -39,7 +39,7 @@ public sealed class Shader {
     
     public void SetValue(string uniform, UniformBuffer buffer) => GL.BindBufferBase(BufferTarget.UniformBuffer, GetUniformBlock(uniform), buffer.Handle);
     
-    public void SetValue(string uniform, Sampler sampler) => GL.ProgramUniform1i(Handle, GetLocation(uniform, UniformType.Sampler2d), (int)sampler.TextureUnit);
+    public void SetValue(string uniform, Sampler sampler) => GL.ProgramUniform1i(Handle, GetLocation(uniform, UniformType.Sampler2D), (int)sampler.TextureUnit);
 
     private int GetLocation(string uniform, UniformType type) {
         if (!_uniforms.TryGetValue(uniform, out var info)) {

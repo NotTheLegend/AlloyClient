@@ -20,7 +20,7 @@ public sealed class Texture {
     public Texture(ReadOnlySpan<Color> data, int width, int height) {
         Width = width;
         Height = height;
-        Handle = GL.CreateTexture(TextureTarget.Texture2d);
+        Handle = GL.CreateTexture(TextureTarget.Texture2D);
         
         GL.TextureStorage2D(Handle, 1, SizedInternalFormat.Rgba8, width, height);
         GL.TextureSubImage2D(Handle, 0, 0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, data);

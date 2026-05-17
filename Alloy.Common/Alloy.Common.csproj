@@ -8,7 +8,7 @@
         <LangVersion>preview</LangVersion>
     </PropertyGroup>
 	<ItemGroup>
-        <PackageReference Include="OpenTK" Version="5.0.0-pre.15" />
+        <PackageReference Include="OpenTK" Version="5.0.0-pre.16" />
         <PackageReference Include="ReFuel.StbImage" Version="2.1.0" />
     </ItemGroup>
 	<ItemGroup>
