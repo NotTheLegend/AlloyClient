@@ -16,6 +16,4 @@
 - ui vertex color and color channel changes
 
 # Bugs
-- text carat selection is fucked when text input is scaled
-- cant click out of chat input
 - loading in -> back to home from options -> play just sends back to char select repeatedly

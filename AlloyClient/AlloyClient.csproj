@@ -42,9 +42,9 @@
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Exec Condition="$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))"
-              Command="$(SolutionDir)Alloy.ContentBuilder\bin\ContentBuilder.exe $(ProjectDir) $(TargetDir) &quot;Content&quot;" />
+              Command="&quot;$(SolutionDir)Alloy.ContentBuilder\bin\ContentBuilder.exe&quot; &quot;$(ProjectDir.TrimEnd('\'))&quot; &quot;$(TargetDir.TrimEnd('\'))&quot; &quot;Content&quot;" />
 
         <Exec Condition="$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))"
-              Command="$(SolutionDir)Alloy.ContentBuilder/bin/ContentBuilder $(ProjectDir) $(TargetDir) &quot;Content&quot;" />
+              Command="&quot;$(SolutionDir)Alloy.ContentBuilder/bin/ContentBuilder&quot; &quot;$(ProjectDir)&quot; &quot;$(TargetDir)&quot; &quot;Content&quot;" />
     </Target>
 </Project>
