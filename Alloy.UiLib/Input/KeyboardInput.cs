@@ -1,4 +1,6 @@
-﻿using Alloy.UiLib.BuiltIn;
+﻿using System;
+using System.Diagnostics;
+using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using OpenTK.Platform;
 
@@ -24,26 +26,68 @@ public static class KeyboardInput {
     
     public static bool IsCtrlDown() => IsKeyDown(Key.LeftControl) || IsKeyDown(Key.RightControl);
 
+    public static bool IsOnlyCtrlDown() => IsCtrlDown() && !IsShiftDown() && !IsAltDown();
+
     internal static void Register(Stage stage) {
         _stage = stage;
         _internalState = new InternalKeyboardState();
     }
 
-    internal static void SetKeyDown(KeyDownEventArgs args) {
-        if (_internalState.IsKeyDown(args.Key)) return;
-        _internalState.SetKey(args.Key);
-        _stage.DispatchEvent(new KeyboardEvent(KeyboardEvent.KeyDown, args.Key, args.Scancode, IsCtrlDown(), IsShiftDown(), IsAltDown()));
+    internal static void SetKeyDown(Key key, Scancode scancode) {
+        if (_internalState.IsKeyUp(key)) {
+            _internalState.SetKey(key);
+            _stage.DispatchEvent(new KeyboardEvent(KeyboardEvent.KeyDown, key, scancode, IsCtrlDown(), IsShiftDown(), IsAltDown()));
+        }
+        
+        OnManualTextInputDown(key);
     }
 
-    internal static void SetKeyUp(KeyUpEventArgs args) {
-        if (_internalState.IsKeyUp(args.Key)) return;
-        _internalState.ClearKey(args.Key);
-        _stage.DispatchEvent(new KeyboardEvent(KeyboardEvent.KeyUp, args.Key, args.Scancode, IsCtrlDown(), IsShiftDown(), IsAltDown()));
+    internal static void SetKeyUp(Key key, Scancode scancode) {
+        if (_internalState.IsKeyDown(key)) {
+            _internalState.ClearKey(key);
+            _stage.DispatchEvent(new KeyboardEvent(KeyboardEvent.KeyUp, key, scancode, IsCtrlDown(), IsShiftDown(), IsAltDown()));
+        }
+        
+        OnManualTextInputUp(key);
     }
 
-    internal static void OnTextInput(TextInputEventArgs args) {
-        TextInput.ActiveInput?.OnTextInput(args);
+    internal static void OnTextInput(ReadOnlySpan<char> text) {
+        TextInput.ActiveInput?.OnTextInput(text);
     }
+
+    private static void OnManualTextInputDown(Key key) {
+        var time = Stopwatch.Elapsed.TotalMilliseconds;
+        if (key != _lastKeyDown) {
+            _lastKeyDown = key;
+            _nextTickTime = time + InitDelay;
+            TextInput.ActiveInput?.OnManualTextInput(key);
+            return;
+        }
+
+        if (time < _nextTickTime) {
+            return;
+        }
+
+        _nextTickTime = time + RepeatDelay;
+        TextInput.ActiveInput?.OnManualTextInput(key);
+    }
+    
+    private static void OnManualTextInputUp(Key key) {
+        if (key != _lastKeyDown) {
+            return;
+        }
+
+        _lastKeyDown = Key.Unknown;
+    }
+
+    private const double InitDelay = 500; // ms
+    private const double RepeatDelay = 33; //ms
+
+    private static readonly Stopwatch Stopwatch = Stopwatch.StartNew();
+    private static Key _lastKeyDown;
+
+    private static double _nextTickTime;
+
 }
 
 internal struct InternalKeyboardState {

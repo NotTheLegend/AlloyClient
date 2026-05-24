@@ -125,13 +125,13 @@ public static class UiRender {
         
         switch (args) {
             case KeyDownEventArgs e:
-                KeyboardInput.SetKeyDown(e);
+                KeyboardInput.SetKeyDown(e.Key, e.Scancode);
                 break;
             case KeyUpEventArgs e:
-                KeyboardInput.SetKeyUp(e);
+                KeyboardInput.SetKeyUp(e.Key, e.Scancode);
                 break;
             case TextInputEventArgs e:
-                KeyboardInput.OnTextInput(e);
+                KeyboardInput.OnTextInput(e.Text.AsSpan());
                 break;
             case WindowResizeEventArgs e:
                 OnResize(e.NewClientSize);

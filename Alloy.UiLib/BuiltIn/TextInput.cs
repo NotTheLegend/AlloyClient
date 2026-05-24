@@ -3,6 +3,7 @@ using System.Text;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Data;
 using Alloy.UiLib.Enums;
+using Alloy.UiLib.Input;
 using Alloy.UiLib.Rendering;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
@@ -244,55 +245,58 @@ public sealed class TextInput : Sprite {
         
         FillData();
     }
-
-    //Todo: maybe improve this logic, tis a mess
-    //FIXME: TextInput doesnt emit delete key, gotta add event logic for that :/
-    internal void OnTextInput(TextInputEventArgs e) {
-        var text = e.Text;
-        
-        if (string.IsNullOrEmpty(text)) return;
-        if (text.Length != 1) return;// this will hide enter key but we dont careeeeeee
-        
-        var c = char.Parse(text);
-        var backspace = c == '\b';
-
-        if (char.IsControl(c) && !backspace) return;
-
-        if (backspace && _inputText.Length > 0) {
-            if (_caretIndex == -1) {
-                _inputText.Remove(_inputText.Length - 1, 1);
+    
+    internal void OnManualTextInput(Key key) {
+        switch (key) {
+            case Key.Backspace when _inputText.Length > 0:
+                if (_caretIndex == -1) {
+                    _inputText.Remove(_inputText.Length - 1, 1);
+                } else if (_caretIndex > 0) {
+                    _caretIndex--;
+                    _inputText.Remove(_caretIndex, 1);
+                }
                 FillData();
-            } else if (_caretIndex > 0) {
-                _caretIndex--;
+                break;
+            case Key.Delete when _caretIndex < _inputText.Length && _caretIndex >= 0:
                 _inputText.Remove(_caretIndex, 1);
+                if (_caretIndex == _inputText.Length) {
+                    _caretIndex = -1;
+                }
                 FillData();
-            }
+                break;
+            case Key.C when KeyboardInput.IsOnlyCtrlDown():
+                //todo
+                //Toolkit.Clipboard.SetClipboardText();
+                break;
+            case Key.V when KeyboardInput.IsOnlyCtrlDown():
+                //todo
+                //var text = Toolkit.Clipboard.GetClipboardText();
+                break;
+            case Key.A when KeyboardInput.IsOnlyCtrlDown():
+                break;
+        }
+    }
+
+    internal void OnTextInput(ReadOnlySpan<char> text) {
+        if (text.Length != 1) {
             return;
         }
-        
+
+        var input = text[0];
+
+        if (char.IsControl(input)) return;
+        if (char.IsWhiteSpace(input) && input != ' ') return;
+        if (!_font.Glyphs.ContainsKey(input)) return;
         if (_inputText.Length == _maxCharacters) return;
-        if (!_font.Glyphs.ContainsKey(c)) return;
-        if (char.IsWhiteSpace(c) && c != ' ') return;
-        //TODO: probably add a regex validator or something too
         
         if (_caretIndex == -1) {
-            _inputText.Append(c);
+            _inputText.Append(input);
         } else {
-            _inputText.Insert(_caretIndex, c);
+            _inputText.Insert(_caretIndex, input);
             _caretIndex++;
         }
         
         FillData();
-
-        /*
-        if (e.Key == Keys.Delete && _caretIndex < _inputText.Length && _caretIndex >= 0) {
-            _inputText.Remove(_caretIndex, 1);
-            FillData();
-            if (_caretIndex == _inputText.Length)
-                _caretIndex = -1;
-            return;
-        }
-        */
     }
 
     public bool HasText(bool ignoreWhitespace) {
