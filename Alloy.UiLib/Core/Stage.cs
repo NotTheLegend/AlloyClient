@@ -1,7 +1,9 @@
 ﻿using Alloy.Common;
+using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Extra;
 using Alloy.UiLib.Input;
 using OpenTK.Mathematics;
+using OpenTK.Platform;
 
 namespace Alloy.UiLib.Core;
 
@@ -16,7 +18,12 @@ public sealed class Stage : Sprite {
     
     public int StageHeight { get; private set; }
     
-    public static GameTime GameTime { get; private set; }
+    public static GameTime GameTime { get; private set; } // todo: make not static
+    
+    public KeyboardState Keyboard => _keyboard;
+
+    private KeyboardState _keyboard;
+    private ManualTextInput _manualTextInput;
 
     internal Stage() {
         MouseEnabled = true;
@@ -38,5 +45,23 @@ public sealed class Stage : Sprite {
 
     public void Draw(GameTime gameTime) {
         InternalDrawLoop();
+    }
+    
+    internal void SetKeyDown(Key key, Scancode scancode) {
+        if (_keyboard.SetKeyDown(key)) {
+            DispatchEvent(new KeyboardEvent(KeyboardEvent.KeyDown, key, scancode, _keyboard.IsCtrlDown(), _keyboard.IsShiftDown(), _keyboard.IsAltDown()));
+        }
+
+        if (_manualTextInput.OnManualTextInputDown(key, GameTime.TotalMs)) {
+            TextInput.ActiveInput?.OnManualTextInput(key);
+        }
+    }
+
+    internal void SetKeyUp(Key key, Scancode scancode) {
+        if (_keyboard.SetKeyUp(key)) {
+            DispatchEvent(new KeyboardEvent(KeyboardEvent.KeyUp, key, scancode, _keyboard.IsCtrlDown(), _keyboard.IsShiftDown(), _keyboard.IsAltDown()));
+        }
+        
+        _manualTextInput.OnManualTextInputUp(key);
     }
 }

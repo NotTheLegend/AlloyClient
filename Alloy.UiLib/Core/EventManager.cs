@@ -218,13 +218,14 @@ public abstract class EventManager {
     }
 
     internal void DispatchMouseEvents() {
+        var keyboard = (this as Sprite)!.Stage.Keyboard;
         while(MouseInput.Events.TryDequeue(out var type)){
-            DispatchEvent(new MouseEvent(type, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetVerticalScrollDelta(), 1), -1), KeyboardInput.IsShiftDown(), KeyboardInput.IsCtrlDown(), KeyboardInput.IsAltDown()));
+            DispatchEvent(new MouseEvent(type, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetVerticalScrollDelta(), 1), -1), keyboard.IsShiftDown(), keyboard.IsCtrlDown(), keyboard.IsAltDown()));
             CheckClicks(type);
         }
 
         while (_pendingClicks.TryDequeue(out var type)) {
-            DispatchEvent(new MouseEvent(type, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetVerticalScrollDelta(), 1), -1), KeyboardInput.IsShiftDown(), KeyboardInput.IsCtrlDown(), KeyboardInput.IsAltDown()));
+            DispatchEvent(new MouseEvent(type, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetVerticalScrollDelta(), 1), -1), keyboard.IsShiftDown(), keyboard.IsCtrlDown(), keyboard.IsAltDown()));
         }
     }
     

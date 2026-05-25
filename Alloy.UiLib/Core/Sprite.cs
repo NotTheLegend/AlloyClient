@@ -227,17 +227,11 @@ public partial class Sprite : DisplayContainer {
         
         Update();
 
-        HandleHover();
+        HandleHover(Stage.Keyboard);
         
         HighestSprite?.DispatchMouseEvents();
         
         HighestSprite = null;
-
-        /*if (MouseInput.CheckEvent(MouseEvent.LeftUp) && TextInput.UnFocusOnClick) {
-            TextInput.ActiveInput?.UnFocus();
-            TextInput.UnFocusOnClick = false;
-        }*/
-            
     }
     
     /// <summary>

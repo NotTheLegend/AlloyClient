@@ -1,6 +1,7 @@
 ﻿using System;
 using Alloy.Engine.Graphics;
 using Alloy.Common.ContentReaders;
+using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Data;
 using Alloy.UiLib.Enums;
@@ -44,8 +45,6 @@ public static class UiRender {
         
         DefaultScreen = settings.DefaultScreen;
         Stage = stage = new Stage();
-        
-        KeyboardInput.Register(Stage);
         
         Toolkit.Event.EventRaised += HandleEvents;
 
@@ -125,13 +124,13 @@ public static class UiRender {
         
         switch (args) {
             case KeyDownEventArgs e:
-                KeyboardInput.SetKeyDown(e.Key, e.Scancode);
+                Stage.SetKeyDown(e.Key, e.Scancode);
                 break;
             case KeyUpEventArgs e:
-                KeyboardInput.SetKeyUp(e.Key, e.Scancode);
+                Stage.SetKeyUp(e.Key, e.Scancode);
                 break;
             case TextInputEventArgs e:
-                KeyboardInput.OnTextInput(e.Text.AsSpan());
+                TextInput.ActiveInput?.OnTextInput(e.Text.AsSpan());
                 break;
             case WindowResizeEventArgs e:
                 OnResize(e.NewClientSize);

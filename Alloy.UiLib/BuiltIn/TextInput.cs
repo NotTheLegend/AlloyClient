@@ -264,15 +264,15 @@ public sealed class TextInput : Sprite {
                 }
                 FillData();
                 break;
-            case Key.C when KeyboardInput.IsOnlyCtrlDown():
+            case Key.C when Stage.Keyboard.IsOnlyCtrlDown():
                 //todo
                 //Toolkit.Clipboard.SetClipboardText();
                 break;
-            case Key.V when KeyboardInput.IsOnlyCtrlDown():
+            case Key.V when Stage.Keyboard.IsOnlyCtrlDown():
                 //todo
                 //var text = Toolkit.Clipboard.GetClipboardText();
                 break;
-            case Key.A when KeyboardInput.IsOnlyCtrlDown():
+            case Key.A when Stage.Keyboard.IsOnlyCtrlDown():
                 break;
         }
     }

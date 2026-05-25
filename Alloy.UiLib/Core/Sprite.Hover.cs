@@ -8,12 +8,12 @@ public partial class Sprite {
     internal static Sprite HighestSprite;
     internal static Sprite LastSpriteHovered;
 
-    private static void HandleHover() {
+    private static void HandleHover(KeyboardState keyboard) {
         if (HighestSprite == LastSpriteHovered) 
             return;
-        
-        HighestSprite?.DispatchEvent(new MouseEvent(MouseEvent.MouseOver, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetVerticalScrollDelta(), 1), -1), KeyboardInput.IsShiftDown(), KeyboardInput.IsCtrlDown(), KeyboardInput.IsAltDown()));
-        LastSpriteHovered?.DispatchEvent(new MouseEvent(MouseEvent.MouseOut, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetVerticalScrollDelta(), 1), -1), KeyboardInput.IsShiftDown(), KeyboardInput.IsCtrlDown(), KeyboardInput.IsAltDown()));
+
+        HighestSprite?.DispatchEvent(new MouseEvent(MouseEvent.MouseOver, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetVerticalScrollDelta(), 1), -1), keyboard.IsShiftDown(), keyboard.IsCtrlDown(), keyboard.IsAltDown()));
+        LastSpriteHovered?.DispatchEvent(new MouseEvent(MouseEvent.MouseOut, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetVerticalScrollDelta(), 1), -1), keyboard.IsShiftDown(), keyboard.IsCtrlDown(), keyboard.IsAltDown()));
         LastSpriteHovered = HighestSprite;
     }
 
