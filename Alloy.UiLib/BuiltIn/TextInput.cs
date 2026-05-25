@@ -20,7 +20,7 @@ public struct InputConfig {
     public uint OutlineThickness = 4;
     public int Width = 100;
     public string DefaultText = "";
-    public byte MaxCharacters = byte.MaxValue;
+    public byte MaxCharacters = 10;//byte.MaxValue;
     public bool Password = false;
     public bool ClickToActivate = true;
     public Action OnFocus = null;
@@ -264,15 +264,27 @@ public sealed class TextInput : Sprite {
                 }
                 FillData();
                 break;
-            case Key.C when Stage.Keyboard.IsOnlyCtrlDown():
+            case Key.C when Stage.Keyboard.IsOnlyCtrlDown() && Toolkit.Clipboard.GetClipboardFormat() == ClipboardFormat.Text:
                 //todo
                 //Toolkit.Clipboard.SetClipboardText();
                 break;
-            case Key.V when Stage.Keyboard.IsOnlyCtrlDown():
-                //todo
-                //var text = Toolkit.Clipboard.GetClipboardText();
+            case Key.V when Stage.Keyboard.IsOnlyCtrlDown() && Toolkit.Clipboard.GetClipboardFormat() == ClipboardFormat.Text:
+                var text = Toolkit.Clipboard.GetClipboardText();
+
+                if (string.IsNullOrEmpty(text)) {
+                    return;
+                }
+                
+                var span = text.AsSpan(0, Math.Min(text.Length, _maxCharacters - _inputText.Length));
+                
+                foreach (var input in span) { // Not ideal for long pastes but need to filter for invalid characters
+                    AddChar(input);
+                }
+                
+                FillData();
                 break;
             case Key.A when Stage.Keyboard.IsOnlyCtrlDown():
+                //todo
                 break;
             case Key.LeftArrow:
                 if (_caretIndex > 0) {
@@ -302,9 +314,13 @@ public sealed class TextInput : Sprite {
         if (text.Length != 1) {
             return;
         }
+        
+        AddChar(text[0]);
+        
+        FillData();
+    }
 
-        var input = text[0];
-
+    private void AddChar(char input) {
         if (char.IsControl(input)) return;
         if (char.IsWhiteSpace(input) && input != ' ') return;
         if (!_font.Glyphs.ContainsKey(input)) return;
@@ -316,8 +332,6 @@ public sealed class TextInput : Sprite {
             _inputText.Insert(_caretIndex, input);
             _caretIndex++;
         }
-        
-        FillData();
     }
 
     public bool HasText(bool ignoreWhitespace) {
