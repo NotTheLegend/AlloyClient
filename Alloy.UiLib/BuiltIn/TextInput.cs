@@ -274,6 +274,27 @@ public sealed class TextInput : Sprite {
                 break;
             case Key.A when Stage.Keyboard.IsOnlyCtrlDown():
                 break;
+            case Key.LeftArrow:
+                if (_caretIndex > 0) {
+                    _caretIndex--;
+                    FillData();
+                }
+
+                if (_caretIndex == -1) {
+                    _caretIndex = _inputText.Length - 1;
+                    FillData();
+                }
+                break;
+            case Key.RightArrow:
+                if (_caretIndex != -1) {
+                    _caretIndex++;
+
+                    if (_caretIndex == _inputText.Length) {
+                        _caretIndex = -1;
+                    }
+                    FillData();
+                }
+                break;
         }
     }
 
