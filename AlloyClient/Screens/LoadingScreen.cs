@@ -3,22 +3,21 @@ using AlloyClient.AppEngine;
 using AlloyClient.Assets;
 using AlloyClient.Display;
 using AlloyClient.State;
-using AlloyClient.Ui.Components.Graphics;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Enums;
 using Alloy.UiLib.Extra;
+using AlloyClient.Screens.Components;
 
 namespace AlloyClient.Screens;
 
-public class LoadingScreen : Screen {
+public class LoadingScreen : TitleScreenBase {
+
+    private const int MinLoadingTime = 2000;
 
     private readonly SimpleText _text;
     
-    public LoadingScreen() {
-        var background = new ScreenGraphic();
-        AddChild(background);
-
+    public LoadingScreen(bool isRetry = false) : base(ScreenType.Loading) {
         _text = new SimpleText(new TextConfig {
             Text = "Loading...",
             FontSize = 40,
@@ -31,27 +30,13 @@ public class LoadingScreen : Screen {
         });
         AddChild(_text);
         
-        AddEventListener(Event.AddedToStage, OnStageEnter);
-        AddEventListener(Event.RemovedFromStage, OnStageExit);
-        
         AddEventListener(Task.WhenAll(
             AppRequests.Startup(),
-            //Task.Run(SoundManager.PreLoadSounds),
-            //Task.Run(Music.PreLoadSongs),
-            AssetParser.LoadAssetsAsync(),
-            Task.Delay(2000) // Loading screen too fast lmao
-        ), () => { ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 1000, 0x0); });
+            isRetry ? Task.CompletedTask : AssetParser.LoadAssetsAsync(),
+            Task.Delay(MinLoadingTime)
+        ), () => { ScreenManager.FadeToScreen(new CharacterListScreen(), Easing.SineInOut, 1000, 0x0); });
     }
 
-    private void OnStageEnter() {
-        Stage.AddEventListener(ResizeEvent.Resize, OnResize);
-        OnResize(new ResizeEvent("", Stage.StageWidth, Stage.StageHeight));
-    }
-
-    private void OnStageExit() {
-        Stage.RemoveEventListener(ResizeEvent.Resize, OnResize);
-    }
-    
     protected override void OnResize(ResizeEvent args) {
         _text.Scale = Stage.ScreenScale;
         _text.X = Stage.StageWidth / 2;

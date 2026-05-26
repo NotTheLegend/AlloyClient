@@ -12,6 +12,8 @@ using AlloyClient.Ui.Components.Scrollbars;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Enums;
 using Alloy.UiLib.Extra;
+using AlloyClient.Ui.Components.Dialogs;
+using AlloyClient.Ui.Components.Graphics;
 using AlloyClient.Utils;
 
 namespace AlloyClient.Screens;
@@ -226,6 +228,8 @@ public class CharacterListScreen : TitleScreenBase {
             LoadCharacterList();
             LoadGraveyardList();
         });
+        
+        CheckForAppFailure();
     }
 
     private void LoadCharacterList() {
@@ -305,5 +309,17 @@ public class CharacterListScreen : TitleScreenBase {
     }
     
     public void HideCharacterCreate() {
+    }
+    
+    private void CheckForAppFailure() {
+        if (!GlobalData.TryGet<AppRequestFailedFlag>(out var data)) {
+            return;
+        }
+        
+        GlobalData.Remove<AppRequestFailedFlag>();
+
+        AddChild(new ScreenDarkenOverlay());
+        
+        DialogManager.Enqueue(new Dialog(data.Message, "", new DialogOption("Retry", () => { ScreenManager.FadeToScreen(new LoadingScreen(true), Easing.SineInOut, 500, 0); })));
     }
 }

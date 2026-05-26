@@ -5,6 +5,7 @@ using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Extra;
 using Alloy.Common;
+using AlloyClient.Ui.Components;
 using OpenTK.Platform;
 
 namespace AlloyClient.Display;
@@ -85,11 +86,10 @@ public sealed class ScreenManager : Sprite {
     }
 }
 
-public abstract class Screen : Sprite {
+public abstract class Screen : UiElement {
     public virtual void Update(GameTime gameTime) { }
     public virtual void Draw(GameTime gameTime) { }
     
-    protected virtual void OnResize(ResizeEvent args) { }
 }
 
 public class FadeScreen : Screen {

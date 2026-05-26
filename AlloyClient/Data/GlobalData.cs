@@ -23,6 +23,16 @@ public static class GlobalData {
         return null;
     }
 
+    public static bool TryGet<T>(out T data) {
+        if (DataStorage.TryGetValue(typeof(T), out var data1)) {
+            data = (T) data1;
+            return true;
+        }
+
+        data = default;
+        return false;
+    }
+
     public static bool Contains<T>() where T : class, IGlobalData {
         return DataStorage.ContainsKey(typeof(T));
     }

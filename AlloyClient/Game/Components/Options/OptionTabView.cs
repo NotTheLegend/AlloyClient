@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Alloy.Audio;
 using AlloyClient.Game.Components.Options.OptionTypes;
 using AlloyClient.State;
 using AlloyClient.State.SettingTypes;
@@ -158,46 +159,30 @@ public class OptionTabView : Container {
     private void AddSoundOptions() {
         _options.Add(new ChoiceOption<bool>(Settings.PlayMusic, OnOffLabels, OnOffValues, "Play Music", "This toggles whether music is played", OnPlayMusicChange));
         _options.Add(new SliderOption(Settings.MusicVolume, "Vol:", OnMusicVolumeChange));
-        _options.Add(new ChoiceOption<bool>(Settings.PlaySfx, OnOffLabels, OnOffValues, "Play Sound Effects", "This toggles whether sound effects are played",
-            OnPlaySoundEffectsChange));
+        _options.Add(new ChoiceOption<bool>(Settings.PlaySfx, OnOffLabels, OnOffValues, "Play Sound Effects", "This toggles whether sound effects are played", OnPlaySoundEffectsChange));
         _options.Add(new SliderOption(Settings.SfxVolume, "Vol:", OnSfxVolumeChange));
-        _options.Add(new ChoiceOption<bool>(Settings.PlayWeaponSfx, OnOffLabels, OnOffValues, "Play Weapon Sounds", "This toggles whether weapon sounds are played",
-            OnPlayWeaponSoundsChange));
-        _options.Add(new SliderOption(Settings.WeaponSfxVolume, "Vol:", OnWeaponSfxVolumeChange));
-        _options.Add(new ChoiceOption<bool>(Settings.PlayLootSfx, OnOffLabels, OnOffValues, "Play Loot Sounds", "This toggles whether LG/DC/AC/CS loot drop sounds are played"));
-        _options.Add(new SliderOption(Settings.LootSfxVolume, "Vol:", OnLootSfxVolumeChange));
     }
 
     private void AddExtraOptions() {
 
     }
-
-    private void OnLootSfxVolumeChange(float obj) {
-        throw new NotImplementedException();
-    }
-
-    private void OnWeaponSfxVolumeChange(float obj) {
-        throw new NotImplementedException();
+    
+    private void OnPlaySoundEffectsChange() {
+        Main.AudioEngine.SetVolume(AudioSource.Effect, Settings.GetSfxVolume());
     }
 
     private void OnSfxVolumeChange(float obj) {
-        throw new NotImplementedException();
-    }
-
-    private void OnMusicVolumeChange(float obj) {
-        throw new NotImplementedException();
-    }
-
-    private void OnPlayWeaponSoundsChange() {
-        throw new NotImplementedException();
-    }
-
-    private void OnPlaySoundEffectsChange() {
-        throw new NotImplementedException();
+        Settings.SfxVolume = obj;
+        Main.AudioEngine.SetVolume(AudioSource.Effect, Settings.GetSfxVolume());
     }
 
     private void OnPlayMusicChange() {
-        throw new NotImplementedException();
+        Main.AudioEngine.SetVolume(AudioSource.Music, Settings.GetMusicVolume());
+    }
+    
+    private void OnMusicVolumeChange(float obj) {
+        Settings.MusicVolume = obj;
+        Main.AudioEngine.SetVolume(AudioSource.Music, Settings.GetMusicVolume());
     }
 
     private void OnChatVisible() {

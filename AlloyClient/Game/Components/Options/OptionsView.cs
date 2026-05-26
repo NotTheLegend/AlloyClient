@@ -12,18 +12,6 @@ using Alloy.UiLib.Signals;
 namespace AlloyClient.Game.Components.Options;
 
 public sealed class OptionsView : Overlay {
-
-    private static bool _open;
-    
-    public static void Toggle() {
-        if (_open) {
-            OverlayManager.Clear();
-            _open = false;
-        } else {
-            OverlayManager.Set(new OptionsView());
-            _open = true;
-        }
-    }
     
     public const string ControlsTab = "Controls";
     public const string HotkeysTab = "Hot Keys";
@@ -62,7 +50,7 @@ public sealed class OptionsView : Overlay {
         var continueButton = new MenuBarButton(new TextButtonConfig {
             Text = "continue",
             FontSize = 57,
-            OnClicked = CloseOverlay,
+            OnClicked = OnContinue,
             X = Settings.DefaultScreenWidth / 2,
             Y = Settings.DefaultScreenHeight - 40,
             Anchor = UiAnchor.Middle
@@ -155,14 +143,14 @@ public sealed class OptionsView : Overlay {
         Refresh();
     }
 
-    private void OnHome() {
-        Reset();
+    private void OnContinue() {
         CloseOverlay();
-        Client.Disconnect();
-        Map.Reset();
+        UserInput.SetManualFocus(true);
     }
 
-    private void Reset() {
-        _open = false;
+    private void OnHome() {
+        OnContinue();
+        Client.Disconnect();
+        Map.Reset();
     }
 }

@@ -25,7 +25,7 @@ public static class AppRequests {
     }
 
     public static async Task<AppResponse> VerifyAsync(string username, string password, bool saveInfo = false) {
-        var response = await AppEngineClient.SendRequest("/account/verify", BuildAccountRequestData(username, password), retries: 3);
+        var response = await AppEngineClient.SendRequest("/account/verify", BuildAccountRequestData(username, password), 3);
         
         if (response == null) {
             return new AppResponse { Success = false, Message = "Failed to contact server." };
@@ -48,7 +48,7 @@ public static class AppRequests {
     
     public static async Task<AppResponse> Register(string username, string password) {
         var data = new Dictionary<string, string> {{"newUsername", username}, {"newPassword", password}};
-        var request = await AppEngineClient.SendRequest("/account/register", data, retries: 3);
+        var request = await AppEngineClient.SendRequest("/account/register", data, 3);
         
         if (request == null) {
             return new AppResponse { Success = false, Message = "Failed to contact server." };
@@ -69,7 +69,7 @@ public static class AppRequests {
         if (login is null) {
             return new AppResponse { Success = false, Message = "Not logged in" };
         }
-        var response = await AppEngineClient.SendRequest("/account/purchaseCharSlot", BuildAccountRequestData(login.Username, login.Password), retries: 3);
+        var response = await AppEngineClient.SendRequest("/account/purchaseCharSlot", BuildAccountRequestData(login.Username, login.Password), 3);
         
         if (response == null) {
             return new AppResponse { Success = false, Message = "Failed to contact server." };
@@ -86,7 +86,7 @@ public static class AppRequests {
 
     public static async Task<AppResponse> GetCharList() {
         var login = GlobalData.Get<LoginData>() ?? LoginData.Default;
-        var response = await AppEngineClient.SendRequest("/char/list", BuildAccountRequestData(login.Username, login.Password), retries: 3);
+        var response = await AppEngineClient.SendRequest("/char/list", BuildAccountRequestData(login.Username, login.Password), 3);
         
         if (response == null) {
             return new AppResponse { Success = false, Message = "Failed to contact server." };

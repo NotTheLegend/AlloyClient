@@ -119,15 +119,13 @@ public static class Settings {
     public static ValueSetting<int> NonFullscreenWidth = DefaultScreenWidth;
     public static ValueSetting<int> NonFullscreenHeight = DefaultScreenHeight;
 
+    public static ValueSetting<float> MasterVolume = 1f; // TODO: master audio settings
     public static ValueSetting<float> MusicVolume = 0.5f;
     public static ValueSetting<float> SfxVolume = 0.5f;
-    public static ValueSetting<float> WeaponSfxVolume = 0.5f;
-    public static ValueSetting<float> LootSfxVolume = 0.5f;
 
+    public static ValueSetting<bool> PlayMaster = true; // TODO: master audio settings
     public static ValueSetting<bool> PlayMusic = true;
     public static ValueSetting<bool> PlaySfx = true;
-    public static ValueSetting<bool> PlayWeaponSfx = true;
-    public static ValueSetting<bool> PlayLootSfx = true;
 
     public static ValueSetting<bool> ToggleLeftToMax = true;
     public static ValueSetting<bool> ToggleBarText = true;
@@ -232,15 +230,13 @@ public static class Settings {
         VSync.SetValue(false);
         Fullscreen.SetValue(false);
 
+        MasterVolume.SetValue(1f);
         MusicVolume.SetValue(0.5f);
         SfxVolume.SetValue(0.5f);
-        WeaponSfxVolume.SetValue(0.5f);
-        LootSfxVolume.SetValue(0.5f);
 
+        PlayMaster.SetValue(true);
         PlayMusic.SetValue(true);
         PlaySfx.SetValue(true);
-        PlayWeaponSfx.SetValue(true);
-        PlayLootSfx.SetValue(true);
 
         ToggleLeftToMax.SetValue(true);
         ToggleBarText.SetValue(true);
@@ -267,6 +263,12 @@ public static class Settings {
         
         #endregion
     }
+
+    public static float GetMasterVolume() => PlayMaster ? MathF.Pow(10f, (-24f * (1f - Math.Clamp(MasterVolume, 0f, 1f))) / 20f) : 0;
+    
+    public static float GetMusicVolume() => PlayMusic ? MathF.Pow(10f, (-24f * (1f - Math.Clamp(MusicVolume, 0f, 1f))) / 20f) : 0;
+
+    public static float GetSfxVolume() => PlaySfx ? MathF.Pow(10f, (-24f * (1f - Math.Clamp(SfxVolume, 0f, 1f))) / 20f) : 0;
 
     public static void LoadSettings() {
         LoadLocalAccount();

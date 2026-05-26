@@ -2,25 +2,30 @@
 using AlloyClient.State;
 using AlloyClient.Ui.Components.Buttons;
 using AlloyClient.Ui.Components.Graphics;
-using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Enums;
 
 namespace AlloyClient.Screens.Components;
 
+public enum ScreenType {
+    Loading,
+    Title,
+    Other
+}
+
 public abstract class TitleScreenBase : Screen {
     
-    private readonly ColorRect _darken = new ColorRect(new ColorRectConfig { Width = Settings.DefaultScreenWidth, Height = Settings.DefaultScreenHeight, Color = 0x2B2B2B, Alpha = 0.8f });
+    private readonly ScreenDarkenOverlay _darken = new();
     
     private readonly MusicButton _music = new MusicButton(new MusicButtonConfig { X = 7, Y = 7, Width = 32, Height = 32 });
 
     public readonly AccountOverlay Overlay;
     
-    protected TitleScreenBase(bool title = false) {
-        var background = new ScreenGraphic(title);
+    protected TitleScreenBase(ScreenType type = ScreenType.Other) {
+        var background = new ScreenGraphic(type == ScreenType.Title);
         AddChild(background);
         
-        if (!title) {
+        if (type == ScreenType.Other) {
             AddChild(_darken);
         }
         
@@ -28,11 +33,14 @@ public abstract class TitleScreenBase : Screen {
         
         //Todo guild/stars
 
-        Overlay = new AccountOverlay(title);
+        Overlay = new AccountOverlay(type == ScreenType.Title);
         Overlay.X = Settings.DefaultScreenWidth - 10;
         Overlay.Y = 10;
         Overlay.SetAnchor(UiAnchor.RightTop);
-        AddChild(Overlay);
+
+        if (type != ScreenType.Loading) {
+            AddChild(Overlay);
+        }
         
         AddEventListener(Event.AddedToStage, OnStageEnter);
         AddEventListener(Event.RemovedFromStage, OnStageExit);
@@ -48,8 +56,6 @@ public abstract class TitleScreenBase : Screen {
     }
 
     protected override void OnResize(ResizeEvent args) {
-        _darken.Resize(args.Width, args.Height);
-        _music.Scale = Stage.ScreenScale;
         Overlay.Scale = Stage.ScreenScale;
         Overlay.X = args.Width - (int)(10 * Stage.ScreenScale.X);
         Overlay.Y = (int)(10 * Stage.ScreenScale.Y);

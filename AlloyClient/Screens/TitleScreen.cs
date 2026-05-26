@@ -7,6 +7,9 @@ using AlloyClient.Ui.Components.Buttons;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Enums;
+using Alloy.UiLib.Extra;
+using AlloyClient.Ui.Components.Dialogs;
+using AlloyClient.Ui.Components.Graphics;
 
 namespace AlloyClient.Screens;
 
@@ -19,7 +22,7 @@ public class TitleScreen : TitleScreenBase {
 
     private readonly int _center;
     
-    public TitleScreen() : base(true) {
+    public TitleScreen() : base(ScreenType.Title) {
         var editor = new MenuBarButton("editor", FontSize, () => { });
         editor.SetAnchor(UiAnchor.MiddleLeft);
         _container.AddChild(editor);
@@ -48,6 +51,8 @@ public class TitleScreen : TitleScreenBase {
         _container.X = Settings.DefaultScreenWidth / 2 - _center;
         _container.Y = Settings.DefaultScreenHeight - 90;
         AddChild(_container);
+        
+        CheckForAppFailure();
     }
 
     protected override void OnResize(ResizeEvent args) {
@@ -65,5 +70,17 @@ public class TitleScreen : TitleScreenBase {
             login.AddEventListener(LoginContainer.LoginEvent, Overlay.OnLogin);
             OverlayManager.Set(login);
         }
+    }
+
+    private void CheckForAppFailure() {
+        if (!GlobalData.TryGet<AppRequestFailedFlag>(out var data)) {
+            return;
+        }
+        
+        GlobalData.Remove<AppRequestFailedFlag>();
+
+        AddChild(new ScreenDarkenOverlay());
+        
+        DialogManager.Enqueue(new Dialog(data.Message, "", new DialogOption("Retry", () => { ScreenManager.FadeToScreen(new LoadingScreen(true), Easing.SineInOut, 500, 0); })));
     }
 }

@@ -8,6 +8,7 @@ using AlloyClient.Networking.Packets.Outgoing;
 using AlloyClient.State;
 using Alloy.UiLib.Core;
 using Alloy.Common;
+using AlloyClient.Display;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
 
@@ -185,7 +186,8 @@ public sealed class UserInput : Sprite {
                 break;
             case true when Settings.Options.CheckValue(key):
                 ClearMovement();
-                OptionsView.Toggle();
+                SetManualFocus(false);
+                OverlayManager.Set(new OptionsView());
                 break;
             // Inventory //
             case true when Settings.InvOne.CheckValue(key):

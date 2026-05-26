@@ -142,6 +142,9 @@ public class Main {
         DisplayManager.Init(stage);
         
         AudioEngine.Start();
+        AudioEngine.SetVolume(AudioSource.Master, Settings.GetMasterVolume());
+        AudioEngine.SetVolume(AudioSource.Music, Settings.GetMusicVolume());
+        AudioEngine.SetVolume(AudioSource.Effect, Settings.GetSfxVolume());
         AudioEngine.PlayLocalSong(@"Music\sorc.ogg");
 
         ScreenManager.FadeToScreen(new LoadingScreen(), Easing.SineInOut, 1000, 0x0);

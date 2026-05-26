@@ -1,4 +1,6 @@
-﻿using AlloyClient.State;
+﻿using System;
+using Alloy.Audio;
+using AlloyClient.State;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Data;
 using Alloy.UiLib.Enums;
@@ -18,7 +20,7 @@ public struct MusicButtonConfig {
     public MusicButtonConfig() { }
 }
 
-public class MusicButton : Sprite {
+public class MusicButton : UiElement {
 
     private readonly TextureInfo _musicOn;
     private readonly TextureInfo _musicOff;
@@ -47,10 +49,14 @@ public class MusicButton : Sprite {
 
     private void OnClick() {
         _state = !_state;
-        Settings.PlayMusic = _state;
-        //TODO: add mute
-        
         _button.ChangeTexture(_state ? _musicOn : _musicOff);
+        
+        Settings.PlayMusic = _state;
+        Main.AudioEngine.SetVolume(AudioSource.Music, Settings.GetMusicVolume());
+    }
+
+    protected override void OnResize(ResizeEvent args) {
+        Scale = Stage.ScreenScale;
     }
 
     private void OnMouseOver() => _button.SetColor(0xFFDC85);

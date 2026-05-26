@@ -3,11 +3,10 @@ using Alloy.UiLib.Core;
 using Alloy.UiLib.Enums;
 using Alloy.UiLib.Rendering;
 using OpenTK.Mathematics;
-using AlloyClient.Utils;
 
 namespace AlloyClient.Ui.Components.Graphics;
 
-public sealed class ScreenGraphic : Sprite {
+public sealed class ScreenGraphic : UiElement {
     
     private const int TexWidth = 1280;
     private const int TexHeight = 720;
@@ -18,21 +17,9 @@ public sealed class ScreenGraphic : Sprite {
         
         ResizeBackBuffer();
         FillData(TexWidth, TexHeight);
-        
-        AddEventListener(Event.AddedToStage, OnStageEnter);
-        AddEventListener(Event.RemovedFromStage, OnStageExit);
     }
 
-    private void OnStageEnter() {
-        Stage.AddEventListener(ResizeEvent.Resize, OnResize);
-        OnResize(new ResizeEvent("", Stage.StageWidth, Stage.StageHeight));
-    }
-
-    private void OnStageExit() {
-        Stage.RemoveEventListener(ResizeEvent.Resize, OnResize);
-    }
-
-    private void OnResize(ResizeEvent args) {
+    protected override void OnResize(ResizeEvent args) {
         var x = (float)args.Width / TexWidth;
         var y = (float)args.Height / TexHeight;
 
