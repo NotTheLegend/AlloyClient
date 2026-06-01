@@ -47,8 +47,12 @@ public class TypeEffects : SubRenderBase {
             var y = num * s + yOffset * c;
 
             var p = new Vector3(pos.X - x, pos.Y + y, pos.Z);
+
+            var eff = (ConditionEffects)(1 << i);
+            if (eff == ConditionEffects.Dead)
+                continue;
             
-            targets.Add(new VertexObject(p, ConditionEffectUtil.EffectIcons[(ConditionEffects)(1 << i)][0], Scale, Rotation, Extra.Data, Color));
+            targets.Add(new VertexObject(p, ConditionEffectUtil.EffectIcons[eff][0], Scale, Rotation, Extra.Data, Color));
             num -= Size * 2;
         }
     }

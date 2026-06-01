@@ -17,6 +17,14 @@ public static class MathUtils {
         return deg * (MathF.PI / 180f);
     }
     
+    public static float Rad2Deg(this float rad) {
+        return rad * (180f / MathF.PI);
+    }
+    
+    public static float? Rad2Deg(this float? rad) {
+        return rad * (180f / MathF.PI);
+    }
+    
     public static Vector2 RotatePoint(Vector2 point, Vector2 pivot, float angle) {
         var cosTheta = (float)Math.Cos(angle);
         var sinTheta = (float)Math.Sin(angle);

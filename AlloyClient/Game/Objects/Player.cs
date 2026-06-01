@@ -40,7 +40,7 @@ public class Player : Entity {
 
     public bool Ignored;
 
-    public byte NextBulletId = 1;
+    public ushort NextBulletId = 0;
 
     #region StatData
 
@@ -378,14 +378,11 @@ public class Player : Entity {
             var bId = GetBulletId();
             var proj = ObjectPools.Projectiles.Pop();
             var dmg = MathUtils.RandomInt(projProps.MinDamage, projProps.MaxDamage);
-            proj.Reset(bId, dmg, angle, this, objProps, projProps, projProps.Path, Position);
+            proj.Reset(bId, dmg, angle.Rad2Deg(), this, objProps, projProps, projProps.Path.Clone(), Position);
             Map.AddProjectile(proj);
             
             var shoot = PlayerShoot.CreatePacket();
-            shoot.ItemType = item.ObjectType;
             shoot.Angle = angle;
-            shoot.Time = (int)gameTime.TotalMs;
-            shoot.StartingPos = new Position { X = Position.X, Y = Position.Y };
             
             Client.QueuePacket(shoot);
         }
@@ -597,10 +594,10 @@ public class Player : Entity {
         return moveSpeed * MovementMultiplier;
     }
 
-    public byte GetBulletId() {
-        var ret = NextBulletId;
-        NextBulletId = (byte)((NextBulletId + 1) % 128);
-        return ret;
+    public ushort GetBulletId() {
+        if (NextBulletId >= MaxProjectiles)
+            NextBulletId = 0;
+        return NextBulletId++;
     }
 
     private static bool IsFullOccupy(float x, float y) {

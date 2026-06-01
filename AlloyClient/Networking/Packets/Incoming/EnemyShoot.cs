@@ -19,9 +19,9 @@ public class EnemyShoot : IncomingPacket<EnemyShoot> {
     public ushort FirstBulletId;
     public int OwnerId;
     public byte ProjectileIndex;
-    public Position Offset;
+    public Position StartPos;
     public float Angle;
-    public short Damage;
+    public int Damage;
     public byte NumShots;
     public float AngleInc;
     public ProjectilePath Path;
@@ -34,7 +34,7 @@ public class EnemyShoot : IncomingPacket<EnemyShoot> {
         ProjectileIndex = 0;
         Angle = 0;
         Damage = 0;
-        Offset.Reset();
+        StartPos.Reset();
         NumShots = 0;
         AngleInc = 0;
         Path = null;
@@ -44,9 +44,9 @@ public class EnemyShoot : IncomingPacket<EnemyShoot> {
         FirstBulletId = reader.ReadUInt16();
         OwnerId = reader.ReadInt32();
         ProjectileIndex = reader.ReadByte();
-        Offset.Read(ref reader);
+        StartPos.Read(ref reader);
         Angle = reader.ReadSingle();
-        Damage = reader.ReadInt16();
+        Damage = reader.ReadInt32();
         NumShots = reader.ReadByte();
         AngleInc = reader.ReadSingle();
         Path = ProjectilePath.Read(ref reader);
@@ -70,7 +70,7 @@ public class EnemyShoot : IncomingPacket<EnemyShoot> {
         var objProps = ObjectLibrary.TypeToObjectProps[objType];
         for (var i = 0; i < NumShots; i++) {
             var proj = ObjectPools.Projectiles.Pop();
-            proj.Reset((ushort)(FirstBulletId + i), Damage, Angle + AngleInc * i, en, objProps, projProps, Path.Clone(), new Vector2(Offset.X, Offset.Y));
+            proj.Reset((ushort)(FirstBulletId + i), Damage, Angle + AngleInc * i, en, objProps, projProps, Path.Clone(), new Vector2(StartPos.X, StartPos.Y));
             Map.AddProjectile(proj);
         }
 
@@ -78,6 +78,6 @@ public class EnemyShoot : IncomingPacket<EnemyShoot> {
     }
 
     public override string ToString() {
-        return $"BulletId: {FirstBulletId}, OwnerId: {OwnerId}, ProjectileIndex: {ProjectileIndex}, Angle: {Angle}, Damage: {Damage}, StartingPos: {Offset}, NumShots: {NumShots}, AngleInc: {AngleInc}";
+        return $"BulletId: {FirstBulletId}, OwnerId: {OwnerId}, ProjectileIndex: {ProjectileIndex}, Angle: {Angle}, Damage: {Damage}, StartingPos: {StartPos}, NumShots: {NumShots}, AngleInc: {AngleInc}";
     }
 }

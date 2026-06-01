@@ -42,7 +42,7 @@ public sealed class Projectile : IResettable {
     
     private readonly HashSet<int> _hitEntities = [];
 
-    public void Reset(ushort id, int dmg, float angle, Entity entity, ObjectProperties objDesc, ProjectileProperties projDesc, ProjectilePath path, Vector2 offsetPos) {
+    public void Reset(ushort id, int dmg, float angle, Entity entity, ObjectProperties objDesc, ProjectileProperties projDesc, ProjectilePath path, Vector2 startPos) {
         BulletId = id;
         _damage = dmg;
         Angle = angle;
@@ -51,14 +51,14 @@ public sealed class Projectile : IResettable {
         _objDesc = objDesc;
         _projDesc = projDesc;
         Path = path;
-        Path.SetInfo(new ProjectileInfo() { LifetimeMs = Path.LifetimeMs, ProjId = id, ShootAngle = angle.Deg2Rad(), StartPos = entity.Position + offsetPos});
+        Path.SetInfo(new ProjectileInfo() { LifetimeMs = Path.LifetimeMs, ProjId = id, ShootAngle = angle.Deg2Rad(), StartPos = startPos});
 
         Size = _projDesc.Size > 0 ? _projDesc.Size : 100;
 
         _startTime = Main.GameTime.TotalMs;
         _lastHitTest = 0;
         _angleCorrection = _objDesc.AngleCorrection * MathF.PI / 4;
-        _position = _startPosition = entity.Position + offsetPos;
+        _position = _startPosition = startPos;
         
         _hitEntities.Clear();
         RenderBaseType = new TypeProjectile();
@@ -204,10 +204,8 @@ public sealed class Projectile : IResettable {
         NotificationLayer.AddStatusText(enemy, $"-{_damage}", 0xFF0000, 1000, 0);
         
         var hit1 = EnemyHit.CreatePacket();
-        hit1.Time = (int)time;
         hit1.BulletId = BulletId;
         hit1.TargetId = enemy.ObjectId;
-        hit1.Killed = enemy.Hp <= _damage;
         
         Client.QueuePacket(hit1);
         

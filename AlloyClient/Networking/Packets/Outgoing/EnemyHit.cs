@@ -2,28 +2,22 @@
 
 public class EnemyHit : OutgoingPacket<EnemyHit> {
 
-    public int Time;
     public ushort BulletId;
     public int TargetId;
-    public bool Killed;
 
     public override PacketId PacketId => PacketId.EnemyHit;
 
     public override void Reset() {
-        Time = 0;
         BulletId = 0;
         TargetId = 0;
-        Killed = false;
     }
 
     public override void Write(ref SpanWriter writer) {
-        writer.Write(Time);
         writer.Write(BulletId);
         writer.Write(TargetId);
-        writer.Write(Killed);
     }
 
     public override string ToString() {
-        return $"Time: {Time}, BulletId: {BulletId}, TargetId: {TargetId}, Killed: {Killed}";
+        return $"BulletId: {BulletId}, TargetId: {TargetId}";
     }
 }

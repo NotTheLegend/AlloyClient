@@ -1,19 +1,19 @@
 ﻿namespace AlloyClient.Networking.Packets.Outgoing;
 
 public class PlayerHit : OutgoingPacket<PlayerHit> {
-    public ushort BulletId;
     public int ObjectId;
+    public ushort BulletId;
 
     public override PacketId PacketId => PacketId.PlayerHit;
 
     public override void Reset() {
-        BulletId = 0;
         ObjectId = 0;
+        BulletId = 0;
     }
 
     public override void Write(ref SpanWriter writer) {
-        writer.Write(BulletId);
         writer.Write(ObjectId);
+        writer.Write(BulletId);
     }
 
     public override string ToString() {
