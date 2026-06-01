@@ -43,7 +43,7 @@ public sealed class ProjectileProperties {
         ObjectId = e.GetValue<string>("ObjectId");
         LifetimeMs = e.GetValue<float>("LifetimeMS");
         RealSpeed = e.GetValue<float>("Speed");
-        Speed = RealSpeed / 10000;
+        Speed = RealSpeed / 10;
         Size = e.GetValue<int>("Size", -1);
         MinDamage = e.HasElement("Damage") ? e.GetValue<int>("Damage") : e.GetValue<int>("MinDamage");
         MaxDamage = e.HasElement("Damage") ? e.GetValue<int>("Damage") : e.GetValue<int>("MaxDamage");
