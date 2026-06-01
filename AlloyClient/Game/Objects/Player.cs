@@ -18,6 +18,7 @@ using OpenTK.Mathematics;
 namespace AlloyClient.Game.Objects;
 
 public class Player : Entity {
+    private const int MaxProjectiles = 2000;
     private const float MoveThreshold = 0.4f;
     private const int FocusedSpeed = 15;
     private const float MinMoveSpeed = 0.004f;
