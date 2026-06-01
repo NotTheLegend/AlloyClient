@@ -34,7 +34,7 @@ public class LoadingScreen : TitleScreenBase {
             AppRequests.Startup(),
             isRetry ? Task.CompletedTask : AssetParser.LoadAssetsAsync(),
             Task.Delay(MinLoadingTime)
-        ), () => { ScreenManager.FadeToScreen(new CharacterListScreen(), Easing.SineInOut, 1000, 0x0); });
+        ), () => { ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 1000, 0x0); });
     }
 
     protected override void OnResize(ResizeEvent args) {
