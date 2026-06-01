@@ -20,7 +20,7 @@ public struct InputConfig {
     public uint OutlineThickness = 4;
     public int Width = 100;
     public string DefaultText = "";
-    public byte MaxCharacters = 10;//byte.MaxValue;
+    public byte MaxCharacters = byte.MaxValue;
     public bool Password = false;
     public bool ClickToActivate = true;
     public Action OnFocus = null;

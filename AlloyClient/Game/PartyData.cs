@@ -19,7 +19,7 @@ public static class PartyData {
 
     private static double _lastUpdateTime;
 
-    private static readonly PartyInfo[] Members = new PartyInfo[250];
+    private static readonly PartyInfo[] Members = new PartyInfo[1000];
 
     public static readonly ArraySegment<PartyInfo> PartyMembers = new(Members, 0, MaxVisibleMembers);
 
@@ -53,7 +53,7 @@ public static class PartyData {
             }
         }
         
-        Array.Sort(Members, 0, i, PartyComparer);
+        // Array.Sort(Members, 0, i, PartyComparer);
     }
 
     public static void SetData(int id, int[] list) {
