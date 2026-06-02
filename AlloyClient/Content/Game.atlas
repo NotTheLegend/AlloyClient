@@ -1,53 +1,244 @@
 ﻿<Atlas source="Sheets">
-    <Image name="cursors" w="32" h="32">Cursors.png</Image>
-    <Image name="tileAlphaBlend" w="8" h="8">AlphaTileBlends.png</Image>
-    <Image name="invisible" w="8" h="8">invisible.png</Image>
-    <Image name="lofiChar8x8" w="8" h="8">LofiChar.png</Image>
-    <Image name="lofiChar16x16" w="16" h="16">LofiChar.png</Image>
-    <Image name="lofiChar16x8" w="16" h="8">LofiChar.png</Image>
-    <Image name="lofiChar216x8" w="16" h="8">LofiChar2.png</Image>
-    <Image name="lofiChar216x16" w="16" h="16">LofiChar2.png</Image>
-    <Image name="lofiChar28x8" w="8" h="8">LofiChar2.png</Image>
-    <Image name="lofiCharBig" w="16" h="16">LofiCharBig.png</Image>
-    <Image name="lofiEnvironment" w="8" h="8">LofiEnvironment.png</Image>
-    <Image name="lofiEnvironment2" w="8" h="8">LofiEnvironment2.png</Image>
-    <Image name="lofiEnvironment3" w="8" h="8">LofiEnvironment3.png</Image>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         STATIC IMAGE SETS  (AssetLibrary.addImageSet)
+         ═══════════════════════════════════════════════════════════ -->
+
+    <!-- Core UI / Misc -->
+    <Image name="cursors"          w="32" h="32">Cursors.png</Image>
+    <Image name="tileAlphaBlend"   w="8"  h="8" >AlphaTileBlends.png</Image>
+    <Image name="invisible"        w="8"  h="8" >invisible.png</Image>
+    <Image name="redLootBag"       w="8"  h="8" >RedLootBag.png</Image>
+    <Image name="stars"            w="5"  h="5" >Stars.png</Image>
+
+    <!-- Blend / Mask tiles -->
+    <Image name="inner_mask"       w="4"  h="4" >InnerMask.png</Image>
+    <Image name="sides_mask"       w="4"  h="4" >SidesMask.png</Image>
+    <Image name="outer_mask"       w="4"  h="4" >OuterMask.png</Image>
+    <Image name="innerP1_mask"     w="4"  h="4" >InnerP1Mask.png</Image>
+    <Image name="innerP2_mask"     w="4"  h="4" >InnerP2Mask.png</Image>
+
+    <!-- Textiles -->
+    <Image name="textile4x4"       w="4"  h="4" >Textile4x4.png</Image>
+    <Image name="textile5x5"       w="5"  h="5" >Textile5x5.png</Image>
+    <Image name="textile9x9"       w="9"  h="9" >Textile9x9.png</Image>
+    <Image name="textile10x10"     w="10" h="10">Textile10x10.png</Image>
+
+    <!-- Lofi Character sheets (one PNG, multiple cell sizes) -->
+    <Image name="lofiChar8x8"      w="8"  h="8" >LofiChar.png</Image>
+    <Image name="lofiChar16x8"     w="16" h="8" >LofiChar.png</Image>
+    <Image name="lofiChar16x16"    w="16" h="16">LofiChar.png</Image>
+    <Image name="lofiChar28x8"     w="8"  h="8" >LofiChar2.png</Image>
+    <Image name="lofiChar216x8"    w="16" h="8" >LofiChar2.png</Image>
+    <Image name="lofiChar216x16"   w="16" h="16">LofiChar2.png</Image>
+    <Image name="lofiCharBig"      w="16" h="16">LofiCharBig.png</Image>
+
+    <!-- Lofi Environment -->
+    <Image name="lofiEnvironment"  w="8"  h="8" >LofiEnvironment.png</Image>
+    <Image name="lofiEnvironment2" w="8"  h="8" >LofiEnvironment2.png</Image>
+    <Image name="lofiEnvironment3" w="8"  h="8" >LofiEnvironment3.png</Image>
+
+    <!-- Lofi Interface -->
+    <Image name="lofiInterface"    w="8"  h="8" >LofiInterface.png</Image>
+    <Image name="lofiInterface2"   w="8"  h="8" >LofiInterface2.png</Image>
     <Image name="lofiInterfaceBig" w="16" h="16">LofiInterfaceBig.png</Image>
-    <Image name="lofiInterface" w="8" h="8">LofiInterface.png</Image>
-    <Image name="lofiInterface2" w="8" h="8">LofiInterface2.png</Image>
-    <Image name="lofiObj" w="8" h="8">LofiObj.png</Image>
-    <Image name="lofiObj2" w="8" h="8">LofiObj2.png</Image>
-    <Image name="lofiObj3" w="8" h="8">LofiObj3.png</Image>
-    <Image name="lofiObj4" w="8" h="8">LofiObj4.png</Image>
-    <Image name="lofiObj5" w="8" h="8">LofiObj5.png</Image>
-    <Image name="lofiObj6" w="8" h="8">LofiObj6.png</Image>
-    <Image name="lofiObjBig" w="16" h="16">LofiObjBig.png</Image>
-    <Image name="lofiObj40x40" w="40" h="40">LofiObj40x40.png</Image>
-    <Image name="lofiProjs" w="8" h="8">LofiProjs.png</Image>
-    <Image name="lofiProjsBig" w="16" h="16">LofiProjsBig.png</Image>
-    <Image name="lofiParts" w="8" h="8">LofiParts.png</Image>
-    
-    <Animated name="chars8x8rBeach" w="8" h="8">Chars8x8rBeach.png</Animated>
-    <Animated name="chars8x8dBeach" w="8" h="8">Chars8x8dBeach.png</Animated>
-    <Animated name="chars8x8rLow1" w="8" h="8">Chars8x8rLow1.png</Animated>
-    <Animated name="chars8x8rLow2" w="8" h="8">Chars8x8rLow2.png</Animated>
-    <Animated name="chars8x8rMid" w="8" h="8">Chars8x8rMid.png</Animated>
-    <Animated name="chars8x8rMid2" w="8" h="8">Chars8x8rMid2.png</Animated>
-    <Animated name="chars8x8rPets1" w="8" h="8">Chars8x8rPets1.png</Animated>
-    <Animated name="chars8x8rHigh" w="8" h="8">Chars8x8rHigh.png</Animated>
-    <Animated name="chars8x8rHero1" w="8" h="8">Chars8x8rHero1.png</Animated>
-    <Animated name="chars8x8rHero2" w="8" h="8">Chars8x8rHero2.png</Animated>
-    <Animated name="chars8x8dHero1" w="8" h="8">Chars8x8dHero1.png</Animated>
-    <Animated name="chars16x16dMountains1" w="16" h="16">Chars16x16dMountains1.png</Animated>
-    <Animated name="chars16x16dMountains2" w="16" h="16">Chars16x16dMountains2.png</Animated>
-    <Animated name="chars8x8dEncounters" w="8" h="8">Chars8x8dEncounters.png</Animated>
-    <Animated name="chars8x8rEncounters" w="8" h="8">Chars8x8rEncounters.png</Animated>
-    <Animated name="chars16x8dEncounters" w="16" h="8">Chars16x8dEncounters.png</Animated>
-    <Animated name="chars16x8rEncounters" w="16" h="8">Chars16x8rEncounters.png</Animated>
-    <Animated name="chars16x16dEncounters" w="16" h="16">Chars16x16dEncounters.png</Animated>
-    <Animated name="chars16x16dEncounters2" w="16" h="16">Chars16x16dEncounters2.png</Animated>
-    <Animated name="chars16x16rEncounters" w="16" h="16">Chars16x16rEncounters.png</Animated>
-    
-    <Animated name="players" w="8" h="8" group="Full">Players.png</Animated>
-    <Animated name="playerskins" w="8" h="8" group="Full">PlayersSkins.png</Animated>
+
+    <!-- Lofi Objects -->
+    <Image name="lofiObj"          w="8"  h="8" >LofiObj.png</Image>
+    <Image name="lofiObj2"         w="8"  h="8" >LofiObj2.png</Image>
+    <Image name="lofiObj3"         w="8"  h="8" >LofiObj3.png</Image>
+    <Image name="lofiObj4"         w="8"  h="8" >LofiObj4.png</Image>
+    <Image name="lofiObj5"         w="8"  h="8" >LofiObj5.png</Image>
+    <Image name="lofiObj5new"      w="8"  h="8" >LofiObj5b.png</Image>
+    <Image name="lofiObj6"         w="8"  h="8" >LofiObj6.png</Image>
+    <Image name="lofiObjBig"       w="16" h="16">LofiObjBig.png</Image>
+    <Image name="lofiObj40x40"     w="40" h="40">LofiObj40x40.png</Image>
+
+    <!-- Lofi Gravestone (one PNG, multiple cell sizes) -->
+    <Image name="lofiGravestone8x8"   w="8"  h="8" >LofiGravestone.png</Image>
+    <Image name="lofiGravestone16x8"  w="16" h="8" >LofiGravestone.png</Image>
+    <Image name="lofiGravestone16x16" w="16" h="16">LofiGravestone.png</Image>
+
+    <!-- Lofi Projectiles & Parts -->
+    <Image name="lofiProjs"        w="8"  h="8" >LofiProjs.png</Image>
+    <Image name="lofiProjsBig"     w="16" h="16">LofiProjsBig.png</Image>
+    <Image name="lofiParts"        w="8"  h="8" >LofiParts.png</Image>
+
+    <!-- Lofi Particles -->
+    <Image name="lofiParticlesShocker"   w="16" h="16">LofiParticlesShocker.png</Image>
+    <Image name="lofiParticlesBeam"      w="16" h="32">LofiParticlesBeam.png</Image>
+    <Image name="lofiParticlesSkull"     w="16" h="32">LofiParticlesSkull.png</Image>
+    <Image name="lofiParticlesElectric"  w="32" h="32">LofiParticlesElectric.png</Image>
+    <Image name="lofiParticlesHolyBeam"  w="16" h="32">LofiParticlesHolyBeam.png</Image>
+    <Image name="lofiParticlesMeteor"    w="32" h="32">LofiParticlesMeteor.png</Image>
+    <Image name="lofiParticlesTelegraph" w="32" h="32">LofiParticlesTelegraph.png</Image>
+
+    <!-- Dungeon Object sheets: D1 / D2 / D3 -->
+    <Image name="d1lofiObjBig"       w="16" h="16">D1LofiObjBig.png</Image>
+    <Image name="d2LofiObjEmbed"     w="8"  h="8" >D2LofiObj.png</Image>
+    <Image name="d2LofiObjBigEmbed"  w="16" h="16">D2LofiObjBig.png</Image>
+    <Image name="d3LofiObjEmbed"     w="8"  h="8" >D3LofiObj.png</Image>
+    <Image name="d3LofiObjEmbed16"   w="16" h="16">D3LofiObj.png</Image>
+    <Image name="d3LofiObjBigEmbed"  w="16" h="16">D3LofiObjBig.png</Image>
+
+    <!-- Sakura / Hanami -->
+    <Image name="SakuraEnvironment8x8"  w="8"  h="8" >SakuraEnvironment8x8.png</Image>
+    <Image name="SakuraEnvironment16x16" w="16" h="16">SakuraEnvironment16x16.png</Image>
+    <Image name="HanamiParts"           w="8"  h="8" >HanamiParts8x8.png</Image>
+
+    <!-- Dungeon / Event Object sheets (alphabetical) -->
+    <Image name="alienInvasionObjects8x8"      w="8"  h="8" >AlienInvasionObjects8x8.png</Image>
+    <Image name="alienInvasionObjects16x16"    w="16" h="16">AlienInvasionObjects16x16.png</Image>
+    <Image name="ancientRuinsObjects8x8"       w="8"  h="8" >AncientRuinsObjects8x8.png</Image>
+    <Image name="ancientRuinsObjects16x16"     w="16" h="16">AncientRuinsObjects16x16.png</Image>
+    <Image name="archbishopObjects8x8"         w="8"  h="8" >ArchbishopObjects8x8.png</Image>
+    <Image name="archbishopObjects16x16"       w="16" h="16">ArchbishopObjects16x16.png</Image>
+    <Image name="archbishopObjects64x64"       w="64" h="64">ArchbishopObjects64x64.png</Image>
+    <Image name="autumnNexusObjects8x8"        w="8"  h="8" >AutumnNexusObjects8x8.png</Image>
+    <Image name="autumnNexusObjects16x16"      w="16" h="16">AutumnNexusObjects16x16.png</Image>
+    <Image name="battleOryxObjects8x8"         w="8"  h="8" >BattleOryxObjects8x8.png</Image>
+    <Image name="battleOryxObjects16x16"       w="16" h="16">BattleOryxObjects16x16.png</Image>
+    <Image name="buffedBunnyObjects8x8"        w="8"  h="8" >BuffedBunnyObjects8x8.png</Image>
+    <Image name="buffedBunnyObjects16x16"      w="16" h="16">BuffedBunnyObjects16x16.png</Image>
+    <Image name="cnidarianReefObjects8x8"      w="8"  h="8" >CnidarianReefObjects8x8.png</Image>
+    <Image name="cnidarianReefObjects16x16"    w="16" h="16">CnidarianReefObjects16x16.png</Image>
+    <Image name="crystalCaveObjects8x8"        w="8"  h="8" >CrystalCaveObjects8x8.png</Image>
+    <Image name="crystalCaveObjects16x16"      w="16" h="16">CrystalCaveObjects16x16.png</Image>
+    <Image name="cursedLibraryObjects8x8"      w="8"  h="8" >CursedLibraryObjects8x8.png</Image>
+    <Image name="cursedLibraryObjects16x16"    w="16" h="16">CursedLibraryObjects16x16.png</Image>
+    <Image name="epicHiveObjects8x8"           w="8"  h="8" >EpicHiveObjects8x8.png</Image>
+    <Image name="epicHiveObjects16x16"         w="16" h="16">EpicHiveObjects16x16.png</Image>
+    <Image name="fungalCavernObjects8x8"       w="8"  h="8" >FungalCavernObjects8x8.png</Image>
+    <Image name="fungalCavernObjects16x16"     w="16" h="16">FungalCavernObjects16x16.png</Image>
+    <Image name="innerWorkingsObjects8x8"      w="8"  h="8" >InnerWorkingsObjects8x8.png</Image>
+    <Image name="innerWorkingsObjects16x16"    w="16" h="16">InnerWorkingsObjects16x16.png</Image>
+    <Image name="lairOfDraconisObjects8x8"     w="8"  h="8" >LairOfDraconisObjects8x8.png</Image>
+    <Image name="lairOfDraconisObjects16x16"   w="16" h="16">LairOfDraconisObjects16x16.png</Image>
+    <Image name="lairOfShaitanObjects8x8"      w="8"  h="8" >LairOfShaitanObjects8x8.png</Image>
+    <Image name="lairOfShaitanObjects16x16"    w="16" h="16">LairOfShaitanObjects16x16.png</Image>
+    <Image name="lostHallsObjects8x8"          w="8"  h="8" >LostHallsObjects8x8.png</Image>
+    <Image name="lostHallsObjects16x16"        w="16" h="16">LostHallsObjects16x16.png</Image>
+    <Image name="magicWoodsObjects8x8"         w="8"  h="8" >MagicWoodsObjects8x8.png</Image>
+    <Image name="magicWoodsObjects16x16"       w="16" h="16">MagicWoodsObjects16x16.png</Image>
+    <Image name="mountainTempleObjects8x8"     w="8"  h="8" >MountainTempleObjects8x8.png</Image>
+    <Image name="mountainTempleObjects16x16"   w="16" h="16">MountainTempleObjects16x16.png</Image>
+    <Image name="oryxHordeObjects8x8"          w="8"  h="8" >OryxHordeObjects8x8.png</Image>
+    <Image name="oryxHordeObjects16x16"        w="16" h="16">OryxHordeObjects16x16.png</Image>
+    <Image name="oryxSanctuaryObjects8x8"      w="8"  h="8" >OryxSanctuaryObjects8x8.png</Image>
+    <Image name="oryxSanctuaryObjects16x16"    w="16" h="16">OryxSanctuaryObjects16x16.png</Image>
+    <Image name="oryxSanctuaryObjects32x32"    w="32" h="32">OryxSanctuaryObjects32x32.png</Image>
+    <Image name="parasiteDenObjects8x8"        w="8"  h="8" >ParasiteDenObjects8x8.png</Image>
+    <Image name="parasiteDenObjects16x16"      w="16" h="16">ParasiteDenObjects16x16.png</Image>
+    <Image name="santaWorkshopObjects8x8"      w="8"  h="8" >SantaWorkshopObjects8x8.png</Image>
+    <Image name="santaWorkshopObjects16x16"    w="16" h="16">SantaWorkshopObjects16x16.png</Image>
+    <Image name="secludedThicketObjects8x8"    w="8"  h="8" >SecludedThicketObjects8x8.png</Image>
+    <Image name="secludedThicketObjects16x16"  w="16" h="16">SecludedThicketObjects16x16.png</Image>
+    <Image name="stPatricksObjects8x8"         w="8"  h="8" >StPatricksObjects8x8.png</Image>
+    <Image name="stPatricksObjects16x16"       w="16" h="16">StPatricksObjects16x16.png</Image>
+    <Image name="summerNexusObjects8x8"        w="8"  h="8" >SummerNexusObjects8x8.png</Image>
+    <Image name="summerNexusObjects16x16"      w="16" h="16">SummerNexusObjects16x16.png</Image>
+    <Image name="theMachineObjects8x8"         w="8"  h="8" >TheMachineObjects8x8.png</Image>
+    <Image name="theMachineObjects16x16"       w="16" h="16">TheMachineObjects16x16.png</Image>
+    <Image name="xmasNexusObjects8x8"          w="8"  h="8" >XmasNexusObjects8x8.png</Image>
+    <Image name="xmasNexusObjects16x16"        w="16" h="16">XmasNexusObjects16x16.png</Image>
+
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ANIMATED CHARACTER SETS  (AnimatedChars.add)
+         group="Full" = sheetHeight is 3× charHeight (3-row player-style sheets)
+         ═══════════════════════════════════════════════════════════ -->
+
+    <!-- Core encounter / world character sheets -->
+    <Animated name="chars8x8rBeach"          w="8"  h="8" >Chars8x8rBeach.png</Animated>
+    <Animated name="chars8x8dBeach"          w="8"  h="8" >Chars8x8dBeach.png</Animated>
+    <Animated name="chars8x8rLow1"           w="8"  h="8" >Chars8x8rLow1.png</Animated>
+    <Animated name="chars8x8rLow2"           w="8"  h="8" >Chars8x8rLow2.png</Animated>
+    <Animated name="chars8x8rMid"            w="8"  h="8" >Chars8x8rMid.png</Animated>
+    <Animated name="chars8x8rMid2"           w="8"  h="8" >Chars8x8rMid2.png</Animated>
+    <Animated name="chars8x8rHigh"           w="8"  h="8" >Chars8x8rHigh.png</Animated>
+    <Animated name="chars8x8rHero1"          w="8"  h="8" >Chars8x8rHero1.png</Animated>
+    <Animated name="chars8x8rHero2"          w="8"  h="8" >Chars8x8rHero2.png</Animated>
+    <Animated name="chars8x8dHero1"          w="8"  h="8" >Chars8x8dHero1.png</Animated>
+    <Animated name="chars16x16dMountains1"   w="16" h="16">Chars16x16dMountains1.png</Animated>
+    <Animated name="chars16x16dMountains2"   w="16" h="16">Chars16x16dMountains2.png</Animated>
+    <Animated name="chars8x8dEncounters"     w="8"  h="8" >Chars8x8dEncounters.png</Animated>
+    <Animated name="chars8x8rEncounters"     w="8"  h="8" >Chars8x8rEncounters.png</Animated>
+    <Animated name="chars16x8dEncounters"    w="16" h="8" >Chars16x8dEncounters.png</Animated>
+    <Animated name="chars16x8rEncounters"    w="16" h="8" >Chars16x8rEncounters.png</Animated>
+    <Animated name="chars16x16dEncounters"   w="16" h="16">Chars16x16dEncounters.png</Animated>
+    <Animated name="chars16x16dEncounters2"  w="16" h="16">Chars16x16dEncounters2.png</Animated>
+    <Animated name="chars16x16rEncounters"   w="16" h="16">Chars16x16rEncounters.png</Animated>
+
+    <!-- Players (group="Full" = 3-row sheet: walk/attack/default) -->
+    <Animated name="players"                 w="8"  h="8"  group="Full">Players.png</Animated>
+    <Animated name="playerskins"             w="8"  h="8"  group="Full">PlayersSkins.png</Animated>
+    <Animated name="playerskins16"           w="16" h="16" group="Full">PlayersSkins16.png</Animated>
+    <Animated name="theGoldenArcher"         w="8"  h="8"  group="Full">TheGoldenArcher.png</Animated>
+
+    <!-- Pets -->
+    <Animated name="chars8x8rPets1"          w="8"  h="8" >Chars8x8rPets1.png</Animated>
+    <Animated name="chars8x8rPets2"          w="8"  h="8" >Chars8x8rPets2.png</Animated>
+    <Animated name="chars8x8rPetsKaratePenguin" w="8" h="8">Chars8x8rPetsKaratePenguin.png</Animated>
+    <Animated name="petsDivine"              w="16" h="16">PetsDivine.png</Animated>
+
+    <!-- Dungeon character sheets: D1 / D2 / D3 -->
+    <Animated name="d1chars16x16r"           w="16" h="16">D1Chars16x16r.png</Animated>
+    <Animated name="d1Chars8x8r"             w="8"  h="8" >D1Chars8x8r.png</Animated>
+    <Animated name="d2Chars16x16rEmbed"      w="16" h="16">D2Chars16x16r.png</Animated>
+    <Animated name="d3Chars8x8rEmbed"        w="8"  h="8" >D3Chars8x8r.png</Animated>
+    <Animated name="d3Chars16x16rEmbed"      w="16" h="16">D3Chars16x16r.png</Animated>
+
+    <!-- Seasonal / Event character sheets (alphabetical) -->
+    <Animated name="alienInvasionChars8x8"         w="8"  h="8" >AlienInvasionChars8x8.png</Animated>
+    <Animated name="alienInvasionChars16x16"       w="16" h="16">AlienInvasionChars16x16.png</Animated>
+    <Animated name="ancientRuinsChars8x8"          w="8"  h="8" >AncientRuinsChars8x8.png</Animated>
+    <Animated name="ancientRuinsChars16x16"        w="16" h="16">AncientRuinsChars16x16.png</Animated>
+    <Animated name="archbishopChars8x8"            w="8"  h="8" >ArchbishopChars8x8.png</Animated>
+    <Animated name="archbishopChars16x16"          w="16" h="16">ArchbishopChars16x16.png</Animated>
+    <Animated name="autumnNexusChars8x8"           w="8"  h="8" >AutumnNexusChars8x8.png</Animated>
+    <Animated name="autumnNexusChars16x16"         w="16" h="16">AutumnNexusChars16x16.png</Animated>
+    <Animated name="battleOryxChars8x8"            w="8"  h="8" >BattleOryxChars8x8.png</Animated>
+    <Animated name="battleOryxChars16x16"          w="16" h="16">BattleOryxChars16x16.png</Animated>
+    <Animated name="buffedBunnyChars16x16"         w="16" h="16">BuffedBunnyChars16x16.png</Animated>
+    <Animated name="crystalCaveChars8x8"           w="8"  h="8" >CrystalCaveChars8x8.png</Animated>
+    <Animated name="crystalCaveChars16x16"         w="16" h="16">CrystalCaveChars16x16.png</Animated>
+    <Animated name="cursedLibraryChars8x8"         w="8"  h="8" >CursedLibraryChars8x8.png</Animated>
+    <Animated name="cursedLibraryChars16x16"       w="16" h="16">CursedLibraryChars16x16.png</Animated>
+    <Animated name="cursedLibraryCharsAvalon16x16" w="16" h="16" group="Full">CursedLibraryCharsAvalon16x16.png</Animated>
+    <Animated name="epicHiveChars8x8"              w="8"  h="8" >EpicHiveChars8x8.png</Animated>
+    <Animated name="epicHiveChars16x16"            w="16" h="16">EpicHiveChars16x16.png</Animated>
+    <Animated name="fungalCavernChars8x8"          w="8"  h="8" >FungalCavernChars8x8.png</Animated>
+    <Animated name="fungalCavernChars16x16"        w="16" h="16">FungalCavernChars16x16.png</Animated>
+    <Animated name="Hanami8x8chars"                w="8"  h="8" >Hanami8x8chars.png</Animated>
+    <Animated name="innerWorkingsChars8x8"         w="8"  h="8" >InnerWorkingsChars8x8.png</Animated>
+    <Animated name="innerWorkingsChars16x16"       w="16" h="16">InnerWorkingsChars16x16.png</Animated>
+    <Animated name="lairOfDraconisChars8x8"        w="8"  h="8" >LairOfDraconisChars8x8.png</Animated>
+    <Animated name="lairOfDraconisChars16x16"      w="16" h="16">LairOfDraconisChars16x16.png</Animated>
+    <Animated name="lairOfShaitanChars16x16"       w="16" h="16">LairOfShaitanChars16x16.png</Animated>
+    <Animated name="lostHallsChars8x8"             w="8"  h="8" >LostHallsChars8x8.png</Animated>
+    <Animated name="lostHallsChars16x16"           w="16" h="16">LostHallsChars16x16.png</Animated>
+    <Animated name="magicWoodsChars8x8"            w="8"  h="8" >MagicWoodsChars8x8.png</Animated>
+    <Animated name="magicWoodsChars16x16"          w="16" h="16">MagicWoodsChars16x16.png</Animated>
+    <Animated name="mountainTempleChars8x8"        w="8"  h="8" >MountainTempleChars8x8.png</Animated>
+    <Animated name="mountainTempleChars16x16"      w="16" h="16">MountainTempleChars16x16.png</Animated>
+    <Animated name="oryxHordeChars8x8"             w="8"  h="8" >OryxHordeChars8x8.png</Animated>
+    <Animated name="oryxHordeChars16x16"           w="16" h="16">OryxHordeChars16x16.png</Animated>
+    <Animated name="oryxSanctuaryChars8x8"         w="8"  h="8" >OryxSanctuaryChars8x8.png</Animated>
+    <Animated name="oryxSanctuaryChars16x16"       w="16" h="16">OryxSanctuaryChars16x16.png</Animated>
+    <Animated name="oryxSanctuaryChars32x32"       w="32" h="32">OryxSanctuaryChars32x32.png</Animated>
+    <Animated name="parasiteDenChars8x8"           w="8"  h="8" >ParasiteDenChars8x8.png</Animated>
+    <Animated name="parasiteDenChars16x16"         w="16" h="16">ParasiteDenChars16x16.png</Animated>
+    <Animated name="santaWorkshopChars8x8"         w="8"  h="8" >SantaWorkshopChars8x8.png</Animated>
+    <Animated name="santaWorkshopChars16x16"       w="16" h="16">SantaWorkshopChars16x16.png</Animated>
+    <Animated name="secludedThicketChars8x8"       w="8"  h="8" >SecludedThicketChars8x8.png</Animated>
+    <Animated name="secludedThicketChars16x16"     w="16" h="16">SecludedThicketChars16x16.png</Animated>
+    <Animated name="stPatricksChars8x8"            w="8"  h="8" >StPatricksChars8x8.png</Animated>
+    <Animated name="stPatricksChars16x16"          w="16" h="16">StPatricksChars16x16.png</Animated>
+    <Animated name="summerNexusChars8x8"           w="8"  h="8" >SummerNexusChars8x8.png</Animated>
+    <Animated name="summerNexusChars16x16"         w="16" h="16">SummerNexusChars16x16.png</Animated>
+    <Animated name="theMachineChars8x8"            w="8"  h="8" >TheMachineChars8x8.png</Animated>
+    <Animated name="theMachineChars16x16"          w="16" h="16">TheMachineChars16x16.png</Animated>
+    <Animated name="xmasNexusChars8x8"             w="8"  h="8" >XmasNexusChars8x8.png</Animated>
+    <Animated name="xmasNexusChars16x16"           w="16" h="16">XmasNexusChars16x16.png</Animated>
+
 </Atlas>

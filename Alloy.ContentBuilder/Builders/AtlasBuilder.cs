@@ -88,7 +88,7 @@ public static class AtlasBuilder {
             try {
                 ParseSheet(&stbContext, sheet, atlas);
             } catch (Exception e) {
-                Console.WriteLine($"Failed to add image <{sheet.Lookup}>: {e.Message}");
+                Console.WriteLine($"Failed to add image <{sheet.Lookup}>: {e}");
             }
         }
         
@@ -96,7 +96,7 @@ public static class AtlasBuilder {
             try {
                 ParseAnimated(&stbContext, sheet, atlas);
             } catch (Exception e) {
-                Console.WriteLine($"Failed to add image <{sheet.Lookup}>: {e.Message}");
+                Console.WriteLine($"Failed to add image <{sheet.Lookup}>: {e}");
             }
         }
         
