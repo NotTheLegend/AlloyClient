@@ -11,6 +11,7 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <RunPostBuildEvent>Always</RunPostBuildEvent>
 		<DisableFastUpToDateCheck>True</DisableFastUpToDateCheck>
+		<ApplicationIcon>alloy.ico</ApplicationIcon>
     </PropertyGroup>
     
     <ItemGroup>
