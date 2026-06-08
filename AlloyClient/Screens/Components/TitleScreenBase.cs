@@ -1,5 +1,4 @@
 ﻿using AlloyClient.Display;
-using AlloyClient.State;
 using AlloyClient.Ui.Components.Buttons;
 using AlloyClient.Ui.Components.Graphics;
 using Alloy.UiLib.Core;

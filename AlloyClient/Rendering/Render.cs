@@ -3,7 +3,6 @@ using Alloy.Engine.Graphics.Buffers;
 using AlloyClient.Assets;
 using AlloyClient.Game;
 using AlloyClient.Rendering.VertexData;
-using AlloyClient.State;
 using Alloy.UiLib;
 using Alloy.Common;
 using Alloy.Common.ContentReaders;

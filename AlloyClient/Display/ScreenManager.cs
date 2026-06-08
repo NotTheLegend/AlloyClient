@@ -1,6 +1,5 @@
 ﻿using System;
 using AlloyClient.Game;
-using AlloyClient.State;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Extra;

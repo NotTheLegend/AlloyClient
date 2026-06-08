@@ -1,5 +1,4 @@
 ﻿using AlloyClient.Game.Components.Hud;
-using AlloyClient.State;
 using AlloyClient.Ui.Character;
 using AlloyClient.Ui.Chat;
 using Alloy.UiLib.Core;

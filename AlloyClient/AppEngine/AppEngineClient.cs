@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using AlloyClient.State;
 using AlloyClient.Data;
 using Microsoft.Extensions.Logging;
 

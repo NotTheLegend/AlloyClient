@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using AlloyClient.Networking.Packets;
-using AlloyClient.State;
 using Microsoft.Extensions.Logging;
 
 namespace AlloyClient.Utils;

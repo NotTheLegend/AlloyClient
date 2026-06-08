@@ -1,6 +1,5 @@
 ﻿using System;
 using AlloyClient.Game.Components.Options.Ui;
-using AlloyClient.State.SettingTypes;
 using Microsoft.Extensions.Logging;
 
 namespace AlloyClient.Game.Components.Options.OptionTypes;

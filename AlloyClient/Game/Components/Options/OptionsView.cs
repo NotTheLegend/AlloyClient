@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using AlloyClient.Display;
 using AlloyClient.Networking;
-using AlloyClient.State;
 using AlloyClient.Ui.Components.Buttons;
 using AlloyClient.Ui.Components.Panels;
 using Alloy.UiLib.BuiltIn;

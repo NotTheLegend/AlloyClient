@@ -1,5 +1,4 @@
 ﻿using System;
-using AlloyClient.State.SettingTypes;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Enums;
@@ -59,6 +58,6 @@ public class ChoiceBox<T> : Sprite {
     private void SetSelected(int selected) {
         _selected = selected >= _values.Length ? 0 : selected;
         _char.SetText(_labels[_selected]);
-        _setting?.SetValue((T) _values[_selected]);
+        _setting?.Set((T) _values[_selected]);
     }
 }

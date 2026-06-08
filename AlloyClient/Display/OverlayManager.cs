@@ -1,5 +1,4 @@
-﻿using AlloyClient.State;
-using AlloyClient.Ui.Components.Panels;
+﻿using AlloyClient.Ui.Components.Panels;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using AlloyClient.Utils;

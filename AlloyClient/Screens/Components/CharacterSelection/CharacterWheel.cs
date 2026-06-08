@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using AlloyClient.Assets.Libraries;
-using AlloyClient.State;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Enums;

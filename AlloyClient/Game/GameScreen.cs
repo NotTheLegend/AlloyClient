@@ -3,7 +3,6 @@ using System.Linq;
 using AlloyClient.Display;
 using AlloyClient.Game.Components;
 using AlloyClient.Networking;
-using AlloyClient.State;
 using Alloy.Common;
 
 namespace AlloyClient.Game;

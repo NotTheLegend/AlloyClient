@@ -10,7 +10,6 @@ using AlloyClient.Networking.Structs.DataObjects;
 using AlloyClient.ParticleEffects;
 using AlloyClient.Rendering;
 using AlloyClient.Rendering.Types;
-using AlloyClient.State;
 using Alloy.UiLib.Signals;
 using AlloyClient.Utils;
 using Alloy.Common.Structs;

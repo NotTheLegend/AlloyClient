@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using AlloyClient.Game.Components.Options.OptionTypes;
-using AlloyClient.State;
-using AlloyClient.State.SettingTypes;
 using AlloyClient.Ui.Components.Scrollbars;
 using Alloy.UiLib.BuiltIn;
 
@@ -149,7 +147,7 @@ public class OptionTabView : Container {
             "FPS Cap", "This allows you to choose a frame rate cap", OnFPSChange));
         _options.Add(new ChoiceOption<int>(Settings.MaxRenderDistance, ["Low", "Medium", "High", "Max"], [15, 20, 25, 60], "Max Render Distance",
             "Pick the maximum render distance of your client. Can improve performance greatly.", OnRenderDistanceChange));
-        _options.Add(new ChoiceOption<float>(Settings.MScale, ["100%", "90%", "80%", "70%", "60%", "50%", "200%", "150%"], [1f, 0.9f, 0.8f, 0.7f, 0.6f, 0.5f, 2f, 1.5f], "Zoom",
+        _options.Add(new ChoiceOption<float>(Settings.CameraZoom, ["100%", "90%", "80%", "70%", "60%", "50%", "200%", "150%"], [1f, 0.9f, 0.8f, 0.7f, 0.6f, 0.5f, 2f, 1.5f], "Zoom",
             "Zooms your game in and out so you can see more or less things at once. You can also use the /mscale command or use Shift + Scroll. (Available options: 100%, 90%, 80%, 70%, 60%, 50%, 200%, 150%)",
             OnMScaleChange));
         _options.Add(new ChoiceOption<bool>(Settings.VSync, OnOffLabels, OnOffValues, "VSync", "This toggles whether to have VSync enabled or not.", OnVSyncToggle));
@@ -173,7 +171,7 @@ public class OptionTabView : Container {
     }
 
     private void OnMasterVolumeChange(float obj) {
-        Settings.MasterVolume = obj;
+        Settings.MasterVolume.Set(obj);
         Audio.SetMasterVolume(Settings.GetSfxVolume());
     }
     
@@ -182,7 +180,7 @@ public class OptionTabView : Container {
     }
 
     private void OnSfxVolumeChange(float obj) {
-        Settings.SfxVolume = obj;
+        Settings.SfxVolume.Set(obj);
         Audio.SfxChannel.SetVolume(Settings.GetSfxVolume());
     }
 
@@ -191,7 +189,7 @@ public class OptionTabView : Container {
     }
     
     private void OnMusicVolumeChange(float obj) {
-        Settings.MusicVolume = obj;
+        Settings.MusicVolume.Set(obj);
         Audio.MusicChannel.SetVolume(Settings.GetMusicVolume());
     }
 

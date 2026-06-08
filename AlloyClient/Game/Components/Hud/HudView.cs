@@ -1,5 +1,4 @@
 ﻿using AlloyClient.Game.Components.Hud.Inventory;
-using AlloyClient.State;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Enums;

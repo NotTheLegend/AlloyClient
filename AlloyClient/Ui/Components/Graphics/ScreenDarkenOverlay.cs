@@ -1,6 +1,5 @@
 ﻿using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
-using AlloyClient.State;
 
 namespace AlloyClient.Ui.Components.Graphics;
 

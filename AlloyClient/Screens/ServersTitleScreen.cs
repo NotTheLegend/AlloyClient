@@ -2,7 +2,6 @@
 using AlloyClient.Data;
 using AlloyClient.Display;
 using AlloyClient.Screens.Components;
-using AlloyClient.State;
 using AlloyClient.Ui.Components.Buttons;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Enums;
@@ -134,7 +133,7 @@ public class ServersTitleScreen : TitleScreenBase {
     private void SelectServer(ServerItem server) {
         // All GameServers would be hosted on the same IP because there's no
         // address property on ServerListItem(?) so only Port matters
-        Settings.SelectedGameServerPort.SetValue((ushort)server.Port);
+        Settings.SelectedGameServerPort.Set((ushort)server.Port);
 
         if (_selectedServerRect is not null) {
             _selectedServerRect.SetServer(server);

@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Game.Components.Hud.Inventory;
-using AlloyClient.State;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Enums;
 using AlloyClient.Utils;

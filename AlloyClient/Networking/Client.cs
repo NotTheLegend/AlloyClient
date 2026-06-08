@@ -8,7 +8,6 @@ using AlloyClient.Game;
 using AlloyClient.Networking.Packets;
 using AlloyClient.Networking.Packets.Outgoing;
 using AlloyClient.Screens;
-using AlloyClient.State;
 using AlloyClient.Utils;
 using Microsoft.Extensions.Logging;
 

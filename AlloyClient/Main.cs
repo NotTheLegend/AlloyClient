@@ -9,7 +9,6 @@ using AlloyClient.Display;
 using AlloyClient.Game.Components;
 using AlloyClient.Rendering;
 using AlloyClient.Screens;
-using AlloyClient.State;
 using AlloyClient.Ui;
 using Alloy.UiLib;
 using Alloy.UiLib.Data;
@@ -154,7 +153,7 @@ public class Main {
     }
 
     public void ToggleFullScreen() {
-        Settings.Fullscreen = !Settings.Fullscreen;
+        Settings.Fullscreen.Set(!Settings.Fullscreen);
         var mode = Settings.Fullscreen ? WindowMode.WindowedFullscreen : WindowMode.Normal;
         Toolkit.Window.SetMode(Window, mode);
     }

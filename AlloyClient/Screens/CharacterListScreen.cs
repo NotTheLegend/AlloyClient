@@ -6,7 +6,6 @@ using AlloyClient.Game;
 using AlloyClient.Screens.Components;
 using AlloyClient.Screens.Components.CharacterList;
 using AlloyClient.Screens.Components.Containers;
-using AlloyClient.State;
 using AlloyClient.Ui.Components.Buttons;
 using AlloyClient.Ui.Components.Scrollbars;
 using Alloy.UiLib.BuiltIn;

@@ -1,6 +1,4 @@
 ﻿using AlloyClient.Game.Components.Options.Ui;
-using AlloyClient.State;
-using AlloyClient.State.SettingTypes;
 using OpenTK.Platform;
 
 namespace AlloyClient.Game.Components.Options.OptionTypes;

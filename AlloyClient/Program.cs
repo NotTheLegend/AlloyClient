@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.IO;
 using System.Runtime;
-using AlloyClient.State;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Logging.Console;

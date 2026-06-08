@@ -5,7 +5,6 @@ using AlloyClient.Game.Components.Hud.Panels;
 using AlloyClient.Game.Components.Options;
 using AlloyClient.Networking;
 using AlloyClient.Networking.Packets.Outgoing;
-using AlloyClient.State;
 using Alloy.UiLib.Core;
 using Alloy.Common;
 using AlloyClient.Display;
@@ -126,7 +125,7 @@ public sealed class UserInput : Sprite {
         if (Map.LocalPlayer == null) return;
         
         if (args.ShiftKey) {
-            Settings.CameraZoom = Math.Clamp(Settings.CameraZoom += 0.1f * args.Delta, Settings.MinCameraZoom, Settings.MaxCameraZoom);
+            Settings.CameraZoom.Set(Math.Clamp(Settings.CameraZoom + 0.1f * args.Delta, Settings.MinCameraZoom, Settings.MaxCameraZoom));
             Logger.Log(LogLevel.Information, $"Camera zoom: {Settings.CameraZoom.Value}");
             Camera.SetZoom(Settings.CameraZoom);
         } else {
@@ -148,96 +147,96 @@ public sealed class UserInput : Sprite {
         var key = args.Code;
 
         switch (true) {
-            case true when Settings.RotateLeft.CheckValue(key):
+            case true when Settings.RotateLeft.Equals(key):
                 _rotateLeft = 1;
                 break;
-            case true when Settings.RotateRight.CheckValue(key):
+            case true when Settings.RotateRight.Equals(key):
                 _rotateRight = 1;
                 break;
-            case true when Settings.MoveUp.CheckValue(key):
+            case true when Settings.MoveUp.Equals(key):
                 _moveUp = 1;
                 break;
-            case true when Settings.MoveDown.CheckValue(key):
+            case true when Settings.MoveDown.Equals(key):
                 _moveDown = 1;
                 break;
-            case true when Settings.MoveLeft.CheckValue(key):
+            case true when Settings.MoveLeft.Equals(key):
                 _moveLeft = 1;
                 break;
-            case true when Settings.MoveRight.CheckValue(key):
+            case true when Settings.MoveRight.Equals(key):
                 _moveRight = 1;
                 break;
-            case true when Settings.AutoFire.CheckValue(key):
+            case true when Settings.AutoFire.Equals(key):
                 _autoFire = !_autoFire;
                 break;
-            case true when Settings.Special.CheckValue(key):
+            case true when Settings.Special.Equals(key):
                 //TODO: abilities
                 break;
-            case true when Settings.Escape.CheckValue(key):
+            case true when Settings.Escape.Equals(key):
                 if (Map.Name == "Nexus" || Client.IsReconnecting)
                     break;
                 
                 Client.QueuePacket(Escape.CreatePacket());
                 Client.IsReconnecting = true;
                 break;
-            case true when Settings.Interact.CheckValue(key):
+            case true when Settings.Interact.Equals(key):
                 if (Client.IsReconnecting)
                     break;
                 Panel.OnInteract.Dispatch();
                 break;
-            case true when Settings.ResetCameraAngle.CheckValue(key):
-                Settings.CameraAngle = 0;
+            case true when Settings.ResetCameraAngle.Equals(key):
+                Settings.CameraAngle.Set(0f);
                 break;
-            case true when Settings.Options.CheckValue(key):
+            case true when Settings.Options.Equals(key):
                 ClearMovement();
                 SetManualFocus(false);
                 OverlayManager.Set(new OptionsView());
                 break;
             // Inventory //
-            case true when Settings.InvOne.CheckValue(key):
+            case true when Settings.InvOne.Equals(key):
                 break;
-            case true when Settings.InvTwo.CheckValue(key):
+            case true when Settings.InvTwo.Equals(key):
                 break;
-            case true when Settings.InvThree.CheckValue(key):
+            case true when Settings.InvThree.Equals(key):
                 break;
-            case true when Settings.InvFour.CheckValue(key):
+            case true when Settings.InvFour.Equals(key):
                 break;
-            case true when Settings.InvFive.CheckValue(key):
+            case true when Settings.InvFive.Equals(key):
                 break;
-            case true when Settings.InvSix.CheckValue(key):
+            case true when Settings.InvSix.Equals(key):
                 break;
-            case true when Settings.InvSeven.CheckValue(key):
+            case true when Settings.InvSeven.Equals(key):
                 break;
-            case true when Settings.InvEight.CheckValue(key):
+            case true when Settings.InvEight.Equals(key):
                 break;
-            case true when Settings.HealthPotion.CheckValue(key):
+            case true when Settings.HealthPotion.Equals(key):
                 break;
-            case true when Settings.MagicPotion.CheckValue(key):
+            case true when Settings.MagicPotion.Equals(key):
                 break;
             // Chat //
-            case true when Settings.Chat.CheckValue(key):
+            case true when Settings.Chat.Equals(key):
                 ClearMovement();
                 ChatBox.OnChatOpen.Dispatch("");
                 break;
-            case true when Settings.ChatCommand.CheckValue(key):
+            case true when Settings.ChatCommand.Equals(key):
                 ClearMovement();
                 ChatBox.OnChatOpen.Dispatch("/");
                 break;
-            case true when Settings.TellKey.CheckValue(key):
+            case true when Settings.TellKey.Equals(key):
                 ClearMovement();
                 ChatBox.OnChatOpen.Dispatch("/tell ");
                 break;
-            case true when Settings.GuildChat.CheckValue(key):
+            case true when Settings.GuildChat.Equals(key):
                 ClearMovement();
                 ChatBox.OnChatOpen.Dispatch("/g ");
                 break;
-            case true when Settings.PartyChat.CheckValue(key):
+            case true when Settings.PartyChat.Equals(key):
                 ClearMovement();
                 ChatBox.OnChatOpen.Dispatch("/p ");
                 break;
-            case true when Settings.ChatHistoryUp.CheckValue(key):
+            case true when Settings.ChatHistoryUp.Equals(key):
                 ChatBox.OnChatHistoryUp.Dispatch();
                 break;
-            case true when Settings.ChatHistoryDown.CheckValue(key):
+            case true when Settings.ChatHistoryDown.Equals(key):
                 ChatBox.OnChatHistoryDown.Dispatch();
                 break;
             
@@ -253,25 +252,25 @@ public sealed class UserInput : Sprite {
         var key = args.Code;
 
         switch (true) {
-            case true when Settings.RotateLeft.CheckValue(key):
+            case true when Settings.RotateLeft.Equals(key):
                 _rotateLeft = 0;
                 break;
-            case true when Settings.RotateRight.CheckValue(key):
+            case true when Settings.RotateRight.Equals(key):
                 _rotateRight = 0;
                 break;
-            case true when Settings.MoveUp.CheckValue(key):
+            case true when Settings.MoveUp.Equals(key):
                 _moveUp = 0;
                 break;
-            case true when Settings.MoveDown.CheckValue(key):
+            case true when Settings.MoveDown.Equals(key):
                 _moveDown = 0;
                 break;
-            case true when Settings.MoveLeft.CheckValue(key):
+            case true when Settings.MoveLeft.Equals(key):
                 _moveLeft = 0;
                 break;
-            case true when Settings.MoveRight.CheckValue(key):
+            case true when Settings.MoveRight.Equals(key):
                 _moveRight = 0;
                 break;
-            case true when Settings.Special.CheckValue(key):
+            case true when Settings.Special.Equals(key):
                 //TODO: abilities
                 break;
         }

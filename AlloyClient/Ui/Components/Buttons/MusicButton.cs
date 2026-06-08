@@ -1,5 +1,4 @@
-﻿using AlloyClient.State;
-using Alloy.UiLib.Core;
+﻿using Alloy.UiLib.Core;
 using Alloy.UiLib.Data;
 using Alloy.UiLib.Enums;
 using AlloyClient.Utils;
@@ -49,7 +48,7 @@ public class MusicButton : UiElement {
         _state = !_state;
         _button.ChangeTexture(_state ? _musicOn : _musicOff);
         
-        Settings.PlayMusic = _state;
+        Settings.PlayMusic.Set(_state);
         Audio.MusicChannel.SetVolume(Settings.GetMusicVolume());
     }
 

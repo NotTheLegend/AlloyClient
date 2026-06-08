@@ -2,7 +2,6 @@
 using AlloyClient.Display;
 using AlloyClient.Screens.Components;
 using AlloyClient.Screens.Components.Containers;
-using AlloyClient.State;
 using AlloyClient.Ui.Components.Buttons;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;

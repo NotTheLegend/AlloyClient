@@ -1,5 +1,4 @@
 ﻿using AlloyClient.Game.Components.Options.Ui;
-using AlloyClient.State.SettingTypes;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 

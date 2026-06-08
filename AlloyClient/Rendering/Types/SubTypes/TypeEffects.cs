@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using AlloyClient.Game.Objects;
 using AlloyClient.Game.Objects.Util;
 using AlloyClient.Rendering.VertexData;
-using AlloyClient.State;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering.Types.SubTypes;

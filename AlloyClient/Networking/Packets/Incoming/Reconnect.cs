@@ -1,7 +1,6 @@
 ﻿using AlloyClient.Data;
 using AlloyClient.Game;
 using AlloyClient.Networking.Packets.Outgoing;
-using AlloyClient.State;
 
 namespace AlloyClient.Networking.Packets.Incoming;
 

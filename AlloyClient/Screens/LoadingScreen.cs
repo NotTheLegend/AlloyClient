@@ -2,7 +2,6 @@
 using AlloyClient.AppEngine;
 using AlloyClient.Assets;
 using AlloyClient.Display;
-using AlloyClient.State;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Enums;

@@ -9,7 +9,6 @@ using AlloyClient.Networking.Packets.Outgoing;
 using AlloyClient.Networking.Structs.DataObjects;
 using AlloyClient.Rendering;
 using AlloyClient.Rendering.Types;
-using AlloyClient.State;
 using AlloyClient.Utils;
 using Alloy.Common.Structs;
 using Microsoft.Extensions.Logging;
@@ -126,7 +125,7 @@ public class Player : Entity {
 
         if (Rotate != 0) {
             angle = (float) (angle + dt * Settings.RotateSpeed * Rotate);
-            Settings.CameraAngle = (angle % MathHelper.TwoPi + MathHelper.TwoPi) % MathHelper.TwoPi;
+            Settings.CameraAngle.Set((angle % MathHelper.TwoPi + MathHelper.TwoPi) % MathHelper.TwoPi);
         }
         
         var moveSpeed = GetMoveSpeed();
