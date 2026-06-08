@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Alloy.UiLib.Utils;
 using Alloy.UiLib.BuiltIn;
-using Alloy.Common;
 using Alloy.UiLib.Enums;
 using Alloy.UiLib.Input;
+using Microsoft.Extensions.Logging;
 
 namespace Alloy.UiLib.Core;
 
 public abstract class EventManager {
+
+    private static readonly ILogger Logger = UiRender.LogFactory.CreateLogger(nameof(EventManager));
 
     private static readonly HashSet<EventType<Event>> BroadcastEvents = [Event.EnterFrame];
     
@@ -63,7 +64,7 @@ public abstract class EventManager {
     public void AddEventListener(Task task, Action callback) {
         task.ContinueWith(_ => {
             if (task.IsFaulted) {
-                Logger.Error(task.Exception);
+                Logger.Log(LogLevel.Error, task.Exception, "Task Failed");
             }
             QueueTaskFinish(callback);
         });
@@ -72,7 +73,7 @@ public abstract class EventManager {
     public void AddEventListener(Task task, Action<TaskState> callback) {
         task.ContinueWith(t => {
             if (task.IsFaulted) {
-                Logger.Error(task.Exception);
+                Logger.Log(LogLevel.Error, task.Exception, "Task Failed");
             }
             QueueTaskFinish(() => callback(GetStatus(t)));
         });
@@ -81,7 +82,7 @@ public abstract class EventManager {
     public void AddEventListener<T>(Task<T> task, Action<T> callback) {
         task.ContinueWith(t => {
             if (task.IsFaulted) {
-                Logger.Error(task.Exception);
+                Logger.Log(LogLevel.Error, task.Exception, "Task Failed");
             }
             QueueTaskFinish(() => callback(t.Result));
         });
@@ -90,7 +91,7 @@ public abstract class EventManager {
     public void AddEventListener<T>(Task<T> task, Action<T, TaskState> callback) {
         task.ContinueWith(t => {
             if (task.IsFaulted) {
-                Logger.Error(task.Exception);
+                Logger.Log(LogLevel.Error, task.Exception, "Task Failed");
             }
             QueueTaskFinish(() => callback(t.Result, GetStatus(t)));
         });

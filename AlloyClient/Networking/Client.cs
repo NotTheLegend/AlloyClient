@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.IO;
-using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using AlloyClient.Data;
@@ -12,7 +10,7 @@ using AlloyClient.Networking.Packets.Outgoing;
 using AlloyClient.Screens;
 using AlloyClient.State;
 using AlloyClient.Utils;
-using Alloy.Common;
+using Microsoft.Extensions.Logging;
 
 namespace AlloyClient.Networking;
 
@@ -25,7 +23,7 @@ public static class Client {
     public const int RECV_BUFFER_SIZE = 0x40000;
     public const int SEND_BUFFER_SIZE = 0x10000;
 
-    public static readonly Logger Log = new(typeof(Client));
+    public static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(Client));
 
     private static readonly ConcurrentQueue<IIncomingPacket> IncomingQueue = new();
 
@@ -37,7 +35,7 @@ public static class Client {
     private static readonly SocketReceiveState _receiveState;
     private static readonly SocketAsyncEventArgs _sendSAEA;
     private static readonly SocketSendState _sendState;
-    
+
     private static Socket _socket;
     private static TcpClient _tcp;
 
@@ -63,7 +61,7 @@ public static class Client {
         _tcp = new TcpClient();
         _tcp.NoDelay = true;
 
-        Log.Info($"Connecting to {ip}:{port}...");
+        Logger.Log(LogLevel.Information, $"Connecting to {ip}:{port}...");
 
         while (true) {
             try {
@@ -71,13 +69,13 @@ public static class Client {
                 break;
             } catch (SocketException e) {
                 if (e.SocketErrorCode == SocketError.ConnectionRefused) {
-                    Log.Warn("Failed to connect to server. Retrying...");
+                    Logger.Log(LogLevel.Warning, "Failed to connect to server. Retrying...");
 
                     await Task.Delay(1000);
                     continue;
                 }
 
-                Log.Error(e.ToString());
+                Logger.Log(LogLevel.Error, e.ToString());
                 return;
             }
         }
@@ -89,15 +87,14 @@ public static class Client {
 
         State = ConnectionState.Connected;
 
-        Log.Info("Connected to server.");
+        Logger.Log(LogLevel.Information, "Connected to server.");
 
         SendHello();
 
         Task.Run(ReceiveLoop);
     }
 
-    private static void ReceiveLoop()
-    {
+    private static void ReceiveLoop() {
         while (true) {
             if (State == ConnectionState.Disconnected || !_socket.Connected) {
                 Disconnect("Unknown");
@@ -114,12 +111,11 @@ public static class Client {
         }
     }
 
-    private static void ProcessReceive(object sender, SocketAsyncEventArgs args)
-    {
+    private static void ProcessReceive(object sender, SocketAsyncEventArgs args) {
         if (HandleReceive(args))
             ReceiveLoop();
     }
-    
+
     private static bool HandleReceive(SocketAsyncEventArgs args) {
         if (State == ConnectionState.Disconnected || !_socket.Connected) {
             Disconnect("Unknown");
@@ -142,22 +138,18 @@ public static class Client {
             Disconnect("Remote host closed connection.");
             return false;
         }
-        
+
         _receiveState.OnDataReceived(args.BytesTransferred);
 
-        while (_receiveState.PacketReady())
-        {
-            var pktId = (PacketId)_receiveState.ReadPacket(out var rdr);
-            try
-            {
+        while (_receiveState.PacketReady()) {
+            var pktId = (PacketId) _receiveState.ReadPacket(out var rdr);
+            try {
                 // Log.Debug($"RECEIVING {pktId}");
                 var pkt = PacketUtils.CreateIncomingPacket(pktId);
                 pkt.Read(ref rdr);
                 IncomingQueue.Enqueue(pkt);
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"Error handling message {pktId}: {ex.Message}");
+            } catch (Exception ex) {
+                Logger.Log(LogLevel.Error, $"Error handling message {pktId}: {ex.Message}");
             }
         }
 
@@ -188,16 +180,13 @@ public static class Client {
     }
 
     private static void ProcessSend(object sender, SocketAsyncEventArgs args) {
-        while (true)
-        {
-            if (State == ConnectionState.Disconnected)
-            {
+        while (true) {
+            if (State == ConnectionState.Disconnected) {
                 Disconnect("Unknown");
                 break;
             }
 
-            if (args.SocketError != SocketError.Success)
-            {
+            if (args.SocketError != SocketError.Success) {
                 Disconnect($"Send Error: {args.SocketError}");
                 break;
             }
@@ -213,9 +202,9 @@ public static class Client {
     public static void QueuePacket(IOutgoingPacket pkt) {
         if (pkt.PacketId == PacketId.Unknown)
             return;
-        
+
         lock (_sendState) {
-            _sendState.WritePacket(pkt, (byte)pkt.PacketId);
+            _sendState.WritePacket(pkt, (byte) pkt.PacketId);
             // Log.Debug($"SENDING {pkt.PacketId}");
         }
     }
@@ -229,13 +218,13 @@ public static class Client {
             _tcp?.Close();
             _socket?.Close();
 
-            Log.Info($"Disconnecting client {(message != null ? $"({message})" : "")}");
+            Logger.Log(LogLevel.Information, $"Disconnecting client {(message != null ? $"({message})" : "")}");
 
             while (IncomingQueue.TryDequeue(out var pkt)) {
                 pkt.ReturnPacket();
             }
         }
-        
+
         Map.Reset();
         ScreenManager.FadeTo(new CharacterListScreen());
     }

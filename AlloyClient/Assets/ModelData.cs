@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using AlloyClient.Rendering.VertexData;
-using AlloyClient.Utils;
 using Alloy.Common;
+using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Assets;
@@ -64,7 +64,7 @@ public enum ModelType {
 }
 
 public static partial class ModelData {
-    private static readonly Logger Log = new(typeof(ModelData));
+    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(ModelData));
     
     public static readonly Dictionary<ModelType, ModelInfo> ModelRenderInfo = [];
 
@@ -86,7 +86,7 @@ public static partial class ModelData {
             try {
                 type = (ModelType) Enum.Parse(typeof(ModelType), name);
             } catch {
-                Log.Error($"Failed to parse model type: {name}");
+                Logger.Log(LogLevel.Error, $"Failed to parse model type: {name}");
                 continue;
             }
 

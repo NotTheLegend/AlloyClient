@@ -101,9 +101,9 @@ public class ClassInfo : Container {
         _classEquipment = equipped;
         _background.AddChild(_classEquipment);
         
-        foreach (var item in ObjectLibrary.TypeToSkins.Where(item => item.Item1 == _selectedClass.Type)) {
-            Logger.Info("skin added to list: " + item.Item2);
-        }
+        //foreach (var item in ObjectLibrary.TypeToSkins.Where(item => item.Item1 == _selectedClass.Type)) {
+        //    Logger.Info("skin added to list: " + item.Item2);
+        //}
     }
 
     private void ClearChildren() {

@@ -1,20 +1,16 @@
-﻿using System;
-using AlloyClient.Assets.Libraries;
-using AlloyClient.Assets.XmlStructs;
+﻿using AlloyClient.Assets.Libraries;
 using AlloyClient.Game;
 using AlloyClient.Game.Objects;
 using AlloyClient.Game.Objects.ProjectilePaths;
-using AlloyClient.Game.Objects.Util;
 using AlloyClient.Networking.Structs.DataObjects;
-using AlloyClient.Utils;
-using Alloy.Common;
+using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Networking.Packets.Incoming;
 
 public class EnemyShoot : IncomingPacket<EnemyShoot> {
 
-    private static readonly Logger _log = new(typeof(EnemyShoot));
+    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(EnemyShoot));
     
     public ushort FirstBulletId;
     public int OwnerId;
@@ -58,12 +54,12 @@ public class EnemyShoot : IncomingPacket<EnemyShoot> {
 
         var containerDesc = en.Properties;
         if (!containerDesc.Projectiles.TryGetValue(ProjectileIndex, out var projProps)) {
-            _log.Error($"Projectile '{ProjectileIndex}' not found for {en.Name}");
+            Logger.Log(LogLevel.Error, $"Projectile '{ProjectileIndex}' not found for {en.Name}");
             return;
         }
         
         if (!ObjectLibrary.IdToObjectType.TryGetValue(projProps.ObjectId, out var objType)) {
-            _log.Error($"Projectile '{projProps.ObjectId}' not found in GameData.");
+            Logger.Log(LogLevel.Error, $"Projectile '{projProps.ObjectId}' not found in GameData.");
             return;
         }
         

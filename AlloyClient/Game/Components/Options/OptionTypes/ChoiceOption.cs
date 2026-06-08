@@ -1,13 +1,12 @@
 ﻿using System;
 using AlloyClient.Game.Components.Options.Ui;
 using AlloyClient.State.SettingTypes;
-using AlloyClient.Utils;
-using Alloy.Common;
+using Microsoft.Extensions.Logging;
 
 namespace AlloyClient.Game.Components.Options.OptionTypes;
 
 public class ChoiceOption<T> : Option {
-    private static readonly Logger Log = new(typeof(ChoiceBox<T>));
+    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(ChoiceBox<T>));
 
     private readonly ChoiceBox<T> _choiceBox;
     private readonly Action _choiceCallback;
@@ -15,7 +14,7 @@ public class ChoiceOption<T> : Option {
     public ChoiceOption(ValueSetting<T> setting, string[] labels, object[] values, string desc, string tooltipDesc, Action choiceCallback = null)
         : base(setting, desc, tooltipDesc) {
         if (labels.Length != values.Length) {
-            Log.Error($"Wrong option setup for {setting} (Labels:{labels.Length}, Values:{values.Length})");
+            Logger.Log(LogLevel.Error, $"Wrong option setup for {setting} (Labels:{labels.Length}, Values:{values.Length})");
         }
 
         _choiceBox = new ChoiceBox<T>(setting, labels, values, OnChoiceChange);

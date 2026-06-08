@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using AlloyClient.Networking.Packets;
 using AlloyClient.State;
-using Alloy.Common;
+using Microsoft.Extensions.Logging;
 
 namespace AlloyClient.Utils;
 
@@ -19,52 +19,52 @@ public enum PacketLogLevel {
 }
 
 public static class PacketLogger {
-    private static readonly Logger Log = new("PacketLog");
+    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(PacketLogger));
 
     public static void LogPacket(IPacket packet) {
         switch (Settings.PacketLogging.Value) {
             case PacketLogLevel.All:
-                Log.Info($"Packet [{packet.PacketId}] {packet}");
+                Logger.Log(LogLevel.Information, $"Packet [{packet.PacketId}] {packet}");
                 break;
             case PacketLogLevel.AllNonTick:
                 if (!IsTickPacket(packet.PacketId)) {
-                    Log.Info($"Non-Tick Packet: [{packet.PacketId}] {packet}");
+                    Logger.Log(LogLevel.Information, $"Non-Tick Packet: [{packet.PacketId}] {packet}");
                 }
 
                 break;
             case PacketLogLevel.Incoming:
                 if (IsIncomingPacket(packet)) {
-                    Log.Info($"Incoming Packet: [{packet.PacketId}] {packet}");
+                    Logger.Log(LogLevel.Information, $"Incoming Packet: [{packet.PacketId}] {packet}");
                 }
 
                 break;
             case PacketLogLevel.Outgoing:
                 if (IsOutgoingPacket(packet)) {
-                    Log.Info($"Outgoing Packet: [{packet.PacketId}] {packet}");
+                    Logger.Log(LogLevel.Information, $"Outgoing Packet: [{packet.PacketId}] {packet}");
                 }
 
                 break;
             case PacketLogLevel.IncomingNonTick:
                 if (IsIncomingPacket(packet) && !IsTickPacket(packet.PacketId)) {
-                    Log.Info($"Incoming Non-Tick Packet: [{packet.PacketId}] {packet}");
+                    Logger.Log(LogLevel.Information, $"Incoming Non-Tick Packet: [{packet.PacketId}] {packet}");
                 }
 
                 break;
             case PacketLogLevel.OutgoingNonTick:
                 if (IsOutgoingPacket(packet) && !IsTickPacket(packet.PacketId)) {
-                    Log.Info($"Outgoing Non-Tick Packet: [{packet.PacketId}] {packet}");
+                    Logger.Log(LogLevel.Information, $"Outgoing Non-Tick Packet: [{packet.PacketId}] {packet}");
                 }
 
                 break;
             case PacketLogLevel.IncomingTick:
                 if (IsIncomingPacket(packet) && IsTickPacket(packet.PacketId)) {
-                    Log.Info($"Incoming Tick Packet: [{packet.PacketId}] {packet}");
+                    Logger.Log(LogLevel.Information, $"Incoming Tick Packet: [{packet.PacketId}] {packet}");
                 }
 
                 break;
             case PacketLogLevel.OutgoingTick:
                 if (IsOutgoingPacket(packet) && IsTickPacket(packet.PacketId)) {
-                    Log.Info($"Outgoing Tick Packet: [{packet.PacketId}] {packet}");
+                    Logger.Log(LogLevel.Information, $"Outgoing Tick Packet: [{packet.PacketId}] {packet}");
                 }
 
                 break;

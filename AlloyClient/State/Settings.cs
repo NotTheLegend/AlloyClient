@@ -8,13 +8,14 @@ using AlloyClient.Data;
 using AlloyClient.State.SettingTypes;
 using AlloyClient.Utils;
 using Alloy.Common;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using OpenTK.Platform;
 
 namespace AlloyClient.State;
 
 public static class Settings {
-    private static readonly Logger Log = new(typeof(Settings));
+    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(Settings));
 
     public const string LocalFolderName = "AlloyClient";
     public static readonly string LocalFolderPath;
@@ -276,7 +277,7 @@ public static class Settings {
             ResetToDefault();
             TryLoadSettings();
         } catch (Exception e) {
-            Log.Error($"Error loading settings: {e.Message}");
+            Logger.Log(LogLevel.Error, $"Error loading settings: {e.Message}");
             ResetToDefault();
         }
         
@@ -285,7 +286,7 @@ public static class Settings {
 
     private static void TryLoadSettings() {
         if (!File.Exists(SettingsPath)) {
-            Log.Info("Settings file not found.");
+            Logger.Log(LogLevel.Information, "Settings file not found.");
             return;
         }
 
@@ -295,7 +296,7 @@ public static class Settings {
 
         var settingsRoot = settingsXml.DocumentElement;
         if (settingsRoot == null) {
-            Log.Warn("Settings file is empty.");
+            Logger.Log(LogLevel.Warning, "Settings file is empty.");
             SaveSettings();
             return;
         }
@@ -307,13 +308,13 @@ public static class Settings {
 
             var settingElem = settingsRoot[field.Name];
             if (settingElem == null) {
-                Log.Warn($"Setting not found: {field.Name}");
+                Logger.Log(LogLevel.Warning, $"Setting not found: {field.Name}");
                 continue;
             }
 
             var setting = (ISettingType) field.GetValue(null);
             if (setting == null) {
-                Log.Warn($"Failed to get setting: {field.Name}");
+                Logger.Log(LogLevel.Warning, $"Failed to get setting: {field.Name}");
                 continue;
             }
 
@@ -326,7 +327,7 @@ public static class Settings {
             }
         }
 
-        Log.Info("Settings loaded");
+        Logger.Log(LogLevel.Information, "Settings loaded");
     }
 
     public static void SaveSettings() {
@@ -340,7 +341,7 @@ public static class Settings {
                 var setting = (ISettingType) field.GetValue(null);
 
                 if (setting == null) {
-                    Log.Warn($"Failed to get setting: {field.Name}");
+                    Logger.Log(LogLevel.Warning, $"Failed to get setting: {field.Name}");
                     continue;
                 }
 
@@ -359,9 +360,9 @@ public static class Settings {
 
             settingsXml.Save(SettingsPath);
 
-            Log.Info("Settings saved.");
+            Logger.Log(LogLevel.Information, "Settings saved.");
         } catch (Exception e) {
-            Log.Warn($"Failed to save settings: {e}");
+            Logger.Log(LogLevel.Warning, $"Failed to save settings: {e}");
         }
     }
 
@@ -380,7 +381,7 @@ public static class Settings {
 
     public static void SetSetting(string settingKey, ISettingType value) {
         if (!SettingTypes.TryGetValue(settingKey, out var setting)) {
-            Logger.Error($"Failed to save, setting not found: {settingKey}");
+            Logger.Log(LogLevel.Error, $"Failed to save, setting not found: {settingKey}");
             return;
         }
 
@@ -391,7 +392,7 @@ public static class Settings {
         var filePath = Path.CombineAlt(LocalFolderPath, AccountFileName);
 
         if (!File.Exists(filePath)) {
-            Log.Debug("No local account data found");
+            Logger.Log(LogLevel.Debug, "No local account data found");
             return;
         }
 
@@ -399,14 +400,14 @@ public static class Settings {
         try {
             text = File.ReadAllText(filePath);
         } catch (Exception e) {
-            Log.Error($"Failed to read to file {AccountFileName}: {e.Message}");
+            Logger.Log(LogLevel.Error, $"Failed to read to file {AccountFileName}: {e.Message}");
             return;
         }
         
         var info = JsonConvert.DeserializeObject<Dictionary<string, string>>(text);
 
         if (info == null) {
-            Log.Debug("Failed to parse local account data");
+            Logger.Log(LogLevel.Debug, "Failed to parse local account data");
             return;
         }
 
@@ -414,19 +415,19 @@ public static class Settings {
         var loadedPass = info.TryGetValue("password", out var password) && !string.IsNullOrWhiteSpace(password);
 
         if (username == string.Empty && password == string.Empty) {
-            Log.Debug("No local account data");
+            Logger.Log(LogLevel.Debug, "No local account data");
             return;
         }
 
         if (!loadedUser || !loadedPass) {
-            Log.Debug("Incomplete/Invalid local account data");
+            Logger.Log(LogLevel.Debug, "Incomplete/Invalid local account data");
             return;
         }
 
         var data = new byte[(password.Length * 3 + 3) / 4];
         
         if (!Convert.TryFromBase64String(password, data.AsSpan(), out var count)) {
-            Log.Error("Invalid Base64 encoding on password");
+            Logger.Log(LogLevel.Error, "Invalid Base64 encoding on password");
             return;
         }
 
@@ -438,13 +439,13 @@ public static class Settings {
         
         var bytes = new byte[Encoding.UTF8.GetByteCount(data.Password.AsSpan())];
         if (!Encoding.UTF8.TryGetBytes(data.Password.AsSpan(), bytes.AsSpan(), out var byteCount)) {
-            Log.Error("Failed to get password bytes");
+            Logger.Log(LogLevel.Error, "Failed to get password bytes");
             return;
         }
 
         var chars = new char[4 * (data.Password.Length + 2) / 3];
         if (!Convert.TryToBase64Chars(bytes.AsSpan(0, byteCount), chars.AsSpan(), out var charCount)) {
-            Log.Error("Failed to Base64 encode password");
+            Logger.Log(LogLevel.Error, "Failed to Base64 encode password");
             return;
         }
 
@@ -456,7 +457,7 @@ public static class Settings {
         try {
             File.WriteAllText(Path.CombineAlt(LocalFolderPath, AccountFileName), jsonString);
         } catch (Exception e) {
-            Log.Error($"Failed to write to file {AccountFileName}: {e.Message}");
+            Logger.Log(LogLevel.Error, $"Failed to write to file {AccountFileName}: {e.Message}");
         }
     }
 }

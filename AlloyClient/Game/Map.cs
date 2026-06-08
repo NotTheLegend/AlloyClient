@@ -11,12 +11,16 @@ using AlloyClient.Rendering.Types;
 using AlloyClient.Rendering.VertexData;
 using Alloy.UiLib.Signals;
 using Alloy.Common;
+using Microsoft.Extensions.Logging;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Game;
 
 public static class Map {
+
+    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(Map));
+    
     public const int TileRenderDistance = 20;
 
     public static GameTime LastGameTime;
@@ -365,12 +369,12 @@ public static class Map {
 
     public static void OnLocalPlayerCreated(Entity entity) {
         if (LocalPlayer != null) {
-            Logger.Error("Local player already exists");
+            Logger.Log(LogLevel.Error, "Local player already exists");
             return;
         }
 
         if (entity is not Player player) {
-            Logger.Error("Local player is not a player");
+            Logger.Log(LogLevel.Error, "Local player is not a player");
             return;
         }
 

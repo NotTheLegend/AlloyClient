@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AlloyClient.Utils;
-using Alloy.Common;
+using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Objects.Util;
@@ -14,6 +13,8 @@ public sealed class ConditionEffect(string name, ConditionEffects bit, int[] ico
 }
 
 public static class ConditionEffectUtil {
+
+    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(ConditionEffect));
     
     public static readonly ConditionEffect[] Effects = [
         new("Nothing", ConditionEffects.None, null),
@@ -67,7 +68,7 @@ public static class ConditionEffectUtil {
         if (NameToEffect.TryGetValue(name, out var eff))
             return (int)eff;
         
-        Logger.Warn($"[ConditionEffect] Unable to find effect: {name}");
+        Logger.Log(LogLevel.Warning, $"Unable to find effect: {name}");
         return (int)ConditionEffects.None;
     }
 

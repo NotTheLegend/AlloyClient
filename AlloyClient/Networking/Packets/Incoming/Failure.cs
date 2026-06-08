@@ -1,4 +1,6 @@
-﻿namespace AlloyClient.Networking.Packets.Incoming;
+﻿using Microsoft.Extensions.Logging;
+
+namespace AlloyClient.Networking.Packets.Incoming;
 
 public class Failure : IncomingPacket<Failure> {
     public int ErrorId;
@@ -17,7 +19,7 @@ public class Failure : IncomingPacket<Failure> {
     }
 
     public override void Handle() {
-        Client.Log.Error($"Error: {ErrorId} - {ErrorDescription}");
+        Client.Logger.Log(LogLevel.Information, $"Error: {ErrorId} - {ErrorDescription}");
 
         Client.Disconnect(ErrorDescription);
     }

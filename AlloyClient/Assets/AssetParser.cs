@@ -8,12 +8,14 @@ using AlloyClient.Assets.Libraries;
 using AlloyClient.Assets.XmlStructs;
 using Alloy.Common;
 using Alloy.Common.Structs;
+using AlloyClient.Utils;
+using Microsoft.Extensions.Logging;
 
 namespace AlloyClient.Assets;
 
 public static class AssetParser {
     public static async Task LoadAssetsAsync() {
-        using var timer = new EasyTimer("Loading assets...");
+        using var timer = new EasyTimer("Loading assets...", $"Loaded assets in {EasyTimer.Time}");
         await Task.WhenAll(Task.Run(ParseGround), Task.Run(ParseObjects));
     }
 
@@ -39,7 +41,6 @@ public static class AssetParser {
             var path = File.ReadAllText(xmlFile);
             var objectContainer = XElement.Parse(path).Elements("Object");
             Parallel.ForEach(objectContainer, gameObject => {
-                //Console.WriteLine($"XML:{gameObject.Attribute("id")}");// This line might become handy if you're messing with xmls
                 var props = new ObjectProperties(gameObject);
                 lock (ObjectLibrary.TypeToObjectProps)
                     ObjectLibrary.TypeToObjectProps.TryAdd(props.ObjectType, props);
@@ -70,7 +71,7 @@ public static class AssetParser {
 }
 
 public sealed class TextureData {
-    private static readonly Logger Log = new(typeof(TextureData));
+    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(TextureData));
 
     public bool HasAnimationData = false;
     
@@ -113,7 +114,7 @@ public sealed class TextureData {
             foreach (var e in elems) {
                 var id = e.GetAttribute("id", 0);
                 if (AltTextures.ContainsKey(id)) {
-                    Log.Warn($"[Dupe AltTextureId] object: {xml.GetAttribute("id", "")} has dupe id: {id}");
+                    Logger.Log(LogLevel.Warning, $"[Dupe AltTextureId] object: {xml.GetAttribute("id", "")} has dupe id: {id}");
                 }
 
                 AltTextures[id] = new TextureData(e);
@@ -172,7 +173,7 @@ public sealed class TextureData {
 
     public bool GetAltTexture(int id, out TextureData data) {
         if (AltTextures == null || !AltTextures.ContainsKey(id)) {
-            Log.Warn($"[Missing AltTextureId] object: {id}");
+            Logger.Log(LogLevel.Warning, $"[Missing AltTextureId] object: {id}");
             data = null;
             return false;
         }

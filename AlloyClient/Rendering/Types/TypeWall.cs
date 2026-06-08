@@ -4,15 +4,12 @@ using AlloyClient.Assets;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Game.Objects;
 using AlloyClient.Rendering.VertexData;
-using AlloyClient.Utils;
-using Alloy.Common;
 using Alloy.Common.Structs;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering.Types;
 
 public sealed class TypeWall : RenderBase {
-    private static readonly Logger Log = new(typeof(TypeWall));
 
     public override ModelType ModelType { get; }
 

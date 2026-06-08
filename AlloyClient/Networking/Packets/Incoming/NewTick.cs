@@ -3,6 +3,7 @@ using AlloyClient.Networking.Packets.Outgoing;
 using AlloyClient.Networking.Structs.DataObjects;
 using AlloyClient.Utils;
 using Alloy.Common;
+using Microsoft.Extensions.Logging;
 
 namespace AlloyClient.Networking.Packets.Incoming;
 
@@ -50,7 +51,7 @@ public class NewTick : IncomingPacket<NewTick> {
 
     private void ProcessObjectStats(ObjectStats stats) {
         if (!Map.Entities.TryGetValue(stats.Id, out var en)) {
-            Logger.Warn($"[NewTick] Unable to lookup id: {stats.Id}");
+            Client.Logger.Log(LogLevel.Warning, $"[NewTick] Unable to lookup id: {stats.Id}");
             return;
         }
         en.UpdateStats(Structs.DataObjects.ObjectStats.StatsPool, stats.StatOffset, stats.StatCount);

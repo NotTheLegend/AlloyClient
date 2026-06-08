@@ -13,14 +13,14 @@ using AlloyClient.Rendering.Types;
 using AlloyClient.State;
 using Alloy.UiLib.Signals;
 using AlloyClient.Utils;
-using Alloy.Common;
 using Alloy.Common.Structs;
+using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Objects;
 
 public class Entity {
-    private static readonly Logger Log = new(nameof(Entity));
+    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(Entity));
 
     public const float AttackPeriod = 300;
 
@@ -443,7 +443,7 @@ public class Entity {
         TickPosition = Position;
 
         if (!MoveTo(position.X, position.Y)) {
-            Log.Error($"Failed to add entity {ObjectId} to map.");
+            Logger.Log(LogLevel.Warning, $"Failed to add entity {ObjectId} to map.");
         }
 
         // Add entity's effect

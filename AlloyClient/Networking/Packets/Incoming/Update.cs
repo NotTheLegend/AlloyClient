@@ -6,6 +6,7 @@ using AlloyClient.Networking.Packets.Outgoing;
 using AlloyClient.Networking.Structs.DataObjects;
 using AlloyClient.Utils;
 using Alloy.Common;
+using Microsoft.Extensions.Logging;
 
 namespace AlloyClient.Networking.Packets.Incoming;
 
@@ -66,7 +67,7 @@ public class Update : IncomingPacket<Update> {
             Entity entity;
 
             if (!ObjectLibrary.TypeToObjectProps.TryGetValue(newObj.ObjectType, out var props)) {
-                Logger.Warn($"[Update] Unable to parse props for id: {newObj.ObjectType:x4}");
+                Client.Logger.Log(LogLevel.Warning, $"[Update] Unable to parse props for id: {newObj.ObjectType:x4}");
                 props = ObjectLibrary.TypeToObjectProps[0x600]; //Pirate Placeholder
             }
 

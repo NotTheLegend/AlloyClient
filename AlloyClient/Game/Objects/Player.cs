@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using Alloy.Common;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Game.Objects.Enums;
 using AlloyClient.Game.Objects.Util;
@@ -11,8 +11,8 @@ using AlloyClient.Rendering;
 using AlloyClient.Rendering.Types;
 using AlloyClient.State;
 using AlloyClient.Utils;
-using Alloy.Common;
 using Alloy.Common.Structs;
+using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Objects;
@@ -26,7 +26,7 @@ public class Player : Entity {
     private const float MinAttackFreq = 0.0015f;
     private const float MaxAttackFreq = 0.008f;
 
-    private static readonly Logger Log = new(nameof(Player));
+    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(Player));
 
     public float Rotate;
     public Vector2 RelativeMoveVector;

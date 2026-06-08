@@ -7,6 +7,7 @@ using Alloy.UiLib.Data;
 using Alloy.UiLib.Enums;
 using Alloy.UiLib.Input;
 using Alloy.UiLib.Rendering;
+using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
 
@@ -20,6 +21,8 @@ public class UiSettings {
 }
 
 public static class UiRender {
+
+    internal static ILoggerFactory LogFactory;
 
     internal static bool IsFocused = true;
 
@@ -37,12 +40,13 @@ public static class UiRender {
 
     internal static Shader UiShader;
 
-    public static void ConfigureAndLoad(UiSettings settings, out Stage stage) {
+    public static void ConfigureAndLoad(ILoggerFactory logFactory, UiSettings settings, out Stage stage) {
         if (Stage != null) {
             stage = Stage;
             return;
         }
-        
+
+        LogFactory = logFactory;
         DefaultScreen = settings.DefaultScreen;
         Stage = stage = new Stage();
         

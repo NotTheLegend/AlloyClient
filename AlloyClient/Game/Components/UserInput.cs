@@ -9,12 +9,15 @@ using AlloyClient.State;
 using Alloy.UiLib.Core;
 using Alloy.Common;
 using AlloyClient.Display;
+using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
 
 namespace AlloyClient.Game.Components;
 
 public sealed class UserInput : Sprite {
+
+    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(UserInput));
 
     private static Vector2 _mousePosition;
     
@@ -124,7 +127,7 @@ public sealed class UserInput : Sprite {
         
         if (args.ShiftKey) {
             Settings.CameraZoom = Math.Clamp(Settings.CameraZoom += 0.1f * args.Delta, Settings.MinCameraZoom, Settings.MaxCameraZoom);
-            Logger.Info($"Camera zoom: {Settings.CameraZoom.Value}");
+            Logger.Log(LogLevel.Information, $"Camera zoom: {Settings.CameraZoom.Value}");
             Camera.SetZoom(Settings.CameraZoom);
         } else {
             Minimap.OnZoom.Dispatch((int)args.Delta);

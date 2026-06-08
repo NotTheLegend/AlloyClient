@@ -23,20 +23,14 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace AlloyClient;
 
 public class Main {
-    private static readonly Logger Log = new(typeof(Main));
+    
+    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(Main));
 
     public static readonly SingleSignal<GraphicsOptions> GraphicsMode = new();
-
-    public readonly ILoggerFactory LogFactory = LoggerFactory.Create(builder => builder.AddSimpleConsole(o => o.TimestampFormat = "yyyy-MM-dd HH:mm:ss ")
-#if DEBUG
-        .SetMinimumLevel(LogLevel.Trace)
-#endif
-    );
 
     public static Main GameInstance { get; private set; }
     public static Atlas Atlas { get; private set; }
@@ -97,7 +91,7 @@ public class Main {
         }
         
         GraphicsMode.Set(SetGraphicOptions);
-        Audio.Init(LogFactory, Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, @"Content\Sound"));
+        Audio.Init(Program.LogFactory, Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, @"Content\Sound"));
     }
     
     [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH")]
@@ -130,7 +124,7 @@ public class Main {
         
 
         //UiRender needs to be loaded first so Render can pull font data from it
-        UiRender.ConfigureAndLoad(settings, out var stage);
+        UiRender.ConfigureAndLoad(Program.LogFactory, settings, out var stage);
         UiRender.RegisterFont(font);
         UiRender.RegisterTexture(TextureType.GameAtlas, gameAtlasSampler);
         UiRender.RegisterTexture(TextureType.UiAtlas, uiAtlasSampler);
@@ -267,7 +261,7 @@ public class Main {
     
     private static void OnDebugMessage(DebugSource source, DebugType type, uint id, DebugSeverity severity, int length, nint pmessage, nint userParam) {
         var message = Marshal.PtrToStringAnsi(pmessage, length);
-        Console.WriteLine("[{0} source={1} type={2} id={3}] {4}", severity, source, type, id, message);
+        Logger.Log(LogLevel.Warning, "[{0} source={1} type={2} id={3}] {4}", severity, source, type, id, message);
     }
 
     private static bool MinimumVersionCheck(Version version) {

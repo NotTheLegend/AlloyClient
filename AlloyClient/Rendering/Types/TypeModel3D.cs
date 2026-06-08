@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using AlloyClient.Assets;
 using AlloyClient.Game.Objects;
 using AlloyClient.Rendering.VertexData;
-using AlloyClient.Utils;
-using Alloy.Common;
 using Alloy.Common.Structs;
+using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering.Types;
 
 public sealed class TypeModel3D : RenderBase {
-    private static readonly Logger Log = new(typeof(TypeModel3D));
+    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(TypeModel3D));
     
     public override ModelType ModelType { get; }
 
@@ -25,12 +24,11 @@ public sealed class TypeModel3D : RenderBase {
         ModelType type;
         try {
             type = (ModelType) Enum.Parse(typeof(ModelType), modelName.Replace(" ", ""));
-        }
-        catch {
-            Log.Error($"Failed to parse model type: {modelName}");
+        } catch {
+            Logger.Log(LogLevel.Error, $"Failed to parse model type: {modelName}");
             return;
         }
-        
+
         ModelType = type;
         Entity = entity;
         SetTexture(entity.GetTexture());
