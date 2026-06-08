@@ -1,25 +1,30 @@
 ﻿using System.Diagnostics;
+using Alloy.Audio.Utils;
+using Alloy.Common;
+using Microsoft.Extensions.Logging;
+using OpenTK.Audio.OpenAL;
+using OpenTK.Audio.OpenAL.ALC;
+using StbVorbisSharp;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Alloy.Audio;
 
 public class AudioEngine {
-    public const int TotalMaxSources = 32;
-    
-    private readonly InternalAudioEngine _engine;
-    private readonly CancellationTokenSource _cancelToken = new();
-    private readonly Thread _audioThread;
-    private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
-    private readonly Dictionary<string, double> _lastPlayed = [];
-    private readonly double _delay;
 
-    public AudioEngine(string localPath, string webPath, double minimumEffectDelayMs = 15d, int maxSongSources = 4, int maxEffectSources = 28) {
-        if (maxSongSources + maxEffectSources > TotalMaxSources) {
-            throw new Exception($"Total audio sources must not exceed {TotalMaxSources}, had {maxSongSources + maxEffectSources}");
-        }
+    private readonly ILogger _log;
+
+    private readonly InternalAudioEngine _audioEngine;
+    private readonly Thread _audioThread;
+    private readonly CancellationTokenSource _cancelToken = new();
+
+    private int _channelIdGenerator = 1;
+
+    public AudioEngine(ILoggerFactory logFactory, string localPath) {
+        OpenALLibraryNameContainer.OverridePath = InternalUtils.GetAudioBinaryPath();
         
-        _delay = minimumEffectDelayMs;
-        _engine = new InternalAudioEngine(_cancelToken.Token, localPath, webPath, maxSongSources, maxEffectSources);
-        _audioThread = new Thread(_engine.Run) {
+        _log = logFactory.CreateLogger("Alloy.Audio.Engine");
+        _audioEngine = new InternalAudioEngine(_log, localPath, _cancelToken.Token);
+        _audioThread = new Thread(_audioEngine.Run) {
             IsBackground = true,
             Name = "Alloy.Audio.Engine",
             Priority = ThreadPriority.Normal
@@ -35,43 +40,228 @@ public class AudioEngine {
         _audioThread.Join();
         _cancelToken.Dispose();
     }
-    
-    public void SetVolume(AudioSource source, float volume) {
-        volume = Math.Clamp(volume, 0f, 1f);
-        switch (source) {
-            case AudioSource.Master: _engine.EnqueueCommand(new EngineCommand(AllTypes.GainMaster, volume)); break;
-            case AudioSource.Music: _engine.EnqueueCommand(new EngineCommand(AllTypes.GainMusic, volume)); break;
-            case AudioSource.Effect: _engine.EnqueueCommand(new EngineCommand(AllTypes.GainEffect, volume)); break;
-            default: throw new ArgumentOutOfRangeException(nameof(source), source, null);
-        }
+
+    public void RegisterChannel(AudioChannel channel) {
+        channel.Register(_audioEngine, _channelIdGenerator++);
     }
 
-    public void PlayLocalSong(string song, float fadeDuration = 2f) {
-        //TODO: move file checks here, and optional .ogg to song
-        _engine.EnqueueCommand(new EngineCommand(AllTypes.MusicLocal, fadeDuration * 1000f, song));
+    public SingleTrackChannel CreateSingleTrackChannel() {
+        var channel = new SingleTrackChannel();
+        channel.Register(_audioEngine, _channelIdGenerator++);
+        return channel;
     }
     
-    public void PlayLocalEffect(string effect) {
-        //TODO: move file checks here, and optional .ogg to song
+    public SfxChannel CreateSfxChannel() {
+        var channel = new SfxChannel();
+        channel.Register(_audioEngine, _channelIdGenerator++);
+        return channel;
+    }
 
-        if (!LastPlayCheck(effect)) {
-            return;
+    public void SetMasterVolume(float volume) => _audioEngine.EnqueueCommand(EngineCommand.CreateMasterVolume(Math.Clamp(volume, 0f, 1f)));
+}
+
+internal class InternalAudioEngine {
+
+    private readonly ILogger _log;
+    private readonly string _localContentPath;
+    
+    private readonly CancellationToken _cancelToken;
+    private readonly Lock _commandLock = new();
+    private readonly Queue<EngineCommand> _commandQueue = [];
+    
+    private ALCDevice _currentDevice = ALCDevice.Null;
+    private ALCContext _currentContext = ALCContext.Null;
+
+    private readonly Dictionary<int, float> _channelVolumes = [];
+    private readonly Dictionary<TrackLookup, Track> _tracks = [];
+    private readonly Dictionary<string, StaticBuffer> _staticBuffers = [];
+    private readonly Dictionary<string, StreamBuffer> _vorbisBuffer = [];
+
+    public InternalAudioEngine(ILogger log, string localContentPath, CancellationToken cancelToken) {
+        _log = log;
+        _localContentPath = localContentPath;
+        _cancelToken = cancelToken;
+    }
+    
+    public void EnqueueCommand(EngineCommand command) {
+        using (_commandLock.EnterScope());
+        _commandQueue.Enqueue(command);
+    }
+
+    public void Run() {
+        //TODO: load/save device to settings
+        var defaultDevice = ALC.GetDefaultDevice();
+
+        _currentDevice = ALC.OpenDevice(defaultDevice);
+        _currentContext = ALC.CreateContext(_currentDevice, []);
+        ALC.MakeContextCurrent(_currentContext);
+        
+        for (var i = 0; i < Pools.Sources.Capacity; i++) {
+            Pools.Sources.Push(AL.GenSource());
         }
-        _engine.EnqueueCommand(new EngineCommand(AllTypes.EffectLocal, effect));
+        
+        var stopwatch = Stopwatch.StartNew();
+        var totalMs = 0d;
+        
+        Thread.Sleep(16);
+
+        while (!_cancelToken.IsCancellationRequested) {
+            totalMs += stopwatch.Elapsed.TotalMilliseconds;
+            stopwatch.Restart();
+            
+            HandleCommands(totalMs);
+            Tick(totalMs);
+            
+            Thread.Sleep(16);
+        }
+        
+        // Cleanup
+        ALC.MakeContextCurrent(ALCContext.Null);
+        ALC.DestroyContext(_currentContext);
+        ALC.CloseDevice(_currentDevice);
     }
 
-    public void ClearCache(CacheType cache = CacheType.All) {
-        _engine.EnqueueCommand(new EngineCommand((AllTypes)cache));
-    }
+    private void HandleCommands(double time) {
+        using (_commandLock.EnterScope());
 
-    private bool LastPlayCheck(string sfx) {
-        if (_lastPlayed.TryGetValue(sfx, out var time)) {
-            if (time + _delay > _stopwatch.Elapsed.TotalMilliseconds) {
-                return false;
+        while (_commandQueue.TryDequeue(out var command)) {
+            switch (command.Type) {
+                case AudioAll.GainMaster: AL.Listenerf(ListenerPNameF.Gain, InternalUtils.GetLogVolume(command.Volume)); break;
+                case AudioAll.GainChannel: _channelVolumes[command.ChannelId] = InternalUtils.GetLogVolume(command.Volume); break;
+                case AudioAll.GainTrack: _tracks.GetValueOrDefault(new TrackLookup(command.ChannelId, command.TrackId))?.SetVolume(InternalUtils.GetLogVolume(command.Volume)); break;
+                case AudioAll.Play: AddTrack(command, time); break;
+                case AudioAll.Stop: _tracks.GetValueOrDefault(new TrackLookup(command.ChannelId, command.TrackId))?.Stop(time + command.DurationMs); break;
+                case AudioAll.Fade: _tracks.GetValueOrDefault(new TrackLookup(command.ChannelId, command.TrackId))?.SetFadeState(command.Fade, time); break;
+                case AudioAll.ClearCache: ClearCache(); break;
+                default: throw new ArgumentOutOfRangeException(nameof(command), command.Type, "Not a valid engine command"); 
             }
         }
+    }
 
-        _lastPlayed[sfx] = _stopwatch.Elapsed.TotalMilliseconds;
-        return true;
+    private void Tick(double time) {
+        foreach (var (key, track) in _tracks) {
+            _channelVolumes.TryGetValue(key.ChannelId, out var channelVolume);
+            if (track.Update(time, channelVolume)) {
+                continue;
+            }
+            
+            track.Clear();
+            switch (track) {
+                case StreamTrack streamTrack: {
+                    var vorbis = streamTrack.ClearVorbis();
+
+                    if (!_vorbisBuffer.TryAdd(vorbis.FilePath, vorbis)) {
+                        vorbis.Vorbis.Dispose();
+                    }
+                
+                    Pools.StreamTracks.Push(streamTrack);
+                    break;
+                }
+                case StaticTrack staticTrack:
+                    Pools.StaticTracks.Push(staticTrack);
+                    break;
+            }
+
+            _tracks.Remove(key);
+        }
+    }
+
+    private void AddTrack(EngineCommand command, double time) {
+        if (!Pools.Sources.TryPop(out var source)) {
+            _log.Log(LogLevel.Information, $"Failed to play [{command.FilePath}], no available sources");
+            return;
+        }
+        
+        Track track;
+
+        switch (command.Mode) {
+            case AudioMode.Stream:
+                track = CreateStreamTrack(command, source);
+                break;
+            case AudioMode.Static:
+                track = CreateStaticTrack(command, source);
+                break;
+            default: throw new ArgumentOutOfRangeException(nameof(command.Mode), command.Mode, "Not a valid track mode"); 
+        }
+
+        if (track is null) {
+            return;
+        }
+        
+        track.SetAudioState(command.State);
+        track.SetFadeState(command.Fade, time);
+        track.Play();
+
+        _tracks[new TrackLookup(command.ChannelId, command.TrackId)] = track;
+    }
+
+    private StaticTrack CreateStaticTrack(EngineCommand command, int source) {
+        Pools.StaticTracks.Pop(out var track);
+        
+        if (!_staticBuffers.TryGetValue(command.FilePath, out var buffer)) {
+            var path = Path.CombineAlt(_localContentPath, command.FilePath);
+            
+            if (Path.GetExtension(path) != ".ogg") {
+                _log.Log(LogLevel.Information, $"Failed to play song {path}, not an '.ogg' file");
+                return null;
+            }
+            
+            if (!File.Exists(path)) {
+                _log.Log(LogLevel.Information, $"Failed to find song at {path}");
+                return null;
+            }
+            
+            var fileData = File.ReadAllBytes(path);
+            var data = StbVorbis.decode_vorbis_from_memory(fileData, out var sampleRate, out var channels);
+
+            AL.GenBuffer(out var id);
+            AL.BufferData(id, InternalUtils.GetChannelFormat(channels), ref data[0], data.Length * sizeof(short), sampleRate);
+            _staticBuffers[command.FilePath] = buffer = new StaticBuffer(id);
+        }
+
+
+        track.Setup(source, buffer);
+        return track;
+    }
+
+    private StreamTrack CreateStreamTrack(EngineCommand command, int source) {
+        Pools.StreamTracks.Pop(out var track);
+        
+        if (!_vorbisBuffer.Remove(command.FilePath, out var vorbis)) {
+            var path = Path.CombineAlt(_localContentPath, command.FilePath);
+            
+            if (Path.GetExtension(path) != ".ogg") {
+                _log.Log(LogLevel.Information, $"Failed to play song {path}, not an '.ogg' file");
+                return null;
+            }
+            
+            if (!File.Exists(path)) {
+                _log.Log(LogLevel.Information, $"Failed to find song at {path}");
+                return null;
+            }
+            
+            var fileData = File.ReadAllBytes(path);
+
+            vorbis = new StreamBuffer(command.FilePath, Vorbis.FromMemory(fileData));
+        }
+
+
+        track.Setup(source, vorbis);
+        return track;
+    }
+
+    private void ClearCache() {
+        foreach (var (key, buffer) in _staticBuffers) {
+            if (buffer.ActiveCount > 0) {
+                continue;
+            }
+
+            _staticBuffers.Remove(key);
+        }
+
+        foreach (var (key, buffer) in _vorbisBuffer) {
+            buffer.Vorbis.Dispose();
+        }
+        _vorbisBuffer.Clear();
     }
 }

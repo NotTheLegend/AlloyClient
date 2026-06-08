@@ -35,6 +35,8 @@ internal static class InternalUtils {
         };
     }
 
+    internal static float GetLogVolume(float volume) => volume <= 0f ? 0f : MathF.Pow(10f, (-24f * (1f - Math.Clamp(volume, 0f, 1f))) / 20f);
+
     extension(ALC) {
         internal static string GetDefaultDevice() {
             return ALC.GetString(ALCDevice.Null, StringName.DefaultAllDevicesSpecifier);

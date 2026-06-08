@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Alloy.Audio;
 using AlloyClient.Game.Components.Options.OptionTypes;
 using AlloyClient.State;
 using AlloyClient.State.SettingTypes;
@@ -157,6 +156,8 @@ public class OptionTabView : Container {
     }
 
     private void AddSoundOptions() {
+        _options.Add(new ChoiceOption<bool>(Settings.PlayMaster, OnOffLabels, OnOffValues, "Play Master", "This toggles whether all sound is played", OnPlayMasterChange));
+        _options.Add(new SliderOption(Settings.MasterVolume, "Vol:", OnMasterVolumeChange));
         _options.Add(new ChoiceOption<bool>(Settings.PlayMusic, OnOffLabels, OnOffValues, "Play Music", "This toggles whether music is played", OnPlayMusicChange));
         _options.Add(new SliderOption(Settings.MusicVolume, "Vol:", OnMusicVolumeChange));
         _options.Add(new ChoiceOption<bool>(Settings.PlaySfx, OnOffLabels, OnOffValues, "Play Sound Effects", "This toggles whether sound effects are played", OnPlaySoundEffectsChange));
@@ -167,22 +168,31 @@ public class OptionTabView : Container {
 
     }
     
+    private void OnPlayMasterChange() {
+        Audio.SetMasterVolume(Settings.GetMasterVolume());
+    }
+
+    private void OnMasterVolumeChange(float obj) {
+        Settings.MasterVolume = obj;
+        Audio.SetMasterVolume(Settings.GetSfxVolume());
+    }
+    
     private void OnPlaySoundEffectsChange() {
-        Main.AudioEngine.SetVolume(AudioSource.Effect, Settings.GetSfxVolume());
+        Audio.SfxChannel.SetVolume(Settings.GetSfxVolume());
     }
 
     private void OnSfxVolumeChange(float obj) {
         Settings.SfxVolume = obj;
-        Main.AudioEngine.SetVolume(AudioSource.Effect, Settings.GetSfxVolume());
+        Audio.SfxChannel.SetVolume(Settings.GetSfxVolume());
     }
 
     private void OnPlayMusicChange() {
-        Main.AudioEngine.SetVolume(AudioSource.Music, Settings.GetMusicVolume());
+        Audio.MusicChannel.SetVolume(Settings.GetMusicVolume());
     }
     
     private void OnMusicVolumeChange(float obj) {
         Settings.MusicVolume = obj;
-        Main.AudioEngine.SetVolume(AudioSource.Music, Settings.GetMusicVolume());
+        Audio.MusicChannel.SetVolume(Settings.GetMusicVolume());
     }
 
     private void OnChatVisible() {

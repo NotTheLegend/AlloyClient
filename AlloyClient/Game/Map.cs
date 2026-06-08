@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using AlloyClient.Assets;
 using AlloyClient.Game.Components;
 using AlloyClient.Game.Components.Hud;
@@ -135,7 +133,7 @@ public static class Map {
             _lastPosition = pos;
             
             // TEMP
-            Main.AudioEngine.PlayLocalEffect(@"Effects\weapon\blunt_dagger.ogg");
+            Audio.SfxChannel.Play(@"Effects\weapon\blunt_dagger.ogg");
             
             Render.StartNewDrawTile();
 

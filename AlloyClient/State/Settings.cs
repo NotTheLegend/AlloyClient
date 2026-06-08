@@ -264,11 +264,11 @@ public static class Settings {
         #endregion
     }
 
-    public static float GetMasterVolume() => PlayMaster ? MathF.Pow(10f, (-24f * (1f - Math.Clamp(MasterVolume, 0f, 1f))) / 20f) : 0;
+    public static float GetMasterVolume() => PlayMaster ? MasterVolume : 0;
     
-    public static float GetMusicVolume() => PlayMusic ? MathF.Pow(10f, (-24f * (1f - Math.Clamp(MusicVolume, 0f, 1f))) / 20f) : 0;
+    public static float GetMusicVolume() => PlayMusic ? MusicVolume : 0;
 
-    public static float GetSfxVolume() => PlaySfx ? MathF.Pow(10f, (-24f * (1f - Math.Clamp(SfxVolume, 0f, 1f))) / 20f) : 0;
+    public static float GetSfxVolume() => PlaySfx ? SfxVolume : 0;
 
     public static void LoadSettings() {
         LoadLocalAccount();

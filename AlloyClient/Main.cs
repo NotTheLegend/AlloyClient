@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
 using AlloyClient.Assets;
-using Alloy.Audio;
 using Alloy.Engine.Graphics;
 using AlloyClient.Display;
 using AlloyClient.Game.Components;
@@ -17,13 +16,14 @@ using Alloy.UiLib.Data;
 using Alloy.UiLib.Enums;
 using Alloy.UiLib.Extra;
 using Alloy.UiLib.Signals;
-using AlloyClient.Utils;
 using Alloy.Common;
 using Alloy.Common.ContentReaders;
+using Microsoft.Extensions.Logging;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace AlloyClient;
 
@@ -32,10 +32,15 @@ public class Main {
 
     public static readonly SingleSignal<GraphicsOptions> GraphicsMode = new();
 
+    public readonly ILoggerFactory LogFactory = LoggerFactory.Create(builder => builder.AddSimpleConsole(o => o.TimestampFormat = "yyyy-MM-dd HH:mm:ss ")
+#if DEBUG
+        .SetMinimumLevel(LogLevel.Trace)
+#endif
+    );
+
     public static Main GameInstance { get; private set; }
     public static Atlas Atlas { get; private set; }
     public static Atlas UiAtlas { get; private set; }
-    public static AudioEngine AudioEngine { get; private set; }
 
     public readonly WindowHandle Window;
     public readonly OpenGLContextHandle Context;
@@ -92,7 +97,7 @@ public class Main {
         }
         
         GraphicsMode.Set(SetGraphicOptions);
-        AudioEngine = new AudioEngine(Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, @"Content\Sound"), "");
+        Audio.Init(LogFactory, Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, @"Content\Sound"));
     }
     
     [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH")]
@@ -116,7 +121,6 @@ public class Main {
         font.Sampler.Bind(6);
         
         ModelData.Load();
-        // AssetParser.LoadAssets();
 
         var settings = new UiSettings {
             DefaultScreen = new Vector2i(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight),
@@ -141,14 +145,13 @@ public class Main {
         
         DisplayManager.Init(stage);
         
-        AudioEngine.Start();
-        AudioEngine.SetVolume(AudioSource.Master, Settings.GetMasterVolume());
-        AudioEngine.SetVolume(AudioSource.Music, Settings.GetMusicVolume());
-        AudioEngine.SetVolume(AudioSource.Effect, Settings.GetSfxVolume());
-        AudioEngine.PlayLocalSong(@"Music\sorc.ogg");
+        Audio.Start();
+        Audio.SetMasterVolume(Settings.GetMasterVolume());
+        Audio.MusicChannel.SetVolume(Settings.GetMusicVolume());
+        Audio.SfxChannel.SetVolume(Settings.GetSfxVolume());
+        Audio.MusicChannel.FadeTo("Music/sorc.ogg", 2f);
 
         ScreenManager.FadeToScreen(new LoadingScreen(), Easing.SineInOut, 1000, 0x0);
-        //ScreenManager.SetScreen(new TestScreen());
     }
 
     private void Update(GameTime gameTime) {
@@ -228,8 +231,8 @@ public class Main {
             
             Toolkit.OpenGL.SwapBuffers(Context);
             
-            var timeToNextUpdate = _targetFrameTime - elapsedMs * 1000d;
-            if (timeToNextUpdate > 0) OpenTK.Core.Utils.AccurateSleep(0, 1);
+            var timeToNextUpdate = (_targetFrameTime - elapsedMs) / 1000d;
+            if (timeToNextUpdate > 0) OpenTK.Core.Utils.AccurateSleep(timeToNextUpdate, 1);
         }
     }
     
@@ -247,7 +250,7 @@ public class Main {
     public void Exit() {
         Toolkit.Window.Destroy(Window);
         _running = false;
-        AudioEngine.StopAndDispose();
+        Audio.Stop();
     }
 
     public static double GetTime() => GameTime.TotalMs;

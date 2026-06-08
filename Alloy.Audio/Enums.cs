@@ -1,32 +1,26 @@
 ﻿namespace Alloy.Audio;
 
-internal enum AllTypes {
-    None,
+internal enum AudioAll {
     GainMaster,
-    GainMusic,
-    GainEffect,
-    FadeIn,
-    FadeOut,
-    MusicLocal,
-    MusicWeb,
-    EffectLocal,
-    EffectWeb,
+    GainChannel,
+    GainTrack,
+    Play,
+    Stop,
+    Fade,
     ClearCache,
 }
 
-internal enum FadeType {
-    In = AllTypes.FadeIn, 
-    Out = AllTypes.FadeOut
+public enum AudioMode {
+    Stream,
+    Static,
 }
 
-public enum AudioSource {
-    Master = AllTypes.GainMaster,
-    Music = AllTypes.GainMusic,
-    Effect = AllTypes.GainEffect,
+public enum AudioState {
+    FireAndForget,
+    Loop,
 }
 
-public enum CacheType {
-    All,
-    Music,
-    Effect
+public enum AudioFade {
+    In,
+    Out
 }
