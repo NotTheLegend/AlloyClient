@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Runtime;
 using AlloyClient.State;
@@ -25,14 +26,13 @@ public static class Program {
         
         AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
-        // CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+        CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
         GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
 
         Settings.LoadSettings();
         
         var game = new Main();
         game.Run();
-        Settings.SaveSettings();
     }
     
     private static void OnProcessExit(object sender, EventArgs e) {
@@ -49,7 +49,7 @@ public sealed class SingleLineConsoleFormatter(IOptions<ConsoleFormatterOptions>
 
     private const string Ansi = "\e[";
     private const string AnsiStop = "m";
-    private const string Reset = "\e[0m";
+    private const string Reset = $"{Ansi}0{AnsiStop}";
     private const string Background = "40"; // Black
 
     private const string FontNorm = "0;";

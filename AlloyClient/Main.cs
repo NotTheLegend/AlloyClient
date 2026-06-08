@@ -121,9 +121,6 @@ public class Main {
             Screen = new Vector2i(Settings.ScreenWidth, Settings.ScreenHeight)
         };
         
-        
-
-        //UiRender needs to be loaded first so Render can pull font data from it
         UiRender.ConfigureAndLoad(Program.LogFactory, settings, out var stage);
         UiRender.RegisterFont(font);
         UiRender.RegisterTexture(TextureType.GameAtlas, gameAtlasSampler);
@@ -188,10 +185,9 @@ public class Main {
     private bool _running = true;
 
     public void Run() {
-        if (Window == null || Context == null) return;
-        
-        var sw = Stopwatch.StartNew();
-        var totalMs = 0d;
+        if (Window == null || Context == null) {
+            return;
+        }
         
         GL.ClearColor(0f, 0f, 0f, 1.0f);
         
@@ -207,24 +203,29 @@ public class Main {
         // which doesn't work well when a frame rate is locked at 60fps for example.
         // Setting it to 1ms makes the scheduler wake up more often and check the clock, allowing for much more accurate frame timing. 
         // Some dude on Stack Overflow says Linux and Mac don't have this problem, so they can just use the default scheduler behavior.
-        if (OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindows()) {
             TimeBeginPeriod(1);
+        }
 
         // Kept just above the 1ms that gets set above.
         const int schedulerPeriodMs = 2;
 
-        var previousMs = sw.Elapsed.TotalMilliseconds;
-
+        var clockFrequency = 1000d / Stopwatch.Frequency;
+        var previousTicks = Stopwatch.GetTimestamp();
+        var totalMs = 0d;
+        
         while (true) {
             Toolkit.Window.ProcessEvents(false);
 
-            if (!_running) break;
+            if (!_running) {
+                break;
+            }
 
-            var frameStartMs = sw.Elapsed.TotalMilliseconds;
-            var deltaMs = frameStartMs - previousMs;
-            previousMs = frameStartMs;
-
+            var currentTicks = Stopwatch.GetTimestamp();
+            var deltaMs = (currentTicks - previousTicks) * clockFrequency;
+            previousTicks = currentTicks;
             totalMs += deltaMs;
+            
             GameTime = new GameTime(totalMs, deltaMs);
 
             Update(GameTime);
@@ -238,15 +239,21 @@ public class Main {
             // Don't run frames faster than the cap. If there's no cap (or the
             // monitor is already controlling the speed), there's nothing to wait for.
             if (_targetFrameTime > 0) {
-                var workMs = sw.Elapsed.TotalMilliseconds - frameStartMs;
+                var workMs = (Stopwatch.GetTimestamp() - currentTicks) * clockFrequency;
                 var remainingMs = _targetFrameTime - workMs;
-                if (remainingMs > 0)
-                    OpenTK.Core.Utils.AccurateSleep(remainingMs / 1000.0, schedulerPeriodMs);
+                if (remainingMs > 0) {
+                    OpenTK.Core.Utils.AccurateSleep(remainingMs / 1000.0d, schedulerPeriodMs);
+                }
             }
         }
 
-        if (OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindows()) {
             TimeEndPeriod(1);
+        }
+                
+        Audio.Stop();
+        Toolkit.OpenGL.DestroyContext(Context);
+        Toolkit.Window.Destroy(Window);
     }
     
     private void HandleEvents(EventArgs args) {
@@ -261,9 +268,7 @@ public class Main {
     }
 
     public void Exit() {
-        Toolkit.Window.Destroy(Window);
         _running = false;
-        Audio.Stop();
     }
 
     public static double GetTime() => GameTime.TotalMs;
