@@ -169,6 +169,7 @@ public class Main {
                 break;
             case GraphicsOptions.InGame when Settings.VSync:
                 Toolkit.OpenGL.SetSwapInterval(1);
+                _targetFrameTime = 0; // the monitor controls the speed here, so it shouldn't need to be slowed
                 break;
             case GraphicsOptions.InGame when Settings.FpsCap > 0:
                 Toolkit.OpenGL.SetSwapInterval(0);
@@ -202,32 +203,50 @@ public class Main {
         
         GL.Disable(EnableCap.FramebufferSrgb);
         
+        // Turns out Windows can only "pause" this stuff for about 15ms,
+        // which doesn't work well when a frame rate is locked at 60fps for example.
+        // Setting it to 1ms makes the scheduler wake up more often and check the clock, allowing for much more accurate frame timing. 
+        // Some dude on Stack Overflow says Linux and Mac don't have this problem, so they can just use the default scheduler behavior.
+        if (OperatingSystem.IsWindows())
+            TimeBeginPeriod(1);
+
+        // Kept just above the 1ms that gets set above.
+        const int schedulerPeriodMs = 2;
+
+        var previousMs = sw.Elapsed.TotalMilliseconds;
+
         while (true) {
-            var elapsedMs = sw.Elapsed.TotalMilliseconds;
-            
-            if (elapsedMs < _targetFrameTime) continue;
-            
-            sw.Restart();
-            
             Toolkit.Window.ProcessEvents(false);
-            
+
             if (!_running) break;
 
-            totalMs += elapsedMs;
+            var frameStartMs = sw.Elapsed.TotalMilliseconds;
+            var deltaMs = frameStartMs - previousMs;
+            previousMs = frameStartMs;
 
-            GameTime = new GameTime(totalMs, elapsedMs);
-            
-            Update(new GameTime(totalMs, elapsedMs));
-            
+            totalMs += deltaMs;
+            GameTime = new GameTime(totalMs, deltaMs);
+
+            Update(GameTime);
+
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            
-            Draw(new GameTime(totalMs, elapsedMs));
-            
+
+            Draw(GameTime);
+
             Toolkit.OpenGL.SwapBuffers(Context);
-            
-            var timeToNextUpdate = (_targetFrameTime - elapsedMs) / 1000d;
-            if (timeToNextUpdate > 0) OpenTK.Core.Utils.AccurateSleep(timeToNextUpdate, 1);
+
+            // Don't run frames faster than the cap. If there's no cap (or the
+            // monitor is already controlling the speed), there's nothing to wait for.
+            if (_targetFrameTime > 0) {
+                var workMs = sw.Elapsed.TotalMilliseconds - frameStartMs;
+                var remainingMs = _targetFrameTime - workMs;
+                if (remainingMs > 0)
+                    OpenTK.Core.Utils.AccurateSleep(remainingMs / 1000.0, schedulerPeriodMs);
+            }
         }
+
+        if (OperatingSystem.IsWindows())
+            TimeEndPeriod(1);
     }
     
     private void HandleEvents(EventArgs args) {
@@ -251,6 +270,12 @@ public class Main {
     
     public static GameTime GameTime { get; private set; }
     
+    [DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
+    private static extern uint TimeBeginPeriod(uint ms);
+
+    [DllImport("winmm.dll", EntryPoint = "timeEndPeriod")]
+    private static extern uint TimeEndPeriod(uint ms);
+
     [Conditional("DEBUG")]
     private static void EnableDebugOutput() {
         GL.DebugMessageCallback(OnDebugMessage, nint.Zero);
