@@ -319,6 +319,6 @@ public class CharacterListScreen : TitleScreenBase {
 
         AddChild(new ScreenDarkenOverlay());
         
-        DialogManager.Enqueue(new Dialog(data.Message, "", new DialogOption("Retry", () => { ScreenManager.FadeToScreen(new LoadingScreen(true), Easing.SineInOut, 500, 0); })));
+        DialogManager.Enqueue(new Dialog(data.Message, "", new DialogOption("Retry", () => { ScreenManager.FadeToScreen(new LoadingScreen(true), Easing.SineInOut, 500, 0); }), new DialogOption("Quit", () => { Main.GameInstance.Exit(); })));
     }
 }
