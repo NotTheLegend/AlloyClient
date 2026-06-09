@@ -1,5 +1,5 @@
 ﻿using System;
-using Alloy.Engine.Common;
+using Alloy.Common;
 using AlloyClient.Assets;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Assets.XmlStructs;

@@ -1,7 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
+using OpenTK.Mathematics;
 
-namespace Alloy.Engine.Common;
+namespace Alloy.Common;
 
 // MIT License - Copyright (C) The Mono.Xna Team
 

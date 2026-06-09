@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Alloy.Engine.Common;
+using Alloy.Common;
 using Alloy.Engine.Graphics.Buffers;
 using Alloy.UiLib.Extra;
 using OpenTK.Graphics.OpenGL;

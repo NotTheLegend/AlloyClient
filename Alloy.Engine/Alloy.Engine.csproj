@@ -18,5 +18,9 @@
 	  <Using Include="OpenTK.Graphics.OpenGL" />
       <Using Include="OpenTK.Mathematics" />
     </ItemGroup>
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\Alloy.Common\Alloy.Common.csproj" />
+	</ItemGroup>
 
 </Project>

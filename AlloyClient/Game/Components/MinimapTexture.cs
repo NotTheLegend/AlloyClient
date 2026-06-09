@@ -1,5 +1,5 @@
 ﻿using System;
-using Alloy.Engine.Common;
+using Alloy.Common;
 using Alloy.Engine.Graphics;
 using OpenTK.Mathematics;
 
