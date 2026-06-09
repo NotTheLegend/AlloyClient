@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using Alloy.Common;
 using Alloy.Engine.Utils;
 using Microsoft.Extensions.Logging;
 using OpenTK.Graphics;
@@ -67,11 +68,11 @@ public abstract partial class GameWindow {
             return;
         }
 
-        using (new DisposableTimer(_logger, null, $"Initialize took {DisposableTimer.Time}")) {
+        using (new TimedScope(_logger, null, "Initialize took {0}")) {
             Initialize();
         }
         
-        using (new DisposableTimer(_logger, null, $"LoadContent took {DisposableTimer.Time}")) {
+        using (new TimedScope(_logger, null, "LoadContent took {0}")) {
             LoadContent();
         }
         

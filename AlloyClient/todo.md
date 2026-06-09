@@ -1,19 +1,5 @@
-﻿# Todo List 
-- Replace splash screens with prod's
-- redo text input lose focus
-- maybe add back relative screen anchors
-- gui scale (like minecraft)?
-- move font into its own project?
-- improve hittest stuff in EntityUtils
-- projectile doesnt account for armor/effects
-- move z jitter into RenderBase class
-- improve interaction panel hotkey logic ei have panels override a blank function for logic
-- add rect mask instead of the current container clip stuff
+﻿# Qol
+* move font json parsing to content builder to remove an extra package from client
 
-# Rendering Todo
-- connected objects
-- cave walls
-- ui vertex color and color channel changes
-
-# Bugs
-- loading in -> back to home from options -> play just sends back to char select repeatedly
+# Rendering
+* connected objects/cave walls

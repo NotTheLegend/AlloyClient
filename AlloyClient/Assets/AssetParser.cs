@@ -13,8 +13,11 @@ using Microsoft.Extensions.Logging;
 namespace AlloyClient.Assets;
 
 public static class AssetParser {
+
+    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(AssetParser));
+    
     public static async Task LoadAssetsAsync() {
-        using var timer = new EasyTimer("Loading assets...", $"Loaded assets in {EasyTimer.Time}");
+        using var timer = new TimedScope(Logger, "Loading assets...", "Loaded assets in {0}");
         await Task.WhenAll(Task.Run(ParseGround), Task.Run(ParseObjects));
     }
 
