@@ -1,18 +1,13 @@
-﻿using System;
+﻿namespace AlloyClient;
 
-namespace AlloyClient;
-
-public enum GraphicsOptions {
-    TitleScreen,
-    InGame
+public enum ScreenType {
+    Menu,
+    Game
 }
 
-[Flags]
-public enum InputBlockers {
-    None = 0,
-    Chat = 1 << 1,
-    Panel = 1 << 2,
-    Dialog = 1 << 3,
+public enum FullscreenType {
+    Exclusive,
+    Borderless
 }
 
 public enum SpeechColors {

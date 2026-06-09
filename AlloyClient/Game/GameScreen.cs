@@ -4,6 +4,7 @@ using AlloyClient.Display;
 using AlloyClient.Game.Components;
 using AlloyClient.Networking;
 using Alloy.Common;
+using Alloy.Engine;
 
 namespace AlloyClient.Game;
 

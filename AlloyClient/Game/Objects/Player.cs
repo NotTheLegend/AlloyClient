@@ -11,6 +11,7 @@ using AlloyClient.Rendering;
 using AlloyClient.Rendering.Types;
 using AlloyClient.Utils;
 using Alloy.Common.Structs;
+using Alloy.Engine;
 using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
 
@@ -377,8 +378,8 @@ public class Player : Entity {
 
             var bId = GetBulletId();
             var proj = ObjectPools.Projectiles.Pop();
-            var dmg = MathUtils.RandomInt(projProps.MinDamage, projProps.MaxDamage);
-            proj.Reset(bId, dmg, angle.Rad2Deg(), this, objProps, projProps, projProps.Path.Clone(), Position);
+            var dmg = Random.Shared.NextRange(projProps.MinDamage, projProps.MaxDamage); // Migrate to match server rng
+            proj.Reset(bId, dmg, angle * MathHelper.RadToDeg, this, objProps, projProps, projProps.Path.Clone(), Position);
             Map.AddProjectile(proj);
             
             var shoot = PlayerShoot.CreatePacket();

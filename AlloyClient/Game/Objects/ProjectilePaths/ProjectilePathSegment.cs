@@ -2,7 +2,6 @@ using System;
 using System.Xml.Linq;
 using AlloyClient.Assets.XmlStructs;
 using AlloyClient.Networking;
-using AlloyClient.Utils;
 using Alloy.Common;
 using OpenTK.Mathematics;
 
@@ -32,7 +31,7 @@ public class ProjectilePathSegment
         Type = pathType;
         Speed = speed;
         TimeOffset = timeOffset ?? 0;
-        _angle = angle.Deg2Rad();
+        _angle = angle * MathHelper.DegToRad;
         _lifetimeMs = lifetimeMs;
         _mods = GetModsFlag(mods);
     }

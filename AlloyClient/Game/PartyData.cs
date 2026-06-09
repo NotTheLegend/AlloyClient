@@ -46,7 +46,7 @@ public static class PartyData {
         var i = 0;
         
         foreach (var player in Map.Players.Values) {
-            var dist = MathUtils.GetDistanceSquared(localPosition, player.Position);
+            var dist = localPosition.DistanceSquared(player.Position);
             if (dist < MaxDistance) {
                 Members[i] = new PartyInfo(player, player.Locked, dist, player.ObjectId);
                 i++;

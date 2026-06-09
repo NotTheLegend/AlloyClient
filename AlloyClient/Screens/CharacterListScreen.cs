@@ -311,14 +311,12 @@ public class CharacterListScreen : TitleScreenBase {
     }
     
     private void CheckForAppFailure() {
-        if (!GlobalData.TryGet<AppRequestFailedFlag>(out var data)) {
+        if (!GlobalData.TryRemove<AppRequestFailedFlag>(out var data)) {
             return;
         }
-        
-        GlobalData.Remove<AppRequestFailedFlag>();
 
         AddChild(new ScreenDarkenOverlay());
         
-        DialogManager.Enqueue(new Dialog(data.Message, "", new DialogOption("Retry", () => { ScreenManager.FadeToScreen(new LoadingScreen(true), Easing.SineInOut, 500, 0); }), new DialogOption("Quit", () => { Main.GameInstance.Exit(); })));
+        DialogManager.Enqueue(new RetryLoadDialog(data.Message));
     }
 }

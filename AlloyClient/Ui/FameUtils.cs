@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Linq;
-using AlloyClient.Assets.Libraries;
-using Alloy.UiLib.BuiltIn;
-using Alloy.UiLib.Core;
-using Alloy.UiLib.Enums;
 using Alloy.UiLib.Extra;
-using Alloy.UiLib;
-using Alloy.UiLib.Data;
+using AlloyClient.Assets.Libraries;
 
-namespace AlloyClient.Utils;
+namespace AlloyClient.Ui;
 
 public static class FameUtils {
 

@@ -3,7 +3,7 @@ using AlloyClient.Game;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Extra;
-using Alloy.Common;
+using Alloy.Engine;
 using AlloyClient.Ui.Components;
 using OpenTK.Platform;
 
@@ -49,7 +49,7 @@ public sealed class ScreenManager : Sprite {
     }
 
     public static void FadeToScreen(Screen screen, Easing ease, int durationMs, uint color, Action onFinish = null) {
-        Main.GraphicsMode.Dispatch(screen is GameScreen ? GraphicsOptions.InGame : GraphicsOptions.TitleScreen);
+        Main.OnScreenChange.Dispatch(screen is GameScreen ? ScreenType.Game : ScreenType.Menu);
 
         FadeScreen.Visible = true;
         FadeScreen.SetFadeColor(color);
@@ -70,17 +70,15 @@ public sealed class ScreenManager : Sprite {
     }
 
     private void OnKeyUp(KeyboardEvent args) {
-        if ((args.Key == Key.Return && args.Alt) || args.Key == Key.F11)
-            ToggleFullscreen();
-    }
-
-    private static void ToggleFullscreen() {
-        Main.GameInstance.ToggleFullScreen();
+        if ((args.Key == Key.Return && args.Alt) || Settings.FullscreenKey.Equals(args.Code)) {
+            Settings.FullscreenState.Set(!Settings.FullscreenState);
+            Main.OnFullscreenToggle.Dispatch();
+        }
     }
 
     private void OnResize(ResizeEvent args) {
-        Settings.SetWindowSize(args.Width, args.Height);
-        Settings.SaveSettings();
+        Settings.ScreenWidth.Set(args.Width);
+        Settings.ScreenHeight.Set(args.Height);
         Camera.UpdateViewPort(args.Width, args.Height);
     }
 }
@@ -88,7 +86,6 @@ public sealed class ScreenManager : Sprite {
 public abstract class Screen : UiElement {
     public virtual void Update(GameTime gameTime) { }
     public virtual void Draw(GameTime gameTime) { }
-    
 }
 
 public class FadeScreen : Screen {

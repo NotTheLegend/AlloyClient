@@ -5,6 +5,7 @@ using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Enums;
 using AlloyClient.Utils;
 using Alloy.Common;
+using Alloy.Engine;
 
 namespace AlloyClient.Screens.Components.CharacterSelection;
 

@@ -54,9 +54,8 @@ public static class Camera {
     }
 
     public static void UpdateViewPort(int width, int height) {
-        Viewport = new Vector2i(width, height);
-        
         GL.Viewport(0, 0, width, height);
+        Viewport = new Vector2i(width, height);
         ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(-width + HudOffset, width + HudOffset, -height, height, -10000f, 10000f);
     }
 

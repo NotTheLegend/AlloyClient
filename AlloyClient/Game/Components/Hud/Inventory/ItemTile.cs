@@ -12,6 +12,7 @@ using Alloy.UiLib.Enums;
 using Alloy.UiLib.Extra;
 using AlloyClient.Utils;
 using Alloy.Common;
+using AlloyClient.Ui;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Components.Hud.Inventory;

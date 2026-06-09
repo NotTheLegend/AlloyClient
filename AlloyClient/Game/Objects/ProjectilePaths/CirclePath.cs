@@ -34,7 +34,7 @@ public class CirclePath : ProjectilePathSegment
         var elapsedSeconds = elapsedLifetimeMs / 1000f;
         float angle = 0;
         if (elapsedSeconds != 0)
-            angle = Angle + (Speed * elapsedSeconds * 360f.Deg2Rad());
+            angle = Angle + (Speed * elapsedSeconds * MathHelper.TwoPi);
 
         p.X = MathF.Cos(angle) * radius;
         p.Y = MathF.Sin(angle) * radius;

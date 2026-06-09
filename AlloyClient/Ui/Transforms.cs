@@ -1,6 +1,6 @@
 ﻿using Alloy.UiLib.Extra;
 
-namespace AlloyClient.Utils;
+namespace AlloyClient.Ui;
 
 public static class Transforms {
     public static readonly ColorTransform Default = new(1f, 1f, 1f, 1f);

@@ -11,6 +11,7 @@ using AlloyClient.Utils;
 using Alloy.Common;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using OpenTK.Mathematics;
 using OpenTK.Platform;
 
 namespace AlloyClient;
@@ -19,14 +20,14 @@ public static class Settings {
     private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(Settings));
 
     private const string LocalFolderName = "AlloyClient";
-    private const string AccountFileName = "account.json";
+    private const string AccountFileName = "account.json"; // these should be .xml but its funnier if they're not
     private const string SettingsFileName = "settings.json";
 
     private static readonly string AccountFilePath;
     private static readonly string SettingsFilePath;
 
     public const string BuildVersion = "0.3.3";
-    public const string BuildLabel = $"OpenTK v{BuildVersion}";
+    public const string BuildLabel = $"Alloy v{BuildVersion}";
 
     public const string AppEngineAddress = "127.0.0.1";
     public const string AppEnginePort = "8080";
@@ -111,11 +112,13 @@ public static class Settings {
     // Screen
     public static readonly ValueSetting<int> FpsCap = new(-1);
     public static readonly ValueSetting<bool> VSync = new(false);
-    public static readonly ValueSetting<bool> Fullscreen = new(false);
-    public static readonly ValueSetting<int> ScreenWidth = new(DefaultScreenWidth, true);
-    public static readonly ValueSetting<int> ScreenHeight = new(DefaultScreenHeight, true);
-    public static readonly ValueSetting<int> NonFullscreenWidth = new(DefaultScreenWidth, true);
-    public static readonly ValueSetting<int> NonFullscreenHeight = new(DefaultScreenHeight, true);
+    public static readonly ValueSetting<WindowMode> LastWindowMode = new(WindowMode.Normal);
+    public static readonly ValueSetting<int> LastWindowPositionX = new(0);
+    public static readonly ValueSetting<int> LastWindowPositionY = new(0);
+    public static readonly ValueSetting<FullscreenType> FullscreenMode = new(FullscreenType.Borderless);
+    public static readonly ValueSetting<bool> FullscreenState = new(false);
+    public static readonly ValueSetting<int> ScreenWidth = new(DefaultScreenWidth);
+    public static readonly ValueSetting<int> ScreenHeight = new(DefaultScreenHeight);
 
     // Audio
     public static readonly ValueSetting<float> MasterVolume = new(0.5f);
@@ -173,11 +176,6 @@ public static class Settings {
     public static float GetMusicVolume() => PlayMusic ? MusicVolume : 0;
 
     public static float GetSfxVolume() => PlaySfx ? SfxVolume : 0;
-    
-    public static void SetWindowSize(int width, int height) {
-        ScreenWidth.Set(width);
-        ScreenHeight.Set(height);
-    }
     
     #region SettingParsing
     
@@ -356,7 +354,7 @@ public class InputSetting(Scancode def = Scancode.Unknown) : ISettingType {
     }
 }
 
-public class ValueSetting<T>(T def = default, bool noReset = false) : ISettingType {
+public class ValueSetting<T>(T def = default) : ISettingType {
 
     public T Value = def;
 
@@ -386,15 +384,9 @@ public class ValueSetting<T>(T def = default, bool noReset = false) : ISettingTy
     public T Get() => Value;
 
     public void Set(T value) => Value = value;
-    
-    public void ResetToDefault() {
-        if (noReset) {
-            return;
-        }
 
-        Value = _default;
-    }
-    
+    public void ResetToDefault() => Value = _default;
+
     public static implicit operator T(ValueSetting<T> valueSetting) => valueSetting.Value;
 
     private static bool IsNumericType<TValue>() => Type.GetTypeCode(typeof(TValue)) switch { TypeCode.Boolean or TypeCode.Byte or TypeCode.SByte or TypeCode.Int16 or TypeCode.UInt16 or TypeCode.Int32 or TypeCode.UInt32 or TypeCode.Int64 or TypeCode.UInt64 or TypeCode.Single or TypeCode.Double or TypeCode.Decimal => true, _ => false };

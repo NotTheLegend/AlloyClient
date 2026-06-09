@@ -1,7 +1,7 @@
 ﻿using Alloy.UiLib.Data;
-using Alloy.UiLib.Core;
+using AlloyClient.Utils;
 
-namespace AlloyClient.Utils;
+namespace AlloyClient.Ui;
 
 public static class ItemConstants {
 

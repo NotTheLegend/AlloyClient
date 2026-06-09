@@ -6,6 +6,7 @@ using AlloyClient.Rendering.VertexData;
 using Alloy.UiLib;
 using Alloy.Common;
 using Alloy.Common.ContentReaders;
+using Alloy.Engine;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering;

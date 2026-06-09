@@ -22,13 +22,23 @@ public static class GlobalData {
         return null;
     }
 
-    public static bool TryGet<T>(out T data) {
+    public static bool TryGet<T>(out T data) where T : class, IGlobalData {
         if (DataStorage.TryGetValue(typeof(T), out var data1)) {
             data = (T) data1;
             return true;
         }
 
-        data = default;
+        data = null;
+        return false;
+    }
+
+    public static bool TryRemove<T>(out T data) where T : class, IGlobalData {
+        if (DataStorage.Remove(typeof(T), out var data1)) {
+            data = (T) data1;
+            return true;
+        }
+
+        data = null;
         return false;
     }
 

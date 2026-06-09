@@ -5,26 +5,6 @@ namespace AlloyClient.Utils;
 
 public static class MathUtils {
     
-    private static readonly Random Random = new();
-
-    public static float Deg2Rad(this float deg)
-    {
-        return deg * (MathF.PI / 180f);
-    }
-    
-    public static float? Deg2Rad(this float? deg)
-    {
-        return deg * (MathF.PI / 180f);
-    }
-    
-    public static float Rad2Deg(this float rad) {
-        return rad * (180f / MathF.PI);
-    }
-    
-    public static float? Rad2Deg(this float? rad) {
-        return rad * (180f / MathF.PI);
-    }
-    
     public static Vector2 RotatePoint(Vector2 point, Vector2 pivot, float angle) {
         var cosTheta = (float)Math.Cos(angle);
         var sinTheta = (float)Math.Sin(angle);
@@ -51,18 +31,6 @@ public static class MathUtils {
         if (angle > MathHelper.Pi)
             return angle - MathHelper.TwoPi;
         return angle;
-    }
-
-    public static int RandomInt(int max) => Random.Next(max);
-
-    public static int RandomInt(int min, int max) => Random.Next(min, max);
-
-    public static float RandomPlusMinus(float range) => Random.NextSingle() * range * 2 - range;
-
-    public static float GetDistanceSquared(Vector2 pos1, Vector2 pos2) {
-        var x = pos2.X - pos1.X;
-        var y = pos2.Y - pos1.Y;
-        return x * x + y * y;
     }
     
     public static float Map(float value, float valMin, float valMax, float newMin, float newMax) {

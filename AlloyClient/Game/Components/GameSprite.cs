@@ -23,7 +23,7 @@ public sealed class GameSprite : Sprite {
 
         Map.GameSprite = this;
         
-        SetPosition(Settings.ScreenWidth, Settings.ScreenHeight);
+        SetPosition(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight);
         
         AddEventListener(Event.AddedToStage, OnStageEnter);
         AddEventListener(Event.RemovedFromStage, OnStageExit);
@@ -45,13 +45,6 @@ public sealed class GameSprite : Sprite {
     }
 
     private void SetPosition(int width, int height) {
-        /* FIXME 
-         * this fixes bug: first item move drops regardless of target
-         * bounds are just wrong until 2nd end drag for some reason
-         * would like to fix the root cause
-         */
-        //todo:SetBaseDimensions(width, height);
-        
         Hud.X = width;
         Hud.Y = height / 2;
         Hud.Scale = Stage.ScreenScale;

@@ -51,7 +51,7 @@ public sealed class Projectile : IResettable {
         _objDesc = objDesc;
         _projDesc = projDesc;
         Path = path;
-        Path.SetInfo(new ProjectileInfo() { LifetimeMs = Path.LifetimeMs, ProjId = id, ShootAngle = angle.Deg2Rad(), StartPos = startPos});
+        Path.SetInfo(new ProjectileInfo() { LifetimeMs = Path.LifetimeMs, ProjId = id, ShootAngle = angle * MathHelper.DegToRad, StartPos = startPos});
 
         Size = _projDesc.Size > 0 ? _projDesc.Size : 100;
 
@@ -125,9 +125,9 @@ public sealed class Projectile : IResettable {
         RenderBaseType.SetRotation(Rotation);
 
         if (_projDesc.ParticleTrail && doHitTest) {
-            Map.AddParticleEffect(new SparkEffect(100, _projDesc.ParticleTrailColor, _projDesc.ParticleTrailLifetime, 0.5f, MathUtils.RandomPlusMinus(3), MathUtils.RandomPlusMinus(3), newPos.X, newPos.Y));
-            Map.AddParticleEffect(new SparkEffect(100, _projDesc.ParticleTrailColor, _projDesc.ParticleTrailLifetime, 0.5f, MathUtils.RandomPlusMinus(3), MathUtils.RandomPlusMinus(3), newPos.X, newPos.Y));
-            Map.AddParticleEffect(new SparkEffect(100, _projDesc.ParticleTrailColor, _projDesc.ParticleTrailLifetime, 0.5f, MathUtils.RandomPlusMinus(3), MathUtils.RandomPlusMinus(3), newPos.X, newPos.Y));
+            Map.AddParticleEffect(new SparkEffect(100, _projDesc.ParticleTrailColor, _projDesc.ParticleTrailLifetime, 0.5f, Random.Shared.PlusMinus(3f), Random.Shared.PlusMinus(3f), newPos.X, newPos.Y));
+            Map.AddParticleEffect(new SparkEffect(100, _projDesc.ParticleTrailColor, _projDesc.ParticleTrailLifetime, 0.5f, Random.Shared.PlusMinus(3f), Random.Shared.PlusMinus(3f), newPos.X, newPos.Y));
+            Map.AddParticleEffect(new SparkEffect(100, _projDesc.ParticleTrailColor, _projDesc.ParticleTrailLifetime, 0.5f, Random.Shared.PlusMinus(3f), Random.Shared.PlusMinus(3f), newPos.X, newPos.Y));
         }
         
         

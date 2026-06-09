@@ -1,6 +1,7 @@
 ﻿using Alloy.UiLib;
 using Alloy.UiLib.Core;
-using Alloy.Common;
+using Alloy.Engine;
+using OpenTK.Graphics.OpenGL;
 
 namespace AlloyClient.Display;
 
@@ -26,6 +27,7 @@ public static class DisplayManager {
     }
 
     public static void Draw(GameTime gameTime) {
+        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         UiRender.LastRenderCount = 0;
         ScreenManager.Draw(gameTime);
         _stage.Draw(gameTime);

@@ -72,7 +72,9 @@ public sealed class UserInput : Sprite {
     private static bool IsInputDisabled() => !(_windowFocus && _manualFocus);
 
     private void OnLeftDown(MouseEvent args) {
-        if (args.Coords.X > Settings.ScreenWidth - HudView.Width * Stage.ScreenScale.X) return;
+        if (args.Coords.X > Stage.StageWidth - HudView.Width * Stage.ScreenScale.X) {
+            return;
+        }
         _mouseDown = true;
     }
 
@@ -239,7 +241,6 @@ public sealed class UserInput : Sprite {
             case true when Settings.ChatHistoryDown.Equals(key):
                 ChatBox.OnChatHistoryDown.Dispatch();
                 break;
-            
         }
         
         SetPlayerMovement();

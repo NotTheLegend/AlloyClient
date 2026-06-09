@@ -21,7 +21,7 @@ public class TitleScreen : TitleScreenBase {
 
     private readonly int _center;
     
-    public TitleScreen() : base(ScreenType.Title) {
+    public TitleScreen() : base(Components.ScreenType.Title) {
         var editor = new MenuBarButton("editor", FontSize, () => { });
         editor.SetAnchor(UiAnchor.MiddleLeft);
         _container.AddChild(editor);
@@ -41,7 +41,7 @@ public class TitleScreen : TitleScreenBase {
         legends.X = play.X + play.Width / 2 + 50;
         _container.AddChild(legends);
         
-        var exit = new MenuBarButton("exit", FontSize, () => { Main.GameInstance.Exit(); });
+        var exit = new MenuBarButton("exit", FontSize, () => Main.OnQuit.Dispatch());
         exit.SetAnchor(UiAnchor.MiddleLeft);
         exit.X = legends.X + legends.Width + 50;
         _container.AddChild(exit);
@@ -72,14 +72,12 @@ public class TitleScreen : TitleScreenBase {
     }
 
     private void CheckForAppFailure() {
-        if (!GlobalData.TryGet<AppRequestFailedFlag>(out var data)) {
+        if (!GlobalData.TryRemove<AppRequestFailedFlag>(out var data)) {
             return;
         }
-        
-        GlobalData.Remove<AppRequestFailedFlag>();
 
         AddChild(new ScreenDarkenOverlay());
         
-        DialogManager.Enqueue(new Dialog(data.Message, "", new DialogOption("Retry", () => { ScreenManager.FadeToScreen(new LoadingScreen(true), Easing.SineInOut, 500, 0); }), new DialogOption("Quit", () => { Main.GameInstance.Exit(); })));
+        DialogManager.Enqueue(new RetryLoadDialog(data.Message)); 
     }
 }

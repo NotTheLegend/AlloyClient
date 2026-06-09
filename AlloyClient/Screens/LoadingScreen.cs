@@ -16,7 +16,7 @@ public class LoadingScreen : TitleScreenBase {
 
     private readonly SimpleText _text;
     
-    public LoadingScreen(bool isRetry = false) : base(ScreenType.Loading) {
+    public LoadingScreen(bool isRetry = false) : base(Components.ScreenType.Loading) {
         _text = new SimpleText(new TextConfig {
             Text = "Loading...",
             FontSize = 40,
