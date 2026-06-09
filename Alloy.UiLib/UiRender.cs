@@ -1,6 +1,6 @@
 ﻿using System;
 using Alloy.Engine.Graphics;
-using Alloy.Common.ContentReaders;
+using Alloy.ContentReader;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Data;
@@ -52,7 +52,7 @@ public static class UiRender {
         
         Toolkit.Event.EventRaised += HandleEvents;
 
-        UiShader = ContentReader.LoadShader("Shaders/Ui");
+        UiShader = ContentLoader.LoadShader("Shaders/Ui");
         
         SpriteRender.Init();
         

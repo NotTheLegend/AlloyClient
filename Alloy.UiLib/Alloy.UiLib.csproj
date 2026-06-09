@@ -6,6 +6,7 @@
     </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\Alloy.Common\Alloy.Common.csproj" />
+      <ProjectReference Include="..\Alloy.ContentReader\Alloy.ContentReader.csproj" />
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.8" />

@@ -14,4 +14,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\Alloy.Engine\Alloy.Engine.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="ContentReaders\" />
+	</ItemGroup>
 </Project>

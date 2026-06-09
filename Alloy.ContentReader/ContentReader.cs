@@ -1,8 +1,9 @@
-﻿using Alloy.Engine.Graphics;
+﻿using Alloy.Common;
+using Alloy.Engine.Graphics;
 
-namespace Alloy.Common.ContentReaders;
+namespace Alloy.ContentReader;
 
-public static class ContentReader {
+public static class ContentLoader {
 
     private static string _folder;
 

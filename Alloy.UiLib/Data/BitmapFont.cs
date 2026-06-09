@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using Alloy.Engine.Graphics;
-using Alloy.Common.ContentReaders;
 using Alloy.Common.Structs;
+using Alloy.ContentReader;
 using Alloy.UiLib.Enums;
 
 namespace Alloy.UiLib.Data;

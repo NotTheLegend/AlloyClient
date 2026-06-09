@@ -14,7 +14,7 @@ using Alloy.UiLib.Enums;
 using Alloy.UiLib.Extra;
 using Alloy.UiLib.Signals;
 using Alloy.Common;
-using Alloy.Common.ContentReaders;
+using Alloy.ContentReader;
 using Alloy.Engine;
 using Microsoft.Extensions.Logging;
 using OpenTK.Graphics.OpenGL;
@@ -78,19 +78,19 @@ public sealed class Main() : GameWindow(new Version(4, 6), Program.LogFactory) {
             Screen = new Vector2i(Settings.ScreenWidth, Settings.ScreenHeight)
         };
         
-        ContentReader.Init(Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, "Content"));
+        ContentLoader.Init(Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, "Content"));
         UiRender.ConfigureAndLoad(Program.LogFactory, settings, out var stage);
         DisplayManager.Init(stage);
     }
     
     [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH")]
     protected override void LoadContent() {
-        Atlas = ContentReader.LoadAtlas("Game.atlas");
-        UiAtlas = ContentReader.LoadAtlas("Ui.atlas");
+        Atlas = ContentLoader.LoadAtlas("Game.atlas");
+        UiAtlas = ContentLoader.LoadAtlas("Ui.atlas");
         MinimapTexture.Init(out var mapTexture);
-        var titleBackground = ContentReader.LoadTexture("TitleScreen/TitleScreenBackground.png");
-        var titleGraphic = ContentReader.LoadTexture("TitleScreen/TitleScreenGraphic.png");
-        var font = new BitmapFamily(ContentReader.LoadFont("Fonts/MyriadPro/MyriadPro.msdf"));
+        var titleBackground = ContentLoader.LoadTexture("TitleScreen/TitleScreenBackground.png");
+        var titleGraphic = ContentLoader.LoadTexture("TitleScreen/TitleScreenGraphic.png");
+        var font = new BitmapFamily(ContentLoader.LoadFont("Fonts/MyriadPro/MyriadPro.msdf"));
         
         // Set texture units
         var gameAtlasSampler = new Sampler(Atlas.Texture, 0);

@@ -1,9 +1,10 @@
 ﻿using System.Buffers;
+using Alloy.Common;
 using Alloy.Common.Structs;
-using Alloy.Engine.Common; 
+using Alloy.Engine.Common;
 using Alloy.Engine.Graphics;
 
-namespace Alloy.Common.ContentReaders;
+namespace Alloy.ContentReader;
 
 public class Atlas {
     

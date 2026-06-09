@@ -4,8 +4,7 @@ using AlloyClient.Assets;
 using AlloyClient.Game;
 using AlloyClient.Rendering.VertexData;
 using Alloy.UiLib;
-using Alloy.Common;
-using Alloy.Common.ContentReaders;
+using Alloy.ContentReader;
 using Alloy.Engine;
 using OpenTK.Mathematics;
 
@@ -50,22 +49,22 @@ public static partial class Render {
     
     public static unsafe void FirstTimeInit(Sampler atlas) {
         // Shaders
-        _shaderGround = ContentReader.LoadShader("Shaders/Ground", TileDefines);
+        _shaderGround = ContentLoader.LoadShader("Shaders/Ground", TileDefines);
         _shaderGround.SetValue("GameTexture", atlas);
 
-        _shaderShadow = ContentReader.LoadShader("Shaders/Shadow", ShadowDefines);
+        _shaderShadow = ContentLoader.LoadShader("Shaders/Shadow", ShadowDefines);
         
-        _shaderModel = ContentReader.LoadShader("Shaders/Model");
+        _shaderModel = ContentLoader.LoadShader("Shaders/Model");
         _shaderModel.SetValue("GameTexture", atlas);
         
-        _shaderObject = ContentReader.LoadShader("Shaders/Object", ObjectDefines);
+        _shaderObject = ContentLoader.LoadShader("Shaders/Object", ObjectDefines);
         _shaderObject.SetValue("GameTexture", atlas);
         
         _shaderObject.SetValue("PixelRange", UiRender.MyriadPro.PixelRange);
         _shaderObject.SetValue("TextTextureSize", new Vector2(UiRender.MyriadPro.Atlas.Width, UiRender.MyriadPro.Atlas.Height));
         _shaderObject.SetValue("TextTexture", UiRender.MyriadPro.Sampler);
 
-        _shaderParticle = ContentReader.LoadShader("Shaders/Particle");
+        _shaderParticle = ContentLoader.LoadShader("Shaders/Particle");
         
         _defaultVao = new VertexArrayObject();
         

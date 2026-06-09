@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <LangVersion>preview</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Alloy.Common\Alloy.Common.csproj" />
+      <ProjectReference Include="..\Alloy.Engine\Alloy.Engine.csproj" />
+    </ItemGroup>
+
+</Project>
