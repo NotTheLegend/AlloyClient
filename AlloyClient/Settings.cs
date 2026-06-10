@@ -9,6 +9,7 @@ using System.Xml;
 using AlloyClient.Data;
 using AlloyClient.Utils;
 using Alloy.Common;
+using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using OpenTK.Mathematics;
@@ -17,7 +18,7 @@ using OpenTK.Platform;
 namespace AlloyClient;
 
 public static class Settings {
-    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(Settings));
+    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(Settings));
 
     private const string LocalFolderName = "AlloyClient";
     private const string AccountFileName = "account.json"; // these should be .xml but its funnier if they're not
@@ -191,7 +192,7 @@ public static class Settings {
     
     private static void TryLoadSettings() {
         if (!File.Exists(SettingsFilePath)) {
-            Logger.Log(LogLevel.Information, "Settings file not found.");
+            Logger.Log(LogLevel.Trace, "Settings file not found.");
             return;
         }
         
@@ -220,7 +221,7 @@ public static class Settings {
             }
         }
         
-        Logger.Log(LogLevel.Information, $"Loaded {count} of {SettingsLookup.Count} settings, {SettingsLookup.Count - count} reset to default");
+        Logger.Log(LogLevel.Trace, $"Loaded {count} of {SettingsLookup.Count} settings, {SettingsLookup.Count - count} reset to default");
     }
 
     public static void SaveSettings() {
@@ -243,7 +244,7 @@ public static class Settings {
         
         try {
             xml.Save(SettingsFilePath);
-            Logger.Log(LogLevel.Information, $"Saved {count} of {SettingsLookup.Count} settings");
+            Logger.Log(LogLevel.Trace, $"Saved {count} of {SettingsLookup.Count} settings");
         } catch (Exception e) {
             Logger.Log(LogLevel.Error, $"Failed to save settings: {e}");
         }

@@ -11,6 +11,7 @@ using AlloyClient.Rendering.Types;
 using AlloyClient.Rendering.VertexData;
 using Alloy.UiLib.Signals;
 using Alloy.Engine;
+using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
@@ -19,7 +20,7 @@ namespace AlloyClient.Game;
 
 public static class Map {
 
-    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(Map));
+    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(Map));
     
     public const int TileRenderDistance = 20;
 

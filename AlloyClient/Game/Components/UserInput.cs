@@ -8,6 +8,7 @@ using AlloyClient.Networking.Packets.Outgoing;
 using Alloy.UiLib.Core;
 using Alloy.Common;
 using AlloyClient.Display;
+using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
@@ -16,7 +17,7 @@ namespace AlloyClient.Game.Components;
 
 public sealed class UserInput : Sprite {
 
-    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(UserInput));
+    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(UserInput));
 
     private static Vector2 _mousePosition;
     

@@ -1,11 +1,12 @@
 ﻿using System;
 using AlloyClient.Game.Components.Options.Ui;
+using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
 
 namespace AlloyClient.Game.Components.Options.OptionTypes;
 
 public class ChoiceOption<T> : Option {
-    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(ChoiceBox<T>));
+    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(ChoiceBox<T>));
 
     private readonly ChoiceBox<T> _choiceBox;
     private readonly Action _choiceCallback;

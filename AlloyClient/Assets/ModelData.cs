@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using AlloyClient.Rendering.VertexData;
 using Alloy.Common;
+using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
 
@@ -64,7 +65,7 @@ public enum ModelType {
 }
 
 public static partial class ModelData {
-    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(ModelData));
+    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(ModelData));
     
     public static readonly Dictionary<ModelType, ModelInfo> ModelRenderInfo = [];
 

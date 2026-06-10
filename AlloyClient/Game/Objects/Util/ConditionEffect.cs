@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
 
@@ -14,7 +15,7 @@ public sealed class ConditionEffect(string name, ConditionEffects bit, int[] ico
 
 public static class ConditionEffectUtil {
 
-    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(ConditionEffect));
+    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(ConditionEffect));
     
     public static readonly ConditionEffect[] Effects = [
         new("Nothing", ConditionEffects.None, null),

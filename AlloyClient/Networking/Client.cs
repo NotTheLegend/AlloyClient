@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AlloyClient.Data;
 using AlloyClient.Display;
 using AlloyClient.Game;
+using AlloyClient.Logging;
 using AlloyClient.Networking.Packets;
 using AlloyClient.Networking.Packets.Outgoing;
 using AlloyClient.Screens;
@@ -22,7 +23,7 @@ public static class Client {
     public const int RECV_BUFFER_SIZE = 0x40000;
     public const int SEND_BUFFER_SIZE = 0x10000;
 
-    public static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(Client));
+    public static readonly ILogger Logger = ILogger.CreateLogger(nameof(Client));
 
     private static readonly ConcurrentQueue<IIncomingPacket> IncomingQueue = new();
 

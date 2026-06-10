@@ -16,6 +16,7 @@ using Alloy.UiLib.Signals;
 using Alloy.Common;
 using Alloy.ContentReader;
 using Alloy.Engine;
+using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
@@ -23,13 +24,13 @@ using OpenTK.Platform;
 
 namespace AlloyClient;
 
-public sealed class Main() : GameWindow(new Version(4, 6), Program.LogFactory) {
+public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
 
     public static readonly Signal OnQuit = new ();
     public static readonly Signal<ScreenType> OnScreenChange = new();
     public static readonly Signal OnFullscreenToggle = new();
     
-    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(Main));
+    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(Main));
     
     public static Atlas Atlas { get; private set; }
     public static Atlas UiAtlas { get; private set; }
@@ -64,7 +65,7 @@ public sealed class Main() : GameWindow(new Version(4, 6), Program.LogFactory) {
         OnFullscreenToggle.Add(ToggleFullscreen);
         
         
-        Audio.Init(Program.LogFactory, Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, @"Content\Sound"));
+        Audio.Init(ILogger.Factory, Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, @"Content\Sound"));
         
         GL.ClearColor(0f, 0f, 0f, 1.0f);
         GL.Disable(EnableCap.StencilTest);
@@ -79,7 +80,7 @@ public sealed class Main() : GameWindow(new Version(4, 6), Program.LogFactory) {
         };
         
         ContentLoader.Init(Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, "Content"));
-        UiRender.ConfigureAndLoad(Program.LogFactory, settings, out var stage);
+        UiRender.ConfigureAndLoad(ILogger.Factory, settings, out var stage);
         DisplayManager.Init(stage);
     }
     

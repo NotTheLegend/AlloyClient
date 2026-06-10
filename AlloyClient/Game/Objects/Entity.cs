@@ -13,13 +13,14 @@ using AlloyClient.Rendering.Types;
 using Alloy.UiLib.Signals;
 using AlloyClient.Utils;
 using Alloy.Common.Structs;
+using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Objects;
 
 public class Entity {
-    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(Entity));
+    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(Entity));
 
     public const float AttackPeriod = 300;
 

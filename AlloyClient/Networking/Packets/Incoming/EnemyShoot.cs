@@ -2,6 +2,7 @@
 using AlloyClient.Game;
 using AlloyClient.Game.Objects;
 using AlloyClient.Game.Objects.ProjectilePaths;
+using AlloyClient.Logging;
 using AlloyClient.Networking.Structs.DataObjects;
 using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
@@ -10,7 +11,7 @@ namespace AlloyClient.Networking.Packets.Incoming;
 
 public class EnemyShoot : IncomingPacket<EnemyShoot> {
 
-    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(EnemyShoot));
+    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(EnemyShoot));
     
     public ushort FirstBulletId;
     public int OwnerId;

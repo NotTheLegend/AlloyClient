@@ -4,12 +4,13 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using AlloyClient.Data;
+using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
 
 namespace AlloyClient.AppEngine;
 
 public static class AppEngineClient {
-    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(AppEngineClient));
+    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(AppEngineClient));
 
     private static readonly HttpClient Client;
 

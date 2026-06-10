@@ -10,7 +10,9 @@ public sealed class TimedScope : IDisposable {
     private readonly Stopwatch _sw;
     private readonly string _exitMessage;
 
-    public TimedScope(ILogger logger, string entryMessage = null, string exitMessage = "[TIME]", LogLevel level = LogLevel.Trace) {
+    public TimedScope(ILogger logger, string exitMessage) : this(logger, null, exitMessage) { }
+    
+    public TimedScope(ILogger logger, string entryMessage, string exitMessage, LogLevel level = LogLevel.Trace) {
         _logger = logger;
         _level = level;
         

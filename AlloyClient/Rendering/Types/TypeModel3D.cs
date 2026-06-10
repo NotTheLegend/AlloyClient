@@ -4,13 +4,14 @@ using AlloyClient.Assets;
 using AlloyClient.Game.Objects;
 using AlloyClient.Rendering.VertexData;
 using Alloy.Common.Structs;
+using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering.Types;
 
 public sealed class TypeModel3D : RenderBase {
-    private static readonly ILogger Logger = Program.LogFactory.CreateLogger(nameof(TypeModel3D));
+    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(TypeModel3D));
     
     public override ModelType ModelType { get; }
 
