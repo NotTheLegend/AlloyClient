@@ -84,7 +84,7 @@ internal class InternalAudioEngine {
     }
     
     public void EnqueueCommand(EngineCommand command) {
-        using (_commandLock.EnterScope());
+        using var _ = _commandLock.EnterScope();
         _commandQueue.Enqueue(command);
     }
 
@@ -122,7 +122,7 @@ internal class InternalAudioEngine {
     }
 
     private void HandleCommands(double time) {
-        using (_commandLock.EnterScope());
+        using var _ = _commandLock.EnterScope();
 
         while (_commandQueue.TryDequeue(out var command)) {
             switch (command.Type) {

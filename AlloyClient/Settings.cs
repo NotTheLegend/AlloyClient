@@ -6,13 +6,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using AlloyClient.Data;
-using AlloyClient.Utils;
 using Alloy.Common;
 using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using OpenTK.Mathematics;
 using OpenTK.Platform;
 
 namespace AlloyClient;
@@ -21,8 +19,8 @@ public static class Settings {
     private static readonly ILogger Logger = ILogger.CreateLogger(nameof(Settings));
 
     private const string LocalFolderName = "AlloyClient";
-    private const string AccountFileName = "account.json"; // these should be .xml but its funnier if they're not
-    private const string SettingsFileName = "settings.json";
+    private const string AccountFileName = "account.xml";
+    private const string SettingsFileName = "settings.xml";
 
     private static readonly string AccountFilePath;
     private static readonly string SettingsFilePath;
@@ -268,15 +266,16 @@ public static class Settings {
             return;
         }
         
-        var info = JsonConvert.DeserializeObject<Dictionary<string, string>>(text);
-
+        var xml = XDocument.Parse(text);
+        var info = xml.Root?.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
+        
         if (info == null) {
             Logger.Log(LogLevel.Debug, "Failed to parse local account data");
             return;
         }
 
-        var loadedUser = info.TryGetValue("username", out var username) && !string.IsNullOrWhiteSpace(username);
-        var loadedPass = info.TryGetValue("password", out var password) && !string.IsNullOrWhiteSpace(password);
+        var loadedUser = info.TryGetValue("Username", out var username) && !string.IsNullOrWhiteSpace(username);
+        var loadedPass = info.TryGetValue("Password", out var password) && !string.IsNullOrWhiteSpace(password);
 
         if (username == string.Empty && password == string.Empty) {
             Logger.Log(LogLevel.Debug, "No local account data");
@@ -316,10 +315,11 @@ public static class Settings {
         var username = data.Username;
         var password = new string(chars.AsSpan(0, charCount));
 
-        var jsonString = JsonConvert.SerializeObject(new Dictionary<string, string>{{"username", username}, {"password", password}});
+        var tags = new Dictionary<string, string>{{"Username", username}, {"Password", password}};
+        var xml = new XDocument(new XElement("Account", tags.Select(kvp => new XElement(kvp.Key, kvp.Value))));
 
         try {
-            File.WriteAllText(AccountFilePath, jsonString);
+            xml.Save(AccountFilePath);
         } catch (Exception e) {
             Logger.Log(LogLevel.Error, $"Failed to write to file {AccountFilePath}: {e.Message}");
         }
@@ -353,6 +353,8 @@ public class InputSetting(Scancode def = Scancode.Unknown) : ISettingType {
     public void ResetToDefault() {
         Key = _default;
     }
+    
+    public override string ToString() => $"{Key}";
 }
 
 public class ValueSetting<T>(T def = default) : ISettingType {
@@ -391,6 +393,8 @@ public class ValueSetting<T>(T def = default) : ISettingType {
     public static implicit operator T(ValueSetting<T> valueSetting) => valueSetting.Value;
 
     private static bool IsNumericType<TValue>() => Type.GetTypeCode(typeof(TValue)) switch { TypeCode.Boolean or TypeCode.Byte or TypeCode.SByte or TypeCode.Int16 or TypeCode.UInt16 or TypeCode.Int32 or TypeCode.UInt32 or TypeCode.Int64 or TypeCode.UInt64 or TypeCode.Single or TypeCode.Double or TypeCode.Decimal => true, _ => false };
+
+    public override string ToString() => $"{Value}";
 }
 
 #endregion

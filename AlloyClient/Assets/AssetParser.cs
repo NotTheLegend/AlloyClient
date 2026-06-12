@@ -8,7 +8,6 @@ using AlloyClient.Assets.XmlStructs;
 using Alloy.Common;
 using Alloy.Common.Structs;
 using AlloyClient.Logging;
-using AlloyClient.Utils;
 using Microsoft.Extensions.Logging;
 
 namespace AlloyClient.Assets;
@@ -18,7 +17,7 @@ public static class AssetParser {
     private static readonly ILogger Logger = ILogger.CreateLogger(nameof(AssetParser));
     
     public static async Task LoadAssetsAsync() {
-        using var timer = new TimedScope(Logger, "Loaded assets in {0}");
+        using var _ = TimedScope.EnterScope(Logger, "Loaded assets in {0}");
         await Task.WhenAll(Task.Run(ParseGround), Task.Run(ParseObjects));
     }
 

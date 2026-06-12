@@ -21,7 +21,6 @@ public static class Logging {
         );
     }
 
-
     extension(ILogger) {
         public static ILoggerFactory Factory => Factory;
         
@@ -56,7 +55,8 @@ public sealed class SingleLineConsoleFormatter(IOptions<ConsoleFormatterOptions>
 
         textWriter.WriteLine($"[{timestamp}] {level} {logEntry.Category}[{logEntry.EventId.Id}]:    {message}");
 
-        if (logEntry.Exception is not null)
+        if (logEntry.Exception is not null) {
             textWriter.WriteLine(logEntry.Exception);
+        }
     }
 }

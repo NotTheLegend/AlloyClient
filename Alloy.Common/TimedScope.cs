@@ -27,4 +27,8 @@ public sealed class TimedScope : IDisposable {
     public void Dispose() {
         _logger.Log(_level, _exitMessage, $"{_sw.Elapsed.TotalMilliseconds} ms");
     }
+    
+    public static TimedScope EnterScope(ILogger logger, string exitMessage) => new(logger, exitMessage);
+
+    public static TimedScope EnterScope(ILogger logger, string entryMessage, string exitMessage, LogLevel level = LogLevel.Trace) => new(logger, entryMessage, exitMessage, level);
 }

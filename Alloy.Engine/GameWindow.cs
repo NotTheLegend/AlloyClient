@@ -18,8 +18,6 @@ public abstract partial class GameWindow {
 
     protected double TargetFrameTime = 1000d / 60;
     
-    protected bool Initialized { get; private set; }
-    
     private bool _exitFlag;
 
     protected GameWindow(Version openglVersion, ILoggerFactory logFactory, LogLevel minOpenTkLogLevel = LogLevel.Warning) {
@@ -75,8 +73,6 @@ public abstract partial class GameWindow {
         using (new TimedScope(_logger, null, "LoadContent took {0}")) {
             LoadContent();
         }
-        
-        Initialized = true;
 
         if (OperatingSystem.IsWindows()) {
             SetWindowsJank();

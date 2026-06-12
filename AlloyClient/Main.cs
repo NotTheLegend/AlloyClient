@@ -41,32 +41,28 @@ public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
     public static GameTime GameTime { get; private set; }
 
     protected override void Initialize() {
-        Toolkit.Window.SetTitle(Window, "RealmTk");
-        Toolkit.Window.SetMinClientSize(Window, 800, 600);
-
-        if (Settings.LastWindowMode.Value == WindowMode.Hidden) { // in case it somehow ends up hidden
-            Settings.LastWindowMode.Set(WindowMode.Normal);
-            Settings.ScreenWidth.ResetToDefault();
-            Settings.ScreenHeight.ResetToDefault();
-        }
-
-        if (Settings.LastWindowMode.Value == WindowMode.Minimized) {
+        #region Set Initial Window State
+        if (Settings.LastWindowMode.Value is WindowMode.Minimized or WindowMode.Hidden) {
             Settings.LastWindowMode.Set(WindowMode.Normal);
         }
+
+        if (Settings.LastWindowMode == WindowMode.Normal) {
+            var displayArea = Toolkit.Display.GetWorkArea(Toolkit.Window.GetDisplay(Window));
+            Settings.ScreenWidth.Set(Math.Max(Math.Min(Settings.ScreenWidth, displayArea.Width), 800));
+            Settings.ScreenHeight.Set(Math.Max(Math.Min(Settings.ScreenHeight, displayArea.Height), 600));
+            Settings.LastWindowPositionX.Set(Math.Min(Math.Max(Settings.LastWindowPositionX, displayArea.Min.X), displayArea.Max.X - Settings.ScreenWidth));
+            Settings.LastWindowPositionY.Set(Math.Min(Math.Max(Settings.LastWindowPositionY, displayArea.Min.Y), displayArea.Max.Y - Settings.ScreenHeight));
+        }
         
-        
-        Toolkit.Window.SetSize(Window, new Vector2i(Settings.ScreenWidth, Settings.ScreenHeight));
         Toolkit.Window.SetPosition(Window, new Vector2i(Settings.LastWindowPositionX, Settings.LastWindowPositionY));
+        Toolkit.Window.SetSize(Window, new Vector2i(Settings.ScreenWidth, Settings.ScreenHeight));
         Toolkit.Window.SetMode(Window, Settings.LastWindowMode);
+        Toolkit.Window.SetMinClientSize(Window, 800, 600); // <-- Must be set after window state is loaded from settings
+        #endregion
+        Toolkit.Window.SetTitle(Window, "RealmTk");
+            
+        // Initial GL state
         GL.Viewport(0, 0, Settings.ScreenWidth, Settings.ScreenHeight);
-
-        OnQuit.Add(Exit);
-        OnScreenChange.Add(SetGraphicOptions);
-        OnFullscreenToggle.Add(ToggleFullscreen);
-        
-        
-        Audio.Init(ILogger.Factory, Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, @"Content\Sound"));
-        
         GL.ClearColor(0f, 0f, 0f, 1.0f);
         GL.Disable(EnableCap.StencilTest);
         GL.CullFace(TriangleFace.Front);
@@ -79,9 +75,22 @@ public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
             Screen = new Vector2i(Settings.ScreenWidth, Settings.ScreenHeight)
         };
         
+        // Initializers
+        Audio.Init(ILogger.Factory, Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, @"Content\Sound"));
         ContentLoader.Init(Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, "Content"));
         UiRender.ConfigureAndLoad(ILogger.Factory, settings, out var stage);
         DisplayManager.Init(stage);
+        
+        // Audio Setup
+        Audio.Start();
+        Audio.SetMasterVolume(Settings.GetMasterVolume());
+        Audio.MusicChannel.SetVolume(Settings.GetMusicVolume());
+        Audio.SfxChannel.SetVolume(Settings.GetSfxVolume());
+        
+        // Signals
+        OnQuit.Add(Exit);
+        OnScreenChange.Add(SetGraphicOptions);
+        OnFullscreenToggle.Add(ToggleFullscreen);
     }
     
     [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH")]
@@ -103,9 +112,7 @@ public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
         font.Sampler.Bind(6);
         
         ModelData.Load();
-
-        
-        
+        SliceLibrary.Load();
         
         UiRender.RegisterFont(font);
         UiRender.RegisterTexture(TextureType.GameAtlas, gameAtlasSampler);
@@ -116,15 +123,7 @@ public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
         UiRender.RegisterTexture(TextureType.TitleGraphic, titleGraphicSampler);
         
         Render.FirstTimeInit(gameAtlasSampler);
-
-        SliceLibrary.Load();
         
-        
-        
-        Audio.Start();
-        Audio.SetMasterVolume(Settings.GetMasterVolume());
-        Audio.MusicChannel.SetVolume(Settings.GetMusicVolume());
-        Audio.SfxChannel.SetVolume(Settings.GetSfxVolume());
         Audio.MusicChannel.FadeTo("Music/sorc.ogg", 2f);
         
         ScreenManager.FadeToScreen(new LoadingScreen(), Easing.SineInOut, 1000, 0x0);
@@ -141,10 +140,13 @@ public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
             case CloseEventArgs:
                 Exit();
                 break;
-            case WindowResizeEventArgs when Initialized:
-                Settings.LastWindowMode.Set(Toolkit.Window.GetMode(Window));
+            case WindowResizeEventArgs:
+                var mode = Toolkit.Window.GetMode(Window);
+                if (mode != WindowMode.Hidden) {
+                    Settings.LastWindowMode.Set(mode);
+                }
                 break;
-            case WindowMoveEventArgs e when Initialized:
+            case WindowMoveEventArgs e:
                 Settings.LastWindowPositionX.Set(e.WindowPosition.X);
                 Settings.LastWindowPositionY.Set(e.WindowPosition.Y);
                 break;
