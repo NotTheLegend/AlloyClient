@@ -87,9 +87,9 @@ public sealed class SpeechBubble : Sprite {
         var x1 = x * c - y * s;
         var y1 = x * s + y * c;
 
-        var newX = MathUtils.Map(x1, -w, w, 0f, Settings.ScreenWidth - Camera.HudOffset);
-        var newY = MathUtils.Map(y1, -h, h, 0f, Settings.ScreenHeight);
-        var offset = _owner.HeightOffset / (h + h) * Settings.ScreenHeight;
+        var newX = MathUtils.Map(x1, -w, w, 0f, Stage.StageWidth - Camera.HudOffset);
+        var newY = MathUtils.Map(y1, -h, h, 0f, Stage.StageHeight);
+        var offset = _owner.HeightOffset / (h + h) * Stage.StageHeight;
 
         X = (int)newX;
         Y = (int)newY + (int)offset;

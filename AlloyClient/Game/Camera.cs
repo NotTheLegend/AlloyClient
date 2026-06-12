@@ -38,14 +38,12 @@ public static class Camera {
         ViewMatrix = Matrix4.Identity;
         BillboardMatrix = Matrix4.Identity;
 
-        var halfWidth = Settings.ScreenWidth.Value;
-        var halfHeight = Settings.ScreenHeight.Value;
+        var width = Settings.ScreenSize.X;
+        var height = Settings.ScreenSize.Y;
         var hudOffset = includeHud ? HudOffset : 0f;
 
-        Viewport = new Vector2i(halfWidth, halfHeight);
-        ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(-halfWidth + hudOffset, halfWidth + hudOffset,
-            -halfHeight, halfHeight, -10000f, 10000f);
-
+        Viewport = new Vector2i(width, height);
+        ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(-width + hudOffset, width + hudOffset, -height, height, -10000f, 10000f);
         ZoomMatrix = Matrix4.CreateScale(Settings.CameraZoom);
     }
 
@@ -83,7 +81,7 @@ public static class Camera {
         BillboardMatrix[1, 0] = s;
         BillboardMatrix[1, 1] = c;
 
-        VisibleTileRadius = new Vector2((Settings.ScreenWidth - HudOffset) / (100.0f * Settings.CameraZoom), Settings.ScreenHeight / (100.0f * Settings.CameraZoom));
+        VisibleTileRadius = new Vector2((Settings.ScreenSize.X - HudOffset) / (100.0f * Settings.CameraZoom), Settings.ScreenSize.Y / (100.0f * Settings.CameraZoom));
     }
 
     // Only tested on MapEditor

@@ -77,8 +77,6 @@ public sealed class ScreenManager : Sprite {
     }
 
     private void OnResize(ResizeEvent args) {
-        Settings.ScreenWidth.Set(args.Width);
-        Settings.ScreenHeight.Set(args.Height);
         Camera.UpdateViewPort(args.Width, args.Height);
     }
 }

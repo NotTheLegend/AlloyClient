@@ -11,6 +11,7 @@ using AlloyClient.Data;
 using Alloy.Common;
 using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
+using OpenTK.Mathematics;
 using OpenTK.Platform;
 
 namespace AlloyClient;
@@ -42,6 +43,8 @@ public static class Settings {
 
     public const float MinCameraZoom = 0.5f;
     public const float MaxCameraZoom = 5;
+
+    public static Vector2i ScreenSize;
     
     #region HOTKEYS
     
@@ -114,10 +117,10 @@ public static class Settings {
     public static readonly ValueSetting<WindowMode> LastWindowMode = new(WindowMode.Normal);
     public static readonly ValueSetting<int> LastWindowPositionX = new(0);
     public static readonly ValueSetting<int> LastWindowPositionY = new(0);
+    public static readonly ValueSetting<int> LastWindowWidth = new(DefaultScreenWidth);
+    public static readonly ValueSetting<int> LastWindowHeight = new(DefaultScreenHeight);
     public static readonly ValueSetting<FullscreenType> FullscreenMode = new(FullscreenType.Borderless);
     public static readonly ValueSetting<bool> FullscreenState = new(false);
-    public static readonly ValueSetting<int> ScreenWidth = new(DefaultScreenWidth);
-    public static readonly ValueSetting<int> ScreenHeight = new(DefaultScreenHeight);
 
     // Audio
     public static readonly ValueSetting<float> MasterVolume = new(0.5f);

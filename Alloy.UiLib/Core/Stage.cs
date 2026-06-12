@@ -1,5 +1,4 @@
-﻿using Alloy.Common;
-using Alloy.Engine;
+﻿using Alloy.Engine;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Extra;
 using Alloy.UiLib.Input;
@@ -13,7 +12,7 @@ namespace Alloy.UiLib.Core;
 /// </summary>
 public sealed class Stage : Sprite {
 
-    public static Vector2 ScreenScale;
+    public static Vector2 ScreenScale { get; internal set; }
     
     public int StageWidth { get; private set; }
     

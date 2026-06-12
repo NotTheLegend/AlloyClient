@@ -48,21 +48,22 @@ public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
 
         if (Settings.LastWindowMode == WindowMode.Normal) {
             var displayArea = Toolkit.Display.GetWorkArea(Toolkit.Window.GetDisplay(Window));
-            Settings.ScreenWidth.Set(Math.Max(Math.Min(Settings.ScreenWidth, displayArea.Width), 800));
-            Settings.ScreenHeight.Set(Math.Max(Math.Min(Settings.ScreenHeight, displayArea.Height), 600));
-            Settings.LastWindowPositionX.Set(Math.Min(Math.Max(Settings.LastWindowPositionX, displayArea.Min.X), displayArea.Max.X - Settings.ScreenWidth));
-            Settings.LastWindowPositionY.Set(Math.Min(Math.Max(Settings.LastWindowPositionY, displayArea.Min.Y), displayArea.Max.Y - Settings.ScreenHeight));
+            Settings.LastWindowWidth.Set(Math.Max(Math.Min(Settings.LastWindowWidth, displayArea.Width), 800));
+            Settings.LastWindowHeight.Set(Math.Max(Math.Min(Settings.LastWindowHeight, displayArea.Height), 600));
+            Settings.LastWindowPositionX.Set(Math.Min(Math.Max(Settings.LastWindowPositionX, displayArea.Min.X), displayArea.Max.X - Settings.LastWindowWidth));
+            Settings.LastWindowPositionY.Set(Math.Min(Math.Max(Settings.LastWindowPositionY, displayArea.Min.Y), displayArea.Max.Y - Settings.LastWindowHeight));
         }
         
         Toolkit.Window.SetPosition(Window, new Vector2i(Settings.LastWindowPositionX, Settings.LastWindowPositionY));
-        Toolkit.Window.SetSize(Window, new Vector2i(Settings.ScreenWidth, Settings.ScreenHeight));
+        Toolkit.Window.SetSize(Window, new Vector2i(Settings.LastWindowWidth, Settings.LastWindowHeight));
         Toolkit.Window.SetMode(Window, Settings.LastWindowMode);
         Toolkit.Window.SetMinClientSize(Window, 800, 600); // <-- Must be set after window state is loaded from settings
         #endregion
         Toolkit.Window.SetTitle(Window, "RealmTk");
             
         // Initial GL state
-        GL.Viewport(0, 0, Settings.ScreenWidth, Settings.ScreenHeight);
+        Toolkit.Window.GetClientSize(Window, out var size);
+        GL.Viewport(0, 0, size.X, size.Y);
         GL.ClearColor(0f, 0f, 0f, 1.0f);
         GL.Disable(EnableCap.StencilTest);
         GL.CullFace(TriangleFace.Front);
@@ -72,7 +73,7 @@ public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
         
         var settings = new UiSettings {
             DefaultScreen = new Vector2i(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight),
-            Screen = new Vector2i(Settings.ScreenWidth, Settings.ScreenHeight)
+            Screen = Settings.ScreenSize
         };
         
         // Initializers
@@ -95,12 +96,15 @@ public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
     
     [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH")]
     protected override void LoadContent() {
+        // Load content/textures
         Atlas = ContentLoader.LoadAtlas("Game.atlas");
         UiAtlas = ContentLoader.LoadAtlas("Ui.atlas");
         MinimapTexture.Init(out var mapTexture);
         var titleBackground = ContentLoader.LoadTexture("TitleScreen/TitleScreenBackground.png");
         var titleGraphic = ContentLoader.LoadTexture("TitleScreen/TitleScreenGraphic.png");
         var font = new BitmapFamily(ContentLoader.LoadFont("Fonts/MyriadPro/MyriadPro.msdf"));
+        ModelData.Load();
+        SliceLibrary.Load();
         
         // Set texture units
         var gameAtlasSampler = new Sampler(Atlas.Texture, 0);
@@ -111,9 +115,8 @@ public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
         var titleGraphicSampler = new Sampler(titleGraphic, 5);
         font.Sampler.Bind(6);
         
-        ModelData.Load();
-        SliceLibrary.Load();
-        
+        // Render setup
+        Render.FirstTimeInit(gameAtlasSampler, font);
         UiRender.RegisterFont(font);
         UiRender.RegisterTexture(TextureType.GameAtlas, gameAtlasSampler);
         UiRender.RegisterTexture(TextureType.UiAtlas, uiAtlasSampler);
@@ -121,8 +124,6 @@ public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
         UiRender.RegisterTexture(TextureType.Minimap, mapTextureSampler);
         UiRender.RegisterTexture(TextureType.TitleBackground, titleBackgroundSampler);
         UiRender.RegisterTexture(TextureType.TitleGraphic, titleGraphicSampler);
-        
-        Render.FirstTimeInit(gameAtlasSampler);
         
         Audio.MusicChannel.FadeTo("Music/sorc.ogg", 2f);
         
@@ -140,11 +141,12 @@ public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
             case CloseEventArgs:
                 Exit();
                 break;
-            case WindowResizeEventArgs:
+            case WindowResizeEventArgs e:
                 var mode = Toolkit.Window.GetMode(Window);
                 if (mode != WindowMode.Hidden) {
                     Settings.LastWindowMode.Set(mode);
                 }
+                Settings.ScreenSize = e.NewClientSize;
                 break;
             case WindowMoveEventArgs e:
                 Settings.LastWindowPositionX.Set(e.WindowPosition.X);
