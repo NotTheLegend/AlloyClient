@@ -2,8 +2,8 @@
 using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
-using AlloyClient.Game.Objects.Util;
 using Alloy.Common;
+using AlloyClient.Game;
 
 namespace AlloyClient.Assets.XmlStructs;
 
@@ -156,7 +156,7 @@ public class ConditionEffectDesc {
     
     public ConditionEffectDesc(string eff, float duration, float range = 0f) {
         EffectName = eff;
-        EffectId = ConditionEffectUtil.GetConditionEffectId(eff);
+        EffectId = ConditionEffect.ValueFromName(eff);
         if (duration < 100) { // nah, this is crazy
             duration *= 1000;
         }
@@ -180,8 +180,8 @@ public class ParticleTrailDesc {
 
 public class ActivateEffectDesc {
     public readonly string Effect;
-    public readonly ConditionEffectIndex ConditionEffect;
-    public readonly ConditionEffectIndex CheckExistingEffect;
+    public readonly ConditionEffect ConditionEffect;
+    public readonly ConditionEffect CheckExistingEffect;
 
     public readonly int TotalDamage;
     public readonly float Radius;

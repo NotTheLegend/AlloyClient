@@ -39,7 +39,7 @@ public class TypeHpBar : SubRenderBase {
         Scale.X = 0.68f * percent;
     }
     
-    public override void Draw(float yOffset, List<VertexObject> targets) {
+    public override void Draw(float yOffset, List<VertexObject> targets, double time) {
         _bgScale.W = yOffset;
         Scale.W = yOffset;
         targets.Add(new VertexObject(Parent.Position, UV, Scale, Rotation, Extra.Data, Color));

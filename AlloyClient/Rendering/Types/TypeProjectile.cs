@@ -41,7 +41,7 @@ public sealed class TypeProjectile : RenderBase {
 
     public override void SetName(string name) { }
 
-    public override void Draw(List<VertexObject> targets) {
+    public override void Draw(List<VertexObject> targets, double time) {
         var s = MathF.Sin(-RotationAngle);
         var c = MathF.Cos(-RotationAngle);
         var k = Size / 100f;

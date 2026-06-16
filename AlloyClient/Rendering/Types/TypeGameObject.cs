@@ -61,7 +61,7 @@ public sealed class TypeGameObject : RenderBase {
 
     public override void SetName(string name) { }
 
-    public override void Draw(List<VertexObject> targets) {
+    public override void Draw(List<VertexObject> targets, double time) {
         var s = MathF.Sin(-Entity.Rotation);
         var c = MathF.Cos(-Entity.Rotation);
         var k = Entity.Size / 100f;
@@ -78,10 +78,10 @@ public sealed class TypeGameObject : RenderBase {
 
         if (Entity.MaxHp != 0) {
             _hpBar.SetFill(1f * Entity.Hp / Entity.MaxHp);
-            _hpBar.Draw(y, targets);
+            _hpBar.Draw(y, targets, time);
         }
         
-        _effects.Draw(Entity.HeightOffset, targets);
+        _effects.Draw(Entity.HeightOffset, targets, time);
     }
 
     public override void DrawShadow() {

@@ -1,4 +1,4 @@
-﻿using AlloyClient.Game.Objects.Util;
+﻿using AlloyClient.Game;
 using AlloyClient.Networking.Structs.DataObjects;
 
 namespace AlloyClient.Networking.Packets.Incoming;
@@ -7,7 +7,7 @@ public class Aoe : IncomingPacket<Aoe> {
     public Position Pos;
     public float Radius;
     public ushort Damage;
-    public ConditionEffectIndex Effect;
+    public ConditionEffect Effect;
     public float Duration;
     public ushort OrigType;
 
@@ -26,7 +26,7 @@ public class Aoe : IncomingPacket<Aoe> {
         Pos.Read(ref reader);
         Radius = reader.ReadSingle();
         Damage = reader.ReadUInt16();
-        Effect = (ConditionEffectIndex)reader.ReadByte();
+        Effect = (ConditionEffect)reader.ReadByte();
         Duration = reader.ReadSingle();
         OrigType = reader.ReadUInt16();
     }

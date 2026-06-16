@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using AlloyClient.Game.Objects;
-using AlloyClient.Game.Objects.Util;
 using AlloyClient.Rendering.VertexData;
 using OpenTK.Mathematics;
 
@@ -26,32 +25,30 @@ public class TypeEffects : SubRenderBase {
         Extra = new ExtraData(RenderConfig.TypeEffect, RenderConfig.Shade);
     }
     
-    public override void Draw(float yOffset, List<VertexObject> targets) {
+    public override unsafe void Draw(float yOffset, List<VertexObject> targets, double time) {
         Scale.W = -0.5f;
 
-        var effects = (uint)(Entity.ConditionEffects & ~ConditionEffectUtil.IconlessEffects);
-        if (effects <= 0) return;
+        var total = Entity.EffectBuckets.TotalIcons;
+        if (total < 1) {
+            return;
+        }
 
-        var pos = Parent.Position;
+        Span<Vector4> effects = stackalloc Vector4[total];
+        Entity.EffectBuckets.GetEffectsData(effects, (int)(time / 500));
         
-        var num = (System.Numerics.BitOperations.PopCount(effects) - 1) * Size;
+        var pos = Parent.Position;
+        var num = (total - 1) * Size;
         
         var s = MathF.Sin(-Settings.CameraAngle);
         var c = MathF.Cos(-Settings.CameraAngle);
 
-        for (var i = 1; i < 32; i++) {
-            if ((effects & 1 << i) == 0) continue;
-            
+        for (var i = 0; i < total; i++) {
             var x = num * c - yOffset * s;
             var y = num * s + yOffset * c;
 
             var p = new Vector3(pos.X - x, pos.Y + y, pos.Z);
-
-            var eff = (ConditionEffects)(1 << i);
-            if (eff == ConditionEffects.Dead)
-                continue;
             
-            targets.Add(new VertexObject(p, ConditionEffectUtil.EffectIcons[eff][0], Scale, Rotation, Extra.Data, Color));
+            targets.Add(new VertexObject(p, effects[i], Scale, Rotation, Extra.Data, Color));
             num -= Size * 2;
         }
     }

@@ -196,7 +196,7 @@ public static class Map {
 
             foreach (var entity in list) {
                 if (entity.Visible) {
-                    entity.Draw(_renderTargets);
+                    entity.Draw(_renderTargets, gameTime.TotalMs);
                     Render.LastDrawCountEntities++;
                 }
 
@@ -211,7 +211,7 @@ public static class Map {
         
         foreach (var type in EntityStorage[ModelType.PbObject]) {
             if (type.Visible) {
-                type.Draw(_renderTargets);
+                type.Draw(_renderTargets, gameTime.TotalMs);
             }
         }
 

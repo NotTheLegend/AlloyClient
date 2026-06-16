@@ -63,7 +63,7 @@ public sealed class TypeModel3D : RenderBase {
     
     public override void SetName(string name) { }
 
-    public override void Draw(List<VertexObject> targets) {
+    public override void Draw(List<VertexObject> targets, double time) {
         Render.DrawModel(new VertexModel(Position, UV, new Vector3(_rotation, _sortId, RenderConfig.Shade)));
     }
 }

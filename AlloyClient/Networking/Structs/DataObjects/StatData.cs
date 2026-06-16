@@ -8,13 +8,10 @@ public struct StatData : IDataObject {
     public float FloatValue;
     public string Text;
 
-    public IDataObject DataObject;
-
     public void Reset() {
         Type = default;
         Value = 0;
         Text = null;
-        DataObject = null;
     }
 
     public void Read(ref SpanReader reader) {
@@ -93,6 +90,6 @@ public struct StatData : IDataObject {
     }
 
     public override string ToString() {
-        return $"Type: {Type}, Value: {Value}, Text: {Text}, DataObject: {DataObject}";
+        return $"Type: {Type}, Value: {Value}, Text: {Text}";
     }
 }

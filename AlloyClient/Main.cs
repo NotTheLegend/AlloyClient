@@ -16,6 +16,7 @@ using Alloy.UiLib.Signals;
 using Alloy.Common;
 using Alloy.ContentReader;
 using Alloy.Engine;
+using AlloyClient.Game;
 using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
 using OpenTK.Graphics.OpenGL;
@@ -103,8 +104,11 @@ public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
         var titleBackground = ContentLoader.LoadTexture("TitleScreen/TitleScreenBackground.png");
         var titleGraphic = ContentLoader.LoadTexture("TitleScreen/TitleScreenGraphic.png");
         var font = new BitmapFamily(ContentLoader.LoadFont("Fonts/MyriadPro/MyriadPro.msdf"));
+        
+        // Init content that depends on any atlas
         ModelData.Load();
         SliceLibrary.Load();
+        ConditionEffects.Init();
         
         // Set texture units
         var gameAtlasSampler = new Sampler(Atlas.Texture, 0);

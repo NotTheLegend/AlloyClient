@@ -75,7 +75,7 @@ public class TypeName : SubRenderBase {
         Color = new Color(0xFC, 0xDF, 0, 1);
     }
     
-    public override void Draw(float yOffset, List<VertexObject> targets) {
+    public override void Draw(float yOffset, List<VertexObject> targets, double time) {
         for (var index = 0; index < _glyphs.Length; index++) {
             var g = _glyphs[index];
             g.Scale.W += yOffset;

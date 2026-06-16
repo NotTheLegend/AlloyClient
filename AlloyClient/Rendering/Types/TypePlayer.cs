@@ -71,7 +71,7 @@ public sealed class TypePlayer : RenderBase {
         _typeName.SetTextures();
     }
 
-    public override void Draw(List<VertexObject> targets) {
+    public override void Draw(List<VertexObject> targets, double time) {
         var s = MathF.Sin(-Entity.Rotation);
         var c = MathF.Cos(-Entity.Rotation);
         var k = Entity.Size / 100f;
@@ -83,16 +83,16 @@ public sealed class TypePlayer : RenderBase {
         targets.Add(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color));
         var y = 0.1f;
         if (_player != Map.LocalPlayer) {
-            _typeName.Draw(y, targets);
+            _typeName.Draw(y, targets, time);
             y += _typeName.Height;
         }
         
         _hpBar.SetFill(1f * _player.Hp / _player.MaxHp);
-        _hpBar.Draw(y, targets);
+        _hpBar.Draw(y, targets, time);
         y += _hpBar.Height;
-        _mpBar.Draw(y, targets);
+        _mpBar.Draw(y, targets, time);
         
-        _effects.Draw(Entity.HeightOffset, targets);
+        _effects.Draw(Entity.HeightOffset, targets, time);
         
     }
 

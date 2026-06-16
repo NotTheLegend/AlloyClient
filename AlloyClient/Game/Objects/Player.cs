@@ -2,7 +2,6 @@
 using Alloy.Common;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Game.Objects.Enums;
-using AlloyClient.Game.Objects.Util;
 using AlloyClient.Networking;
 using AlloyClient.Networking.Enums;
 using AlloyClient.Networking.Packets.Outgoing;
@@ -335,20 +334,20 @@ public class Player : Entity {
     }
 
     private float AttackFrequency() {
-        if (HasConditionEffect(ConditionEffects.Dazed)) {
+        if (HasConditionEffect(ConditionEffect.Dazed)) {
             return MinAttackFreq;
         }
         
         var attFreq = MinAttackFreq + Dexterity / 75f * (MaxAttackFreq - MinAttackFreq);
 
-        if (HasConditionEffect(ConditionEffects.Berserk))
+        if (HasConditionEffect(ConditionEffect.Berserk))
             attFreq *= 1.25f;
         
         return attFreq;
     }
 
     public void Shoot(float attackAngle, GameTime gameTime) {
-        if (HasConditionEffect(ConditionEffects.Stunned) || HasConditionEffect(ConditionEffects.Paused))
+        if (HasConditionEffect(ConditionEffect.Stunned) || HasConditionEffect(ConditionEffect.Paused))
             return;
         
         var item = Equipment[0];

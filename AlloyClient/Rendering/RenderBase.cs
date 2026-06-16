@@ -66,7 +66,7 @@ public abstract class RenderBase : IComparable<RenderBase> {
 
     public void SetSize(float size) => Size = size;
 
-    public abstract void Draw(List<VertexObject> targets);
+    public abstract void Draw(List<VertexObject> targets, double time);
     
     public virtual void DrawShadow() { }
 
@@ -101,7 +101,7 @@ public abstract class SubRenderBase {
 
     public void SetAlpha(float alpha) => Extra.Alpha = alpha;
     
-    public abstract void Draw(float yOffset, List<VertexObject> targets);
+    public abstract void Draw(float yOffset, List<VertexObject> targets, double time);
 }
 
 public struct ExtraData {

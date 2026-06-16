@@ -1,11 +1,10 @@
 ﻿using System.Numerics;
-using AlloyClient.Game.Objects.Util;
 
 namespace AlloyClient.Networking.Packets.Incoming;
 
 public class Damage : IncomingPacket<Damage> {
     public int TargetId;
-    public ConditionEffects Effects;
+    //public ConditionEffects Effects;
     public ushort DamageAmount;
     public bool Kill;
     public byte BulletId;
@@ -16,7 +15,7 @@ public class Damage : IncomingPacket<Damage> {
 
     public override void Reset() {
         TargetId = 0;
-        Effects = 0;
+        //Effects = 0;
         DamageAmount = 0;
         Kill = false;
         BulletId = 0;
@@ -27,9 +26,11 @@ public class Damage : IncomingPacket<Damage> {
         TargetId = reader.ReadInt32();
 
         byte c = reader.ReadByte();
-        Effects = 0;
-        for (int i = 0; i < c; i++)
-            Effects |= (ConditionEffects)(1 << reader.ReadByte());
+        //Effects = 0;
+        for (int i = 0; i < c; i++) {
+            reader.ReadByte();
+            //Effects |= (ConditionEffects) (1 << reader.ReadByte());
+        }
 
         DamageAmount = reader.ReadUInt16();
         Kill = reader.ReadBoolean();
@@ -41,6 +42,6 @@ public class Damage : IncomingPacket<Damage> {
     }
 
     public override string ToString() {
-        return $"TargetId: {TargetId}, Effects: {Effects}, DamageAmount: {DamageAmount}, Kill: {Kill}, BulletId: {BulletId}, ObjectId: {ObjectId}";
+        return $"TargetId: {TargetId}, DamageAmount: {DamageAmount}, Kill: {Kill}, BulletId: {BulletId}, ObjectId: {ObjectId}";
     }
 }

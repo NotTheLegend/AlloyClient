@@ -4,7 +4,6 @@ using AlloyClient.Assets;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Assets.XmlStructs;
 using AlloyClient.Game.Objects.Enums;
-using AlloyClient.Game.Objects.Util;
 using AlloyClient.Networking.Enums;
 using AlloyClient.Networking.Structs.DataObjects;
 using AlloyClient.ParticleEffects;
@@ -66,7 +65,7 @@ public class Entity {
 
     public ItemDesc[] Equipment = new ItemDesc[20];
 
-    public ConditionEffects ConditionEffects = 0;
+    public ConditionEffectBucket EffectBuckets;
 
     public int ConnectType;
 
@@ -167,9 +166,7 @@ public class Entity {
         Effect?.SetEntityPosition(Position);
     }
 
-    public bool HasConditionEffect(ConditionEffects effect) {
-        return (ConditionEffects & effect) != 0;
-    }
+    public bool HasConditionEffect(ConditionEffect effect) => EffectBuckets.HasConditionEffect(effect);
 
     public virtual bool Update(double time, double dt) {
         if (Settings.MovementInterpolation) {
@@ -308,9 +305,9 @@ public class Entity {
                     }
                     InventoryUpdate.Dispatch(index);
                     break;
-                case StatsType.Condition1:
-                    ConditionEffects = (ConditionEffects)stat.Value;
-                    RenderBaseType.Extra.Alpha = HasConditionEffect(ConditionEffects.Invisible) ? 0.5f : 1;
+                case StatsType.Condition1: // TODO: implement same thing server side
+                    EffectBuckets.SetBucket(0, stat.Value);
+                    RenderBaseType.Extra.Alpha = HasConditionEffect(ConditionEffect.Invisible) ? 0.5f : 1;
                     break;
                 case StatsType.Name:
                     if (Name != stat.Text) {

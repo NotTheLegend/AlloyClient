@@ -26,5 +26,5 @@ public sealed class TypeNullObject : RenderBase {
     
     public override void SetName(string name) { }
     
-    public override void Draw(List<VertexObject> targets) { }
+    public override void Draw(List<VertexObject> targets, double time) { }
 }

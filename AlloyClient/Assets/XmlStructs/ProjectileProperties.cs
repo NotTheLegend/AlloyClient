@@ -1,9 +1,9 @@
 using System.Linq;
 using System.Xml.Linq;
 using AlloyClient.Game.Objects.ProjectilePaths;
-using AlloyClient.Game.Objects.Util;
 using AlloyClient.Networking.Packets.Incoming;
 using Alloy.Common;
+using AlloyClient.Game;
 
 namespace AlloyClient.Assets.XmlStructs;
 
@@ -19,7 +19,7 @@ public sealed class ProjectileProperties {
     public int Size {get; private set;}
     public int MinDamage {get; private set;}
     public int MaxDamage {get; private set;}
-    public (ConditionEffectIndex, int)[] Effects {get; private set;}
+    public (ConditionEffect, int)[] Effects {get; private set;}
     public bool MultiHit {get; private set;}
     public bool PassesCover {get; private set;}
     public bool ArmorPiercing {get; private set;}
@@ -47,7 +47,7 @@ public sealed class ProjectileProperties {
         Size = e.GetValue<int>("Size", -1);
         MinDamage = e.HasElement("Damage") ? e.GetValue<int>("Damage") : e.GetValue<int>("MinDamage");
         MaxDamage = e.HasElement("Damage") ? e.GetValue<int>("Damage") : e.GetValue<int>("MaxDamage");
-        Effects = e.Elements("ConditionEffect").Select(x => (ConditionEffectUtil.GetConditionEffectFromName(x.Value), (int)(x.GetAttribute<float>("duration") * 1000))).ToArray();
+        Effects = e.Elements("ConditionEffect").Select(x => (ConditionEffect.FromName(x.Value), (int)(x.GetAttribute<float>("duration") * 1000))).ToArray();
         MultiHit = e.HasElement("MultiHit");
         PassesCover = e.HasElement("PassesCover");
         ArmorPiercing = e.HasElement("ArmorPiercing");

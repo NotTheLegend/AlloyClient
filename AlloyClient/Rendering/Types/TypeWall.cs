@@ -67,7 +67,7 @@ public sealed class TypeWall : RenderBase {
         UV = texture.ToVector4(true);
     }
 
-    public override void Draw(List<VertexObject> targets) {
+    public override void Draw(List<VertexObject> targets, double time) {
         Render.DrawModel(new VertexModel(Position, UV, new Vector3(0, _sortId, RenderConfig.Shade)));
     }
 }
