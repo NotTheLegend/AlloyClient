@@ -1,17 +1,25 @@
 ﻿using System;
-using AlloyClient.Game;
+using System.Collections.Generic;
+using System.Linq;
+using Alloy.Engine;
 using AlloyClient.Rendering;
 using Alloy.UiLib;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Enums;
-using Alloy.Common;
-using AlloyClient.Utils;
 
 namespace AlloyClient.Ui.Components.Elements;
 
 public class DebugStats : Sprite {
     private const int Outline = 3;
+    
+    private const int WINDOW_DURATION = 30000;
+
+    private double _framesSeconds;
+
+    private readonly Queue<double> _frameTimes = new ();
+    private double _statisticsTimer;
+    private int _frameCount;
 
     private readonly SimpleText _frameTimeTimer = new (new TextConfig {Text = "Frame time over the last 30 seconds", X = 2, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop });
     private readonly SimpleText _avgFrameTime = new (new TextConfig {Text = "Avg: 0 ms", X = 8, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop });
@@ -29,8 +37,7 @@ public class DebugStats : Sprite {
     private readonly SimpleText _entities = new (new TextConfig {Text = "Entities: 0", X = 2, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop });
     private readonly SimpleText _particles = new (new TextConfig {Text = "Particles: 0", X = 2, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop });
     private readonly SimpleText _ui = new(new TextConfig {Text = "Ui: 0", X = 2, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop});
-
-    private double _lastTime;
+    
     private long _lastGcBytes;
     
     public DebugStats() {
@@ -50,7 +57,6 @@ public class DebugStats : Sprite {
         AddChild(_entities);
         AddChild(_particles);
         AddChild(_ui);
-        AddEventListener(Event.EnterFrame, OnFrameEnter);
         
         _fps.Y = 4;
         _frameTimeTimer.Y = _fps.Y + _fps.Height + 4;
@@ -70,25 +76,39 @@ public class DebugStats : Sprite {
         _ui.Y = _particles.Y + _particles.Height + 4;
     }
 
-    private void OnFrameEnter() {
-        var gameTime = Stage.GameTime;
-        if (gameTime.TotalMs - _lastTime < 1000) return;
+    public void Update(GameTime gameTime) {
+        var elapsed = gameTime.ElapsedMs;
+        _frameTimes.Enqueue(elapsed);
+        _framesSeconds += elapsed;
+        _statisticsTimer += elapsed;
 
-        _lastTime = gameTime.TotalMs;
+        // Drop frames that fall outside the 30s window
+        while (_framesSeconds > WINDOW_DURATION) {
+            _framesSeconds -= _frameTimes.Dequeue();
+        }
+
+        _frameCount++;
+
+        if (_statisticsTimer < 1000) {
+            return;
+        }
+
+        var fps = _frameCount / 1.0;
+        var count = _frameTimes.Count;
+        var sorted = _frameTimes.OrderBy(f => f).ToArray();
+        var avgFrameTime = _frameTimes.Sum() / count;
+        var p90FrameTime = sorted[(int) (count * 0.90f)];
+        var p99FrameTime = sorted[(int) (count * 0.99f)];
+        var maxFrameTime = sorted[count - 1];
         
-        /*Logger.Info($"\n[Frame Stats]\n" +
-                    $"FPS: {GameScreen.Frames}\n" +
-                    $"Tiles: {Render.LastDrawCountTiles}\n" +
-                    $"Shadows: {Render.LastDrawCountShadows}\n" +
-                    $"DrawnEntities: {Render.LastDrawCountEntities}\n" +
-                    $"DrawnUiElements: {UiRender.LastRenderCount}\n" +
-                    $"DrawnParticles: {Render.LastDrawParticleCount}");*/
-        
-        _avgFrameTime.SetText($"Avg: {Math.Round(GameScreen.AvgFrameTime, 3)} ms"); // Over 30 seconds
-        _p90FrameTime.SetText($"P90: {Math.Round(GameScreen.P90FrameTime, 3)} ms");
-        _p99FrameTime.SetText($"P99: {Math.Round(GameScreen.P99FrameTime, 3)} ms");
-        _maxFrameTime.SetText($"Max: {Math.Round(GameScreen.MaxFrameTime, 3)} ms");
-        _fps.SetText($"FPS: {Math.Round(GameScreen.FPS, 1)}");
+        _statisticsTimer = 0;
+        _frameCount = 0;
+
+        _avgFrameTime.SetText($"Avg: {Math.Round(avgFrameTime, 3)} ms"); // Over 30 seconds
+        _p90FrameTime.SetText($"P90: {Math.Round(p90FrameTime, 3)} ms");
+        _p99FrameTime.SetText($"P99: {Math.Round(p99FrameTime, 3)} ms");
+        _maxFrameTime.SetText($"Max: {Math.Round(maxFrameTime, 3)} ms");
+        _fps.SetText($"FPS: {Math.Round(fps, 1)}");
         _gcAlloc.SetText($"Total: {Math.Round(GC.GetTotalMemory(false) / 1000000f, 2)} MB");
         var gcBytes = GC.GetTotalAllocatedBytes();
         _gcAllocDelta.SetText($"Allocated delta: {Math.Round((gcBytes - _lastGcBytes) / 1000.0, 2)} KB");

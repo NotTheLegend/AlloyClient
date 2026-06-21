@@ -213,11 +213,12 @@ public class Entity {
     }
 
     public void UpdateVisibility(ref Matrix4 matrix) {
-        var dx = Position.X - Camera.Position.X;
+        /*var dx = Position.X - Camera.Position.X;
         var dy = Position.Y + Camera.Position.Y;
         var distanceSquared = dx * dx + dy * dy;
         const int playerSightRadiusSquared = Map.TileRenderDistance * Map.TileRenderDistance;
-        RenderBaseType.SetVisibility(distanceSquared <= playerSightRadiusSquared);
+        RenderBaseType.SetVisibility(distanceSquared <= playerSightRadiusSquared);*/
+        RenderBaseType.SetVisibility(true);
         
         //TODO: double check mg to make sure
         //var sort = Vector3.Transform(new Vector3(Position.X, Position.Y, 0), matrix).Y;

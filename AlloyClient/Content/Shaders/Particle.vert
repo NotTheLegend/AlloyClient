@@ -1,9 +1,7 @@
 ﻿#version 460 core
 
-uniform mat4x4 WorldMatrix;
-uniform mat4x4 ViewMatrix;
-uniform mat4x4 ProjMatrix;
-uniform mat4x4 BillMatrix;
+uniform mat4 FullMatrix;
+uniform mat4 BillMatrix;
 
 const vec2 particlePos[6] = vec2[6](
     vec2(-0.1, 0.1),
@@ -48,10 +46,10 @@ void main() {
     BaseUV = particleUV[verId];
     Color = data.Color;
     
-    vec4 depth = vec4(data.Position.xy, 0, 1) * WorldMatrix * ViewMatrix * ProjMatrix;
+    vec4 depth = vec4(data.Position.xy, 0, 1) * FullMatrix;
     
     pos.xyz += data.Position.xyz;
-    pos = pos * WorldMatrix * ViewMatrix * ProjMatrix;
+    pos = pos * FullMatrix;
     pos.z = 0.5f + 0.4f * depth.y;
     
     gl_Position = pos;

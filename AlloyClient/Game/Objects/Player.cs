@@ -329,8 +329,6 @@ public class Player : Entity {
     private void WalkTo(float x, float y) {
         var pos = ModifyMove(x, y);
         MoveTo(pos.X, pos.Y);
-
-        Camera.Update(pos.X, pos.Y);
     }
 
     private float AttackFrequency() {

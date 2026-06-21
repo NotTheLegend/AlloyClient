@@ -26,7 +26,6 @@ public sealed class ScreenManager : Sprite {
 
     private void AddedToStage() {
         Stage.AddEventListener(KeyboardEvent.KeyUp, OnKeyUp);
-        Stage.AddEventListener(ResizeEvent.Resize, OnResize);
     }
 
     /// <summary>
@@ -74,10 +73,6 @@ public sealed class ScreenManager : Sprite {
             Settings.FullscreenState.Set(!Settings.FullscreenState);
             Main.OnFullscreenToggle.Dispatch();
         }
-    }
-
-    private void OnResize(ResizeEvent args) {
-        Camera.UpdateViewPort(args.Width, args.Height);
     }
 }
 

@@ -1,95 +1,43 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using AlloyClient.Utils;
-using Alloy.Common;
-using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Game;
 
-public static class Camera {
-
-    public const int HudOffset = 240;
-
-    public static Vector2i Viewport;
-
-    public static Matrix4 WorldMatrix;
-    public static Matrix4 ViewMatrix;
-    public static Matrix4 ProjectionMatrix;
-    public static Matrix4 ZoomMatrix;
-    public static Matrix4 BillboardMatrix;
-
-    public static Vector2 VisibleTileRadius;
-
-    public static float CameraAngle;
-
-    public static Vector3 Position;
-
-    static Camera() {
-        Reset();
+public readonly struct Camera(Vector2 pos, Matrix4 matrix, Matrix4 billboard, Vector2 visibleTiles) {
+    public const float BaseCameraZoom = 100f;
+    
+    public readonly Vector2 Position = pos;
+    public readonly Matrix4 Matrix = matrix;
+    public readonly Matrix4 BillboardMatrix = billboard;
+    public readonly Vector2 VisibleTileRadius = visibleTiles;
+    
+    public static Camera Update(Vector2 pos, Vector3i viewport, float cameraAngle, float cameraZoom) {
+        var s = MathF.Sin(-cameraAngle);
+        var c = MathF.Cos(-cameraAngle);
+        var zoom = BaseCameraZoom * cameraZoom;
+        
+        var matrix = Matrix4.CreateRotationX(MathHelper.Pi); // world
+        matrix *= new Matrix4(new Vector4(1, 0, 0, 0), new Vector4(0, 1, 0, 0), new Vector4(s, -c, -1, 0), new Vector4(-pos.X, pos.Y, -12, 1)) * CreateScaleWithRotationZ(cameraAngle, zoom); // view
+        matrix *= Matrix4.CreateOrthographicOffCenter(-viewport.X + viewport.Z, viewport.X + viewport.Z, -viewport.Y, viewport.Y, -10000f, 10000f); // perspective
+        
+        var billboard = Matrix4.Identity;
+        billboard[0, 0] = c;
+        billboard[0, 1] = -s;
+        billboard[1, 0] = s;
+        billboard[1, 1] = c;
+        
+        var visibleTiles = new Vector2((viewport.X - viewport.Z) / zoom, viewport.Y / zoom);
+        
+        return new Camera(pos, matrix, billboard, visibleTiles);
     }
+    
+    public Vector3 ScreenToWorld(Vector2 mouse, Vector2i viewport) {
+        var mat = Matrix4.Invert(Matrix);
 
-    public static void Reset(bool includeHud = true) {
-        CameraAngle = 0f;
-
-        Position = new Vector3(0f, 0f, 12);
-
-        WorldMatrix = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(180));
-        ViewMatrix = Matrix4.Identity;
-        BillboardMatrix = Matrix4.Identity;
-
-        var width = Settings.ScreenSize.X;
-        var height = Settings.ScreenSize.Y;
-        var hudOffset = includeHud ? HudOffset : 0f;
-
-        Viewport = new Vector2i(width, height);
-        ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(-width + hudOffset, width + hudOffset, -height, height, -10000f, 10000f);
-        ZoomMatrix = Matrix4.CreateScale(Settings.CameraZoom);
-    }
-
-    public static void SetZoom(float zoom) {
-        ZoomMatrix = Matrix4.CreateScale(zoom);
-    }
-
-    public static void UpdateViewPort(int width, int height) {
-        GL.Viewport(0, 0, width, height);
-        Viewport = new Vector2i(width, height);
-        ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(-width + HudOffset, width + HudOffset, -height, height, -10000f, 10000f);
-    }
-
-    public static void Update(float x, float y) {
-        CameraAngle = -Settings.CameraAngle;
-
-        Position.X = x;
-        Position.Y = -y;
-
-        var s = MathF.Sin(CameraAngle);
-        var c = MathF.Cos(CameraAngle);
-        var s1 = MathF.Sin(CameraAngle - MathHelper.PiOver2);
-
-        ViewMatrix = Matrix4.Identity;
-        ViewMatrix.Row2 = new Vector4(s, s1, -1, 0);
-        ViewMatrix.Row3 = new Vector4(-x, y, -12, 1);
-
-        ViewMatrix *= Matrix4.CreateRotationZ(-CameraAngle);
-        ViewMatrix *= Matrix4.CreateScale(100);
-        ViewMatrix *= ZoomMatrix;
-
-        //TODO: make bb mat a 2x2 instead of 4x4 
-        BillboardMatrix[0, 0] = c;
-        BillboardMatrix[0, 1] = -s;
-        BillboardMatrix[1, 0] = s;
-        BillboardMatrix[1, 1] = c;
-
-        VisibleTileRadius = new Vector2((Settings.ScreenSize.X - HudOffset) / (100.0f * Settings.CameraZoom), Settings.ScreenSize.Y / (100.0f * Settings.CameraZoom));
-    }
-
-    // Only tested on MapEditor
-    public static Vector3 ScreenToWorld(Vector2 mouse) {
-        var mat = Matrix4.Invert(WorldMatrix * ViewMatrix * ProjectionMatrix);
-
-        var x = MathUtils.Map(mouse.X, 0, Viewport.X, -1, 1);
-        var y = MathUtils.Map(mouse.Y, Viewport.Y, 0, -1, 1);
+        var x = MathUtils.Map(mouse.X, 0, viewport.X, -1, 1);
+        var y = MathUtils.Map(mouse.Y, viewport.Y, 0, -1, 1);
         
         var near = new Vector3(x, y, 0);
         var far = new Vector3(x, y, 1);
@@ -105,9 +53,23 @@ public static class Camera {
         return pos;
     }
 
-    //public static Vector3 WorldToScreen(Vector3 worldPosition, Viewport viewport) {
-    //    return viewport.Project(worldPosition, ProjectionMatrix, ViewMatrix, WorldMatrix);
-    //}
+    public Vector2i WorldToScreen(Vector2 position, Vector2i viewport) {
+        throw new NotImplementedException();
+    }
+
+    private static Matrix4 CreateScaleWithRotationZ(float angle, float scale) {
+        var cos = MathF.Cos(angle);
+        var sin = MathF.Sin(angle);
+
+        var result = Matrix4.Identity;
+        result.Row0.X = cos * scale;
+        result.Row0.Y = sin * scale;
+        result.Row1.X = -sin * scale;
+        result.Row1.Y = cos * scale;
+        result.Row2.Z = scale;
+        
+        return result;
+    }
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 4)]

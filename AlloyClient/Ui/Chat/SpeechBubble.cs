@@ -74,7 +74,7 @@ public sealed class SpeechBubble : Sprite {
         if ((_lifetime -= gameTime.ElapsedMs) <= 0) Parent.RemoveChild(this);
 
         Scale = new Vector2(Settings.CameraZoom);
-        
+        /*
         var w = Camera.VisibleTileRadius.X;
         var h = Camera.VisibleTileRadius.Y;
         
@@ -92,6 +92,6 @@ public sealed class SpeechBubble : Sprite {
         var offset = _owner.HeightOffset / (h + h) * Stage.StageHeight;
 
         X = (int)newX;
-        Y = (int)newY + (int)offset;
+        Y = (int)newY + (int)offset;*/
     }
 }

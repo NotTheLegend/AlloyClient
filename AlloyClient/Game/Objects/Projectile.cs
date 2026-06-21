@@ -111,7 +111,7 @@ public sealed class Projectile : IResettable {
         } else if (!_projDesc.NoRotation) {
             var direction = newPos - _position;
             var angle = MathF.Atan2(direction.Y, direction.X);
-            Rotation = angle + Camera.CameraAngle + _angleCorrection;
+            Rotation = angle + Settings.CameraAngle + _angleCorrection;
         }
 
         // Only do HitTest 60/s instead of 5000+/s lol
@@ -135,11 +135,12 @@ public sealed class Projectile : IResettable {
     }
     
     private void UpdateVisibility(DepthMatrix matrix) {
-        var dx = _position.X - Camera.Position.X;
+        /*var dx = _position.X - Camera.Position.X;
         var dy = _position.Y + Camera.Position.Y;
         var distanceSquared = dx * dx + dy * dy;
         const int playerSightRadiusSquared = Map.TileRenderDistance * Map.TileRenderDistance;
-        RenderBaseType.SetVisibility(distanceSquared <= playerSightRadiusSquared);
+        RenderBaseType.SetVisibility(distanceSquared <= playerSightRadiusSquared);*/
+        RenderBaseType.SetVisibility(true);
 
         var sort = _position.X * matrix.M12 + _position.Y * matrix.M22 + matrix.M42;
         RenderBaseType.SetDepth(0.5f + 0.4f * sort + _jitter);

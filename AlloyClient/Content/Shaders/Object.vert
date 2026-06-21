@@ -2,9 +2,7 @@
 
 #define ObjectBuffer
 
-uniform mat4 WorldMatrix;
-uniform mat4 ViewMatrix;
-uniform mat4 ProjMatrix;
+uniform mat4 FullMatrix;
 uniform mat4 BillMatrix;
 uniform int RenderPass;
 
@@ -117,7 +115,7 @@ void main() {
     
     position = position * rotate * BillMatrix;
     position.xyz += data.Position.xyz;
-    position = position * WorldMatrix * ViewMatrix * ProjMatrix;
+    position = position * FullMatrix;
     position.z = data.Extra.SortId;
     gl_Position = position;
     

@@ -21,10 +21,23 @@ public static class Logging {
         );
     }
 
-    extension(ILogger) {
+    extension(ILogger logger) {
         public static ILoggerFactory Factory => Factory;
         
         public static ILogger CreateLogger(string name) => Factory.CreateLogger(name);
+        
+        public void Trace(string message) => logger.Log(LogLevel.Trace, message);
+        public void Trace(string message, Exception exception) => logger.Log(LogLevel.Trace, message, exception);
+        public void Debug(string message) => logger.Log(LogLevel.Debug, message);
+        public void Debug(string message, Exception exception) => logger.Log(LogLevel.Debug, message, exception);
+        public void Info(string message) => logger.Log(LogLevel.Information, message);
+        public void Info(string message, Exception exception) => logger.Log(LogLevel.Information, message, exception);
+        public void Warn(string message) => logger.Log(LogLevel.Warning, message);
+        public void Warn(string message, Exception exception) => logger.Log(LogLevel.Warning, message, exception);
+        public void Error(string message) => logger.Log(LogLevel.Error, message);
+        public void Error(string message, Exception exception) => logger.Log(LogLevel.Error, message, exception);
+        public void Panic(string message) => logger.Log(LogLevel.Critical, message);
+        public void Panic(string message, Exception exception) => logger.Log(LogLevel.Critical, message, exception);
     }
 }
 

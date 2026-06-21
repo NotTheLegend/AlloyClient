@@ -94,30 +94,20 @@ public static partial class Render {
         BuildParticleBuffers();
     }
     
-    public static void SetShaderParams(GameTime gameTime) {
-        _shaderGround.SetValue("WorldMatrix", Camera.WorldMatrix);
-        _shaderGround.SetValue("ViewMatrix", Camera.ViewMatrix);
-        _shaderGround.SetValue("ProjMatrix", Camera.ProjectionMatrix);
+    public static void SetShaderParams(GameTime gameTime, Camera camera) {
+        _shaderGround.SetValue("FullMatrix", camera.Matrix);
         _shaderGround.SetValue("GameTime", (float)(gameTime.TotalMs / 1000.0f));
         
-        _shaderShadow.SetValue("WorldMatrix", Camera.WorldMatrix);
-        _shaderShadow.SetValue("ViewMatrix", Camera.ViewMatrix);
-        _shaderShadow.SetValue("ProjMatrix", Camera.ProjectionMatrix);
-        _shaderShadow.SetValue("BillMatrix", Camera.BillboardMatrix);
+        _shaderShadow.SetValue("FullMatrix", camera.Matrix);
+        _shaderShadow.SetValue("BillMatrix", camera.BillboardMatrix);
         
-        _shaderModel.SetValue("WorldMatrix", Camera.WorldMatrix);
-        _shaderModel.SetValue("ViewMatrix", Camera.ViewMatrix);
-        _shaderModel.SetValue("ProjMatrix", Camera.ProjectionMatrix);
+        _shaderModel.SetValue("FullMatrix", camera.Matrix);
         
-        _shaderObject.SetValue("WorldMatrix", Camera.WorldMatrix);
-        _shaderObject.SetValue("ViewMatrix", Camera.ViewMatrix);
-        _shaderObject.SetValue("ProjMatrix", Camera.ProjectionMatrix);
-        _shaderObject.SetValue("BillMatrix", Camera.BillboardMatrix);
+        _shaderObject.SetValue("FullMatrix", camera.Matrix);
+        _shaderObject.SetValue("BillMatrix", camera.BillboardMatrix);
         _shaderObject.SetValue("Zoom", Settings.CameraZoom);
         
-        _shaderParticle.SetValue("WorldMatrix", Camera.WorldMatrix);
-        _shaderParticle.SetValue("ViewMatrix", Camera.ViewMatrix);
-        _shaderParticle.SetValue("ProjMatrix", Camera.ProjectionMatrix);
-        _shaderParticle.SetValue("BillMatrix", Camera.BillboardMatrix);
+        _shaderParticle.SetValue("FullMatrix", camera.Matrix);
+        _shaderParticle.SetValue("BillMatrix", camera.BillboardMatrix);
     }
 }

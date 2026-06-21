@@ -132,7 +132,7 @@ public sealed class Minimap : Sprite {
     private void OnFrameEnter() {
         if (Map.LocalPlayer == null) return;
 
-        _arrow.Rotation = -Camera.CameraAngle;
+        _arrow.Rotation = Settings.CameraAngle;
 
         var pos = Map.LocalPlayer.Position;
         var size = _size / _zoom / 2.0f;

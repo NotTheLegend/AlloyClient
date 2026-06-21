@@ -62,7 +62,7 @@ public class CharacterStatusText : Sprite {
             Parent.RemoveChild(this);
             return;
         }
-        
+        /*
         Scale = new Vector2(Settings.CameraZoom);
         
         var w = Camera.VisibleTileRadius.X;
@@ -86,6 +86,6 @@ public class CharacterStatusText : Sprite {
         Y = (int)newY - (int)drift + (int)offset;
         
         var remainingLifetime = _lifetime - elapsedTime;
-        Alpha = (float)(remainingLifetime / _lifetime);
+        Alpha = (float)(remainingLifetime / _lifetime);*/
     }
 }

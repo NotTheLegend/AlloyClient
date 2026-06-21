@@ -80,11 +80,14 @@ public static class Map {
         Minimap.OnNewMap.Dispatch(width, height);
     }
 
-    public static void Update(double time, double dt) {
-        CurrentTime = time;
+    public static void Update(GameTime gameTime, Camera camera) {
+        CurrentTime = gameTime.TotalMs;
+        var time = gameTime.TotalMs;
+        var dt = gameTime.ElapsedMs;
+        
         _particleCount = 0;
-        var fullMatrix = Camera.WorldMatrix * Camera.ViewMatrix * Camera.ProjectionMatrix;
-        var matrix = new DepthMatrix(fullMatrix);
+        var fullMatrix = camera.Matrix;
+        var matrix = new DepthMatrix(camera.Matrix);
 
         foreach (var (objectId, entity) in Entities) {
             if (!entity.Update(time, dt)) {
@@ -128,8 +131,6 @@ public static class Map {
         GL.Disable(EnableCap.CullFace);
 
         LastGameTime = gameTime;
-
-        Render.SetShaderParams(gameTime);
 
         #region Tile
         
@@ -339,9 +340,7 @@ public static class Map {
         _particleCount++;
     }
 
-    public static void Reset() {
-        Camera.Reset();
-
+    public static void Reset() { 
         Height = 0;
         Name = null;
         DisplayName = null;

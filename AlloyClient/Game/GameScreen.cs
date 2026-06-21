@@ -1,68 +1,63 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using AlloyClient.Display;
+﻿using AlloyClient.Display;
 using AlloyClient.Game.Components;
 using AlloyClient.Networking;
-using Alloy.Common;
 using Alloy.Engine;
+using AlloyClient.Rendering;
+using AlloyClient.Ui.Components.Elements;
+using OpenTK.Mathematics;
 
 namespace AlloyClient.Game;
 
 public sealed class GameScreen : Screen {
-    private const int WINDOW_DURATION = 30000;
+    
+    private readonly UserInput _userInput;
     
     public readonly GameSprite GameSprite;
 
-    public static double FramesSeconds;
-    public static double AvgFrameTime;
-    public static double P90FrameTime;
-    public static double P99FrameTime;
-    public static double MaxFrameTime;
-    public static double FPS;
 
-    private static readonly Queue<double> _frameTimes = new ();
-    private static double _statisticsTimer;
-    private static int _frameCount;
+
+    private readonly DebugStats _debugStats;
+    
+
+    private Camera _camera;
 
     public GameScreen() {
         Client.Connect(Settings.GameServerAddress, Settings.SelectedGameServerPort);
-        GameSprite = new GameSprite();
-        AddChild(GameSprite);
+        
+        
+        
+        
+        AddChild(_userInput = new UserInput()); // add map as param
+        
+        
+        AddChild(GameSprite = new GameSprite());
+        
+        
+        
+        AddChild(_debugStats = new DebugStats());
     }
 
     public override void Update(GameTime gameTime) {
-        var time = gameTime.TotalMs;
-        var dt = gameTime.ElapsedMs;
-        
-        Map.Update(time, dt);
-        PartyData.Update(time);
         Client.Tick();
+        
+        if (Map.LocalPlayer is null) {
+            return;
+        }
+        
+        _camera = Camera.Update(Map.LocalPlayer.Position, new Vector3i(Stage.StageWidth, Stage.StageHeight, 240), Settings.CameraAngle, Settings.CameraZoom);
+        _userInput.Update(gameTime, _camera);
+        
+        _debugStats.Update(gameTime);
+        
+        
+        
+        Map.Update(gameTime, _camera);
+        PartyData.Update(gameTime.TotalMs);
+        
     }
 
     public override void Draw(GameTime gameTime) {
-        var elapsed = gameTime.ElapsedMs;
-        _frameTimes.Enqueue(elapsed);
-        FramesSeconds += elapsed;
-        _statisticsTimer += elapsed;
-
-        // Drop frames that fall outside the 30s window
-        while (FramesSeconds > WINDOW_DURATION) {
-            FramesSeconds -= _frameTimes.Dequeue();
-        }
-
-        _frameCount++;
-        if (_statisticsTimer >= 1000) { // Calculate statistics every second
-            FPS = _frameCount / 1.0;
-            var count = _frameTimes.Count;
-            var sorted = _frameTimes.OrderBy(f => f).ToArray();
-            AvgFrameTime = _frameTimes.Sum() / count;
-            P90FrameTime = sorted[(int)(count * 0.90f)];
-            P99FrameTime = sorted[(int)(count * 0.99f)];
-            MaxFrameTime = sorted[count - 1];
-            _statisticsTimer = 0;
-            _frameCount = 0;
-        }
-
+        Render.SetShaderParams(gameTime, _camera);
         Map.Draw(gameTime);
         MinimapTexture.PreDrawUpdate();
     }

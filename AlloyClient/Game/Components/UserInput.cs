@@ -7,6 +7,7 @@ using AlloyClient.Networking;
 using AlloyClient.Networking.Packets.Outgoing;
 using Alloy.UiLib.Core;
 using Alloy.Common;
+using Alloy.Engine;
 using AlloyClient.Display;
 using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
@@ -51,7 +52,6 @@ public sealed class UserInput : Sprite {
         Stage.AddEventListener(MouseEvent.ScrollVertical, OnScroll);
         Stage.AddEventListener(MouseEvent.MiddleClick, OnMiddleClick);
         Stage.AddEventListener(MouseEvent.MouseMove, OnMouseMove);
-        AddEventListener(Event.EnterFrame, OnFrameEnter);
     }
     
     private void RemovedFromStage() {
@@ -63,7 +63,6 @@ public sealed class UserInput : Sprite {
         Stage.RemoveEventListener(MouseEvent.ScrollVertical, OnScroll);
         Stage.RemoveEventListener(MouseEvent.MiddleClick, OnMiddleClick);
         Stage.RemoveEventListener(MouseEvent.MouseMove, OnMouseMove);
-        RemoveEventListener(Event.EnterFrame, OnFrameEnter);
     }
     
     public static void SetWindowFocus(bool focus) => _windowFocus = focus;
@@ -99,17 +98,17 @@ public sealed class UserInput : Sprite {
         Map.LocalPlayer?.SetRelativeMovement(0, 0, 0);
     }
 
-    private void OnFrameEnter() {
-        if (IsInputDisabled() || !(_mouseDown || _autoFire) || Map.LocalPlayer == null)
+    public void Update(GameTime gameTime, Camera camera) {
+        if (IsInputDisabled() || !(_mouseDown || _autoFire)) {
             return;
+        }
         
-        var pos = Camera.ScreenToWorld(_mousePosition);
-
+        var pos = camera.ScreenToWorld(_mousePosition, Stage.Dimensions);
         var dX = pos.X - Map.LocalPlayer.Position.X;
         var dY = pos.Y - Map.LocalPlayer.Position.Y;
         var angle = MathF.Atan2(dY, dX);
         
-        Map.LocalPlayer.Shoot(angle, Stage.GameTime);
+        Map.LocalPlayer.Shoot(angle, gameTime);
     }
 
     private void SetPlayerMovement() {
@@ -130,7 +129,6 @@ public sealed class UserInput : Sprite {
         if (args.ShiftKey) {
             Settings.CameraZoom.Set(Math.Clamp(Settings.CameraZoom + 0.1f * args.Delta, Settings.MinCameraZoom, Settings.MaxCameraZoom));
             Logger.Log(LogLevel.Information, $"Camera zoom: {Settings.CameraZoom.Value}");
-            Camera.SetZoom(Settings.CameraZoom);
         } else {
             Minimap.OnZoom.Dispatch((int)args.Delta);
         }

@@ -2,10 +2,8 @@
 
 #define ShadowBuffer 
 
-uniform mat4x4 WorldMatrix;
-uniform mat4x4 ViewMatrix;
-uniform mat4x4 ProjMatrix;
-uniform mat4x4 BillMatrix;
+uniform mat4 FullMatrix;
+uniform mat4 BillMatrix;
 
 const vec2 shadowPos[6] = vec2[6](
     vec2(-0.5, 0.25),
@@ -47,7 +45,7 @@ void main() {
     vec4 pos = vec4(shadowPos[verId] * data.Scale, 0, 1) * BillMatrix;
     pos.xy += data.Position.xy;
     
-    gl_Position = pos * WorldMatrix * ViewMatrix * ProjMatrix;
+    gl_Position = pos * FullMatrix;
     
     BaseUV = shadowUV[verId];
     Color = data.Color;

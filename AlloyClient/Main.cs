@@ -146,6 +146,7 @@ public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
                 Exit();
                 break;
             case WindowResizeEventArgs e:
+                GL.Viewport(0, 0, e.NewClientSize.X, e.NewClientSize.Y);
                 var mode = Toolkit.Window.GetMode(Window);
                 if (mode != WindowMode.Hidden) {
                     Settings.LastWindowMode.Set(mode);

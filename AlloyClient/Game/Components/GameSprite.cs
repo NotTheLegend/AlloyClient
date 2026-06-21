@@ -8,18 +8,16 @@ using AlloyClient.Ui.Components.Elements;
 namespace AlloyClient.Game.Components;
 
 public sealed class GameSprite : Sprite {
-
-    public readonly UserInput UserInput;
+    
     public readonly HudView Hud;
     private readonly ChatBox _chat;
 
     public GameSprite() {
-        AddChild(UserInput = new UserInput());
+        
         AddChild(new ChatLayer());
         AddChild(new NotificationLayer());
         AddChild(Hud = new HudView());
         AddChild(_chat= new ChatBox());
-        AddChild(new DebugStats());
 
         Map.GameSprite = this;
         

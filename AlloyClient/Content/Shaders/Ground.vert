@@ -2,9 +2,7 @@
 
 #define TileBuffer 
 
-uniform mat4 WorldMatrix;
-uniform mat4 ViewMatrix;
-uniform mat4 ProjMatrix;
+uniform mat4 FullMatrix;
 uniform float GameTime;
 
 const vec2 tilePos[6] = vec2[6](
@@ -54,7 +52,7 @@ void main() {
     vec4 inputPosition = vec4(tilePos[verId], 0, 1);
     inputPosition.xy = (inputPosition.xy - 0.5) * 1.002 + 0.5;
     inputPosition.xy += data.Position.xy;
-    gl_Position = inputPosition * WorldMatrix * ViewMatrix * ProjMatrix;
+    gl_Position = inputPosition * FullMatrix;
 
     vsOutput.baseUV = tileUV[verId];
     vsOutput.coreUV.x = tileUV[verId].x + data.Position.z + sin(GameTime * data.Animate.x) + GameTime * data.Animate.z;
