@@ -1,4 +1,5 @@
 ﻿using System;
+using Alloy.Engine;
 using AlloyClient.Game;
 using AlloyClient.Game.Objects;
 using Alloy.UiLib.BuiltIn;
@@ -11,81 +12,47 @@ namespace AlloyClient.Ui.Character;
 
 public class CharacterStatusText : Sprite {
     private const int MaxDrift = 20;
+
+    private readonly Entity _owner;
+    private readonly double _lifetime;
+    private readonly double _endTime;
+    private readonly double _startTime;
     
-    private Entity _owner;
-
-    private string _text;
-    private uint _color;
-    private double _lifetime;
-    private int _offsetTime;
-
-    private double _startTime;
-
-
-    public CharacterStatusText(Entity en, string text, uint color, int lifetime, int offsetTime) {
+    public CharacterStatusText(Entity en, string text, uint color, double lifetime, double startTime) {
         _owner = en;
-
-        _text = text;
-        _color = color;
         _lifetime = lifetime;
-        _offsetTime = offsetTime;
+        _endTime = startTime + lifetime;
+        _startTime = startTime;
 
         var txtConfig = new TextConfig {
-            Text = _text,
-            Color = _color,
+            Text = text,
+            Color = color,
             MaxWidth = 120,
             FontSize = 20,
             OutlineThickness = 4
         };
-        var txt = new SimpleText(txtConfig);
-        AddChild(txt);
+        
+        AddChild(new SimpleText(txtConfig));
 
+        Visible = false;
         SetAnchor(UiAnchor.MiddleBottom);
-        AddEventListener(Event.AddedToStage, () => { AddEventListener(Event.EnterFrame, OnFrameEnter); });
-        AddEventListener(Event.RemovedFromStage, () => { RemoveEventListener(Event.EnterFrame, OnFrameEnter); });
 }
     
-    private void OnFrameEnter() {
-        if (_owner == null) return;
+    public bool Update(in GameTime gameTime, in Camera camera) {
+        if (_owner == null || _endTime < gameTime.TotalMs) {
+            return false;
+        }
 
-        var gameTime = Stage.GameTime;
-        var currentTime = gameTime.TotalMs;
-        
-        if (_startTime == 0) {
-            _startTime = currentTime + _offsetTime;
-        }
-        
-        if (currentTime < _startTime) return;
-        
-        var elapsedTime = currentTime - _startTime;
-        if (elapsedTime >= _lifetime) {
-            Parent.RemoveChild(this);
-            return;
-        }
-        /*
+        Visible = _startTime < gameTime.TotalMs;
         Scale = new Vector2(Settings.CameraZoom);
         
-        var w = Camera.VisibleTileRadius.X;
-        var h = Camera.VisibleTileRadius.Y;
-        
-        var s = MathF.Sin(-Settings.CameraAngle);
-        var c = MathF.Cos(-Settings.CameraAngle);
+        var pos = camera.WorldToScreen(new Vector3(_owner.X, _owner.Y, _owner.Z - _owner.HeightOffset), Stage.Dimensions);
+        var elapsed = (gameTime.TotalMs - _startTime) / _lifetime;
+        var drift = elapsed / (camera.VisibleTileRadius.Y * 2) * Stage.StageHeight;
 
-        var x = _owner.Position.X - Camera.Position.X;
-        var y = _owner.Position.Y + Camera.Position.Y;
-            
-        var x1 = x * c - y * s;
-        var y1 = x * s + y * c;
-
-        var newX = MathUtils.Map(x1, -w, w, 0f, Stage.StageWidth - Camera.HudOffset);
-        var newY = MathUtils.Map(y1, -h, h, 0f, Stage.StageHeight);
-        var offset = _owner.HeightOffset / (h + h) * Stage.StageHeight;
-        var drift = elapsedTime / _lifetime / (h + h) * Stage.StageHeight;
-
-        X = (int)newX;
-        Y = (int)newY - (int)drift + (int)offset;
-        
-        var remainingLifetime = _lifetime - elapsedTime;
-        Alpha = (float)(remainingLifetime / _lifetime);*/
+        X = pos.X;
+        Y = pos.Y - (int)drift;
+        Alpha = (float)(1 - elapsed);
+        return true;
     }
 }

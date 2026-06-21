@@ -264,7 +264,7 @@ public sealed class ItemTile : Sprite {
         _sprite.Scale = Stage.ScreenScale;
         _sprite.StartDrag();
         _sprite.AddEventListener(MouseEvent.LeftUp, OnEndDrag);
-        Map.GameSprite.AddChild(_sprite);
+        GameScreen.GameSprite.AddChild(_sprite);
     }
 
     private void OnEndDrag(MouseEvent args) {
@@ -272,7 +272,7 @@ public sealed class ItemTile : Sprite {
         _sprite.RemoveEventListener(MouseEvent.LeftUp, OnEndDrag);
         _sprite.EndDrag();
         _sprite.Scale = Vector2.One;
-        Map.GameSprite.RemoveChild(_sprite);
+        GameScreen.GameSprite.RemoveChild(_sprite);
         AddChild(_sprite);
         AddChild(_tierText);
 

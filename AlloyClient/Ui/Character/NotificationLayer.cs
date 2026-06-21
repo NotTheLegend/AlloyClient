@@ -3,30 +3,34 @@ using AlloyClient.Game.Objects;
 using Alloy.UiLib.Core;
 using Alloy.Common;
 using Alloy.Engine;
+using AlloyClient.Game;
 
 namespace AlloyClient.Ui.Character;
 
-public class NotificationLayer : Sprite {
-    private static readonly Queue<CharacterStatusText> TextQueue = new();
+public record struct StatusData(Entity Owner, string Text, uint Color, int Lifetime, int OffsetTime);
 
-    public NotificationLayer() {
-        AddEventListener(Event.EnterFrame, OnFrameEnter);
-    }
+public class NotificationLayer : Sprite {
+    private static readonly Queue<StatusData> TextQueue = new();
+    private readonly List<CharacterStatusText> _list = [];
     
     public static void AddStatusText(Entity en, string text, uint color, int lifetime, int offsetTime) {
-        var data = new CharacterStatusText(en, text, color, lifetime, offsetTime);
+        var data = new StatusData(en, text, color, lifetime, offsetTime);
         TextQueue.Enqueue(data);
     }
 
-    public void Update(GameTime gameTime) {
-        while (TextQueue.TryDequeue(out var characterStatusText)) {
-            AddChild(characterStatusText);
+    public void Update(in GameTime gameTime, in Camera camera) {
+        while (TextQueue.TryDequeue(out var data)) {
+            var child = new CharacterStatusText(data.Owner, data.Text, data.Color, data.Lifetime, data.OffsetTime + gameTime.TotalMs);
+            AddChild(child);
+            _list.Add(child);
         }
-    }
 
-    private void OnFrameEnter() {
-        while (TextQueue.TryDequeue(out var characterStatusText)) {
-            AddChild(characterStatusText);
+        for (var i = _list.Count - 1; i >= 0; i--) {
+            var status = _list[i];
+            if (!status.Update(in gameTime, in camera)) {
+                _list.RemoveAt(i);
+                RemoveChild(status);
+            }
         }
     }
 }

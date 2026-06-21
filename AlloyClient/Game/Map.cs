@@ -26,8 +26,6 @@ public static class Map {
 
     public static GameTime LastGameTime;
 
-    public static GameSprite GameSprite;
-
     public static double CurrentTime;
 
     public static int Width;
@@ -380,7 +378,7 @@ public static class Map {
 
         LocalPlayer = player;
         MinimapLayer.SetFocus(player);
-        GameSprite.Hud.CreatePlayerDependentAssets();
+        GameScreen.GameSprite.CreatePlayerDependentAssets();
         OnPlayerUpdate.Dispatch(player);
     }
 }

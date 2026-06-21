@@ -31,6 +31,8 @@ public class Entity {
     public float HeightOffset;
     public Vector2 Position;
     public float Rotation;
+    public float X => Position.X;
+    public float Y => Position.Y;
     public float Z;
 
     public Vector2 MovementVector;

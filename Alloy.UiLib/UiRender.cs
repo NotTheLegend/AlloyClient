@@ -102,8 +102,7 @@ public static class UiRender {
         
         var ratio = MathF.Min((float)Screen.X / DefaultScreen.X, (float)Screen.Y / DefaultScreen.Y);
         
-        Stage.ScreenScale = new Vector2(ratio, ratio);
-        Stage.SetSize(screen);
+        Stage.SetSize(screen, new Vector2(ratio, ratio));
 
         ViewMatrix.M11 = 2.0f / Screen.X;
         ViewMatrix.M22 = 2.0f / -Screen.Y;

@@ -98,7 +98,7 @@ public sealed class UserInput : Sprite {
         Map.LocalPlayer?.SetRelativeMovement(0, 0, 0);
     }
 
-    public void Update(GameTime gameTime, Camera camera) {
+    public void Update(in GameTime gameTime, in Camera camera) {
         if (IsInputDisabled() || !(_mouseDown || _autoFire)) {
             return;
         }

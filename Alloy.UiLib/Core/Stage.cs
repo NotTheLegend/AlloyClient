@@ -12,7 +12,7 @@ namespace Alloy.UiLib.Core;
 /// </summary>
 public sealed class Stage : Sprite {
 
-    public static Vector2 ScreenScale { get; internal set; }
+    public Vector2 ScreenScale { get; private set; }
 
     public Vector2i Dimensions => new Vector2i(StageWidth, StageHeight);
     
@@ -32,9 +32,10 @@ public sealed class Stage : Sprite {
         Stage = this;
     }
 
-    internal void SetSize(Vector2i dim) {
+    internal void SetSize(Vector2i dim, Vector2 scale) {
         StageWidth = dim.X;
         StageHeight = dim.Y;
+        ScreenScale = scale;
     }
     
     public void Update(GameTime gameTime) {

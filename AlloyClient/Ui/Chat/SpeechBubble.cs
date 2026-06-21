@@ -1,11 +1,11 @@
 ﻿using System;
+using Alloy.Engine;
 using AlloyClient.Game;
 using AlloyClient.Game.Objects;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Enums;
 using OpenTK.Mathematics;
-using AlloyClient.Utils;
 
 namespace AlloyClient.Ui.Chat;
 
@@ -13,11 +13,13 @@ public record struct SpeechData(Entity Owner, string Text, string Recipient);
 
 public sealed class SpeechBubble : Sprite {
 
-    private double _lifetime = 5000;
-    
+    private const double DefaultLifetimeMs = 5000;
+
+    private readonly double _lifetime;
     private readonly Entity _owner;
 
-    public SpeechBubble(SpeechData data) {
+    public SpeechBubble(SpeechData data, double time) {
+        _lifetime = time + DefaultLifetimeMs;
         _owner = data.Owner;
         var type = SpeechColors.Default;
         
@@ -64,34 +66,18 @@ public sealed class SpeechBubble : Sprite {
         AddChild(txt);
         
         SetAnchor(UiAnchor.MiddleBottom);
-        AddEventListener(Event.AddedToStage, () => { AddEventListener(Event.EnterFrame, OnFrameEnter); });
-        AddEventListener(Event.RemovedFromStage, () => { RemoveEventListener(Event.EnterFrame, OnFrameEnter); });
     }
 
-    private void OnFrameEnter() {
-        var gameTime = Stage.GameTime;
-        if (_owner == null) return;
-        if ((_lifetime -= gameTime.ElapsedMs) <= 0) Parent.RemoveChild(this);
-
-        Scale = new Vector2(Settings.CameraZoom);
-        /*
-        var w = Camera.VisibleTileRadius.X;
-        var h = Camera.VisibleTileRadius.Y;
+    public bool Update(in GameTime gameTime, in Camera camera) {
+        if (_lifetime < gameTime.TotalMs || _owner == null) {
+            return false;
+        }
         
-        var s = MathF.Sin(-Settings.CameraAngle);
-        var c = MathF.Cos(-Settings.CameraAngle);
-
-        var x = _owner.Position.X - Camera.Position.X;
-        var y = _owner.Position.Y + Camera.Position.Y;
-            
-        var x1 = x * c - y * s;
-        var y1 = x * s + y * c;
-
-        var newX = MathUtils.Map(x1, -w, w, 0f, Stage.StageWidth - Camera.HudOffset);
-        var newY = MathUtils.Map(y1, -h, h, 0f, Stage.StageHeight);
-        var offset = _owner.HeightOffset / (h + h) * Stage.StageHeight;
-
-        X = (int)newX;
-        Y = (int)newY + (int)offset;*/
+        var pos = camera.WorldToScreen(new Vector3(_owner.X, _owner.Y, _owner.Z - _owner.HeightOffset), Stage.Dimensions);
+        
+        Scale = new Vector2(Settings.CameraZoom);
+        X = pos.X;
+        Y = pos.Y;
+        return true;
     }
 }
