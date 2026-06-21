@@ -48,7 +48,7 @@ public class TypeEffects : SubRenderBase {
 
             var p = new Vector3(pos.X - x, pos.Y + y, pos.Z);
             
-            targets.Add(new VertexObject(p, effects[i], Scale, Rotation, Extra.Data, Color));
+            targets.Add(new VertexObject(p, effects[i], Scale, Rotation, Extra, Color));
             num -= Size * 2;
         }
     }

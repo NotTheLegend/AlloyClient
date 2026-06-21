@@ -15,6 +15,8 @@ namespace AlloyClient.Game;
 
 public sealed class GameScreen : Screen {
 
+    public const double FixedUpdateStep = 1d / 60;
+
     public static GameScreen GameSprite;
     
     private readonly UserInput _userInput;
@@ -23,8 +25,8 @@ public sealed class GameScreen : Screen {
     private readonly HudView _hud;
     private readonly ChatBox _chat;
     private readonly DebugStats _debugStats;
-    
 
+    private double _fixedUpdateElapsed;
     private Camera _camera;
 
     public GameScreen() {
@@ -49,12 +51,18 @@ public sealed class GameScreen : Screen {
             return;
         }
         
-        _camera = Camera.Update(Map.LocalPlayer.Position, new Vector3i(Stage.StageWidth, Stage.StageHeight, 240), Settings.CameraAngle, Settings.CameraZoom);
+        _camera = Camera.Update(Map.LocalPlayer.Position, new Vector3i(Stage.StageWidth, Stage.StageHeight, _hud.Width), Settings.CameraAngle, Settings.CameraZoom);
         _userInput.Update(gameTime, _camera);
         _chatLayer.Update(gameTime, _camera);
         _notificationLayer.Update(gameTime, _camera);
         _debugStats.Update(gameTime);
-        
+
+        _fixedUpdateElapsed += gameTime.ElapsedMs;
+
+        while (_fixedUpdateElapsed > FixedUpdateStep) {
+            _fixedUpdateElapsed -= FixedUpdateStep;
+            Map.FixedUpdate(new GameTime(gameTime.TotalMs, FixedUpdateStep));
+        }
         
         
         Map.Update(gameTime, _camera);
@@ -64,7 +72,7 @@ public sealed class GameScreen : Screen {
 
     public override void Draw(GameTime gameTime) {
         Render.SetShaderParams(gameTime, _camera);
-        Map.Draw(gameTime);
+        Map.Draw(gameTime, _camera);
         MinimapTexture.PreDrawUpdate();
     }
 

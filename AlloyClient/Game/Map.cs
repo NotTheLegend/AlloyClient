@@ -78,7 +78,7 @@ public static class Map {
         Minimap.OnNewMap.Dispatch(width, height);
     }
 
-    public static void Update(GameTime gameTime, Camera camera) {
+    public static void Update(in GameTime gameTime, in Camera camera) {
         CurrentTime = gameTime.TotalMs;
         var time = gameTime.TotalMs;
         var dt = gameTime.ElapsedMs;
@@ -108,10 +108,9 @@ public static class Map {
 
         for (var i = Projectiles.Count - 1; i >= 0; i--) {
             var proj = Projectiles[i];
-            if (proj.Update(time, dt, matrix))
+            if (proj.Update(gameTime))
                 continue;
             
-            EntityStorage.Remove(proj);
             ObjectPools.Projectiles.Push(proj);
 
             var idx = Projectiles.Count - 1;
@@ -119,11 +118,19 @@ public static class Map {
             Projectiles.RemoveAt(idx);
         }
     }
+
+    public static void FixedUpdate(in GameTime gameTime) {
+        foreach (var projectile in Projectiles) {
+            projectile.FixedUpdate(in gameTime);
+        }
+    }
     
     private static Vector2 _lastPosition = Vector2.Zero;
 
-    public static void Draw(GameTime gameTime) {
+    public static void Draw(in GameTime gameTime, in Camera camera) {
         if (LocalPlayer == null) return;
+
+        var depthMatrix = new DepthMatrix(camera.Matrix);
 
         GL.Disable(EnableCap.DepthTest);
         GL.Disable(EnableCap.CullFace);
@@ -164,6 +171,10 @@ public static class Map {
 
         foreach (var type in EntityStorage[ModelType.PbObject]) {
             type.DrawShadow();
+        }
+
+        foreach (var projectile in Projectiles) {
+            Render.DrawShadow(projectile.DrawShadow());
         }
 
         Render.EndShadowDraw();
@@ -212,6 +223,10 @@ public static class Map {
             if (type.Visible) {
                 type.Draw(_renderTargets, gameTime.TotalMs);
             }
+        }
+
+        foreach (var projectile in Projectiles) {
+            _renderTargets.Add(projectile.Draw(depthMatrix));
         }
 
         Render.FlushBufferEntity(_renderTargets);
@@ -318,7 +333,6 @@ public static class Map {
 
     public static void AddProjectile(Projectile proj) {
         Projectiles.Add(proj);
-        EntityStorage.Add(proj);
     }
 
     public static void AddParticles(ParticleData[] particles, int count) {
@@ -409,13 +423,6 @@ public class RenderStorage {
                 break;
         }
     }
-    
-    public void Add(Projectile proj) {
-        var type = proj.RenderBaseType;
-        var list = Types[(int)type.ModelType];
-
-        list.Add(type);
-    }
 
     private void Add(RenderBase type) {
         if (type == null) {
@@ -435,13 +442,6 @@ public class RenderStorage {
         if (type is TypeWall w) {
             Remove(w.Top);
         }
-    }
-    
-    public void Remove(Projectile proj) {
-        var type = proj.RenderBaseType;
-        var list = Types[(int)type.ModelType];
-
-        list.Remove(type);
     }
 
     private void Remove(RenderBase type) {

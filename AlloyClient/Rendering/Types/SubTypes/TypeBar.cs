@@ -36,7 +36,7 @@ public class TypeBar : SubRenderBase {
     public override void Draw(float yOffset, List<VertexObject> targets, double time) {
         _bgScale.W = yOffset;
         Scale.W = yOffset;
-        targets.Add(new VertexObject(Parent.Position, UV, Scale, Rotation, Extra.Data, Color));
-        targets.Add(new VertexObject(Parent.Position, UV, _bgScale, Rotation, Extra.Data + new Vector4(0, 0.001f, 0, 0), _bgColor));
+        targets.Add(new VertexObject(Parent.Position, UV, Scale, Rotation, Extra, Color));
+        targets.Add(new VertexObject(Parent.Position, UV, _bgScale, Rotation, Extra/* + new Vector4(0, 0.001f, 0, 0)*/, _bgColor)); // TODO: make bar outlines ddx/ddy instead of 2nd quad
     }
 }

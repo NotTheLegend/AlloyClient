@@ -46,6 +46,6 @@ public sealed class TypeGroundObject : RenderBase {
     public override void SetName(string name) { }
 
     public override void Draw(List<VertexObject> targets, double time) {
-        targets.Add(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color));
+        targets.Add(new VertexObject(Position, UV, Scale, Rotation, Extra, Color));
     }
 }

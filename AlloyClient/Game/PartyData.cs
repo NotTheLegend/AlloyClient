@@ -4,6 +4,7 @@ using AlloyClient.Game.Objects;
 using AlloyClient.Networking;
 using AlloyClient.Networking.Packets.Outgoing;
 using AlloyClient.Utils;
+using OpenTK.Mathematics;
 
 namespace AlloyClient.Game;
 
@@ -46,7 +47,7 @@ public static class PartyData {
         var i = 0;
         
         foreach (var player in Map.Players.Values) {
-            var dist = localPosition.DistanceSquared(player.Position);
+            Vector2.DistanceSquared(localPosition, player.Position, out var dist);
             if (dist < MaxDistance) {
                 Members[i] = new PartyInfo(player, player.Locked, dist, player.ObjectId);
                 i++;

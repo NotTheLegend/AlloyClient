@@ -37,12 +37,4 @@ public static class Extensions {
             GTween.Add(Tween.New(sprite, easing, duration, end, EaseType.Alpha, delay, onFinish));
         }
     }
-
-    extension(Vector2 vector2) {
-        public float DistanceSquared(Vector2 pos) {
-            var x = pos.X - vector2.X;
-            var y = pos.Y - vector2.Y;
-            return x * x + y * y;
-        }
-    }
 }

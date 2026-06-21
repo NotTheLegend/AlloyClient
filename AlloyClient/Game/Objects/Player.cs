@@ -377,7 +377,7 @@ public class Player : Entity {
             var bId = GetBulletId();
             var proj = ObjectPools.Projectiles.Pop();
             var dmg = Random.Shared.NextRange(projProps.MinDamage, projProps.MaxDamage); // Migrate to match server rng
-            proj.Reset(bId, dmg, angle * MathHelper.RadToDeg, this, objProps, projProps, projProps.Path.Clone(), Position);
+            proj.Reset(bId, dmg, angle * MathHelper.RadToDeg, this, objProps, projProps, null, Position);
             Map.AddProjectile(proj);
             
             var shoot = PlayerShoot.CreatePacket();

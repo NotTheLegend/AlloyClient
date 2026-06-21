@@ -23,7 +23,7 @@ public sealed class ProjectileProperties {
     public bool MultiHit {get; private set;}
     public bool PassesCover {get; private set;}
     public bool ArmorPiercing {get; private set;}
-    public bool ParticleTrail {get; private set;}
+    public bool HasParticleTrail {get; private set;}
     public bool Wavy {get; private set;}
     public bool Parametric {get; private set;}
     public bool Boomerang {get; private set;}
@@ -31,9 +31,7 @@ public sealed class ProjectileProperties {
     public float Frequency {get; private set;}
     public float Magnitude {get; private set;}
     public bool NoRotation {get; private set;}
-    public uint ParticleTrailColor {get; private set;}
-    public int ParticleTrailLifetime {get; private set;}
-    public float ParticleTrailIntensity {get; private set;}
+    public ParticleTrail ParticleTrail {get; private set;}
     public ProjectilePath Path { get; private set; }
 
     private ProjectileProperties() {}
@@ -51,7 +49,7 @@ public sealed class ProjectileProperties {
         MultiHit = e.HasElement("MultiHit");
         PassesCover = e.HasElement("PassesCover");
         ArmorPiercing = e.HasElement("ArmorPiercing");
-        ParticleTrail = e.HasElement("ParticleTrail");
+        HasParticleTrail = e.HasElement("ParticleTrail");
         Wavy = e.HasElement("Wavy");
         Parametric = e.HasElement("Parametric");
         Boomerang = e.HasElement("Boomerang");
@@ -60,11 +58,8 @@ public sealed class ProjectileProperties {
         Magnitude = e.GetValue<float>("Magnitude", 3);
         NoRotation = e.HasElement("NoRotation");
 
-        if (ParticleTrail) {
-            var attr = e.Element("ParticleTrail");
-            ParticleTrailColor = attr.GetValue<uint>("ParticleTrail", 0xFF00FF);
-            ParticleTrailLifetime = attr.GetAttribute("lifetimeMS", 600);
-            ParticleTrailIntensity = attr.GetAttribute("intensity", 0.3f);
+        if (e.GetElement("ParticleTrail", out var tag)) {
+            ParticleTrail = ParticleTrail.FromXml(tag);
         }
         
         if (e.Element("Path") != null)
@@ -91,3 +86,7 @@ public sealed class ProjectileProperties {
         };
     }
 }
+
+public readonly record struct ParticleTrail(uint Color, int LifetimeMs, float Intensity) {
+    public static ParticleTrail FromXml(XElement xml) => new(xml.GetValue<uint>("ParticleTrail", 0xFF00FF), xml.GetAttribute("lifetimeMS", 600), xml.GetAttribute("intensity", 0.3f));
+};

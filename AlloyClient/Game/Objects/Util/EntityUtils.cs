@@ -1,36 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Objects.Util;
 
 public static class EntityUtils {
-    public static float CalculateDistance(Vector2 point1, Vector2 point2) {
-        float deltaX = point1.X - point2.X;
-        float deltaY = point1.Y - point2.Y;
-        return (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
-    }
-
-    public static List<Entity> FindEntitiesInRadius(Entity player, IEnumerable<Entity> entities, float radius) {
-        List<Entity> entitiesInRadius = new List<Entity>();
-
-        foreach (Entity entity in entities) {
-            float distance = CalculateDistance(player.Position, entity.Position);
-
-            if (distance <= radius) {
-                entitiesInRadius.Add(entity);
-            }
-        }
-
-        return entitiesInRadius;
-    }
-    
     public static Entity FindClosestEntityInRadius(Entity player, IEnumerable<Entity> entities, float radius) {
         Entity closestEntity = null;
         var closestDistance = float.MaxValue;
 
         foreach (var entity in entities) {
-            var distance = CalculateDistance(player.Position, entity.Position);
+            Vector2.DistanceSquared(player.Position, entity.Position, out var distance);
             
             if (entity == Map.LocalPlayer)
                 continue;
@@ -49,7 +28,7 @@ public static class EntityUtils {
         var closestDistance = float.MaxValue;
 
         foreach (var entity in entities) {
-            var distance = CalculateDistance(player.Position, entity.Position);
+            Vector2.DistanceSquared(player.Position, entity.Position, out var distance);
             
             if (IsCharacter(entity))
                 continue;
@@ -72,7 +51,7 @@ public static class EntityUtils {
             if (entity is not Player)
                 continue;
             
-            var dist = CalculateDistance(position, entity.Position);
+            Vector2.DistanceSquared(position, entity.Position, out var dist);
             
             if (dist > radius || dist >= enDist)
                 continue;
@@ -92,7 +71,7 @@ public static class EntityUtils {
             if (!entity.Properties.IsEnemy)
                 continue;
             
-            var dist = CalculateDistance(position, entity.Position);
+            Vector2.DistanceSquared(position, entity.Position, out var dist);
             
             if (dist > radius || dist >= enDist)
                 continue;

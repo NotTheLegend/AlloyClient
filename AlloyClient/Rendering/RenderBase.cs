@@ -123,4 +123,10 @@ public struct ExtraData {
     public ExtraData(float type, float shade) {
         _internal = new Vector4(type, 0f, shade, 1f);
     }
+    
+    public ExtraData(float type, float sort, float shade, float alpha) {
+        _internal = new Vector4(type, sort, shade, alpha);
+    }
+
+    public static ExtraData NewShadedObject(float sortId, float alpha) => new ExtraData(RenderConfig.TypeGameObject, sortId, RenderConfig.Shade, alpha);
 }

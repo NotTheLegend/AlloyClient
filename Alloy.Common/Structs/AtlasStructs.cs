@@ -5,6 +5,9 @@ namespace Alloy.Common.Structs;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct AtlasData : IEquatable<AtlasData> {
+
+    public const float Padding = AtlasConfig.Padding;
+    
     public float U;
     public float V;
     public float W;
@@ -27,10 +30,10 @@ public struct AtlasData : IEquatable<AtlasData> {
     }
 
     public void RemovePadding(uint pixels = 1) {
-        U += AtlasConfig.Padding * pixels / AtlasConfig.AtlasWidth;
-        V += AtlasConfig.Padding * pixels / AtlasConfig.AtlasHeight;
-        W -= AtlasConfig.Padding * pixels * 2 / AtlasConfig.AtlasWidth;
-        H -= AtlasConfig.Padding * pixels * 2 / AtlasConfig.AtlasHeight;
+        U += Padding * pixels / AtlasConfig.AtlasWidth;
+        V += Padding * pixels / AtlasConfig.AtlasHeight;
+        W -= Padding * pixels * 2 / AtlasConfig.AtlasWidth;
+        H -= Padding * pixels * 2 / AtlasConfig.AtlasHeight;
     }
 
     public Vector4 ToVector4(bool removePad = false) {

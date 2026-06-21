@@ -7,7 +7,7 @@ using Alloy.Common;
 namespace AlloyClient.Game.Components.Hud;
 
 public sealed class HudView : Sprite {
-    public const int Width = 240;
+    public const int HudWidth = 240;
 
 
     private Minimap _minimap;
@@ -23,7 +23,7 @@ public sealed class HudView : Sprite {
     public HudView() {
         SetAnchor(UiAnchor.MiddleRight);
 
-        var bg = new ColorRect(new ColorRectConfig {Width = Width, Height = Settings.DefaultScreenHeight, Color = 0x363636});
+        var bg = new ColorRect(new ColorRectConfig {Width = HudWidth, Height = Settings.DefaultScreenHeight, Color = 0x363636});
         AddChild(bg);
 
         _minimap = new Minimap();

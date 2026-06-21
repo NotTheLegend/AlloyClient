@@ -79,7 +79,7 @@ public class TypeName : SubRenderBase {
         for (var index = 0; index < _glyphs.Length; index++) {
             var g = _glyphs[index];
             g.Scale.W += yOffset;
-            targets.Add(new VertexObject(Parent.Position, g.UV, g.Scale, Rotation, Extra.Data, Color));
+            targets.Add(new VertexObject(Parent.Position, g.UV, g.Scale, Rotation, Extra, Color));
         }
     }
     

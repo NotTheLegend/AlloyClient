@@ -7,15 +7,16 @@ using OpenTK.Mathematics;
 namespace AlloyClient.Rendering.VertexData;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct VertexObject(Vector3 position, Vector4 uv, Vector4 scale, Vector4 rotation, Vector4 extra, Color color) : IBufferData<VertexObject>, IComparable<VertexObject> {
+public struct VertexObject(Vector3 position, Vector4 uv, Vector4 scale, Vector4 rotation, ExtraData extra, Color color) : IBufferData<VertexObject>, IComparable<VertexObject> {
     public Vector4 Position = new (position, 1);
     public Vector4 UV = uv;
     public Vector4 Scale = scale;
-    public Vector4 Rotation = rotation;
-    public Vector4 Extra = extra;
+    public Vector4 Rotation = rotation; // just send angle over sin/cos values
+    public Vector4 Extra = extra.Data;
     public Vector4 Color = color.ToVector4();
     public Vector4 Mask1;
     public Vector4 Mask2;
+    // TODO: add 3rd mask channel and flash channel
 
     public override int GetHashCode() {
         return ((((Position.GetHashCode() * 397 ^ UV.GetHashCode())

@@ -70,7 +70,7 @@ public sealed class TypeGameObject : RenderBase {
         
         Entity.HeightOffset = -1 * Scale.Y * k + Scale.W * k;
         
-        targets.Add(new VertexObject(Position, UV, Scale, Rotation, Extra.Data, Color));
+        targets.Add(new VertexObject(Position, UV, Scale, Rotation, Extra, Color));
         
         if (Entity.Properties.Static) return;
         

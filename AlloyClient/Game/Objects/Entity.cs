@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Alloy.Common;
 using AlloyClient.Assets;
 using AlloyClient.Assets.Libraries;
@@ -108,6 +109,8 @@ public class Entity {
 
     public ParticleEffect Effect;
 
+    public readonly Dictionary<ProjectileKey, double> MultiHitUsed = [];
+
     public void SetObjectId(int id) {
         ObjectId = id;
         Jitter = Random.Shared.NextSingle() * 0.00002f - 0.00001f;
@@ -206,6 +209,12 @@ public class Entity {
         // add wall support here at some point
         if (TextureData.HasAnimationData) {
             AnimateCharacter(time);
+        }
+
+        foreach (var (key, value) in MultiHitUsed) {
+            if (value < time) {
+                MultiHitUsed.Remove(key);
+            }
         }
 
         Effect?.Update(time, dt);
