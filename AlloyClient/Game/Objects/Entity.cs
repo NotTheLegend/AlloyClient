@@ -238,7 +238,7 @@ public class Entity {
     }
 
     public bool MoveTo(float x, float y) {
-        var tile = Map.GetTile((int)x, (int)y);
+        var tile = Map.LookupTile((int)x, (int)y);
 
         if (tile == null) {
             return false;

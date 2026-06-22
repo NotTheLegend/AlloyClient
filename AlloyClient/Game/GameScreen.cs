@@ -64,10 +64,8 @@ public sealed class GameScreen : Screen {
             Map.FixedUpdate(new GameTime(gameTime.TotalMs, FixedUpdateStep));
         }
         
-        
         Map.Update(gameTime, _camera);
         PartyData.Update(gameTime.TotalMs);
-        
     }
 
     public override void Draw(GameTime gameTime) {

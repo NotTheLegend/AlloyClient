@@ -150,12 +150,12 @@ public sealed class Projectile : IResettable { // TODO: make struct
             _rotation = angle + Settings.CameraAngle + _angleCorrection;
         }
 
-        _position = newPos;
-        return true;
+        
+        return MoveTo(newPos);
     }
 
     public void FixedUpdate(in GameTime gameTime) {
-        if (!MoveTo(_position) || HitTest(gameTime.TotalMs)) {
+        if (HitTest(gameTime.TotalMs)) {
             _elapsed = float.MaxValue;
             return;
         }
@@ -178,19 +178,22 @@ public sealed class Projectile : IResettable { // TODO: make struct
     public ShadowData DrawShadow() => new (_position, 0.5f, Color.Black);
     
     private bool MoveTo(Vector2 pos) {
-        var tile = Map.GetTile(pos);
+        if (Vector2.Truncate(pos) != Vector2.Truncate(_position)) {
+            var tile = Map.LookupTile(pos);
 
-        if (tile == null || tile.Type == 0xFF) {
-            return false; // TODO: hit effect
-        }
-        
-        if (tile.OccupiedObject != null) {
-            var obj = tile.OccupiedObject.Properties;
-            if ((!obj.IsEnemy || _damagePlayers) && (obj.EnemyOccupySquare || !_passesCover && obj.OccupySquare)) {
+            if (tile == null || tile.Type == 0xFF) {
                 return false; // TODO: hit effect
+            }
+        
+            if (tile.OccupiedObject != null) {
+                var obj = tile.OccupiedObject.Properties;
+                if ((!obj.IsEnemy || _damagePlayers) && (obj.EnemyOccupySquare || !_passesCover && obj.OccupySquare)) {
+                    return false; // TODO: hit effect
+                }
             }
         }
         
+        _position = pos;
         return true;
     }
     

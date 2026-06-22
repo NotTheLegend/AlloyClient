@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using AlloyClient.Assets;
-using AlloyClient.Game.Components;
 using AlloyClient.Game.Components.Hud;
 using AlloyClient.Game.Objects;
 using AlloyClient.Networking.Structs.DataObjects;
@@ -12,11 +11,53 @@ using AlloyClient.Rendering.VertexData;
 using Alloy.UiLib.Signals;
 using Alloy.Engine;
 using AlloyClient.Logging;
+using AlloyClient.Utils;
 using Microsoft.Extensions.Logging;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using TileData = AlloyClient.Rendering.VertexData.TileData;
 
 namespace AlloyClient.Game;
+
+public readonly struct TileMap {
+    public const int ChunkSize = 16;
+    
+    private readonly Dictionary<Vector2i, MapChunk> _tiles = [];
+    
+    public TileMap(){}
+    
+    public MapTile this[Vector2i coords] {
+        get {
+            var chunkId = new Vector2i(coords.X / ChunkSize, coords.Y / ChunkSize);
+            var chunkCoords = new Vector2i(coords.X % ChunkSize, coords.Y % ChunkSize);
+            return _tiles.TryGetValue(chunkId, out var chunk) ? chunk[chunkCoords] : null;
+        }
+        set {
+            var chunkId = new Vector2i(coords.X / ChunkSize, coords.Y / ChunkSize);
+            var chunkCoords = new Vector2i(coords.X % ChunkSize, coords.Y % ChunkSize);
+
+            if (!_tiles.TryGetValue(chunkId, out var chunk)) {
+                chunk = _tiles[chunkId] = new MapChunk();
+            }
+
+            chunk[chunkCoords] = value;
+        }
+    }
+
+    public void Clear() => _tiles.Clear();
+
+    private readonly struct MapChunk {
+        
+        private readonly MapTile[] _tiles = new MapTile[ChunkSize * ChunkSize];
+
+        public MapChunk() { }
+
+        public MapTile this[Vector2i coords] {
+            get => _tiles[coords.Y * ChunkSize + coords.X];
+            set => _tiles[coords.Y * ChunkSize + coords.X] = value;
+        }
+    }
+}
 
 public static class Map {
 
@@ -37,8 +78,8 @@ public static class Map {
     public static int Background;
     public static bool AllowPlayerTeleport;
     public static bool ShowDisplays;
-
-    private static MapTile[,] _tiles;
+    
+    private static readonly TileMap Tiles = new ();
     public static readonly RenderStorage EntityStorage = new();
     public static readonly Dictionary<int, Player> Players = new();
     public static readonly Dictionary<int, Entity> Entities = new(); // todo: add players to separate dic for minimap prio
@@ -55,12 +96,26 @@ public static class Map {
 
     public static int LastTickId;
 
-    public static Signal<Player> OnPlayerUpdate = new();
+    public static readonly Signal<Player> OnPlayerUpdate = new();
 
     private static int _particleCount;
     private static readonly ParticleData[] Particles = new ParticleData[30000];
 
-    private static readonly List<VertexObject> _renderTargets = [];
+    private static readonly List<VertexObject> RenderTargets = [];
+
+    private static readonly HashSet<Vector2i> SightCircle = [];
+
+    static Map() {
+        for (var x = -TileRenderDistance; x < TileRenderDistance; x++) {
+            for (var y = -TileRenderDistance; y < TileRenderDistance; y++) {
+                if (x * x + y * y >= TileRenderDistance * TileRenderDistance) {
+                    continue;
+                }
+
+                SightCircle.Add(new Vector2i(x, y));
+            }
+        }
+    }
 
     public static void InitMap(int width, int height, string name, string display, int diff, uint seed, int background, bool allowTp, bool showDisplays) {
         Width = width;
@@ -72,8 +127,6 @@ public static class Map {
         Background = background;
         AllowPlayerTeleport = allowTp;
         ShowDisplays = showDisplays;
-
-        _tiles = new MapTile[width + 1, height + 1];
         
         Minimap.OnNewMap.Dispatch(width, height);
     }
@@ -125,13 +178,10 @@ public static class Map {
         }
     }
     
-    private static Vector2 _lastPosition = Vector2.Zero;
+
+    private static readonly List<TileData> VisibleTiles = new (Render.TileBufferSize);
 
     public static void Draw(in GameTime gameTime, in Camera camera) {
-        if (LocalPlayer == null) return;
-
-        var depthMatrix = new DepthMatrix(camera.Matrix);
-
         GL.Disable(EnableCap.DepthTest);
         GL.Disable(EnableCap.CullFace);
 
@@ -139,29 +189,15 @@ public static class Map {
 
         #region Tile
         
-        var pos = Vector2.Floor(LocalPlayer.Position);
-        if (pos != _lastPosition) {
-            _lastPosition = pos;
-            
-            // TEMP
-            Audio.SfxChannel.Play(@"Effects\weapon\blunt_dagger.ogg");
-            
-            Render.StartNewDrawTile();
+        VisibleTiles.Clear();
 
-            for (var x = -TileRenderDistance; x < TileRenderDistance; x++) {
-                for (var y = -TileRenderDistance; y < TileRenderDistance; y++) {
-                    if (x * x + y * y >= TileRenderDistance * TileRenderDistance) continue;
-
-                    var tile = GetTile(x + (int) LocalPlayer.Position.X, y + (int) LocalPlayer.Position.Y);
-                    if (tile != null && tile.Type != 0xFF)
-                        tile.DrawTile();
-                }
+        foreach (var position in SightCircle) {
+            if (LookupTile(position + camera.Position, out var tile) && tile.Type != Const.DefaultTile) {
+                VisibleTiles.AddRange(tile.DrawTile());
             }
-
-            Render.EndNewDrawTile();
         }
 
-        Render.DrawTiles();
+        Render.DrawTiles(VisibleTiles.AsReadOnlySpan());
 
         #endregion
 
@@ -193,7 +229,7 @@ public static class Map {
 
         #region Entities
         
-        _renderTargets.Clear();
+        RenderTargets.Clear();
         
         Render.StartDrawModel();
 
@@ -206,7 +242,7 @@ public static class Map {
 
             foreach (var entity in list) {
                 if (entity.Visible) {
-                    entity.Draw(_renderTargets, gameTime.TotalMs);
+                    entity.Draw(RenderTargets, gameTime.TotalMs);
                     Render.LastDrawCountEntities++;
                 }
 
@@ -221,50 +257,38 @@ public static class Map {
         
         foreach (var type in EntityStorage[ModelType.PbObject]) {
             if (type.Visible) {
-                type.Draw(_renderTargets, gameTime.TotalMs);
+                type.Draw(RenderTargets, gameTime.TotalMs);
             }
         }
 
         foreach (var projectile in Projectiles) {
-            _renderTargets.Add(projectile.Draw(depthMatrix));
+            RenderTargets.Add(projectile.Draw(in camera.DepthMatrix));
         }
 
-        Render.FlushBufferEntity(_renderTargets);
-        Render.LastDrawCountEntities += _renderTargets.Count;
+        Render.FlushBufferEntity(RenderTargets);
+        Render.LastDrawCountEntities += RenderTargets.Count;
 
         #endregion
-
-
     }
+    
+    public static bool LookupTile(Vector2 position, out MapTile tile) => (tile = LookupTile(position)) != null;
 
-    public static MapTile GetTile(Vector2 position) => GetTile((int)position.X, (int)position.Y);
+    public static MapTile LookupTile(Vector2 position) => LookupTile((int)position.X, (int)position.Y);
 
-    public static MapTile GetTile(int x, int y) {
+    public static bool LookupTile(int x, int y, out MapTile tile) => (tile = LookupTile(x, y)) != null;
+    
+    public static MapTile LookupTile(int x, int y) {
         if (x < 0 || x > Width || y < 0 || y > Height) {
             return null;
         }
 
-        try {
-            var tile = _tiles[x, y];
-
-            if (tile != null) {
-                return tile;
-            }
-
-            tile = new MapTile(x, y);
-            _tiles[x, y] = tile;
-
-            return tile;
-        } catch (IndexOutOfRangeException) {
-            return null;
-        }
+        return Tiles[(x, y)] ?? (Tiles[(x, y)] = new MapTile(x, y));
     }
 
     private static readonly MapTile[] RebuildData = new MapTile[9];
 
     public static void SetTileData(int x, int y, ushort type) {
-        var tile = GetTile(x, y);
-        if (tile == null) {
+        if (!LookupTile(x, y, out var tile)) {
             return;
         }
 
@@ -272,7 +296,7 @@ public static class Map {
         
         for (var y1 = y - 1; y1 <= y + 1; y1++){
             for (var x1 = x - 1; x1 <= x + 1; x1++) {
-                RebuildTile(GetTile(x1, y1));
+                RebuildTile(LookupTile(x1, y1));
             }
         }
         
@@ -283,7 +307,7 @@ public static class Map {
         var idx = 0;
         for (var y1 = tile.Y - 1; y1 <= tile.Y + 1; y1++){
             for (var x1 = tile.X - 1; x1 <= tile.X + 1; x1++) {
-                RebuildData[idx++] = GetTile(x1, y1);
+                RebuildData[idx++] = LookupTile(x1, y1);
             }
         }
         
@@ -375,8 +399,8 @@ public static class Map {
         LocalPlayer = null;
 
         LastTickId = 0;
-
-        _tiles = null;
+        
+        Tiles.Clear();
     }
 
     public static void OnLocalPlayerCreated(Entity entity) {

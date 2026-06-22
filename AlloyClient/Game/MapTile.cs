@@ -39,10 +39,8 @@ public class MapTile(int x, int y) {
             MinimapTexture.UncoverTile(X, Y, _color);
         }
     }
-    
-    public void DrawTile() {
-        Render.DrawTiles(_data.AsSpan(0, _dataCount));
-    }
+
+    public ReadOnlySpan<TileData> DrawTile() => _data.AsSpan(0, _dataCount);
 
     public void SetType(ushort type) {
         Type = type;

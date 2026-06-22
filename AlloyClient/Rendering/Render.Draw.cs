@@ -14,38 +14,22 @@ public static partial class Render {
     public static int LastDrawCountTiles;
     public static int LastDrawCountShadows;
     public static int LastDrawCountEntities;
-
-    private static int _tileCount;
+    
     private static int _shadowCount;
     private static int _modelCount;
     private static ModelType _entityModel;
 
     #region Render Tile
 
-    public static void StartNewDrawTile() {
-        LastDrawCountTiles = 0;
-        _tileCount = 0;
-    }
-    
-    public static void DrawTiles(ReadOnlySpan<TileData> data) {
-        var span = new Span<TileData>(_tileData, _tileCount, data.Length);
-        data.CopyTo(span);
-        _tileCount += data.Length;
-    }
-
-    public static void EndNewDrawTile() {
-        _tileBuffer.SetData(_tileData.AsSpan(0, _tileCount));
-    }
-
-    public static void DrawTiles() {
-        LastDrawCountTiles = _tileCount;
+    public static void DrawTiles(ReadOnlySpan<TileData> span) {
+        LastDrawCountTiles = span.Length;
+        _tileBuffer.SetData(span);
         
         _defaultVao.Bind();
-        
         _shaderGround.Apply();
         _tileBuffer.BindToIndex(0);
         
-        GL.DrawArrays(PrimitiveType.Triangles, 0, _tileCount * 6);
+        GL.DrawArrays(PrimitiveType.Triangles, 0, span.Length * 6);
     }
 
     #endregion

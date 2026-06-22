@@ -11,6 +11,7 @@ public readonly struct Camera(Vector2 pos, Matrix4 matrix, Matrix4 billboard, Ve
     public readonly Vector2 Position = pos;
     public readonly int WidthOffset = widthOffset;
     public readonly Matrix4 Matrix = matrix;
+    public readonly DepthMatrix DepthMatrix = new (in matrix);
     public readonly Matrix4 BillboardMatrix = billboard;
     public readonly Vector2 VisibleTileRadius = visibleTiles;
     
@@ -79,7 +80,7 @@ public readonly struct Camera(Vector2 pos, Matrix4 matrix, Matrix4 billboard, Ve
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 4)]
-public readonly struct DepthMatrix(Matrix4 m) {
+public readonly struct DepthMatrix(in Matrix4 m) {
     public readonly float M12 = m.M12;
     public readonly float M22 = m.M22;
     public readonly float M32 = m.M32;

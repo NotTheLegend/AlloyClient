@@ -502,7 +502,7 @@ public class Player : Entity {
     }
 
     private bool IsValidPosition(float x, float y) {
-        var tile = Map.GetTile((int) x, (int) y);
+        var tile = Map.LookupTile((int) x, (int) y);
 
         if (Tile != tile && (tile == null || !tile.IsWalkable())) {
             return false;
@@ -600,7 +600,7 @@ public class Player : Entity {
     }
 
     private static bool IsFullOccupy(float x, float y) {
-        var tile = Map.GetTile((int) x, (int) y);
+        var tile = Map.LookupTile((int) x, (int) y);
 
         if (tile == null) {
             return true;
@@ -618,7 +618,7 @@ public class Player : Entity {
     }
 
     public void OnMove() {
-        var tile = Map.GetTile((int) Position.X, (int) Position.Y);
+        var tile = Map.LookupTile((int) Position.X, (int) Position.Y);
 
         if (tile == null) {
             return;

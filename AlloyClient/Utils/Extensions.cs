@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Extra;
 using OpenTK.Mathematics;
@@ -36,5 +38,9 @@ public static class Extensions {
             sprite.Alpha = start;
             GTween.Add(Tween.New(sprite, easing, duration, end, EaseType.Alpha, delay, onFinish));
         }
+    }
+
+    extension<T>(List<T> collection) {
+        public ReadOnlySpan<T> AsReadOnlySpan() => CollectionsMarshal.AsSpan(collection);
     }
 }
