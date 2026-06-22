@@ -18,6 +18,7 @@ public class StatusBar : Sprite {
 
     public string labelString;
     private bool _mouseOver;
+    private TextState _textState;
 
     public StatusBar(int width, int height, uint color, uint backColor, uint outlineColor, string label) {
         _width = width;
@@ -44,11 +45,8 @@ public class StatusBar : Sprite {
 
     public void Update(int val, int max, int boost = 0, int baseMax = -1, int level = -1) {
         _mainBar.Resize((int)(_width * (val / (float)max)), _height);
-
-        _valueText.Visible = false;
-
-        if (_mouseOver || Settings.ToggleBarText)
-            UpdateText(val, max, boost, baseMax, level);
+        _valueText.Visible = _mouseOver || Settings.ToggleBarText;
+        UpdateText(val, max, boost, baseMax, level);
     }
 
     public void UpdateLabel(string label)
@@ -64,8 +62,18 @@ public class StatusBar : Sprite {
     }
 
     private void UpdateText(int val, int max, int boost, int baseMax, int level) {
-        _valueText.Visible = true;
+        if (!_valueText.Visible) {
+            return;
+        }
 
+        var newState = new TextState(val, max, boost, baseMax, level);
+
+        if (newState == _textState) {
+            return;
+        }
+
+        _textState = newState;
+        
         var ltmt = "";
 
         if (Settings.ToggleLeftToMax) {
@@ -83,4 +91,6 @@ public class StatusBar : Sprite {
 
     private void OnMouseOver() => _mouseOver = true;
     private void OnMouseOut() => _mouseOver = false;
+
+    private record struct TextState(int Value, int Max, int Boost, int BaseMax, int Level);
 }

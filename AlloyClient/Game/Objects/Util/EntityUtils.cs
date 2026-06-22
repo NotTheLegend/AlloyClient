@@ -4,6 +4,28 @@ using OpenTK.Mathematics;
 namespace AlloyClient.Game.Objects.Util;
 
 public static class EntityUtils {
+
+    public static bool FindClosestInteractableInRadius(Vector2 position, float radius, out Entity interactable) {
+        interactable = null;
+
+        var closest = float.MaxValue;
+
+        foreach (var (_, entity) in Map.InteractiveObjects) {
+            if (entity == Map.LocalPlayer) {
+                continue;
+            }
+            
+            Vector2.DistanceSquared(in position, in entity.Position, out var distance);
+            
+            if (distance <= radius && distance < closest) {
+                closest = distance;
+                interactable = entity;  
+            }
+        }
+
+        return interactable != null;
+    }
+    
     public static Entity FindClosestEntityInRadius(Entity player, IEnumerable<Entity> entities, float radius) {
         Entity closestEntity = null;
         var closestDistance = float.MaxValue;

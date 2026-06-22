@@ -55,6 +55,7 @@ public sealed class GameScreen : Screen {
         _userInput.Update(gameTime, _camera);
         _chatLayer.Update(gameTime, _camera);
         _notificationLayer.Update(gameTime, _camera);
+        _hud.Update();
         _debugStats.Update(gameTime);
 
         _fixedUpdateElapsed += gameTime.ElapsedMs;

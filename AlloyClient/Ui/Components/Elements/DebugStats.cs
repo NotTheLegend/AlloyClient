@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Numerics;
+using System.Numerics.Tensors;
 using Alloy.Engine;
 using AlloyClient.Rendering;
 using Alloy.UiLib;
@@ -17,7 +18,8 @@ public class DebugStats : Sprite {
 
     private double _framesSeconds;
 
-    private readonly Queue<double> _frameTimes = new ();
+    private readonly Queue<double> _frameTimes = new (65536);
+    private double[] _workingFrameTimes = new double[65536];
     private double _statisticsTimer;
     private int _frameCount;
 
@@ -93,13 +95,21 @@ public class DebugStats : Sprite {
             return;
         }
 
+        if (_workingFrameTimes.Length < _frameTimes.Count) {
+            _workingFrameTimes = new double[BitOperations.RoundUpToPowerOf2((uint)_frameTimes.Count)];
+        }
+        
+        _frameTimes.CopyTo(_workingFrameTimes, 0);
+
+        var data = _workingFrameTimes.AsSpan(0, _frameTimes.Count);
+        data.Sort();
+        
         var fps = _frameCount / 1.0;
-        var count = _frameTimes.Count;
-        var sorted = _frameTimes.OrderBy(f => f).ToArray();
-        var avgFrameTime = _frameTimes.Sum() / count;
-        var p90FrameTime = sorted[(int) (count * 0.90f)];
-        var p99FrameTime = sorted[(int) (count * 0.99f)];
-        var maxFrameTime = sorted[count - 1];
+        var count = data.Length;
+        var avgFrameTime = Tensor.Sum(new ReadOnlyTensorSpan<double>(data)) / count; // probably overkill but at 2k fps its ~63k frame times
+        var p90FrameTime = data[(int) (count * 0.90f)];
+        var p99FrameTime = data[(int) (count * 0.99f)];
+        var maxFrameTime = data[count - 1];
         
         _statisticsTimer = 0;
         _frameCount = 0;

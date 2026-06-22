@@ -33,25 +33,29 @@ public sealed class InteractPanel : Sprite {
     
 
     public void Update() {
-        if (_overridePanel != null)
+        if (_overridePanel != null) {
             return;
+        }
 
-        var obj = EntityUtils.FindClosestEntityInRadius(Map.LocalPlayer, Map.InteractiveObjects.Values, 1f);
-
-        if (obj == null) {
+        if (!EntityUtils.FindClosestInteractableInRadius(Map.LocalPlayer.Position, 1f, out var obj)) {
             _currentObject = null;
             SetPanel(_partyPanel);
             return;
         }
 
-        if (obj == _currentObject && _currentPanel != null)
+        if (obj == _currentObject && _currentPanel != null) {
             return;
+        }
         
         _currentObject = obj;
         SetPanel(GetInteractPanel(_currentObject));
     }
 
     private void SetPanel(Panel panel) {
+        if (panel == _currentPanel) {
+            return;
+        }
+        
         RemoveChild(_currentPanel);
         _currentPanel = panel;
 

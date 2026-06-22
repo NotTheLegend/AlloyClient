@@ -12,6 +12,8 @@ public class CharacterBars : Sprite {
     private readonly StatusBar _hpBar;
     private readonly StatusBar _mpBar;
 
+    private int _lastPlayerLevel;
+
     public CharacterBars() {
         _expBar = new StatusBar(210, height, 5931045, 5526612, 0xFFFFFF, "Lvl X");
         _fameBar = new StatusBar(210, height, 14835456, 5526612, 0xFFFFFF, "Fame");
@@ -33,21 +35,18 @@ public class CharacterBars : Sprite {
     }
 
     public void Update() {
-
-        if (Map.LocalPlayer == null) return;
-
         var player = Map.LocalPlayer;
-        string lvlText = "Lvl " + player.Level;
 
-        if( lvlText != _expBar.labelString)
-        {
-            _expBar.UpdateLabel(lvlText);
+        if (!_fameBar.Visible && player.Level == 20) {
+            DisableExpBar();
         }
 
-        if (!_fameBar.Visible && player.Level == 20)
-            DisableExpBar();
-
         if (_expBar.Visible) {
+            if (player.Level != _lastPlayerLevel) {
+                _lastPlayerLevel = player.Level;
+                _expBar.UpdateLabel($"Lvl {player.Level}");
+            }
+            
             _expBar.Update(player.Experience, player.NextLevelExp);
         }
 
@@ -58,6 +57,7 @@ public class CharacterBars : Sprite {
         _hpBar.Update(player.Hp, player.MaxHp, player.MaxHpBoost, 250, player.Level);
         _mpBar.Update(player.Mp, player.MaxMp, player.MaxMpBoost, 250, player.Level);
     }
+    
     private void DisableExpBar()
     {
         _expBar.Visible = false;
