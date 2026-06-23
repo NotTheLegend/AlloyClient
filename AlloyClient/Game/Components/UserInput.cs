@@ -127,10 +127,10 @@ public sealed class UserInput : Sprite {
         if (Map.LocalPlayer == null) return;
         
         if (args.ShiftKey) {
-            Settings.CameraZoom.Set(Math.Clamp(Settings.CameraZoom + 0.1f * args.Delta, Settings.MinCameraZoom, Settings.MaxCameraZoom));
+            Settings.CameraZoom.Set(Math.Clamp(Settings.CameraZoom + 0.1f * args.VerticalDelta, Settings.MinCameraZoom, Settings.MaxCameraZoom));
             Logger.Log(LogLevel.Information, $"Camera zoom: {Settings.CameraZoom.Value}");
         } else {
-            Minimap.OnZoom.Dispatch((int)args.Delta);
+            Minimap.OnZoom.Dispatch((int)args.VerticalDelta);
         }
     }
 

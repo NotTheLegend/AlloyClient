@@ -11,13 +11,8 @@ public enum EventPhase {
 }
 
 public record struct EventType<T>(string Id) where T : Event {
-    public static implicit operator EventType<T>(string id) {
-        return new EventType<T>(id);
-    }
-    
-    public static implicit operator string(EventType<T> type) {
-        return type.Id;
-    }
+    public static implicit operator EventType<T>(string id) => new(id);
+    public static implicit operator string(EventType<T> type) => type.Id;
 }
 
 public class Event(EventType<Event> type, bool bubbles = false) {
@@ -62,48 +57,32 @@ public class KeyboardEvent(EventType<KeyboardEvent> type, Key key, Scancode code
     public static readonly EventType<KeyboardEvent> KeyUp = "keyUp";
 }
 
-public class MouseEvent(EventType<MouseEvent> type, Vector2i coords = new(), float delta = 0f, bool shiftKey = false, bool ctrlKey = false, bool altKey = false) : Event(type.Id, true) {
+public class MouseEvent(EventType<MouseEvent> type, Vector2i coords = new (), Vector2 delta = new (), bool shiftKey = false, bool ctrlKey = false, bool altKey = false) : Event(type.Id, true) {
     public readonly Vector2i Coords = coords;
-    public readonly float Delta= delta;
+    public readonly float VerticalDelta = delta.Y;
+    public readonly float HorizontalDelta = delta.X;
     public readonly bool ShiftKey = shiftKey;
     public readonly bool CtrlKey = ctrlKey;
     public readonly bool AltKey = altKey;
-    
-    internal const string LeftClickKey = "leftClick";
-    internal const string MiddleClickKey  = "middleClick";
-    internal const string RightClickKey  = "rightClick";
-    internal const string MouseOverKey  = "mouseOver";
-    internal const string MouseOutKey  = "mouseOut";
-    internal const string LeftDownKey = "leftDown";
-    internal const string MiddleDownKey  = "middleDown";
-    internal const string RightDownKey  = "rightDown";
-    internal const string LeftUpKey = "leftUp";
-    internal const string MiddleUpKey  = "middleUp";
-    internal const string RightUpKey  = "rightUp";
-    internal const string MouseMoveKey  = "mouseMove";
-    internal const string ScrollVerticalKey  = "scrollVertical";
-    internal const string ScrollHorizontalKey  = "scrollHorizontal";
 
-    public static readonly EventType<MouseEvent> LeftClick = LeftClickKey;
-    public static readonly EventType<MouseEvent> MiddleClick = MiddleClickKey;
-    public static readonly EventType<MouseEvent> RightClick = RightClickKey;
-    public static readonly EventType<MouseEvent> MouseOver = MouseOverKey;
-    public static readonly EventType<MouseEvent> MouseOut = MouseOutKey;
-    public static readonly EventType<MouseEvent> LeftDown = LeftDownKey;
-    public static readonly EventType<MouseEvent> MiddleDown = MiddleDownKey;
-    public static readonly EventType<MouseEvent> RightDown = RightDownKey;
-    public static readonly EventType<MouseEvent> LeftUp = LeftUpKey;
-    public static readonly EventType<MouseEvent> MiddleUp = MiddleUpKey;
-    public static readonly EventType<MouseEvent> RightUp = RightUpKey;
-    public static readonly EventType<MouseEvent> MouseMove = MouseMoveKey;
-    public static readonly EventType<MouseEvent> ScrollVertical = ScrollVerticalKey;
-    public static readonly EventType<MouseEvent> ScrollHorizontal = ScrollHorizontalKey;
+    public static readonly EventType<MouseEvent> LeftClick = "leftClick";
+    public static readonly EventType<MouseEvent> MiddleClick = "middleClick";
+    public static readonly EventType<MouseEvent> RightClick = "rightClick";
+    public static readonly EventType<MouseEvent> MouseOver = "mouseOver";
+    public static readonly EventType<MouseEvent> MouseOut = "mouseOut";
+    public static readonly EventType<MouseEvent> LeftDown = "leftDown";
+    public static readonly EventType<MouseEvent> MiddleDown = "middleDown";
+    public static readonly EventType<MouseEvent> RightDown = "rightDown";
+    public static readonly EventType<MouseEvent> LeftUp = "leftUp";
+    public static readonly EventType<MouseEvent> MiddleUp = "middleUp";
+    public static readonly EventType<MouseEvent> RightUp = "rightUp";
+    public static readonly EventType<MouseEvent> MouseMove = "mouseMove";
+    public static readonly EventType<MouseEvent> ScrollVertical = "scrollVertical";
+    public static readonly EventType<MouseEvent> ScrollHorizontal = "scrollHorizontal";
 
     private static readonly HashSet<EventType<MouseEvent>> ButtonTypes = [LeftClick, MiddleClick, RightClick, LeftDown, MiddleDown, RightUp, LeftUp, MiddleUp, RightUp, ScrollVertical, ScrollHorizontal];
     
-    internal static bool IsButtonType(EventType<MouseEvent> type) {
-        return ButtonTypes.Contains(type);
-    }
+    internal static bool IsButtonType(EventType<MouseEvent> type) => ButtonTypes.Contains(type);
 }
 
 /// <summary>

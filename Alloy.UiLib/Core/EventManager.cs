@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Alloy.UiLib.BuiltIn;
-using Alloy.UiLib.Input;
 using Microsoft.Extensions.Logging;
 
 namespace Alloy.UiLib.Core;
@@ -187,57 +185,6 @@ public abstract class EventManager {
     internal static void HandleFinishedTasks() {
         while (CompletedTasks.TryDequeue(out var callback)) {
             callback();
-        }
-    }
-
-    internal void DispatchMouseEvents() {
-        var keyboard = (this as Sprite)!.Stage.Keyboard;
-        while(MouseInput.Events.TryDequeue(out var type)){
-            DispatchEvent(new MouseEvent(type, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetVerticalScrollDelta(), 1), -1), keyboard.IsShiftDown(), keyboard.IsCtrlDown(), keyboard.IsAltDown()));
-            CheckClicks(type);
-        }
-
-        while (_pendingClicks.TryDequeue(out var type)) {
-            DispatchEvent(new MouseEvent(type, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetVerticalScrollDelta(), 1), -1), keyboard.IsShiftDown(), keyboard.IsCtrlDown(), keyboard.IsAltDown()));
-        }
-    }
-    
-    private static Sprite _leftTarget;
-    private static Sprite _middleTarget;
-    private static Sprite _rightTarget;
-
-    private void CheckClicks(EventType<MouseEvent> type) {
-        var sprite = this as Sprite;
-        switch (type.Id) {
-            case MouseEvent.LeftDownKey:
-                _leftTarget = sprite;
-                break;
-            case MouseEvent.LeftUpKey:
-                if (_leftTarget == sprite) {
-                    if (TextInput.ActiveInput != null && sprite != TextInput.ActiveInput) {
-                        TextInput.ActiveInput.UnFocus();
-                    }
-                    
-                    _pendingClicks.Enqueue(MouseEvent.LeftClick);
-                }
-                _leftTarget = null;
-                break;
-            case MouseEvent.MiddleDownKey:
-                _middleTarget = sprite;
-                break;
-            case MouseEvent.MiddleUpKey:
-                if (_middleTarget == sprite)
-                    _pendingClicks.Enqueue(MouseEvent.MiddleClick);
-                _middleTarget = null;
-                break;
-            case MouseEvent.RightDownKey:
-                _rightTarget = sprite;
-                break;
-            case MouseEvent.RightUpKey:
-                if (_rightTarget == sprite)
-                    _pendingClicks.Enqueue(MouseEvent.RightClick);
-                _rightTarget = null;
-                break;
         }
     }
 

@@ -6,13 +6,9 @@ public struct KeyboardState {
     
     private InternalState _internalState;
     
-    public bool IsKeyDown(Key key) {
-        return _internalState.IsDown(key);
-    }
-    
-    public bool IsKeyUp(Key key) {
-        return _internalState.IsUp(key);
-    }
+    public bool IsKeyDown(Key key) => _internalState.IsDown(key);
+
+    public bool IsKeyUp(Key key) => _internalState.IsUp(key);
 
     public bool IsShiftDown() => IsKeyDown(Key.LeftShift) || IsKeyDown(Key.RightShift);
     

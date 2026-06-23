@@ -174,7 +174,7 @@ public abstract class DisplayContainer : EventManager {
         var yMax = SelfContentHeight;
 
         foreach (var child in _children) {
-            var (x, y) = InternalUtils.GetAnchorOffset(child.Anchor, child.Width, child.Height);
+            var (x, y) = child.Anchor.GetOffset(child.Width, child.Height);
             var pos = new Vector2(child.X + x, child.Y + y);
             xMin = Math.Min(xMin, pos.X);
             xMax = Math.Max(xMax, pos.X + child.Width);

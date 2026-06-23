@@ -98,7 +98,7 @@ public class VerticalScrollBar : Sprite {
     private void Scroll(MouseEvent args) {
         if (_heightDifference < 0) return;
         
-        var newScrollY = _lastScrollY - args.Delta * _scrollStep;
+        var newScrollY = _lastScrollY - args.VerticalDelta * _scrollStep;
         newScrollY = Math.Clamp(newScrollY, 0, _heightDifference);
     
         _onValueChanged((int) newScrollY);

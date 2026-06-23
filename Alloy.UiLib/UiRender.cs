@@ -4,7 +4,6 @@ using Alloy.ContentReader;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Data;
-using Alloy.UiLib.Input;
 using Alloy.UiLib.Rendering;
 using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
@@ -138,16 +137,16 @@ public static class UiRender {
                 OnResize(e.NewClientSize);
                 break;
             case MouseButtonDownEventArgs e:
-                MouseInput.SetKeyDown(e.Button);
+                Stage.SetMouseButtonDown(e.Button);
                 break;
             case MouseButtonUpEventArgs e:
-                MouseInput.SetKeyUp(e.Button);
+                Stage.SetMouseButtonUp(e.Button);
                 break;
             case MouseMoveEventArgs e:
-                MouseInput.SetMousePosition(e.ClientPosition);
+                Stage.SetMousePosition(e.ClientPosition);
                 break;
             case ScrollEventArgs e:
-                MouseInput.SetScrollDelta(e.Delta);
+                Stage.SetMouseScroll(e.Delta);
                 break;
         }
     }

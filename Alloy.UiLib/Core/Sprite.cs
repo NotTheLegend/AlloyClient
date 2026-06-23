@@ -2,7 +2,6 @@
 using System.Runtime.CompilerServices;
 using Alloy.Common;
 using Alloy.UiLib.Extra;
-using Alloy.UiLib.Input;
 using Alloy.UiLib.Rendering;
 using Alloy.UiLib.Utils;
 using OpenTK.Mathematics;
@@ -130,7 +129,7 @@ public partial class Sprite : DisplayContainer {
     #endregion
 
     private void InternalUpdate() {
-        (_anchorX, _anchorY) = InternalUtils.GetAnchorOffset(Anchor, (int)ContentWidth, (int)ContentHeight);
+        (_anchorX, _anchorY) = Anchor.GetOffset(ContentWidth, ContentHeight);
         var (tx, ty) = (0, 0);
         var ta = Alpha;
         var ts = Scale;
@@ -140,12 +139,12 @@ public partial class Sprite : DisplayContainer {
         
         //TODO: maybe move these out into the client rather than being built in
         if (TooltipMode) {
-            (tx, ty) = MouseInput.GetMousePosition().ToPair();
-            (_anchorX, _anchorY) = InternalUtils.GetAnchorOffset(tx < UiRender.Screen.X / 2 ? UiAnchor.LeftBottom : UiAnchor.RightBottom, (int)ContentWidth, (int)ContentHeight);
+            (tx, ty) = Stage.Mouse.GetMousePosition().ToPair();
+            (_anchorX, _anchorY) = (tx < UiRender.Screen.X / 2 ? UiAnchor.LeftBottom : UiAnchor.RightBottom).GetOffset(ContentWidth, ContentHeight);
             tx += (int) (_anchorX * Parent._trueScale.X);
             ty += (int) (_anchorY * Parent._trueScale.Y);
         } else if (_isDragging) {
-            var pos = MouseInput.GetMousePosition();
+            var pos = Stage.Mouse.GetMousePosition();
             (tx, ty) = pos.ToPair();
             tx -= (int)(_dragOffset.X * Parent._trueScale.X);
             ty -= (int)(_dragOffset.Y * Parent._trueScale.Y);
@@ -211,7 +210,9 @@ public partial class Sprite : DisplayContainer {
     private void Update() {
         InternalUpdate();
 
-        CheckHighestSprite();
+        if (MouseEnabled && _canInteract && IsInBounds(Stage.Mouse.GetMousePosition())) {
+            Stage.CurrentHighestSprite = this;
+        }
 
         var span = GetChildrenSpan();
         foreach (var child in span) {
@@ -226,12 +227,6 @@ public partial class Sprite : DisplayContainer {
         HandleFinishedTasks();
         
         Update();
-
-        HandleHover(Stage.Keyboard);
-        
-        HighestSprite?.DispatchMouseEvents();
-        
-        HighestSprite = null;
     }
     
     /// <summary>
@@ -264,7 +259,11 @@ public partial class Sprite : DisplayContainer {
     public void SetHitboxType(CollisionType collision) => CollisionType = collision;
 
     public Vector2i GetRelativeMousePosition() {
-        var pos = MouseInput.GetMousePosition();
+        if (Stage is null) {
+            return Vector2i.Zero; // TODO: check how flash handles mouse x/y when not on stage
+        }
+        
+        var pos = Stage.Mouse.GetMousePosition();
         return new Vector2i(pos.X - _trueX, pos.Y - _trueY);
     }
     

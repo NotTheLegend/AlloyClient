@@ -6,6 +6,7 @@ using OpenTK.Mathematics;
 namespace Alloy.UiLib.Core;
 
 public partial class Sprite {
+    // TODO: add stage checks to this, cant drag whats not in the display list
     
     private static Sprite _dragSprite;
     private static Type _dropType;
@@ -22,7 +23,7 @@ public partial class Sprite {
         if (_dragSprite != null)
             _dragSprite._isDragging = false;
         
-        var pos = MouseInput.GetMousePosition();
+        var pos = Stage.Mouse.GetMousePosition();
         pos.X -= _trueX;
         pos.Y -= _trueY;
 
@@ -56,7 +57,7 @@ public partial class Sprite {
         }
         
         DropTarget = null;
-        var pos = MouseInput.GetMousePosition();
+        var pos = Stage.Mouse.GetMousePosition();
         current.DropCheck(pos, ref DropTarget);
         _dragSprite = null;
         _dropType = null;
