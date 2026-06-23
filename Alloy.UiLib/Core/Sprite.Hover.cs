@@ -1,5 +1,4 @@
-﻿using System;
-using Alloy.UiLib.Input;
+﻿using Alloy.UiLib.Input;
 
 namespace Alloy.UiLib.Core;
 
@@ -12,8 +11,8 @@ public partial class Sprite {
         if (HighestSprite == LastSpriteHovered) 
             return;
 
-        HighestSprite?.DispatchEvent(new MouseEvent(MouseEvent.MouseOver, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetVerticalScrollDelta(), 1), -1), keyboard.IsShiftDown(), keyboard.IsCtrlDown(), keyboard.IsAltDown()));
-        LastSpriteHovered?.DispatchEvent(new MouseEvent(MouseEvent.MouseOut, MouseInput.GetMousePosition(), Math.Max(Math.Min(MouseInput.GetVerticalScrollDelta(), 1), -1), keyboard.IsShiftDown(), keyboard.IsCtrlDown(), keyboard.IsAltDown()));
+        HighestSprite?.DispatchEvent(new MouseEvent(MouseEvent.MouseOver, MouseInput.GetMousePosition(), MouseInput.GetVerticalScrollDelta(), keyboard.IsShiftDown(), keyboard.IsCtrlDown(), keyboard.IsAltDown()));
+        LastSpriteHovered?.DispatchEvent(new MouseEvent(MouseEvent.MouseOut, MouseInput.GetMousePosition(), MouseInput.GetVerticalScrollDelta(), keyboard.IsShiftDown(), keyboard.IsCtrlDown(), keyboard.IsAltDown()));
         LastSpriteHovered = HighestSprite;
     }
 

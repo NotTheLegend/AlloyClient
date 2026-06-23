@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Alloy.UiLib.BuiltIn;
-using Alloy.UiLib.Enums;
 using Alloy.UiLib.Input;
 using Microsoft.Extensions.Logging;
 
@@ -19,8 +18,6 @@ public abstract class EventManager {
     private enum QueueState {
         Add,
         Remove,
-        //Clear,
-        //ClearAll
     }
 
     private record BroadcastData(string Type, EventManager Manager, QueueState State);
@@ -97,51 +94,26 @@ public abstract class EventManager {
         });
     }
     
-    public void AddEventListener<T>(EventType<T> type, Action callback, bool capture = false) where T : Event {
-        var listener = new Listener(callback, capture);
-        if (_eventMap.TryGetValue(type, out var listeners) && listeners.Contains(listener))
-            return;
-        
-        HandleListener(new EventData(type, listener, QueueState.Add));
-    }
+    public void AddEventListener<T>(EventType<T> type, Action callback, bool capture = false) where T : Event => AddEventListener(type, new Listener(callback, capture));
     
-    public void AddEventListener<T>(EventType<T> type, Action<Event> callback, bool capture = false) where T : Event {
-        var listener = new Listener(callback, capture);
-        if (_eventMap.TryGetValue(type, out var listeners) && listeners.Contains(listener))
-            return;
-        
-        HandleListener(new EventData(type, listener, QueueState.Add));
-    }
+    public void AddEventListener<T>(EventType<T> type, Action<Event> callback, bool capture = false) where T : Event => AddEventListener(type, new Listener(callback, capture));
 
-    public void AddEventListener<T>(EventType<T> type, Action<T> callback, bool capture = false) where T : Event {
-        var listener = new Listener(callback, capture);
-        if (_eventMap.TryGetValue(type, out var listeners) && listeners.Contains(listener))
-            return;
-        
+    public void AddEventListener<T>(EventType<T> type, Action<T> callback, bool capture = false) where T : Event => AddEventListener(type, new Listener(callback, capture));
+
+    private void AddEventListener<T>(EventType<T> type, Listener listener) where T : Event {
+        if (_eventMap.TryGetValue(type, out var listeners) && listeners.Contains(listener)) return;
         HandleListener(new EventData(type, listener, QueueState.Add));
     }
     
-    public void RemoveEventListener<T>(EventType<T> type, Action callback, bool capture = false) where T : Event {
-        var listener = new Listener(callback, capture);
-        if (!_eventMap.TryGetValue(type, out var listeners)) return;
-        if (!listeners.Contains(listener)) return;
-        
-        HandleListener(new EventData(type, listener, QueueState.Remove));
-    }
+    public void RemoveEventListener<T>(EventType<T> type, Action callback, bool capture = false) where T : Event => RemoveEventListener(type, new Listener(callback, capture));
     
-    public void RemoveEventListener<T>(EventType<T> type, Action<Event> callback, bool capture = false) where T : Event {
-        var listener = new Listener(callback, capture);
-        if (!_eventMap.TryGetValue(type, out var listeners)) return;
-        if (!listeners.Contains(listener)) return;
-        
-        HandleListener(new EventData(type, listener, QueueState.Remove));
-    }
+    public void RemoveEventListener<T>(EventType<T> type, Action<Event> callback, bool capture = false) where T : Event => RemoveEventListener(type, new Listener(callback, capture));
     
-    public void RemoveEventListener<T>(EventType<T> type, Action<T> callback, bool capture = false) where T : Event {
-        var listener = new Listener(callback, capture);
+    public void RemoveEventListener<T>(EventType<T> type, Action<T> callback, bool capture = false) where T : Event => RemoveEventListener(type, new Listener(callback, capture));
+
+    private void RemoveEventListener<T>(EventType<T> type, Listener listener) where T : Event {
         if (!_eventMap.TryGetValue(type, out var listeners)) return;
         if (!listeners.Contains(listener)) return;
-        
         HandleListener(new EventData(type, listener, QueueState.Remove));
     }
 

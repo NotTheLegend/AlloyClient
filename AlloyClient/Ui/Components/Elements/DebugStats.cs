@@ -7,7 +7,6 @@ using AlloyClient.Rendering;
 using Alloy.UiLib;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
-using Alloy.UiLib.Enums;
 
 namespace AlloyClient.Ui.Components.Elements;
 

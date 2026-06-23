@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Alloy.UiLib.Enums;
+namespace Alloy.UiLib.Core;
 
 public enum UiAnchor : byte {
     LeftTop = 0,

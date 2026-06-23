@@ -1,6 +1,5 @@
 ﻿using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
-using Alloy.UiLib.Enums;
 using AlloyClient.Utils;
 
 namespace AlloyClient.Ui.Components.Elements;

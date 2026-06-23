@@ -4,7 +4,7 @@ using AlloyClient.Display;
 using AlloyClient.Screens.Components;
 using AlloyClient.Ui.Components.Buttons;
 using Alloy.UiLib.BuiltIn;
-using Alloy.UiLib.Enums;
+using Alloy.UiLib.Core;
 using Alloy.UiLib.Extra;
 
 namespace AlloyClient.Screens;

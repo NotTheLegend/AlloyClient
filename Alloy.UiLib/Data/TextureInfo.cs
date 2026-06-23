@@ -1,4 +1,4 @@
-﻿using Alloy.UiLib.Enums;
+﻿using Alloy.UiLib.Core;
 
 namespace Alloy.UiLib.Data;
 

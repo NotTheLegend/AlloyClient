@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using Alloy.Common;
-using Alloy.UiLib.Enums;
 using Alloy.UiLib.Extra;
 using Alloy.UiLib.Input;
 using Alloy.UiLib.Rendering;

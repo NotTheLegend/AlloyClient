@@ -1,5 +1,4 @@
 ﻿using Alloy.UiLib.Core;
-using Alloy.UiLib.Enums;
 using Alloy.UiLib.Rendering;
 using OpenTK.Mathematics;
 
@@ -46,7 +45,7 @@ public sealed class CutEdgeRect : Sprite {
         
         TextureId = TextureType.Color;
         
-        SetHitboxType(Enums.CollisionType.Vertices);
+        SetHitboxType(CollisionType.Vertices);
 
         ResizeBackBuffer();
         FillData();

@@ -1,7 +1,6 @@
 ﻿using AlloyClient.Game.Components.Hud.Inventory;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
-using Alloy.UiLib.Enums;
 
 namespace AlloyClient.Game.Components.Hud;
 

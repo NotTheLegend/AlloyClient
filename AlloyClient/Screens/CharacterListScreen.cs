@@ -9,7 +9,7 @@ using AlloyClient.Screens.Components.Containers;
 using AlloyClient.Ui.Components.Buttons;
 using AlloyClient.Ui.Components.Scrollbars;
 using Alloy.UiLib.BuiltIn;
-using Alloy.UiLib.Enums;
+using Alloy.UiLib.Core;
 using Alloy.UiLib.Extra;
 using AlloyClient.Ui.Components.Dialogs;
 using AlloyClient.Ui.Components.Graphics;

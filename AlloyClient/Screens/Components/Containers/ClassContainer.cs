@@ -4,7 +4,6 @@ using AlloyClient.Game;
 using AlloyClient.Screens.Components.CharacterSelection;
 using AlloyClient.Ui.Components.Panels;
 using Alloy.UiLib.Core;
-using Alloy.UiLib.Enums;
 using Alloy.UiLib.Extra;
 using AlloyClient.Ui.Components.Buttons;
 

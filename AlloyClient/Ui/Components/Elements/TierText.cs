@@ -2,7 +2,6 @@ using Alloy.Common;
 using AlloyClient.Assets.XmlStructs;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
-using Alloy.UiLib.Enums;
 
 namespace AlloyClient.Ui.Components.Elements;
 

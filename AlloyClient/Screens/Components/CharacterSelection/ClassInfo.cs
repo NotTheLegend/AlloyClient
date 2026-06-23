@@ -2,10 +2,10 @@
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Game.Components.Hud.Inventory;
 using Alloy.UiLib.BuiltIn;
-using Alloy.UiLib.Enums;
 using AlloyClient.Utils;
 using Alloy.Common;
 using Alloy.Engine;
+using Alloy.UiLib.Core;
 
 namespace AlloyClient.Screens.Components.CharacterSelection;
 

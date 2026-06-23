@@ -2,7 +2,6 @@
 using AlloyClient.Data;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
-using Alloy.UiLib.Enums;
 
 namespace AlloyClient.Screens.Components;
 

@@ -4,7 +4,7 @@ using System.Text;
 using Alloy.Engine.Graphics;
 using Alloy.Common.Structs;
 using Alloy.ContentReader;
-using Alloy.UiLib.Enums;
+using Alloy.UiLib.Core;
 
 namespace Alloy.UiLib.Data;
 

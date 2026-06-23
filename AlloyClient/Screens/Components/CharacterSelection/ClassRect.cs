@@ -1,5 +1,5 @@
 ﻿using Alloy.UiLib.BuiltIn;
-using Alloy.UiLib.Enums;
+using Alloy.UiLib.Core;
 using AlloyClient.Utils;
 
 namespace AlloyClient.Screens.Components.CharacterSelection;

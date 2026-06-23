@@ -5,7 +5,6 @@ using AlloyClient.Ui.Components.Buttons;
 using AlloyClient.Ui.Components.Panels;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
-using Alloy.UiLib.Enums;
 using Alloy.UiLib.Signals;
 
 namespace AlloyClient.Game.Components.Options;

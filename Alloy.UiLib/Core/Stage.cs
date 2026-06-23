@@ -2,6 +2,7 @@
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Extra;
 using Alloy.UiLib.Input;
+using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
 
@@ -38,12 +39,16 @@ public sealed class Stage : Sprite {
         ScreenScale = scale;
     }
     
+    private static readonly ILogger Logger = UiRender.LogFactory.CreateLogger("Stage");
+    
     public void Update(GameTime gameTime) {
+        Logger.LogInformation("Update Start");
         GameTime = gameTime;
         GTween.Update(gameTime);
         Timer.Update(gameTime);
         MouseInput.Update();
         InternalUpdateLoop();
+        Logger.LogInformation("Update End");
     }
 
     public void Draw(GameTime gameTime) {

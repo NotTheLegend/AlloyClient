@@ -1,7 +1,6 @@
 ﻿using System;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
-using Alloy.UiLib.Enums;
 using Alloy.UiLib.Extra;
 using Alloy.UiLib.Rendering;
 using Alloy.UiLib.Signals;

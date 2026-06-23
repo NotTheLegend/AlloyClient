@@ -1,5 +1,4 @@
 ﻿using Alloy.UiLib.Core;
-using Alloy.UiLib.Enums;
 using Alloy.UiLib.Rendering;
 using OpenTK.Mathematics;
 
@@ -37,7 +36,7 @@ public sealed class Ellipse : Sprite {
         SetColorSecondary(config.OutlineColor);
         Alpha = config.Alpha;
         SetAnchor(config.Anchor);
-        SetHitboxType(Enums.CollisionType.Ellipse);
+        SetHitboxType(CollisionType.Ellipse);
         MouseEnabled = config.MouseEnabled;
         TextureId = TextureType.Ellipse;
         

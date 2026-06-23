@@ -8,7 +8,6 @@ using AlloyClient.Networking.Structs.DataObjects;
 using AlloyClient.Ui.Components.Tooltips;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
-using Alloy.UiLib.Enums;
 using Alloy.UiLib.Extra;
 using AlloyClient.Utils;
 using Alloy.Common;

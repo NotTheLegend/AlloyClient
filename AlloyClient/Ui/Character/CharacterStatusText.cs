@@ -4,7 +4,6 @@ using AlloyClient.Game;
 using AlloyClient.Game.Objects;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
-using Alloy.UiLib.Enums;
 using OpenTK.Mathematics;
 using AlloyClient.Utils;
 

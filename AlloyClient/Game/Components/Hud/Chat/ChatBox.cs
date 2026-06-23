@@ -3,7 +3,6 @@ using AlloyClient.Networking;
 using AlloyClient.Networking.Packets.Outgoing;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
-using Alloy.UiLib.Enums;
 using Alloy.UiLib.Extra;
 using Alloy.UiLib.Signals;
 using Alloy.Common;

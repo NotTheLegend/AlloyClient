@@ -4,7 +4,6 @@ using System.Linq;
 using AlloyClient.Assets.Libraries;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
-using Alloy.UiLib.Enums;
 using Alloy.Common;
 using AlloyClient.Ui.Components.Buttons;
 using OpenTK.Mathematics;

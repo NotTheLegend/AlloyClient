@@ -1,6 +1,6 @@
 ﻿using AlloyClient.Ui.Components.Elements;
 using Alloy.UiLib.BuiltIn;
-using Alloy.UiLib.Enums;
+using Alloy.UiLib.Core;
 
 namespace AlloyClient.Game.Components.Hud.Chat;
 

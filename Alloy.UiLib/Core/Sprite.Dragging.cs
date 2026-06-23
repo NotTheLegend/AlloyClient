@@ -2,7 +2,6 @@
 using Alloy.Common;
 using Alloy.UiLib.Input;
 using OpenTK.Mathematics;
-using Alloy.UiLib.Enums;
 
 namespace Alloy.UiLib.Core;
 

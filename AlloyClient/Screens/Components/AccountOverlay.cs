@@ -3,7 +3,6 @@ using AlloyClient.Display;
 using AlloyClient.Screens.Components.Containers;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
-using Alloy.UiLib.Enums;
 using Alloy.UiLib.Extra;
 using AlloyClient.Ui.Components.Buttons;
 

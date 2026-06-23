@@ -1,6 +1,5 @@
 ﻿using Alloy.UiLib.Core;
 using Alloy.UiLib.Data;
-using Alloy.UiLib.Enums;
 using Alloy.UiLib.Rendering;
 using OpenTK.Mathematics;
 

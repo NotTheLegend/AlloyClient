@@ -3,7 +3,7 @@ using AlloyClient.Assets.XmlStructs;
 using AlloyClient.Game.Objects.Util;
 using AlloyClient.Ui.Components.Elements;
 using Alloy.UiLib.BuiltIn;
-using Alloy.UiLib.Enums;
+using Alloy.UiLib.Core;
 using AlloyClient.Utils;
 
 namespace AlloyClient.Ui.Components.Tooltips;

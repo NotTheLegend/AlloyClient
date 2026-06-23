@@ -3,8 +3,8 @@ using AlloyClient.Assets.Libraries;
 using AlloyClient.Game;
 using AlloyClient.Game.Objects.Enums;
 using Alloy.UiLib.Data;
-using Alloy.UiLib.Enums;
 using Alloy.Common.Structs;
+using Alloy.UiLib.Core;
 using OpenTK.Mathematics;
 
 namespace AlloyClient.Utils;

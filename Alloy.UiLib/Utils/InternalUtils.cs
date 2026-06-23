@@ -1,6 +1,6 @@
 ﻿using System;
 using Alloy.Common;
-using Alloy.UiLib.Enums;
+using Alloy.UiLib.Core;
 
 namespace Alloy.UiLib.Utils;
 
