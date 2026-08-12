@@ -1,8 +1,11 @@
-﻿using OpenTK.Mathematics;
+﻿using System;
+using OpenTK.Mathematics;
 
 namespace Alloy.UiLib.Extra;
 
-public struct ColorTransform {
+public struct ColorTransform : IEquatable<ColorTransform> {
+
+    public static readonly ColorTransform Default = new ColorTransform(1f, 1f, 1f, 1f);
     
     private Vector4 _mult = new Vector4(1f);
     private Vector4 _add = new Vector4(0f);
@@ -28,5 +31,27 @@ public struct ColorTransform {
     
     public static implicit operator Vector4(ColorTransform transform) {
         return transform._mult + transform._add * 1000;
+    }
+
+    public bool Equals(ColorTransform other) {
+        return _mult.Equals(other._mult) && _add.Equals(other._add);
+    }
+
+    public override bool Equals(object obj) {
+        return obj is ColorTransform other && Equals(other);
+    }
+
+    public override int GetHashCode() {
+        return HashCode.Combine(_mult, _add);
+    }
+
+    public static bool operator ==(ColorTransform left, ColorTransform right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(ColorTransform left, ColorTransform right)
+    {
+        return !(left == right);
     }
 }

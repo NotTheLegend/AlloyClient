@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,7 +9,7 @@ public interface IGlobalData;
 
 public static class GlobalData {
 
-    private static readonly Dictionary<Type, IGlobalData> DataStorage = [];
+    private static readonly ConcurrentDictionary<Type, IGlobalData> DataStorage = [];
 
     public static int SelectedCharacterId;
     
@@ -51,7 +52,7 @@ public static class GlobalData {
     }
 
     public static void Remove<T>() where T : class, IGlobalData {
-        DataStorage.Remove(typeof(T));
+        DataStorage.Remove(typeof(T), out _);
     }
 
     public static void Logout() {

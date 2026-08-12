@@ -35,7 +35,7 @@ public readonly struct Camera(Vector2 pos, Matrix4 matrix, Matrix4 billboard, Ve
         return new Camera(pos, matrix, billboard, visibleTiles, viewport.Z);
     }
     
-    public Vector3 ScreenToWorld(Vector2 mouse, Vector2i viewport) {
+    public Vector3 ScreenToWorld(in Vector2 mouse, in Vector2i viewport) {
         var mat = Matrix4.Invert(Matrix);
 
         var x = MathUtils.Map(mouse.X, 0, viewport.X, -1, 1);
@@ -55,16 +55,16 @@ public readonly struct Camera(Vector2 pos, Matrix4 matrix, Matrix4 billboard, Ve
         return pos;
     }
     
-    public Vector2i WorldToScreen(Vector2 position, Vector2i viewport) => WorldToScreen(new Vector3(position, 0), viewport);
+    public Vector2i WorldToScreen(in Vector2 position, in Vector2i viewport) => WorldToScreen(new Vector3(position, 0), viewport);
 
-    public Vector2i WorldToScreen(Vector3 position, Vector2i viewport) {
+    public Vector2i WorldToScreen(in Vector3 position, in Vector2i viewport) {
         var clipSpace = new Vector4(position, 1f) * Matrix;
         var x = (int)((clipSpace.X + 1f) * 0.5f * viewport.X);
         var y = (int)((1f - clipSpace.Y) * 0.5f * viewport.Y);
         return new Vector2i(x, y);
     }
 
-    private static Matrix4 CreateScaleWithRotationZ(float angle, float scale) {
+    private static Matrix4 CreateScaleWithRotationZ(in float angle, in float scale) {
         var cos = MathF.Cos(angle);
         var sin = MathF.Sin(angle);
 

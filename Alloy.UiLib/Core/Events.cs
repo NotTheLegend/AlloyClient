@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
 
@@ -11,7 +12,7 @@ public enum EventPhase {
 }
 
 public record struct EventType<T>(string Id) where T : Event {
-    public static implicit operator EventType<T>(string id) => new(id);
+    public static implicit operator EventType<T>(string id) => string.IsNullOrWhiteSpace(id) ? throw new Exception() : new EventType<T>(id);
     public static implicit operator string(EventType<T> type) => type.Id;
 }
 

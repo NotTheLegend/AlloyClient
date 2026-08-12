@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Alloy.UiLib.Core;
 using OpenTK.Platform;
 
@@ -44,5 +46,9 @@ public static class Extensions {
             UiAnchor.RightBottom => (-w, -h),
             _ => (0, 0)
         };
+    }
+
+    extension<T>(List<T> list) {
+        internal ReadOnlySpan<T> AsSpan() => CollectionsMarshal.AsSpan(list);
     }
 }

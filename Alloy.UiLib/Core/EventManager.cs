@@ -35,10 +35,6 @@ public abstract class EventManager {
     
     private readonly Dictionary<string, Queue<EventData>> _pending = [];
 
-    private readonly Queue<EventType<MouseEvent>> _pendingClicks = [];
-
-    
-
     private readonly Dictionary<string, List<Listener>> _eventMap = [];
 
     private static readonly Queue<Action> CompletedTasks = [];

@@ -260,8 +260,17 @@ public partial class Sprite : DisplayContainer {
 
     public Vector2i GetRelativeMousePosition() {
         if (Stage is null) {
+            // flash returns junk? coords if not on stage
             return Vector2i.Zero; // TODO: check how flash handles mouse x/y when not on stage
         }
+        
+        /* returns coords relative to vertex data
+         * uses scale to map mouse to sprite
+         *
+         *
+         *
+         * 
+         */
         
         var pos = Stage.Mouse.GetMousePosition();
         return new Vector2i(pos.X - _trueX, pos.Y - _trueY);
