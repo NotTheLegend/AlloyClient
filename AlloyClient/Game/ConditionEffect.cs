@@ -30,7 +30,9 @@ public unsafe struct ConditionEffectBucket {
                 }
                 
                 var eff = (ConditionEffect)(b + i * ConditionEffects.MaxBucketSize);
-                var icons = ConditionEffects.EffectIcons[eff];
+                if (!ConditionEffects.EffectIcons.TryGetValue(eff, out var icons))
+                    continue;
+                
                 span[idx] = icons[index % icons.Length];
                 idx++;
             }
