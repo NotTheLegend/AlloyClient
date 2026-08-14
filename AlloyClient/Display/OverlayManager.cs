@@ -46,7 +46,7 @@ public sealed class OverlayManager : Sprite {
 
     private void OnStageEnter() {
         Stage.AddEventListener(ResizeEvent.Resize, OnResize);
-        OnResize(new ResizeEvent("", Stage.StageWidth, Stage.StageHeight));
+        OnResize(new ResizeEvent(ResizeEvent.Resize, Stage.StageWidth, Stage.StageHeight));
     }
 
     private void OnStageExit() {

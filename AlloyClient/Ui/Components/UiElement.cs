@@ -12,7 +12,7 @@ public abstract class UiElement : Sprite {
     private void InternalOnAddedToStage() {
         Stage.AddEventListener(ResizeEvent.Resize, OnResize);
         OnAddedToStage();
-        OnResize(new ResizeEvent("", Stage.StageWidth, Stage.StageHeight));
+        OnResize(new ResizeEvent(ResizeEvent.Resize, Stage.StageWidth, Stage.StageHeight));
     }
 
     private void InternalOnRemovedFromStage() {
