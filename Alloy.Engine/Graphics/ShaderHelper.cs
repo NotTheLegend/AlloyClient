@@ -30,11 +30,19 @@ internal static class ShaderHelper {
         }
     }
 
-    internal static void Compile(int handle, string path, (string, string)[] defines) {
+    internal static void Compile(int handle, string name, string path, (string, string)[] defines) {
         var p1 = path + ".vert";
         var p2 = path + ".frag";
-        var vs = new StringBuilder(File.ReadAllText(p1));
-        var fs = new StringBuilder(File.ReadAllText(p2));
+        var vs = File.ReadAllText(p1);
+        var fs = File.ReadAllText(p2);
+        Compile(handle, name, vs, fs, defines);
+    }
+
+    internal static void Compile(int handle, string name, string vertex, string fragment, (string, string)[] defines) {
+        var p1 = name + ".vert";
+        var p2 = name + ".frag";
+        var vs = new StringBuilder(vertex);
+        var fs = new StringBuilder(fragment);
 
         if (defines != null) {
             foreach (var def in defines) {
@@ -63,13 +71,13 @@ internal static class ShaderHelper {
         GL.DeleteShader(fragmentHandle);
     }
     
-    private static void CompileShader(int shader, string path) {
+    private static void CompileShader(int shader, string name) {
         GL.CompileShader(shader);
 
         GL.GetShaderi(shader, ShaderParameterName.CompileStatus, out var code);
         if (code != (int)All.True) {
             GL.GetShaderInfoLog(shader, out var infoLog);
-            throw new Exception($"Error compiling shader {path}.{Environment.NewLine}{infoLog}");
+            throw new Exception($"Error compiling shader {name}.{Environment.NewLine}{infoLog}");
         }
     }
 

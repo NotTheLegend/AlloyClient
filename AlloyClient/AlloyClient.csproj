@@ -35,6 +35,8 @@
 		<CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
 		<ReferenceOutputAssembly>False</ReferenceOutputAssembly>
       </ProjectReference>
+      <ProjectReference Include="..\Alloy.ShaderSourceGen\Alloy.ShaderSourceGen.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+	  
       <ProjectReference Include="..\Alloy.UiLib\Alloy.UiLib.csproj" />
     </ItemGroup>
     

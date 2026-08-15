@@ -1,4 +1,5 @@
-﻿using Alloy.Engine.Graphics.Buffers;
+﻿using Alloy.Common.SourceGen;
+using Alloy.Engine.Graphics.Buffers;
 
 namespace Alloy.Engine.Graphics;
 
@@ -20,7 +21,16 @@ public sealed class Shader {
         Name = new DirectoryInfo(path).Name;
         Handle = GL.CreateProgram();
         
-        ShaderHelper.Compile(Handle, path, defines);
+        ShaderHelper.Compile(Handle, Name, path, defines);
+        ShaderHelper.LoadUniformProperties(Handle, _uniforms);
+        ShaderHelper.LoadUniformBlocks(Handle, _uniformBlocks);
+    }
+    
+    public Shader(ShaderSource source, (string, string)[] defines = null) {
+        Name = source.Name;
+        Handle = GL.CreateProgram();
+        
+        ShaderHelper.Compile(Handle, source.Name, source.Vertex, source.Fragment, defines);
         ShaderHelper.LoadUniformProperties(Handle, _uniforms);
         ShaderHelper.LoadUniformBlocks(Handle, _uniformBlocks);
     }
@@ -60,4 +70,6 @@ public sealed class Shader {
 
         return info.Location;
     }
+
+    public static Shader FromSource(ShaderSource source, (string, string)[] defines = null) => new Shader(source, defines);
 }

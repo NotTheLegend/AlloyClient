@@ -1,4 +1,5 @@
 ﻿using System;
+using Alloy.Common.SourceGen;
 using Alloy.Engine.Graphics;
 using Alloy.ContentReader;
 using Alloy.UiLib.BuiltIn;
@@ -18,7 +19,7 @@ public class UiSettings {
     public required Vector2i Screen;
 }
 
-public static class UiRender {
+public static partial class UiRender {
 
     internal static ILoggerFactory LogFactory;
 
@@ -35,6 +36,9 @@ public static class UiRender {
     public static BitmapFamily MyriadPro;
     
     public static Matrix4 ViewMatrix = new(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, -0.5f, 0f, -1f, 1f, 0.5f, 1f);
+    
+    [Shader("Ui")]
+    private static partial ShaderSource UiShaderSource { get; }
 
     internal static Shader UiShader;
 
@@ -50,7 +54,7 @@ public static class UiRender {
         
         Toolkit.Event.EventRaised += HandleEvents;
 
-        UiShader = ContentLoader.LoadShader("Shaders/Ui");
+        UiShader = Shader.FromSource(UiShaderSource);
         
         SpriteRender.Init();
         

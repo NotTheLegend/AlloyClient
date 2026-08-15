@@ -3,13 +3,28 @@
         <TargetFramework>net10.0</TargetFramework>
         <LangVersion>preview</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>.GeneratedFiles</CompilerGeneratedFilesOutputPath>
+		
     </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\Alloy.Common\Alloy.Common.csproj" />
       <ProjectReference Include="..\Alloy.ContentReader\Alloy.ContentReader.csproj" />
+      <ProjectReference Include="..\Alloy.ShaderSourceGen\Alloy.ShaderSourceGen.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.8" />
       <PackageReference Include="OpenTK" Version="5.0.0-pre.16" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="AdditionalFiles\" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Remove="AdditionalFiles\Ui.frag" />
+      <AdditionalFiles Include="AdditionalFiles\Ui.frag" />
+      <None Remove="AdditionalFiles\Ui.vert" />
+      <AdditionalFiles Include="AdditionalFiles\Ui.vert" />
+	  <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
     </ItemGroup>
 </Project>
