@@ -299,18 +299,14 @@ public sealed class ItemTile : Sprite {
                 if (!CanSwapItems(this, tile)) break;
 
                 var swap = InvSwap.CreatePacket();
-                swap.Time = (int) Map.LastGameTime.TotalMs;
-                swap.Position = new Position {X = Map.LocalPlayer.Position.X, Y = Map.LocalPlayer.Position.Y};
 
                 swap.SlotObj1 = new ObjectSlot {
                     ObjectId = Owner.ObjectId,
-                    SlotId = SlotId,
-                    ObjectType = ItemDesc.ObjectType
+                    SlotId = SlotId
                 };
                 swap.SlotObj2 = new ObjectSlot {
                     ObjectId = tile.Owner.ObjectId,
-                    SlotId = tile.SlotId,
-                    ObjectType = tile.ItemDesc?.ObjectType ?? 0
+                    SlotId = tile.SlotId
                 };
                 Client.QueuePacket(swap);
 
@@ -325,8 +321,7 @@ public sealed class ItemTile : Sprite {
                 var drop = InvDrop.CreatePacket();
                 drop.SlotObject = new ObjectSlot {
                     ObjectId = Owner.ObjectId,
-                    SlotId = SlotId,
-                    ObjectType = ItemDesc.ObjectType
+                    SlotId = SlotId
                 };
 
                 Client.QueuePacket(drop);
@@ -373,7 +368,6 @@ public sealed class ItemTile : Sprite {
         packet.Time = time;
         packet.SlotObject.ObjectId = objectId;
         packet.SlotObject.SlotId = slotId;
-        packet.SlotObject.ObjectType = objectType;
         packet.ItemUsePos.X = itemUsePosX;
         packet.ItemUsePos.Y = itemUsePosY;
         packet.UseType = useType;

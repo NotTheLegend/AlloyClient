@@ -144,7 +144,7 @@ public static class Client {
         while (_receiveState.PacketReady()) {
             var pktId = (PacketId) _receiveState.ReadPacket(out var rdr);
             try {
-                // Log.Debug($"RECEIVING {pktId}");
+                // Logger.Debug($"RECEIVING {pktId}");
                 var pkt = PacketUtils.CreateIncomingPacket(pktId);
                 pkt.Read(ref rdr);
                 IncomingQueue.Enqueue(pkt);
@@ -205,7 +205,7 @@ public static class Client {
 
         lock (_sendState) {
             _sendState.WritePacket(pkt, (byte) pkt.PacketId);
-            // Log.Debug($"SENDING {pkt.PacketId}");
+            // Logger.Debug($"SENDING {pkt.PacketId}");
         }
     }
 

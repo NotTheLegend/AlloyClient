@@ -3,23 +3,17 @@
 namespace AlloyClient.Networking.Packets.Outgoing;
 
 public class InvSwap : OutgoingPacket<InvSwap> {
-    public int Time;
-    public Position Position;
     public ObjectSlot SlotObj1;
     public ObjectSlot SlotObj2;
 
     public override PacketId PacketId => PacketId.InvSwap;
 
     public override void Reset() {
-        Time = 0;
-        Position.Reset();
         SlotObj1.Reset();
         SlotObj2.Reset();
     }
 
     public override void Write(ref SpanWriter writer) {
-        writer.Write(Time);
-        Position.Write(ref writer);
         SlotObj1.Write(ref writer);
         SlotObj2.Write(ref writer);
     }
