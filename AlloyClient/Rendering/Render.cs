@@ -1,9 +1,9 @@
-﻿using Alloy.Engine.Graphics;
+﻿using Alloy.Common.SourceGen;
+using Alloy.Engine.Graphics;
 using Alloy.Engine.Graphics.Buffers;
 using AlloyClient.Assets;
 using AlloyClient.Game;
 using AlloyClient.Rendering.VertexData;
-using Alloy.ContentReader;
 using Alloy.Engine;
 using Alloy.UiLib.Data;
 using OpenTK.Mathematics;
@@ -19,6 +19,13 @@ public static partial class Render {
     private static readonly (string, string)[] TileDefines = [("TileBuffer", $"{TileBufferSize}")];
     private static readonly (string, string)[] ShadowDefines = [("ShadowBuffer", $"{ShadowBufferSize}")];
     private static readonly (string, string)[] ObjectDefines = [("ObjectBuffer", $"{BufferSize}")];
+    
+    // Shader Sources
+    [Shader("Ground")] private static partial ShaderSource GroundShaderSource { get; }
+    [Shader("Shadow")] private static partial ShaderSource ShadowShaderSource { get; }
+    [Shader("Model")] private static partial ShaderSource ModelShaderSource { get; }
+    [Shader("Object")] private static partial ShaderSource ObjectShaderSource { get; }
+    [Shader("Particle")] private static partial ShaderSource ParticleShaderSource { get; }
     
     // Shaders
     private static Shader _shaderGround;
@@ -49,22 +56,22 @@ public static partial class Render {
     
     public static unsafe void FirstTimeInit(Sampler atlas, BitmapFamily font) {
         // Shaders
-        _shaderGround = ContentLoader.LoadShader("Shaders/Ground", TileDefines);
+        _shaderGround = Shader.FromSource(GroundShaderSource, TileDefines);
         _shaderGround.SetValue("GameTexture", atlas);
 
-        _shaderShadow = ContentLoader.LoadShader("Shaders/Shadow", ShadowDefines);
+        _shaderShadow = Shader.FromSource(ShadowShaderSource, ShadowDefines);
         
-        _shaderModel = ContentLoader.LoadShader("Shaders/Model");
+        _shaderModel = Shader.FromSource(ModelShaderSource);
         _shaderModel.SetValue("GameTexture", atlas);
         
-        _shaderObject = ContentLoader.LoadShader("Shaders/Object", ObjectDefines);
+        _shaderObject = Shader.FromSource(ObjectShaderSource, ObjectDefines);
         _shaderObject.SetValue("GameTexture", atlas);
         
         _shaderObject.SetValue("PixelRange", font.PixelRange);
         _shaderObject.SetValue("TextTextureSize", new Vector2(font.Atlas.Width, font.Atlas.Height));
         _shaderObject.SetValue("TextTexture", font.Sampler);
 
-        _shaderParticle = ContentLoader.LoadShader("Shaders/Particle");
+        _shaderParticle = Shader.FromSource(ParticleShaderSource);
         
         _defaultVao = new VertexArrayObject();
         

@@ -22,9 +22,4 @@ public static class ContentLoader {
         using var reader = new BinaryReader(new MemoryStream(File.ReadAllBytes(Path.CombineAlt(_folder, path))));
         return FontFamily.Read(reader);
     }
-
-    public static Shader LoadShader(string path, (string, string)[] defines = null) {
-        return new Shader(Path.CombineAlt(_folder, path), defines);
-    }
-
 }

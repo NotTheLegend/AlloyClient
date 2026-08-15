@@ -17,8 +17,4 @@
         <File>Game.atlas</File>
         <File>Ui.atlas</File>
     </Builder>
-    
-    <Builder type="Copy">
-        <Folder ext="*.*">Shaders</Folder>
-    </Builder>
 </Content>

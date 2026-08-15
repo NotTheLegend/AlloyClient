@@ -40,6 +40,29 @@
       <ProjectReference Include="..\Alloy.UiLib\Alloy.UiLib.csproj" />
     </ItemGroup>
     
+    <ItemGroup>
+      <None Remove="AdditionalFiles\Shadow.vert" />
+      <AdditionalFiles Include="AdditionalFiles\Shadow.vert" />
+      <None Remove="AdditionalFiles\Shadow.frag" />
+      <AdditionalFiles Include="AdditionalFiles\Shadow.frag" />
+      <None Remove="AdditionalFiles\Particle.vert" />
+      <AdditionalFiles Include="AdditionalFiles\Particle.vert" />
+      <None Remove="AdditionalFiles\Particle.frag" />
+      <AdditionalFiles Include="AdditionalFiles\Particle.frag" />
+      <None Remove="AdditionalFiles\Object.vert" />
+      <AdditionalFiles Include="AdditionalFiles\Object.vert" />
+      <None Remove="AdditionalFiles\Object.frag" />
+      <AdditionalFiles Include="AdditionalFiles\Object.frag" />
+      <None Remove="AdditionalFiles\Model.vert" />
+      <AdditionalFiles Include="AdditionalFiles\Model.vert" />
+      <None Remove="AdditionalFiles\Model.frag" />
+      <AdditionalFiles Include="AdditionalFiles\Model.frag" />
+      <None Remove="AdditionalFiles\Ground.vert" />
+      <AdditionalFiles Include="AdditionalFiles\Ground.vert" />
+      <None Remove="AdditionalFiles\Ground.frag" />
+      <AdditionalFiles Include="AdditionalFiles\Ground.frag" />
+    </ItemGroup>
+    
     <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
         <Message Text="Restoring dotnet tools" Importance="High" />
         <Exec Command="dotnet tool restore" />

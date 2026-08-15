@@ -1,7 +1,6 @@
 ﻿using System;
 using Alloy.Common.SourceGen;
 using Alloy.Engine.Graphics;
-using Alloy.ContentReader;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Data;
@@ -37,8 +36,7 @@ public static partial class UiRender {
     
     public static Matrix4 ViewMatrix = new(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, -0.5f, 0f, -1f, 1f, 0.5f, 1f);
     
-    [Shader("Ui")]
-    private static partial ShaderSource UiShaderSource { get; }
+    [Shader("Ui")] private static partial ShaderSource UiShaderSource { get; }
 
     internal static Shader UiShader;
 
