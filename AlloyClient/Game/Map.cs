@@ -191,8 +191,9 @@ public static class Map {
         
         VisibleTiles.Clear();
 
+        var camPos = new Vector2i((int)camera.Position.X, (int)camera.Position.Y);
         foreach (var position in SightCircle) {
-            if (LookupTile(position + camera.Position, out var tile) && tile.Type != Const.DefaultTile) {
+            if (LookupTile(position + camPos, out var tile) && tile.Type != Const.DefaultTile) {
                 VisibleTiles.AddRange(tile.DrawTile());
             }
         }
@@ -270,19 +271,21 @@ public static class Map {
 
         #endregion
     }
-    
-    public static bool LookupTile(Vector2 position, out MapTile tile) => (tile = LookupTile(position)) != null;
 
     public static MapTile LookupTile(Vector2 position) => LookupTile((int)position.X, (int)position.Y);
 
     public static bool LookupTile(int x, int y, out MapTile tile) => (tile = LookupTile(x, y)) != null;
     
-    public static MapTile LookupTile(int x, int y) {
-        if (x < 0 || x > Width || y < 0 || y > Height) {
+    public static MapTile LookupTile(int x, int y) => LookupTile(new Vector2i(x, y));
+    
+    public static bool LookupTile(Vector2i position, out MapTile tile) => (tile = LookupTile(position)) != null;
+    
+    public static MapTile LookupTile(Vector2i position) {
+        if (position.X < 0 || position.X > Width || position.Y < 0 || position.Y > Height) {
             return null;
         }
 
-        return Tiles[(x, y)] ?? (Tiles[(x, y)] = new MapTile(x, y));
+        return Tiles[position] ?? (Tiles[position] = new MapTile(position));
     }
 
     private static readonly MapTile[] RebuildData = new MapTile[9];

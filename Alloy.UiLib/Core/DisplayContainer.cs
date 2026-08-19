@@ -181,9 +181,16 @@ public abstract class DisplayContainer : EventManager {
             yMin = Math.Min(yMin, pos.Y);
             yMax = Math.Max(yMax, pos.Y + child.Height);
         }
+        
+        var newWidth = (int)(xMax - xMin);
+        var newHeight = (int)(yMax - yMin);
 
-        ContentWidth = (int)(xMax - xMin);
-        ContentHeight = (int)(yMax - yMin);
+        if (newWidth == ContentWidth && newHeight == ContentHeight) {
+            return;
+        }
+
+        ContentWidth = newWidth;
+        ContentHeight = newHeight;
 
         Parent?.UpdateBounds();
     }

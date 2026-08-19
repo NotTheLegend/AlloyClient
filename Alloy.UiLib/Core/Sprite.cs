@@ -220,7 +220,7 @@ public partial class Sprite : DisplayContainer {
         }
     }
 
-    private readonly Event _cachedEnterFrame = new Event(Event.EnterFrame);
+    private readonly Event _cachedEnterFrame = new(Event.EnterFrame);
 
     internal void InternalUpdateLoop() {
         BroadcastEvent(_cachedEnterFrame);
