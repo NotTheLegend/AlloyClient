@@ -31,7 +31,7 @@
 
     <ItemGroup>
       <PackageReference Include="SharpAssimp" Version="6.0.12" />
-      <PackageReference Include="StbImageSharp" Version="2.30.15" />
+      <PackageReference Include="StbImageSharp" Version="2.30.16" />
       <PackageReference Include="StbImageWriteSharp" Version="1.16.7" />
       <PackageReference Include="StbRectPackSharp" Version="1.0.4" />
     </ItemGroup>
