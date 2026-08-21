@@ -102,6 +102,7 @@ public static class Map {
     private static readonly ParticleData[] Particles = new ParticleData[30000];
 
     private static readonly List<VertexObject> RenderTargets = [];
+    private static readonly List<Entity> EntityUpdateBuffer = [];
 
     private static readonly HashSet<Vector2i> SightCircle = [];
 
@@ -140,9 +141,18 @@ public static class Map {
         var fullMatrix = camera.Matrix;
         var matrix = new DepthMatrix(camera.Matrix);
 
-        foreach (var (objectId, entity) in Entities) {
+        // Entity updates may remove entries. Reuse a snapshot buffer instead of
+        // mutating the dictionary during enumeration, which would invalidate the
+        // enumerator and throw on the next iteration.
+        EntityUpdateBuffer.Clear();
+        EntityUpdateBuffer.AddRange(Entities.Values);
+        foreach (var entity in EntityUpdateBuffer) {
+            if (!Entities.ContainsKey(entity.ObjectId))
+                continue;
+
             if (!entity.Update(time, dt)) {
-                Entities.Remove(objectId);
+                RemoveEntity(entity.ObjectId);
+                continue;
             }
 
             entity.UpdateVisibility(ref fullMatrix);
