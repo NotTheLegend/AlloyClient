@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Numerics.Tensors;
 using Alloy.Engine;
 using AlloyClient.Rendering;
 using Alloy.UiLib;
@@ -11,18 +10,21 @@ using Alloy.UiLib.Core;
 namespace AlloyClient.Ui.Components.Elements;
 
 public class DebugStats : Sprite {
-    private const int Outline = 3;
     
-    private const int WINDOW_DURATION = 30000;
+    private const int Outline = 3;
+
+    private const int WindowTimeSeconds = 5; // was 30 but the sorting was eating up +100ms at 2000 fps, probably cuz i have black desert running in the background lmao, 30 seconds was overkill anyways
+    private const int WindowTimeMs = 1000 * WindowTimeSeconds;
+    private const int StartingFrameCount = WindowTimeSeconds * 3000;
 
     private double _framesSeconds;
 
-    private readonly Queue<double> _frameTimes = new (65536);
-    private double[] _workingFrameTimes = new double[65536];
+    private readonly Queue<double> _frameTimes = new (StartingFrameCount);
+    private double[] _workingFrameTimes = new double[StartingFrameCount];
     private double _statisticsTimer;
     private int _frameCount;
 
-    private readonly SimpleText _frameTimeTimer = new (new TextConfig {Text = "Frame time over the last 30 seconds", X = 2, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop });
+    private readonly SimpleText _frameTimeTimer = new (new TextConfig {Text = $"Frame time over the last {WindowTimeSeconds} seconds", X = 2, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop });
     private readonly SimpleText _avgFrameTime = new (new TextConfig {Text = "Avg: 0 ms", X = 8, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop });
     private readonly SimpleText _p90FrameTime = new (new TextConfig {Text = "P90: 0 ms", X = 8, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop });
     private readonly SimpleText _p99FrameTime = new (new TextConfig {Text = "P99: 0 ms", X = 8, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop });
@@ -84,7 +86,7 @@ public class DebugStats : Sprite {
         _statisticsTimer += elapsed;
 
         // Drop frames that fall outside the 30s window
-        while (_framesSeconds > WINDOW_DURATION) {
+        while (_framesSeconds > WindowTimeMs) {
             _framesSeconds -= _frameTimes.Dequeue();
         }
 
@@ -102,10 +104,15 @@ public class DebugStats : Sprite {
 
         var data = _workingFrameTimes.AsSpan(0, _frameTimes.Count);
         data.Sort();
+
+        var sum = 0d;
+        for (var i = 0; i < data.Length; i++) {
+            sum += data[i];
+        }
         
         var fps = _frameCount / 1.0;
         var count = data.Length;
-        var avgFrameTime = Tensor.Sum(new ReadOnlyTensorSpan<double>(data)) / count; // probably overkill but at 2k fps its ~63k frame times
+        var avgFrameTime = sum / count;
         var p90FrameTime = data[(int) (count * 0.90f)];
         var p99FrameTime = data[(int) (count * 0.99f)];
         var maxFrameTime = data[count - 1];

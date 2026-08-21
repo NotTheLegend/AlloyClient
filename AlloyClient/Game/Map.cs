@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using AlloyClient.Assets;
 using AlloyClient.Game.Components.Hud;
 using AlloyClient.Game.Objects;
@@ -15,51 +16,113 @@ using AlloyClient.Utils;
 using Microsoft.Extensions.Logging;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using TileData = AlloyClient.Rendering.VertexData.TileData;
 
 namespace AlloyClient.Game;
 
-public readonly struct TileMap {
+public class TileMap {
+    
     public const int ChunkSize = 16;
-    
-    private readonly Dictionary<Vector2i, MapChunk> _tiles = [];
-    
-    public TileMap(){}
-    
-    public MapTile this[Vector2i coords] {
-        get {
-            var chunkId = new Vector2i(coords.X / ChunkSize, coords.Y / ChunkSize);
-            var chunkCoords = new Vector2i(coords.X % ChunkSize, coords.Y % ChunkSize);
-            return _tiles.TryGetValue(chunkId, out var chunk) ? chunk[chunkCoords] : null;
-        }
-        set {
-            var chunkId = new Vector2i(coords.X / ChunkSize, coords.Y / ChunkSize);
-            var chunkCoords = new Vector2i(coords.X % ChunkSize, coords.Y % ChunkSize);
+    public const int ChunkArea = ChunkSize * ChunkSize;
+    public const int ChunkRenderData = ChunkArea * MapTile.MaxTileData;
 
-            if (!_tiles.TryGetValue(chunkId, out var chunk)) {
-                chunk = _tiles[chunkId] = new MapChunk();
-            }
+    private int _width;
+    private int _height;
+    
+    private readonly Dictionary<Vector2i, TileChunk> _chunks = [];
 
-            chunk[chunkCoords] = value;
-        }
+    public MapTile this[Vector2i coords] => Get(coords);
+
+    public void SetDimensions(int width, int height) {
+        _width = width;
+        _height = height;
     }
 
-    public void Clear() => _tiles.Clear();
-
-    private readonly struct MapChunk {
+    public void SetTileChange(Vector2i coords) {
+        var chunkId = new Vector2i(coords.X / ChunkSize, coords.Y / ChunkSize);
         
-        private readonly MapTile[] _tiles = new MapTile[ChunkSize * ChunkSize];
+        if (!_chunks.TryGetValue(chunkId, out var chunk)) {
+            return;
+        }
+        
+        chunk.SetDirty();
+    }
 
-        public MapChunk() { }
+    public bool GetChunkData(Vector2i chunkCoords, out ReadOnlySpan<TileData> data) {
+        if (!_chunks.TryGetValue(chunkCoords, out var chunk)) {
+            data = default;
+            return false;
+        }
 
-        public MapTile this[Vector2i coords] {
-            get => _tiles[coords.Y * ChunkSize + coords.X];
-            set => _tiles[coords.Y * ChunkSize + coords.X] = value;
+        data = chunk.GetTileData();
+        return true;
+    }
+    
+    public void Clear() => _chunks.Clear();
+    
+    private MapTile Get(Vector2i coords) {
+        if (coords.X < 0 || coords.X > _width || coords.Y < 0 || coords.Y > _height) {
+            return null;
+        }
+        
+        var chunkId = new Vector2i(coords.X / ChunkSize, coords.Y / ChunkSize);
+
+        if (!_chunks.TryGetValue(chunkId, out var chunk)) {
+            chunk = _chunks[chunkId] = new TileChunk();
+        }
+
+        return chunk.Get(coords);
+    }
+    
+    private class TileChunk {
+        
+        private readonly MapTile[] _tiles = new MapTile[ChunkArea];
+        
+        private readonly TileData[] _data = new TileData[ChunkRenderData];
+
+        private bool _dirty;
+
+        private int _renderCount;
+
+        public MapTile Get(Vector2i coords) {
+            var index = (coords.Y % ChunkSize) * ChunkSize + (coords.X % ChunkSize);
+            return _tiles[index] ?? (_tiles[index] = new MapTile(coords));
+        }
+
+        public void SetDirty() => _dirty = true;
+
+        public ReadOnlySpan<TileData> GetTileData() {
+            if (!_dirty) {
+                return new ReadOnlySpan<TileData>(_data, 0, _renderCount);
+            }
+
+            var count = 0;
+            foreach (var tile in _tiles) {
+                if (tile is null || tile.Type == Const.DefaultTile) {
+                    continue;
+                }
+
+                var chunkData = _data.AsSpan(count);
+                var tileData = tile.DrawTile();
+                
+                tileData.CopyTo(chunkData);
+                count += tileData.Length;
+            }
+
+            _renderCount = count;
+            _dirty = false;
+            
+            return new ReadOnlySpan<TileData>(_data, 0, _renderCount);
         }
     }
 }
 
 public static class Map {
+    
+    public const int ViewRadiusX = 3;
+    public const int ViewRadiusY = 2;
+    public const int ViewDiameterX = ViewRadiusX * 2 + 1;
+    public const int ViewDiameterY = ViewRadiusY * 2 + 1;
+    public const int VisibleChunks = ViewDiameterX * ViewDiameterY;
 
     private static readonly ILogger Logger = ILogger.CreateLogger(nameof(Map));
     
@@ -129,6 +192,7 @@ public static class Map {
         ShowDisplays = showDisplays;
         
         Minimap.OnNewMap.Dispatch(width, height);
+        Tiles.SetDimensions(width, height);
     }
 
     public static void Update(in GameTime gameTime, in Camera camera) {
@@ -190,16 +254,19 @@ public static class Map {
         #region Tile
         
         VisibleTiles.Clear();
+        
+        var camChunkPos = new Vector2i((int)camera.Position.X / TileMap.ChunkSize, (int)camera.Position.Y / TileMap.ChunkSize) - new Vector2i(ViewRadiusX, ViewRadiusY);
 
-        var camPos = new Vector2i((int)camera.Position.X, (int)camera.Position.Y);
-        foreach (var position in SightCircle) {
-            if (LookupTile(position + camPos, out var tile) && tile.Type != Const.DefaultTile) {
-                VisibleTiles.AddRange(tile.DrawTile());
+        for (var i = 0; i < VisibleChunks; i++) {
+            if (!Tiles.GetChunkData(camChunkPos + new Vector2i(i % ViewDiameterX, i / ViewDiameterX), out var data)) {
+                continue;
             }
+            
+            VisibleTiles.AddRange(data); // should probably not do this but cant be bothered currently
         }
-
+        
         Render.DrawTiles(VisibleTiles.AsReadOnlySpan());
-
+        
         #endregion
 
         #region Shadows
@@ -280,13 +347,7 @@ public static class Map {
     
     public static bool LookupTile(Vector2i position, out MapTile tile) => (tile = LookupTile(position)) != null;
     
-    public static MapTile LookupTile(Vector2i position) {
-        if (position.X < 0 || position.X > Width || position.Y < 0 || position.Y > Height) {
-            return null;
-        }
-
-        return Tiles[position] ?? (Tiles[position] = new MapTile(position));
-    }
+    public static MapTile LookupTile(Vector2i position) => Tiles[position];
 
     private static readonly MapTile[] RebuildData = new MapTile[9];
 
@@ -307,6 +368,10 @@ public static class Map {
     }
 
     private static void RebuildTile(MapTile tile) {
+        if (tile is null) {
+            return;
+        }
+        
         var idx = 0;
         for (var y1 = tile.Y - 1; y1 <= tile.Y + 1; y1++){
             for (var x1 = tile.X - 1; x1 <= tile.X + 1; x1++) {
@@ -315,6 +380,7 @@ public static class Map {
         }
         
         tile.Rebuild(RebuildData);
+        Tiles.SetTileChange(new Vector2i(tile.X, tile.Y));
     }
 
     public static void AddParticleEffect(ParticleEffect effect) {

@@ -1,6 +1,6 @@
 ﻿namespace AlloyClient.Networking.Structs.DataObjects;
 
-public struct TileData : IDataObject {
+public struct TileDef : IDataObject {
     public short X;
     public short Y;
     public ushort Type;

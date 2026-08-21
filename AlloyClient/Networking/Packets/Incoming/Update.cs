@@ -14,7 +14,7 @@ public class Update : IncomingPacket<Update> {
     
     public override PacketId PacketId => PacketId.Update;
     
-    private static TileData[]  _tilesBuffer   = new TileData[256];
+    private static TileDef[]  _tilesBuffer   = new TileDef[256];
     private static ObjectDef[] _newObjsBuffer = new ObjectDef[256];
     private static int[]       _dropsBuffer   = new int[256];
 
@@ -22,7 +22,7 @@ public class Update : IncomingPacket<Update> {
     public int NewObjCount;
     public int DropCount;
 
-    public TileData[]  Tiles   => _tilesBuffer;
+    public TileDef[]  Tiles   => _tilesBuffer;
     public ObjectDef[] NewObjs => _newObjsBuffer;
     public int[]       Drops   => _dropsBuffer;
 
