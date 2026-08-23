@@ -1,25 +1,23 @@
 using System;
+using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.Core;
+using Alloy.UiLib.Extra;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Data;
 using AlloyClient.Display;
 using AlloyClient.Game;
-using Alloy.UiLib.BuiltIn;
-using Alloy.UiLib.Core;
-using Alloy.UiLib.Extra;
 using AlloyClient.Ui.Components.Buttons;
 using AlloyClient.Utils;
 
 namespace AlloyClient.Screens.Components.CharacterList;
 
-public enum CharacterRectType
-{
+public enum CharacterRectType {
     Character,
     GraveyardCharacter,
     NewCharacter
 }
 
-public sealed class CharacterRect : Container
-{
+public sealed class CharacterRect : Container {
     private const int NumberStatsMaxed = 8;
     private const int NumberStars = 5;
 
@@ -30,38 +28,35 @@ public sealed class CharacterRect : Container
     private int _statsMaxed;
     private int _baseFame;
 
-    public CharacterRect(CharacterListScreen characterListScreen) : base(new ContainerConfig { Width = 200, Height = 200, EnableClip = true })
-    {
+    public CharacterRect(CharacterListScreen characterListScreen) : base(new ContainerConfig
+        { Width = 200, Height = 200, EnableClip = true }) {
         _characterListScreen = characterListScreen;
 
-        var background = new ColorRect(new ColorRectConfig
-        {
+        var background = new ColorRect(new ColorRectConfig {
             Width = 200,
             Height = 200,
             Color = 0x2B2B2B,
             Alpha = 0.7f,
         });
+
         AddChild(background);
     }
 
-    public void Initialize(CharacterRectType type, Character character = null, int remainingSlots = 0)
-    {
-        var charNameText = new SimpleText(new TextConfig
-        {
+    public void Initialize(CharacterRectType type, Character character = null, int remainingSlots = 0) {
+        var charNameText = new SimpleText(new TextConfig {
             Text = "New Character",
             FontSize = 18,
             FontType = FontType.Bold,
             Color = 0xFFFFFF,
             Anchor = UiAnchor.Middle,
         });
+
         charNameText.X = Width / 2;
         charNameText.Y = charNameText.Height / 2 + 10;
         AddChild(charNameText);
 
-        var textButton = new TextButton(new TextButtonConfig
-        {
-            Text = type switch
-            {
+        var textButton = new TextButton(new TextButtonConfig {
+            Text = type switch {
                 CharacterRectType.Character => "Play",
                 CharacterRectType.GraveyardCharacter => "View",
                 CharacterRectType.NewCharacter => "Create",
@@ -69,58 +64,49 @@ public sealed class CharacterRect : Container
             },
             FontSize = 24,
             Anchor = UiAnchor.Middle,
-            OnClicked = type switch
-            {
-                CharacterRectType.Character => () =>
-                {
-                    if (character == null)
-                    {
+            OnClicked = type switch {
+                CharacterRectType.Character => () => {
+                    if (character == null) {
                         return;
                     }
 
                     GlobalData.SelectedCharacterId = character.Id;
                     ScreenManager.FadeToScreen(new GameScreen(), Easing.SineInOut, 1000, 0x0);
-                }
-                ,
-                CharacterRectType.GraveyardCharacter => () =>
-                {
-                    if (character == null)
-                    {
-                        return;
+                },
+                CharacterRectType.GraveyardCharacter => () => {
+                    if (character == null) {
                     }
-                }
-                ,
-                CharacterRectType.NewCharacter => () => { _characterListScreen.ShowCharacterCreate(); }
-                ,
+                },
+                CharacterRectType.NewCharacter => () => { _characterListScreen.ShowCharacterCreate(); },
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
             }
         });
+
         textButton.X = Width / 2;
         textButton.Y = Height - textButton.Height / 2 - 12;
         AddChild(textButton);
 
-        if (character != null)
-        {
+        if (character != null) {
+
             #region Character and Graveyard Character
 
             var props = ObjectLibrary.TypeToObjectProps[character.ObjectType];
             charNameText.SetText(props.ObjectId);
 
             _statsMaxed = GetStatsMaxed(character);
-            var statsMaxedText = new SimpleText(new TextConfig
-            {
+            var statsMaxedText = new SimpleText(new TextConfig {
                 Text = $"{_statsMaxed}/{NumberStatsMaxed}",
                 FontSize = 16,
                 FontType = FontType.Bold,
                 Color = 0xCFCFCF,
                 Anchor = UiAnchor.Middle,
             });
+
             statsMaxedText.X = Width / 2;
             statsMaxedText.Y = charNameText.Height + statsMaxedText.Height / 2 + 13;
             AddChild(statsMaxedText);
 
-            switch (_statsMaxed)
-            {
+            switch (_statsMaxed) {
                 case NumberStatsMaxed:
                     statsMaxedText.SetColor(0xFCDF00);
                     break;
@@ -132,28 +118,28 @@ public sealed class CharacterRect : Container
             var textureData = ObjectLibrary.TypeToTextureData[character.ObjectType];
             var atlasData = textureData.AnimatedTextures.FaceDown[0];
 
-            var charPortrait = new ObjectRect(new ObjectRectConfig
-            {
+            var charPortrait = new ObjectRect(new ObjectRectConfig {
                 Texture = TextureHelper.Create(atlasData, TextureType.GameAtlas),
                 Width = 50,
                 Height = 50,
                 Anchor = UiAnchor.Middle,
 
             });
+
             charPortrait.X = Width / 2;
             charPortrait.Y = statsMaxedText.Y + charPortrait.Height / 2 + 14;
             AddChild(charPortrait);
 
             _baseFame = character.CurrentFame;
 
-            var fameText = new SimpleText(new TextConfig
-            {
+            var fameText = new SimpleText(new TextConfig {
                 Text = _baseFame.ToString(),
                 FontSize = 16,
                 FontType = FontType.Bold,
                 Color = 0xFFFFFF,
                 Anchor = UiAnchor.Middle,
             });
+
             fameText.X = Width / 2;
             fameText.Y = charPortrait.Y + charPortrait.Height / 2 + 14;
             AddChild(fameText);
@@ -162,10 +148,8 @@ public sealed class CharacterRect : Container
             const int starWidth = 16;
             var startX = Width / 2 - middleStarIndex * starWidth;
             var numStars = GetStars(character);
-            for (var i = 0; i < NumberStars; i++)
-            {
-                var star = new ObjectRect(new ObjectRectConfig
-                {
+            for (var i = 0; i < NumberStars; i++) {
+                var star = new ObjectRect(new ObjectRectConfig {
                     Texture = TextureHelper.FromUiAtlas("CharacterList/StarGraphic"),
                     Width = starWidth,
                     Height = starWidth,
@@ -173,24 +157,23 @@ public sealed class CharacterRect : Container
                     X = startX + i * starWidth,
                     Y = fameText.Y + starWidth / 2 + 12,
                 });
+
                 AddChild(star);
 
-                if (i >= numStars)
-                {
+                if (i >= numStars) {
                     star.ColorTransformation = new ColorTransform(0.5f, 0.5f, 0.5f, 1);
                 }
             }
 
             #endregion
-        }
-        else
-        {
+
+        } else {
+
             #region New Character
 
             var index = Random.Shared.Next(0, NumberCharacters);
             var frames = Main.Atlas.GetAnimationAtlasData("players", index);
-            var charPortrait = new ObjectRect(new ObjectRectConfig
-            {
+            var charPortrait = new ObjectRect(new ObjectRectConfig {
                 Texture = TextureHelper.Create(frames.FaceDown[0], TextureType.GameAtlas),
                 Width = 50,
                 Height = 50,
@@ -198,87 +181,79 @@ public sealed class CharacterRect : Container
                 OutlineEnabled = false,
                 GlowEnabled = false
             });
+
             charPortrait.X = Width / 2;
             charPortrait.Y = charNameText.Height + charPortrait.Height / 2 + 25;
             charPortrait.ColorTransformation = new ColorTransform(0, 0, 0, 0.5f);
             AddChild(charPortrait);
 
-            var remainingSlotsText = new SimpleText(new TextConfig
-            {
+            var remainingSlotsText = new SimpleText(new TextConfig {
                 Text = $"{remainingSlots} Character Slots",
                 FontSize = 18,
                 FontType = FontType.Bold,
                 Color = 0xFFFFFF,
                 Anchor = UiAnchor.Middle,
             });
+
             remainingSlotsText.X = Width / 2;
             remainingSlotsText.Y = charPortrait.Y + charPortrait.Height / 2 + 25;
             AddChild(remainingSlotsText);
 
-            var remainingSlotsText2 = new SimpleText(new TextConfig
-            {
+            var remainingSlotsText2 = new SimpleText(new TextConfig {
                 Text = "Remaining",
                 FontSize = 18,
                 FontType = FontType.Bold,
                 Color = 0xFFFFFF,
                 Anchor = UiAnchor.Middle,
             });
+
             remainingSlotsText2.X = Width / 2;
             remainingSlotsText2.Y = remainingSlotsText.Y + remainingSlotsText.Height / 2 + 12;
             AddChild(remainingSlotsText2);
 
             #endregion
+
         }
     }
 
-    public int ComputeSortValue()
-    {
+    public int ComputeSortValue() {
         return _statsMaxed * 1000 + _baseFame;
     }
 
-    private static int GetStatsMaxed(Character characterModel)
-    {
+    private static int GetStatsMaxed(Character characterModel) {
         var player = ObjectLibrary.TypeToObjectProps[characterModel.ObjectType];
         var playerProps = player.PlayerProperties;
 
         var numStatsMaxed = 0;
-        if (characterModel.MaxHitPoints >= playerProps.MaxHp)
-        {
+        if (characterModel.MaxHitPoints >= playerProps.MaxHp) {
             numStatsMaxed++;
         }
 
-        if (characterModel.MaxMagicPoints >= playerProps.MaxMp)
-        {
+        if (characterModel.MaxMagicPoints >= playerProps.MaxMp) {
             numStatsMaxed++;
         }
 
-        if (characterModel.Attack >= playerProps.MaxAttack)
-        {
+        if (characterModel.Attack >= playerProps.MaxAttack) {
             numStatsMaxed++;
         }
 
-        if (characterModel.Defense >= playerProps.MaxDefense)
-        {
+        if (characterModel.Defense >= playerProps.MaxDefense) {
             numStatsMaxed++;
         }
 
-        if (characterModel.Speed >= playerProps.MaxSpeed)
-        {
+        if (characterModel.Speed >= playerProps.MaxSpeed) {
             numStatsMaxed++;
         }
 
-        if (characterModel.Dexterity >= playerProps.MaxDexterity)
-        {
+        if (characterModel.Dexterity >= playerProps.MaxDexterity) {
             numStatsMaxed++;
         }
 
-        if (characterModel.Vitality >= playerProps.MaxVitality)
-        {
+        if (characterModel.Vitality >= playerProps.MaxVitality) {
             numStatsMaxed++;
         }
 
-        if (characterModel.Wisdom >= playerProps.MaxWisdom)
-        {
+        if (characterModel.Wisdom >= playerProps.MaxWisdom) {
             numStatsMaxed++;
         }
 

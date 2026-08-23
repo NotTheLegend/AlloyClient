@@ -24,8 +24,8 @@ public partial class Sprite {
             _dragSprite._isDragging = false;
         
         var pos = Stage.Mouse.GetMousePosition();
-        pos.X -= _trueX;
-        pos.Y -= _trueY;
+        pos.X -= (int)_trueX;
+        pos.Y -= (int)_trueY;
 
         pos = pos.Scale(Scale);
         

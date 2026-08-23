@@ -13,8 +13,8 @@ public partial class Sprite {
         return CollisionType switch {
             CollisionType.Square => SquareHitbox(pos),
             CollisionType.Ellipse => EllipseHitbox(pos),
-            CollisionType.Vertices => ComplexHitbox(new Vector2i(pos.X - _trueX, pos.Y - _trueY)),
-            CollisionType.Custom => CustomHitbox(new Vector2i(pos.X - _trueX, pos.Y - _trueY)),
+            CollisionType.Vertices => ComplexHitbox(new Vector2i((int)(pos.X - _trueX), (int)(pos.Y - _trueY))),
+            CollisionType.Custom => CustomHitbox(new Vector2i((int)(pos.X - _trueX), (int)(pos.Y - _trueY))),
             CollisionType.CustomNoScale => CustomHitbox(new Vector2i((int)((pos.X - _trueX) / _trueScale.X), (int)((pos.Y - _trueY) / _trueScale.Y))),
             _ => throw new ArgumentOutOfRangeException($"{CollisionType} not handled in InternalBoundsCheck")
         };

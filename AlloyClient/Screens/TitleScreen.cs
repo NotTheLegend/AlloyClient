@@ -1,63 +1,47 @@
-﻿using AlloyClient.Data;
+﻿using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.Core;
+using AlloyClient.Data;
 using AlloyClient.Display;
 using AlloyClient.Screens.Components;
 using AlloyClient.Screens.Components.Containers;
 using AlloyClient.Ui.Components.Buttons;
-using Alloy.UiLib.BuiltIn;
-using Alloy.UiLib.Core;
-using Alloy.UiLib.Extra;
 using AlloyClient.Ui.Components.Dialogs;
 using AlloyClient.Ui.Components.Graphics;
 
 namespace AlloyClient.Screens;
 
 public class TitleScreen : TitleScreenBase {
-    
+
     public const int PlayFontSize = 57;
     public const int FontSize = 35;
-    
-    private readonly Container _container = new(new ContainerConfig { Anchor = UiAnchor.MiddleTop });
 
-    private readonly int _center;
-    
     public TitleScreen() : base(Components.ScreenType.Title) {
         var editor = new MenuBarButton("editor", FontSize, () => { });
-        editor.SetAnchor(UiAnchor.MiddleLeft);
-        _container.AddChild(editor);
-        
+        editor.SetAnchor(UiAnchor.MiddleRight);
+        MenuBar.AddChild(editor);
+
         var servers = new MenuBarButton("servers", FontSize, () => ScreenManager.FadeTo(new ServersTitleScreen()));
-        servers.SetAnchor(UiAnchor.MiddleLeft);
-        servers.X = editor.Width + 50;
-        _container.AddChild(servers);
-        
+        servers.SetAnchor(UiAnchor.MiddleRight);
+        MenuBar.AddChild(servers);
+
         var play = new MenuBarButton("play", PlayFontSize, OnPlay, true);
         play.SetAnchor(UiAnchor.Middle);
-        play.X = servers.X + servers.Width + play.Width / 2 + 50;
-        _container.AddChild(play);
-        
+        MenuBar.AddChild(play);
+
+        servers.X = -play.Width / 2 - MenuGap;
+        editor.X = servers.X - servers.Width - MenuGap;
+
         var legends = new MenuBarButton("legends", FontSize, () => ScreenManager.FadeTo(new LegendsTitleScreen()));
         legends.SetAnchor(UiAnchor.MiddleLeft);
-        legends.X = play.X + play.Width / 2 + 50;
-        _container.AddChild(legends);
-        
+        legends.X = play.Width / 2 + MenuGap;
+        MenuBar.AddChild(legends);
+
         var exit = new MenuBarButton("exit", FontSize, () => Main.OnQuit.Dispatch());
         exit.SetAnchor(UiAnchor.MiddleLeft);
-        exit.X = legends.X + legends.Width + 50;
-        _container.AddChild(exit);
-        
-        _center = play.X - _container.Width / 2;
-        _container.X = Settings.DefaultScreenWidth / 2 - _center;
-        _container.Y = Settings.DefaultScreenHeight - 90;
-        AddChild(_container);
-        
-        CheckForAppFailure();
-    }
+        exit.X = legends.X + legends.Width + MenuGap;
+        MenuBar.AddChild(exit);
 
-    protected override void OnResize(ResizeEvent args) {
-        _container.Scale = Stage.ScreenScale;
-        _container.X = Stage.StageWidth / 2 - _center;
-        _container.Y = Stage.StageHeight - (int)(90 * Stage.ScreenScale.Y);
-        base.OnResize(args);
+        CheckForAppFailure();
     }
 
     private void OnPlay() {
@@ -76,7 +60,7 @@ public class TitleScreen : TitleScreenBase {
         }
 
         AddChild(new ScreenDarkenOverlay());
-        
-        DialogManager.Enqueue(new RetryLoadDialog(data.Message)); 
+
+        DialogManager.Enqueue(new RetryLoadDialog(data.Message));
     }
 }

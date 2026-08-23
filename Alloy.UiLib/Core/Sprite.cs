@@ -104,17 +104,17 @@ public partial class Sprite : DisplayContainer {
 
     #region Backers
 
-    private int _anchorX;
+    private float _anchorX;
     
-    private int _anchorY;
+    private float _anchorY;
     
     #endregion    
 
     #region TrueValues
 
-    private int _trueX;
+    private float _trueX;
     
-    private int _trueY;
+    private float _trueY;
 
     private float _trueRotation;
 
@@ -130,7 +130,7 @@ public partial class Sprite : DisplayContainer {
 
     private void InternalUpdate() {
         (_anchorX, _anchorY) = Anchor.GetOffset(ContentWidth, ContentHeight);
-        var (tx, ty) = (0, 0);
+        var (tx, ty) = (0f, 0f);
         var ta = Alpha;
         var ts = Scale;
         var tt = ColorTransformation;
@@ -139,26 +139,29 @@ public partial class Sprite : DisplayContainer {
         
         //TODO: maybe move these out into the client rather than being built in
         if (TooltipMode) {
-            (tx, ty) = Stage.Mouse.GetMousePosition().ToPair();
+            var mousePosition = Stage.Mouse.GetMousePosition();
+            tx = mousePosition.X;
+            ty = mousePosition.Y;
             (_anchorX, _anchorY) = (tx < UiRender.Screen.X / 2 ? UiAnchor.LeftBottom : UiAnchor.RightBottom).GetOffset(ContentWidth, ContentHeight);
-            tx += (int) (_anchorX * Parent._trueScale.X);
-            ty += (int) (_anchorY * Parent._trueScale.Y);
+            tx += _anchorX * Parent._trueScale.X;
+            ty += _anchorY * Parent._trueScale.Y;
         } else if (_isDragging) {
             var pos = Stage.Mouse.GetMousePosition();
-            (tx, ty) = pos.ToPair();
-            tx -= (int)(_dragOffset.X * Parent._trueScale.X);
-            ty -= (int)(_dragOffset.Y * Parent._trueScale.Y);
+            tx = pos.X;
+            ty = pos.Y;
+            tx -= _dragOffset.X * Parent._trueScale.X;
+            ty -= _dragOffset.Y * Parent._trueScale.Y;
         } else {
-            tx += X + (int)(_anchorX * ScaleX);
-            ty += Y + (int)(_anchorY * ScaleY);
+            tx += X + _anchorX * ScaleX;
+            ty += Y + _anchorY * ScaleY;
             test = true;
         }
         
         var parentInteract = true;
         if (Parent != null) {
             if (test) {
-                tx = (int) (tx * Parent._trueScale.X);
-                ty = (int) (ty * Parent._trueScale.Y);
+                tx *= Parent._trueScale.X;
+                ty *= Parent._trueScale.Y;
                 tx += Parent._trueX;
                 ty += Parent._trueY;
             }
@@ -273,7 +276,7 @@ public partial class Sprite : DisplayContainer {
          */
         
         var pos = Stage.Mouse.GetMousePosition();
-        return new Vector2i(pos.X - _trueX, pos.Y - _trueY);
+        return new Vector2i((int)(pos.X - _trueX), (int)(pos.Y - _trueY));
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -34,17 +34,17 @@ public static class Extensions {
     }
 
     extension(UiAnchor anchor) {
-        internal (int, int) GetOffset(int w, int h) => anchor switch {
-            UiAnchor.LeftTop => (0, 0),
-            UiAnchor.MiddleTop => (-w / 2, 0),
-            UiAnchor.RightTop => (-w, 0),
-            UiAnchor.MiddleLeft => (0, -h / 2),
-            UiAnchor.Middle => (-w / 2, -h / 2),
-            UiAnchor.MiddleRight => (-w, -h / 2),
-            UiAnchor.LeftBottom => (0, -h),
-            UiAnchor.MiddleBottom => (-w / 2, -h),
+        internal (float, float) GetOffset(int w, int h) => anchor switch {
+            UiAnchor.LeftTop => (0f, 0f),
+            UiAnchor.MiddleTop => (-w / 2f, 0f),
+            UiAnchor.RightTop => (-w, 0f),
+            UiAnchor.MiddleLeft => (0f, -h / 2f),
+            UiAnchor.Middle => (-w / 2f, -h / 2f),
+            UiAnchor.MiddleRight => (-w, -h / 2f),
+            UiAnchor.LeftBottom => (0f, -h),
+            UiAnchor.MiddleBottom => (-w / 2f, -h),
             UiAnchor.RightBottom => (-w, -h),
-            _ => (0, 0)
+            _ => (0f, 0f)
         };
     }
 
