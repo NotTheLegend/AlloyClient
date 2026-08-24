@@ -38,6 +38,8 @@ public sealed class Stage : Sprite {
     private Sprite _middleClickTarget;
     private Sprite _rightClickTarget;
 
+    internal bool PointerPositionValid = true;
+
     internal Stage() {
         MouseEnabled = true;
         Stage = this;
@@ -133,8 +135,23 @@ public sealed class Stage : Sprite {
     }
 
     internal void SetMousePosition(Vector2 position) {
+        PointerPositionValid = true;
         _mouse.SetPosition(position);
         DispatchMouseEvent(MouseEvent.MouseMove);
+    }
+
+    internal void SetWindowFocus(bool focused) {
+        if (!focused && _lastHighestSprite is not null) {
+            _lastHighestSprite.DispatchEvent(new MouseEvent(MouseEvent.MouseOut, _mouse.GetMousePosition(),
+                _mouse.GetScrollDelta(), _keyboard.IsShiftDown(), _keyboard.IsCtrlDown(), _keyboard.IsAltDown()));
+        }
+
+        PointerPositionValid = focused;
+        CurrentHighestSprite = null;
+        _lastHighestSprite = null;
+        _leftClickTarget = null;
+        _middleClickTarget = null;
+        _rightClickTarget = null;
     }
 
     private void DispatchMouseEvent(EventType<MouseEvent> type) {

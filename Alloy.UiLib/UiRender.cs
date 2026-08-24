@@ -117,12 +117,21 @@ public static partial class UiRender {
         return MyriadPro.Fonts[type];
     }
 
-    private static void SetFocus(bool focus) => IsFocused = focus;
+    private static void SetFocus(bool focus) {
+        IsFocused = focus;
+        Stage.SetWindowFocus(focus);
+    }
     
     private static void HandleEvents(EventArgs args) {
         if (args is FocusEventArgs fea) {
             SetFocus(fea.GotFocus);
         }
+
+        if (args is MouseMoveEventArgs mouseMove) {
+            Stage.SetMousePosition(mouseMove.ClientPosition);
+            return;
+        }
+
         if (!IsFocused) return;
         
         switch (args) {
@@ -143,9 +152,6 @@ public static partial class UiRender {
                 break;
             case MouseButtonUpEventArgs e:
                 Stage.SetMouseButtonUp(e.Button);
-                break;
-            case MouseMoveEventArgs e:
-                Stage.SetMousePosition(e.ClientPosition);
                 break;
             case ScrollEventArgs e:
                 Stage.SetMouseScroll(e.Delta);

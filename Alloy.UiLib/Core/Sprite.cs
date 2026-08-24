@@ -216,7 +216,7 @@ public partial class Sprite : DisplayContainer {
     private void Update() {
         InternalUpdate();
 
-        if (MouseEnabled && _canInteract && IsInBounds(Stage.Mouse.GetMousePosition())) {
+        if (MouseEnabled && _canInteract && Stage.PointerPositionValid && IsInBounds(Stage.Mouse.GetMousePosition())) {
             Stage.CurrentHighestSprite = this;
         }
 

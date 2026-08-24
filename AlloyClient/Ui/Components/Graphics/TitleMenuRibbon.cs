@@ -8,7 +8,7 @@ namespace AlloyClient.Ui.Components.Graphics;
 public sealed class TitleMenuRibbon : Container {
     public const int TopY = 629;
     public const int RibbonHeight = 62;
-    public const int MenuCenterY = TopY + RibbonHeight / 2;
+    public const int MenuCenterY = TopY + RibbonHeight / 2 + 3;
 
     private const int FadeWidth = 120;
     private const int FadeSteps = 32;
