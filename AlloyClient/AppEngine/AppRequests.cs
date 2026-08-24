@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 using AlloyClient.Data;
 
@@ -29,11 +30,23 @@ public static class AppRequests {
             return new AppResponse { Success = false, Message = "Failed to contact server." };
         }
 
-        if (response.Contains("Invalid")) {
-            return new AppResponse { Success = false, Message = "Invalid account credentials." };
+        XElement xml;
+        try {
+            xml = XElement.Parse(response);
+        } catch (XmlException) {
+            return new AppResponse {
+                Success = false,
+                Message = string.IsNullOrWhiteSpace(response) ? "Invalid server response." : response.Trim()
+            };
         }
 
-        var xml = XElement.Parse(response);
+        if (xml.Name.LocalName == "Error") {
+            return new AppResponse {
+                Success = false,
+                Message = string.IsNullOrWhiteSpace(xml.Value) ? "Unable to sign in." : xml.Value.Trim()
+            };
+        }
+
         GlobalData.Add(new AccountData(xml));
         GlobalData.Add(new LoginData(username, password));
         

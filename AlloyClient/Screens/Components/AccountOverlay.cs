@@ -3,7 +3,7 @@ using Alloy.UiLib.Core;
 using Alloy.UiLib.Extra;
 using AlloyClient.Data;
 using AlloyClient.Display;
-using AlloyClient.Screens.Components.Containers;
+using AlloyClient.Screens.Components.Containers.Account;
 using AlloyClient.Ui.Components.Buttons;
 
 namespace AlloyClient.Screens.Components;
@@ -86,11 +86,34 @@ public class AccountOverlay : Sprite {
             return;
         }
 
-        var nameConfig = new TextConfig { Text = $"logged in as {account.Name} - ", FontSize = 24 };
+        var nameConfig = new TextConfig {
+            Text = $"logged in as {account.Name}",
+            FontSize = 24,
+            FontType = FontType.Normal,
+            Color = 0xB3B3B3
+        };
+
         var nameText = new SimpleText(nameConfig);
         _container.AddChild(nameText);
 
-        var logoutConfig = new TextButtonConfig { Text = "logout", FontSize = 24, OnClicked = OnLogout, X = nameText.Width };
+        var dashConfig = new TextConfig {
+            Text = "-",
+            FontSize = 24,
+            X = nameText.Width + LinkSpacing,
+            Color = 0xB3B3B3
+        };
+
+        var dashText = new SimpleText(dashConfig);
+        _container.AddChild(dashText);
+
+        var logoutConfig = new TextButtonConfig {
+            Text = "logout",
+            FontSize = 24,
+            FontType = FontType.Bold,
+            OnClicked = OnLogout,
+            X = dashText.X + dashText.Width + LinkSpacing
+        };
+
         var logoutButton = new TextButton(logoutConfig);
         _container.AddChild(logoutButton);
     }

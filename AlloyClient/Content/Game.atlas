@@ -169,7 +169,7 @@
     <Animated name="chars16x16dEncounters2"  w="16" h="16">Chars16x16dEncounters2.png</Animated>
     <Animated name="chars16x16rEncounters"   w="16" h="16">Chars16x16rEncounters.png</Animated>
 
-    <!-- Players (group="Full" = 3-row sheet: walk/attack/default) -->
+    <!-- Player classes and selectable skins (group="Full" = 3-row sheet: walk/attack/default) -->
     <Animated name="players"                 w="8"  h="8"  group="Full">Players.png</Animated>
     <Animated name="playerskins"             w="8"  h="8"  group="Full">PlayersSkins.png</Animated>
     <Animated name="playerskins16"           w="16" h="16" group="Full">PlayersSkins16.png</Animated>

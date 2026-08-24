@@ -54,6 +54,7 @@ public sealed class TextInput : Sprite {
     private readonly bool _clickActivate;
     private readonly Action _onFocus;
     private readonly Action _onUnfocus;
+    private readonly Action _onChange;
 
     private readonly NineSliceRect _textBox;
     private readonly SimpleText _caret;
@@ -80,6 +81,7 @@ public sealed class TextInput : Sprite {
         _clickActivate = config.ClickToActivate;
         _onFocus = config.OnFocus;
         _onUnfocus = config.OnUnfocus;
+        _onChange = config.OnChange;
         SetAnchor(config.Anchor);
 
         MouseEnabled = true;
@@ -255,6 +257,7 @@ public sealed class TextInput : Sprite {
                     _inputText.Remove(_caretIndex, 1);
                 }
                 FillData();
+                _onChange?.Invoke();
                 break;
             case Key.Delete when _caretIndex < _inputText.Length && _caretIndex >= 0:
                 _inputText.Remove(_caretIndex, 1);
@@ -262,6 +265,7 @@ public sealed class TextInput : Sprite {
                     _caretIndex = -1;
                 }
                 FillData();
+                _onChange?.Invoke();
                 break;
             case Key.C when Stage.Keyboard.IsOnlyCtrlDown() && Toolkit.Clipboard.GetClipboardFormat() == ClipboardFormat.Text:
                 //todo
@@ -281,6 +285,7 @@ public sealed class TextInput : Sprite {
                 }
                 
                 FillData();
+                _onChange?.Invoke();
                 break;
             case Key.A when Stage.Keyboard.IsOnlyCtrlDown():
                 //todo
@@ -317,6 +322,7 @@ public sealed class TextInput : Sprite {
         AddChar(text[0]);
         
         FillData();
+        _onChange?.Invoke();
     }
 
     private void AddChar(char input) {

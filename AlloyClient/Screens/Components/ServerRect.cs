@@ -38,7 +38,6 @@ public class ServerRect : Container {
     private readonly SimpleText _playersText;
 
     public ServerRect(ServerItem model) : base(Config) {
-
         _background = new ColorRect(new ColorRectConfig {
             Width = Width,
             Height = Height,

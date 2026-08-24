@@ -15,6 +15,8 @@ public static class GlobalData {
     
     public static ushort CharacterType;
 
+    public static ushort CharacterSkin;
+
     public static T Get<T>() where T : class, IGlobalData {
         if (DataStorage.TryGetValue(typeof(T), out var data)) {
             return (T)data;

@@ -29,11 +29,13 @@ public sealed class OverlayManager : Sprite {
             Overlay.AddAlphaTween(0f, 0.8f, 250);
             
             AddChild(_current = sprite);
+            LayoutCurrent();
             _current.AddAlphaTween(0f, 1f, 250);
         } else {
             _current.AddAlphaTween(1f, 0f, 150, onFinish: () => {
                 RemoveChild(_current);
                 AddChild(_current = sprite);
+                LayoutCurrent();
                 _current.AddAlphaTween(0f, 1f, 150);
             });
         }
@@ -54,13 +56,19 @@ public sealed class OverlayManager : Sprite {
     }
 
     private void OnResize(ResizeEvent args) {
-        if (_current is not null) {
-            _current.X = Stage.StageWidth / 2;
-            _current.Y = Stage.StageHeight / 2;
-            _current.Scale = Stage.ScreenScale;
-        }
+        LayoutCurrent();
 
         Overlay.Resize(args.Width, args.Height);
+    }
+
+    private void LayoutCurrent() {
+        if (_current is null || Stage is null) {
+            return;
+        }
+
+        _current.X = Stage.StageWidth / 2;
+        _current.Y = Stage.StageHeight / 2;
+        _current.Scale = Stage.ScreenScale;
     }
     
 }

@@ -129,6 +129,9 @@ public partial class Sprite : DisplayContainer {
     #endregion
 
     private void InternalUpdate() {
+        ClipChildren = false;
+        _scissor = NoScissor;
+
         (_anchorX, _anchorY) = Anchor.GetOffset(ContentWidth, ContentHeight);
         var (tx, ty) = (0f, 0f);
         var ta = Alpha;

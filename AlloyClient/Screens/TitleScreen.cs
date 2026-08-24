@@ -1,9 +1,8 @@
-﻿using Alloy.UiLib.BuiltIn;
-using Alloy.UiLib.Core;
+﻿using Alloy.UiLib.Core;
 using AlloyClient.Data;
 using AlloyClient.Display;
 using AlloyClient.Screens.Components;
-using AlloyClient.Screens.Components.Containers;
+using AlloyClient.Screens.Components.Containers.Account;
 using AlloyClient.Ui.Components.Buttons;
 using AlloyClient.Ui.Components.Dialogs;
 using AlloyClient.Ui.Components.Graphics;
@@ -12,8 +11,8 @@ namespace AlloyClient.Screens;
 
 public class TitleScreen : TitleScreenBase {
 
-    public const int PlayFontSize = 57;
-    public const int FontSize = 35;
+    public const int PlayFontSize = 50;
+    public const int FontSize = 30;
 
     public TitleScreen() : base(Components.ScreenType.Title) {
         var editor = new MenuBarButton("editor", FontSize, () => { });
@@ -45,7 +44,7 @@ public class TitleScreen : TitleScreenBase {
     }
 
     private void OnPlay() {
-        if (GlobalData.Contains<LoginData>()) {
+        if (GlobalData.Contains<AccountData>()) {
             ScreenManager.FadeTo(new CharacterListScreen());
         } else {
             var login = new LoginContainer();

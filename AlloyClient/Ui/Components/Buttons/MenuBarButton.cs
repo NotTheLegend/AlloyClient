@@ -1,4 +1,6 @@
 ﻿using System;
+using Alloy.UiLib;
+using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using OpenTK.Mathematics;
 
@@ -10,11 +12,22 @@ public sealed class MenuBarButton : TextButton {
     private const float PulseAmplitude = 0.05f;
 
     public MenuBarButton(string text, float size, Action callback, bool pulse = false) : base (new TextButtonConfig { Text = text, FontSize = size, OnClicked = callback, OutlineThickness = 4 }) {
+        AddLineBox(size, FontType.Bold);
         AddPulse(pulse);
     }
 
     public MenuBarButton(TextButtonConfig config, bool pulse = false) : base(config) {
+        AddLineBox(config.FontSize, config.FontType);
         AddPulse(pulse);
+    }
+
+    private void AddLineBox(float size, FontType fontType) {
+        var lineHeight = (int)Math.Ceiling(UiRender.GetFont(fontType).LineHeight * size);
+        AddChild(new ColorRect(new ColorRectConfig {
+            Width = 1,
+            Height = lineHeight,
+            Alpha = 0
+        }));
     }
 
     private void AddPulse(bool pulse) {

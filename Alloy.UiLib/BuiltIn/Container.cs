@@ -25,4 +25,10 @@ public class Container : Sprite {
         SelfContentWidth = config.Width;
         SelfContentHeight = config.Height;
     }
+
+    public void Resize(int width, int height) {
+        SelfContentWidth = width;
+        SelfContentHeight = height;
+        UpdateBounds();
+    }
 }

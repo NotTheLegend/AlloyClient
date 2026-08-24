@@ -7,6 +7,7 @@ using AlloyClient.Data;
 using AlloyClient.Display;
 using AlloyClient.Game;
 using AlloyClient.Ui.Components.Buttons;
+using AlloyClient.Ui.Components.Graphics;
 using AlloyClient.Utils;
 
 namespace AlloyClient.Screens.Components.CharacterList;
@@ -14,10 +15,13 @@ namespace AlloyClient.Screens.Components.CharacterList;
 public enum CharacterRectType {
     Character,
     GraveyardCharacter,
-    NewCharacter
+    NewCharacter,
 }
 
 public sealed class CharacterRect : Container {
+
+    private const int CardWidth = 200;
+    private const int CardHeight = 200;
     private const int NumberStatsMaxed = 8;
     private const int NumberStars = 5;
 
@@ -29,17 +33,18 @@ public sealed class CharacterRect : Container {
     private int _baseFame;
 
     public CharacterRect(CharacterListScreen characterListScreen) : base(new ContainerConfig
-        { Width = 200, Height = 200, EnableClip = true }) {
+        { Width = CardWidth, Height = CardHeight }) {
         _characterListScreen = characterListScreen;
 
         var background = new ColorRect(new ColorRectConfig {
-            Width = 200,
-            Height = 200,
+            Width = CardWidth,
+            Height = CardHeight,
             Color = 0x2B2B2B,
             Alpha = 0.7f,
         });
 
         AddChild(background);
+        AddChild(new CutCornerOutline(CardWidth, CardHeight));
     }
 
     public void Initialize(CharacterRectType type, Character character = null, int remainingSlots = 0) {
@@ -51,7 +56,7 @@ public sealed class CharacterRect : Container {
             Anchor = UiAnchor.Middle,
         });
 
-        charNameText.X = Width / 2;
+        charNameText.X = CardWidth / 2;
         charNameText.Y = charNameText.Height / 2 + 10;
         AddChild(charNameText);
 
@@ -79,7 +84,7 @@ public sealed class CharacterRect : Container {
                 },
                 CharacterRectType.NewCharacter => () => { _characterListScreen.ShowCharacterCreate(); },
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
-            }
+            },
         });
 
         textButton.X = Width / 2;
@@ -87,7 +92,6 @@ public sealed class CharacterRect : Container {
         AddChild(textButton);
 
         if (character != null) {
-
             #region Character and Graveyard Character
 
             var props = ObjectLibrary.TypeToObjectProps[character.ObjectType];
@@ -123,7 +127,6 @@ public sealed class CharacterRect : Container {
                 Width = 50,
                 Height = 50,
                 Anchor = UiAnchor.Middle,
-
             });
 
             charPortrait.X = Width / 2;
@@ -166,9 +169,7 @@ public sealed class CharacterRect : Container {
             }
 
             #endregion
-
         } else {
-
             #region New Character
 
             var index = Random.Shared.Next(0, NumberCharacters);
@@ -212,7 +213,6 @@ public sealed class CharacterRect : Container {
             AddChild(remainingSlotsText2);
 
             #endregion
-
         }
     }
 
@@ -295,4 +295,5 @@ public sealed class CharacterRect : Container {
             _ => 5,
         };*/
     }
+
 }

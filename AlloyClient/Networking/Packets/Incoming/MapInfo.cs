@@ -56,10 +56,11 @@ public class MapInfo : IncomingPacket<MapInfo> {
         if (GlobalData.CharacterType > 0) {
             var create = Create.CreatePacket();
             create.ClassType = GlobalData.CharacterType;
-            create.SkinType = 0;
+            create.SkinType = GlobalData.CharacterSkin;
             Client.QueuePacket(create);
 
             GlobalData.CharacterType = 0;
+            GlobalData.CharacterSkin = 0;
             return;
         }
         

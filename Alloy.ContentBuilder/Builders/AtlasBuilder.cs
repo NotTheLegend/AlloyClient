@@ -317,7 +317,8 @@ public static class AtlasBuilder {
 
         var group = (int)sheet.Grouping;
         var data = new AnimationAtlasData[rowsPerSheet / group];
-        for (var i = 0; i < rectList.Length;) {
+        var groupedFrameCount = data.Length * group * framesPerRow;
+        for (var i = 0; i < groupedFrameCount;) {
             var animData = new AnimationAtlasData();
             var idx = i / framesPerRow / group;
             for (var g = 0; g < group; g++) {

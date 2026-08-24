@@ -19,9 +19,9 @@ public enum ScreenType {
 public abstract class TitleScreenBase : Screen {
 
     protected const int MenuGap = 50;
-    protected const int MenuBottomOffset = 90;
 
     private readonly ScreenDarkenOverlay _darken = new();
+    private readonly TitleMenuRibbon _menuRibbon = new(Settings.DefaultScreenWidth);
 
     private readonly MusicButton _music = new(new MusicButtonConfig { X = 7, Y = 7, Width = 32, Height = 32 });
 
@@ -29,7 +29,7 @@ public abstract class TitleScreenBase : Screen {
 
     protected readonly Container MenuBar = new(new ContainerConfig {
         X = Settings.DefaultScreenWidth / 2,
-        Y = Settings.DefaultScreenHeight - MenuBottomOffset,
+        Y = TitleMenuRibbon.MenuCenterY,
         Anchor = UiAnchor.LeftTop
     });
 
@@ -58,6 +58,7 @@ public abstract class TitleScreenBase : Screen {
         Overlay.AddEventListener(AccountOverlay.AccountChangedEvent, RefreshAccountIdentity);
         AddChild(Overlay);
 
+        AddChild(_menuRibbon);
         AddChild(MenuBar);
 
         AddEventListener(Event.AddedToStage, OnStageEnter);
@@ -87,9 +88,15 @@ public abstract class TitleScreenBase : Screen {
         Overlay.X = args.Width - (int)(10 * scale.X);
         Overlay.Y = (int)(10 * scale.Y);
 
+        var contentWidth = (int)System.Math.Ceiling(args.Width / scale.X);
+        _menuRibbon.ResizeWidth(contentWidth);
+        _menuRibbon.Scale = scale;
+        _menuRibbon.X = 0;
+        _menuRibbon.Y = (int)(TitleMenuRibbon.TopY * scale.Y);
+
         MenuBar.Scale = scale;
         MenuBar.X = args.Width / 2;
-        MenuBar.Y = args.Height - (int)(MenuBottomOffset * scale.Y);
+        MenuBar.Y = (int)(TitleMenuRibbon.MenuCenterY * scale.Y);
     }
 
     private void RefreshAccountIdentity() {

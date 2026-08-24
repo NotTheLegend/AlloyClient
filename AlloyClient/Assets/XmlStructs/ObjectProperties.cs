@@ -46,6 +46,7 @@ public class ObjectProperties {
     
     public readonly ushort PlayerClassType;
     public readonly bool Skin;
+    public readonly bool NoSkinSelect;
 
     public readonly bool Container;
     public readonly bool LockedPortal;
@@ -98,7 +99,8 @@ public class ObjectProperties {
         Description = e.GetValue<string>("Description");
         
         PlayerClassType = e.GetValue<ushort>("PlayerClassType");
-        Skin = e.GetValue<bool>("Skin");
+        Skin = e.HasElement("Skin");
+        NoSkinSelect = e.HasElement("NoSkinSelect");
 
         SlotTypes = [];
         var slotTypes = e.GetValue<string>("SlotTypes");

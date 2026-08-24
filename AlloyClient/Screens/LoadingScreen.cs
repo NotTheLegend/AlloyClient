@@ -33,5 +33,4 @@ public class LoadingScreen : TitleScreenBase {
             Task.Delay(MinLoadingTime)
         ), () => { ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 1000, 0x0); });
     }
-
 }

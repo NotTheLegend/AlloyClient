@@ -17,7 +17,6 @@ public class ServersTitleScreen : TitleScreenBase {
     private ServerRect _selectedServerRect;
 
     public ServersTitleScreen() {
-
         #region Title
 
         var serverTitle = new SimpleText(new TextConfig {

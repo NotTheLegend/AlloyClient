@@ -151,12 +151,14 @@ public sealed class SimpleText : Sprite {
 
     private void Rebuild() {
         var size = _font.GetCharCount(Text);
-        if (size * 4 <= VertexData.Length) {
-            OverridePrimCount = size * 2;
-        }
-        else {
+        var activeVertexCount = size * 4;
+        if (activeVertexCount > VertexData.Length) {
             ResizeBackBuffer();
+        } else if (activeVertexCount < VertexData.Length) {
+            System.Array.Clear(VertexData, activeVertexCount, VertexData.Length - activeVertexCount);
         }
+
+        OverridePrimCount = size * 2;
         
         FillData();
     }
