@@ -4,14 +4,11 @@ using System.IO;
 using Alloy.Engine;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
-using Alloy.UiLib.Data;
 using AlloyClient.Display;
 using AlloyClient.Editor;
 using AlloyClient.Editor.Ui;
 using AlloyClient.Game;
-using AlloyClient.Ui.Components.Buttons;
 using AlloyClient.Ui.Components.Dialogs;
-using AlloyClient.Utils;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
 
@@ -109,6 +106,7 @@ public sealed class EditorScreen : Screen {
             _editor.Brush.SetSelectedType(type);
             RefreshStatus();
         }, editing => _textEditing = editing) { X = BaseWidth - PaletteWidth - PaletteMargin, Y = 50 };
+
         _root.AddChild(_palette);
         _mapInfo = AddLabel(15, BaseHeight - 15, UiAnchor.LeftBottom);
         _tileInfo = AddLabel(BaseWidth / 2, BaseHeight - 15, UiAnchor.MiddleBottom);
@@ -122,7 +120,6 @@ public sealed class EditorScreen : Screen {
         _interactionLayer.Visible = false;
         SelectDefaultGround();
         RefreshAll();
-
     }
 
     private void BuildTopBar() {
@@ -140,6 +137,7 @@ public sealed class EditorScreen : Screen {
         _canvasHitArea = new ColorRect(new ColorRectConfig {
             Width = BaseWidth, Height = BaseHeight, Color = 0x111111, Alpha = 0f, MouseEnabled = true
         });
+
         _canvas.AddChild(_canvasHitArea);
         _canvas.AddChild(_tileLayer);
         _canvas.AddChild(_interactionLayer);
@@ -154,12 +152,14 @@ public sealed class EditorScreen : Screen {
             Width = ToolbarWidth, Height = ToolbarHeight, CutX = 5, CutY = 5,
             Color = 0x565656, Alpha = 0.8f
         }));
+
         _root.AddChild(_toolButtons);
         var tools = new[] {
             (EditorToolType.Select, 0), (EditorToolType.Pencil, 1), (EditorToolType.Line, 6),
             (EditorToolType.Shape, 7), (EditorToolType.Bucket, 5), (EditorToolType.Picker, 3),
             (EditorToolType.Eraser, 2), (EditorToolType.Edit, 9)
         };
+
         for (var i = 0; i < tools.Length; i++) {
             var tool = tools[i];
             var button = new EditorToolButton(tool.Item1, tool.Item2, 6 + i * 26, SelectTool);
@@ -167,17 +167,18 @@ public sealed class EditorScreen : Screen {
             _editorToolButtons.Add(button);
             _toolButtons.AddChild(button);
         }
-
     }
 
     private Container BuildMapSelector() {
         var selector = new Container(new ContainerConfig {
             X = 15, Y = 50, Width = MapSelectorWidth, Height = MapSelectorHeight, EnableClip = true
         });
+
         selector.AddChild(new CutEdgeRect(new CutEdgeConfig {
             Width = MapSelectorWidth, Height = MapSelectorHeight, CutX = 6, CutY = 6,
             Color = 0x565656, Alpha = 0.8f, MouseEnabled = true
         }));
+
         _mapTabs = new Container(new ContainerConfig { Width = MapSelectorWidth, Height = 1 });
         _mapTabs.MouseEnabled = true;
         selector.AddChild(_mapTabs);
@@ -219,6 +220,7 @@ public sealed class EditorScreen : Screen {
 
         foreach (var button in _drawTypeButtons)
             button.SetSelected(button.DrawType == _editor.Brush.DrawType);
+
         _gridCheckbox.SetChecked(_grid);
         _palette.SetDrawType(_editor.Brush.DrawType, _editor.Brush.GetSelectedType());
         ClampOffset();
@@ -228,6 +230,7 @@ public sealed class EditorScreen : Screen {
 
     private void SaveActiveViewState() {
         if (_activeDocument is null) return;
+
         _activeDocument.PanX = _panX;
         _activeDocument.PanY = _panY;
         _activeDocument.Zoom = _zoom;
@@ -242,6 +245,7 @@ public sealed class EditorScreen : Screen {
             minimum,
             0
         );
+
         _mapTabs.Y = _mapTabScroll;
         args.StopPropagation();
     }
@@ -259,6 +263,7 @@ public sealed class EditorScreen : Screen {
             ) {
                 Y = i * (MapTabHeight + MapTabGap)
             };
+
             tab.SetSelected(ReferenceEquals(document, _activeDocument));
             _mapTabs.AddChild(tab);
             _mapTabRows.Add(tab);
@@ -276,13 +281,16 @@ public sealed class EditorScreen : Screen {
             Width = 120, Height = 194, CutX = 6, CutY = 6,
             Color = 0x565656, Alpha = 0.8f, MouseEnabled = true
         }));
+
         box.AddChild(new SimpleText(new TextConfig {
             Text = "Settings", FontSize = 18, FontType = FontType.Bold,
             X = 60, Y = 14, Anchor = UiAnchor.Middle, Color = 0xFFFFFF
         }));
+
         box.AddChild(new ColorRect(new ColorRectConfig {
             X = 7, Y = 28, Width = 106, Height = 1, Color = 0xFFFFFF, Alpha = 0.45f
         }));
+
         _gridCheckbox = new EditorToolboxCheckbox("Grid", 36, _grid, ToggleGrid) { X = 7 };
         _autoSaveCheckbox = new EditorToolboxCheckbox("Autosave", 68, _autoSave, ToggleAutoSave) { X = 7 };
         box.AddChild(_gridCheckbox);
@@ -362,14 +370,17 @@ public sealed class EditorScreen : Screen {
         }
 
         if (!TryGetMapTile(args.Coords, out var x, out var y)) return;
+
         if (_editor.Tool == EditorToolType.Edit) {
             ShowObjectNamePrompt(x, y);
             return;
         }
+
         if (_editor.Tool == EditorToolType.Select && _editor.BeginSelectionMove(x, y)) {
             _selectionMoving = true;
             return;
         }
+
         _leftDrawing = true;
         _editor.Begin(x, y);
         _mapRenderDirty = true;
@@ -414,9 +425,11 @@ public sealed class EditorScreen : Screen {
                 DeferViewOverlays();
             }
         }
+
         if (!_leftDrawing && !_middlePanning && !_controlPanning
             && (previousTileX != _mouseTileX || previousTileY != _mouseTileY))
             RefreshInteractionOverlays();
+
         if (previousTileX != _mouseTileX || previousTileY != _mouseTileY) RefreshStatus();
     }
 
@@ -427,6 +440,7 @@ public sealed class EditorScreen : Screen {
             RefreshMapOverlays();
             return;
         }
+
         if (_selectionMoving) {
             _selectionMoving = false;
             _editor.EndSelectionMove();
@@ -434,13 +448,16 @@ public sealed class EditorScreen : Screen {
             RefreshAll();
             return;
         }
+
         if (!_leftDrawing) {
             RestoreToolAfterShiftDrag();
             return;
         }
+
         _leftDrawing = false;
         if (TryGetMapTile(args.Coords, out var x, out var y)) _editor.End(x, y);
         else _editor.End(_mouseTileX, _mouseTileY);
+
         RestoreToolAfterShiftDrag();
         RefreshAll();
     }
@@ -452,6 +469,7 @@ public sealed class EditorScreen : Screen {
 
     private void RestoreToolAfterShiftDrag() {
         if (!_toolBeforeShiftDrag.HasValue) return;
+
         var previousTool = _toolBeforeShiftDrag.Value;
         _toolBeforeShiftDrag = null;
         SelectTool(previousTool);
@@ -464,10 +482,12 @@ public sealed class EditorScreen : Screen {
                 0,
                 EditorBrush.MaxSize
             );
+
             RefreshInteractionOverlays();
             RefreshStatus();
             return;
         }
+
         if (!_mapOpen) return;
 
         var logical = ToLogical(args.Coords);
@@ -491,12 +511,14 @@ public sealed class EditorScreen : Screen {
             _mouseTileX = tileX;
             _mouseTileY = tileY;
         }
+
         DeferViewOverlays();
         RefreshStatus();
     }
 
     private void OnKeyDown(KeyboardEvent args) {
         if (_prompt is not null || _textEditing) return;
+
         var hotkey = GetNumberKey(args.Key);
         if (hotkey >= 0) {
             if (args.Ctrl) {
@@ -511,16 +533,27 @@ public sealed class EditorScreen : Screen {
                     ShowStatus($"Selected tile hotkey {hotkey}.");
                 }
             }
+
             return;
         }
+
         if (args.Ctrl) {
             switch (args.Key) {
-                case Key.Z: _editor.Undo(); return;
-                case Key.Y: _editor.Redo(); return;
-                case Key.C: _editor.Copy(); return;
-                case Key.V when _mouseTileX >= 0: _editor.Paste(_mouseTileX, _mouseTileY); return;
+                case Key.Z:
+                    _editor.Undo();
+                    return;
+                case Key.Y:
+                    _editor.Redo();
+                    return;
+                case Key.C:
+                    _editor.Copy();
+                    return;
+                case Key.V when _mouseTileX >= 0:
+                    _editor.Paste(_mouseTileX, _mouseTileY);
+                    return;
             }
         }
+
         switch (args.Key) {
             case Key.S: SelectTool(EditorToolType.Select); break;
             case Key.D: SelectTool(EditorToolType.Pencil); break;
@@ -559,6 +592,7 @@ public sealed class EditorScreen : Screen {
     private void SelectDefaultGround() {
         var entries = EditorCatalog.GetEntries(EditorDrawType.Ground);
         if (entries.Count == 0) return;
+
         _editor.Brush.GroundType = entries[0].Type;
         _palette.SetSelectedType(entries[0].Type);
     }
@@ -569,6 +603,7 @@ public sealed class EditorScreen : Screen {
                 ShowStatus("Width and height must be numbers.");
                 return;
             }
+
             var document = AddDocument(new EditorMapData(values[0], width, height));
             document.JsonPath = null;
             document.WmapPath = null;
@@ -594,6 +629,7 @@ public sealed class EditorScreen : Screen {
                 ShowStatus("Width and height must be numbers.");
                 return;
             }
+
             ResizeMap(width, height);
         });
     }
@@ -604,6 +640,7 @@ public sealed class EditorScreen : Screen {
             ShowStatus("There is no object on this tile to edit.");
             return;
         }
+
         ShowPrompt("Edit object", ["Name / config"], [tile.ObjectConfig ?? string.Empty], values => {
             _editor.SetObjectConfig(x, y, values[0]);
             ShowStatus($"Updated object at ({x}, {y}).");
@@ -612,12 +649,14 @@ public sealed class EditorScreen : Screen {
 
     private void ShowPrompt(string title, string[] labels, string[] values, Action<string[]> accepted) {
         if (_prompt is not null) return;
+
         _prompt = new EditorPrompt(title, labels, values, accepted, ClosePrompt);
         _root.AddChild(_prompt);
     }
 
     private void ClosePrompt() {
         if (_prompt is null) return;
+
         _root.RemoveChild(_prompt);
         _prompt = null;
     }
@@ -625,6 +664,7 @@ public sealed class EditorScreen : Screen {
     private void LoadMap() {
         var path = NativeFileDialog.OpenMap();
         if (string.IsNullOrWhiteSpace(path)) return;
+
         LoadMap(path);
     }
 
@@ -634,6 +674,7 @@ public sealed class EditorScreen : Screen {
             var document = AddDocument(map);
             if (Path.GetExtension(path).Equals(".wmap", StringComparison.OrdinalIgnoreCase)) document.WmapPath = path;
             else document.JsonPath = path;
+
             _panX = 0;
             _panY = 0;
             _zoom = 100f;
@@ -650,13 +691,16 @@ public sealed class EditorScreen : Screen {
             ShowStatus("No map is open.");
             return;
         }
+
         var path = wmap ? _activeDocument.WmapPath : _activeDocument.JsonPath;
         if (string.IsNullOrWhiteSpace(path)) path = NativeFileDialog.SaveMap(_editor.Map.Name, wmap);
         if (string.IsNullOrWhiteSpace(path)) return;
+
         try {
             EditorMapSerializer.Save(_editor.Map, path);
             if (wmap) _activeDocument.WmapPath = path;
             else _activeDocument.JsonPath = path;
+
             ShowStatus($"Saved {Path.GetFileName(path)}.");
             UpdateMapSelector();
             RefreshStatus();
@@ -670,6 +714,7 @@ public sealed class EditorScreen : Screen {
             LeaveEditor();
             return;
         }
+
         DialogManager.Enqueue(new Dialog(
             "Unsaved map",
             "Leave the editor and discard unsaved changes?",
@@ -682,15 +727,18 @@ public sealed class EditorScreen : Screen {
 
     private void CloseCurrentMap() {
         if (!_mapOpen) return;
+
         RequestCloseDocument(_activeDocument);
     }
 
     private void RequestCloseDocument(EditorMapDocument document) {
         if (document is null) return;
+
         if (document.Map.SavedChanges) {
             RemoveDocument(document);
             return;
         }
+
         DialogManager.Enqueue(new Dialog(
             "Unsaved map",
             "Close this map and discard unsaved changes?",
@@ -777,11 +825,13 @@ public sealed class EditorScreen : Screen {
 
     private void RefreshCanvas() {
         if (!_mapOpen) return;
+
         RefreshMapOverlays();
     }
 
     private void RefreshDuringDraw() {
         if (!_mapOpen) return;
+
         if (_editor.Brush.DrawType == EditorDrawType.Regions) RefreshMapOverlays();
         else RefreshInteractionOverlays();
     }
@@ -798,6 +848,7 @@ public sealed class EditorScreen : Screen {
         _tileLayer.RemoveChildren();
         _viewOverlayDirty = false;
         if (!_mapOpen) return;
+
         _tileLayer.Visible = true;
         _interactionLayer.Visible = true;
         var tileSize = BaseTileSize * _zoom / 100f;
@@ -813,6 +864,7 @@ public sealed class EditorScreen : Screen {
             for (var x = firstX; x <= lastX; x++) {
                 var region = _editor.Map.GetTile(x, y).RegionType;
                 if (region == 0) continue;
+
                 var left = ProjectMapCoordinate(preciseOriginX, tileSize, x);
                 var right = ProjectMapCoordinate(preciseOriginX, tileSize, x + 1);
                 var top = ProjectMapCoordinate(preciseOriginY, tileSize, y);
@@ -824,8 +876,10 @@ public sealed class EditorScreen : Screen {
                 }));
             }
         }
+
         if (_grid && tileSize >= MinGridTileSize)
             AddGridOverlay(preciseOriginX, preciseOriginY, tileSize, firstX, firstY, lastX, lastY);
+
         AddMapBoundsOverlay(preciseOriginX, preciseOriginY, tileSize);
         RefreshInteractionOverlays();
     }
@@ -838,6 +892,7 @@ public sealed class EditorScreen : Screen {
 
     private void TransformViewOverlays() {
         if (_overlayTileSize <= 0f) return;
+
         var tileSize = BaseTileSize * _zoom / 100f;
         GetMapOrigin(out var originX, out var originY);
         var scale = tileSize / _overlayTileSize;
@@ -863,6 +918,7 @@ public sealed class EditorScreen : Screen {
     private void RefreshInteractionOverlays() {
         _interactionLayer.RemoveChildren();
         if (!_mapOpen) return;
+
         var tileSize = BaseTileSize * _zoom / 100f;
         GetMapOrigin(out var originX, out var originY);
         AddSelectionOverlay(originX, originY, tileSize);
@@ -883,6 +939,7 @@ public sealed class EditorScreen : Screen {
         var radius = _editor.Tool is EditorToolType.Pencil or EditorToolType.Eraser or EditorToolType.Shape
             ? _editor.Brush.Size
             : 0;
+
         if (radius > 0) {
             AddBrushHoverOutline(originX, originY, tileSize, radius);
             return;
@@ -908,10 +965,12 @@ public sealed class EditorScreen : Screen {
         for (var offsetY = -radius; offsetY <= radius; offsetY++) {
             var tileY = _mouseTileY + offsetY;
             if (tileY < 0 || tileY >= _editor.Map.Height) continue;
+
             var extent = (int)MathF.Sqrt(radiusSquared - offsetY * offsetY);
             var leftTile = Math.Max(0, _mouseTileX - extent);
             var rightTile = Math.Min(_editor.Map.Width - 1, _mouseTileX + extent);
             if (leftTile > rightTile) continue;
+
             var top = ProjectMapCoordinate(originY, tileSize, tileY);
             var bottom = ProjectMapCoordinate(originY, tileSize, tileY + 1);
             var left = ProjectMapCoordinate(originX, tileSize, leftTile);
@@ -923,10 +982,12 @@ public sealed class EditorScreen : Screen {
         for (var offsetX = -radius; offsetX <= radius; offsetX++) {
             var tileX = _mouseTileX + offsetX;
             if (tileX < 0 || tileX >= _editor.Map.Width) continue;
+
             var extent = (int)MathF.Sqrt(radiusSquared - offsetX * offsetX);
             var topTile = Math.Max(0, _mouseTileY - extent);
             var bottomTile = Math.Min(_editor.Map.Height - 1, _mouseTileY + extent);
             if (topTile > bottomTile) continue;
+
             var left = ProjectMapCoordinate(originX, tileSize, tileX);
             var right = ProjectMapCoordinate(originX, tileSize, tileX + 1);
             var top = ProjectMapCoordinate(originY, tileSize, topTile);
@@ -944,6 +1005,7 @@ public sealed class EditorScreen : Screen {
 
     private void AddGridOverlay(float originX, float originY, float tileSize, int firstX, int firstY, int lastX, int lastY) {
         if (lastX < firstX || lastY < firstY) return;
+
         var top = ProjectMapCoordinate(originY, tileSize, firstY);
         var bottom = ProjectMapCoordinate(originY, tileSize, lastY + 1);
         var left = ProjectMapCoordinate(originX, tileSize, firstX);
@@ -953,6 +1015,7 @@ public sealed class EditorScreen : Screen {
                 X = ProjectMapCoordinate(originX, tileSize, x), Y = top,
                 Width = 1, Height = bottom - top, Color = 0, Alpha = 0.42f
             }));
+
         for (var y = firstY; y <= lastY + 1; y++)
             _tileLayer.AddChild(new ColorRect(new ColorRectConfig {
                 X = left, Y = ProjectMapCoordinate(originY, tileSize, y),
@@ -962,6 +1025,7 @@ public sealed class EditorScreen : Screen {
 
     private void AddSelectionOverlay(float originX, float originY, float tileSize) {
         if (!_editor.Selection.IsActive()) return;
+
         var x = ProjectMapCoordinate(originX, tileSize, _editor.Selection.StartX);
         var y = ProjectMapCoordinate(originY, tileSize, _editor.Selection.StartY);
         var right = ProjectMapCoordinate(originX, tileSize, _editor.Selection.EndX + 1);
@@ -975,34 +1039,41 @@ public sealed class EditorScreen : Screen {
 
     private static void AddOutline(Container layer, int x, int y, int width, int height, uint color, float alpha) {
         layer.AddChild(new ColorRect(new ColorRectConfig { X = x, Y = y, Width = width, Height = 1, Color = color, Alpha = alpha }));
-        layer.AddChild(new ColorRect(new ColorRectConfig { X = x, Y = y + height - 1, Width = width, Height = 1, Color = color, Alpha = alpha }));
+        layer.AddChild(new ColorRect(new ColorRectConfig
+            { X = x, Y = y + height - 1, Width = width, Height = 1, Color = color, Alpha = alpha }));
+
         layer.AddChild(new ColorRect(new ColorRectConfig { X = x, Y = y, Width = 1, Height = height, Color = color, Alpha = alpha }));
-        layer.AddChild(new ColorRect(new ColorRectConfig { X = x + width - 1, Y = y, Width = 1, Height = height, Color = color, Alpha = alpha }));
+        layer.AddChild(new ColorRect(new ColorRectConfig
+            { X = x + width - 1, Y = y, Width = 1, Height = height, Color = color, Alpha = alpha }));
     }
 
     private static uint RegionColor(int type) {
         unchecked {
             var hash = (uint)(type * 2654435761);
             return (80u + (hash & 0x7Fu)) << 16
-                | (80u + ((hash >> 8) & 0x7Fu)) << 8
-                | 80u + ((hash >> 16) & 0x7Fu);
+                   | (80u + ((hash >> 8) & 0x7Fu)) << 8
+                   | 80u + ((hash >> 16) & 0x7Fu);
         }
     }
 
     private void RefreshStatus() {
         if (_mapInfo is null) return;
+
         if (!_mapOpen) {
             _mapInfo.SetText(string.Empty);
             _tileInfo.SetText(string.Empty);
             return;
         }
+
         _mapInfo.SetText($"{_editor.Map.Width} x {_editor.Map.Height}   zoom {MathF.Round(_zoom)}%");
         if (_mouseTileX < 0) {
             _tileInfo.SetText(string.Empty);
         } else {
             var tile = _editor.Map.GetTile(_mouseTileX, _mouseTileY);
-            _tileInfo.SetText($"({_mouseTileX}, {_mouseTileY})  G:0x{(ushort)tile.GroundType:X} O:0x{(ushort)tile.ObjectType:X} R:0x{(ushort)tile.RegionType:X}");
+            _tileInfo.SetText(
+                $"({_mouseTileX}, {_mouseTileY})  G:0x{(ushort)tile.GroundType:X} O:0x{(ushort)tile.ObjectType:X} R:0x{(ushort)tile.RegionType:X}");
         }
+
         var selectedId = EditorCatalog.GetId(_editor.Brush.DrawType, _editor.Brush.GetSelectedType());
         _status.SetText($"{_editor.Tool} | {_editor.Brush.DrawType} | {selectedId} | size {_editor.Brush.Size}");
     }
@@ -1017,6 +1088,7 @@ public sealed class EditorScreen : Screen {
             mapY = -1;
             return false;
         }
+
         var logical = ToLogical(physical);
         var tileSize = BaseTileSize * _zoom / 100f;
         GetMapOrigin(out var originX, out var originY);
@@ -1059,6 +1131,7 @@ public sealed class EditorScreen : Screen {
             Text = string.Empty, FontSize = 18, FontType = FontType.Bold,
             X = x, Y = y, Anchor = anchor, Color = 0xFFFFFF
         });
+
         _root.AddChild(label);
         return label;
     }
@@ -1066,7 +1139,9 @@ public sealed class EditorScreen : Screen {
     public override void Update(GameTime gameTime) {
         if (_viewOverlayDirty && Environment.TickCount64 >= _viewOverlayRefreshAt)
             RefreshMapOverlays();
+
         if (!_mapOpen || !_autoSave || _editor.Map.SavedChanges || gameTime.TotalMs - _lastAutoSave < 30000) return;
+
         _lastAutoSave = gameTime.TotalMs;
         try {
             var directory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "autosave");
@@ -1081,12 +1156,14 @@ public sealed class EditorScreen : Screen {
     public override void Draw(GameTime gameTime) {
         _backdropRenderer.Draw();
         if (!_mapOpen) return;
+
         RefreshMapRender();
         var tileSize = BaseTileSize * _zoom / 100f;
         var center = new Vector2(
             _editor.Map.Width * 0.5f - _panX / (float)tileSize,
             _editor.Map.Height * 0.5f - _panY / (float)tileSize
         );
+
         var camera = Camera.Update(center, new Vector3i(_screenWidth, _screenHeight, 0), 0f, tileSize / 50f);
         _mapRenderer.Draw(gameTime, camera);
     }

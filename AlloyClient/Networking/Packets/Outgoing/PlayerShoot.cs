@@ -1,7 +1,4 @@
-﻿using System;
-using AlloyClient.Networking.Structs.DataObjects;
-
-namespace AlloyClient.Networking.Packets.Outgoing;
+﻿namespace AlloyClient.Networking.Packets.Outgoing;
 
 public class PlayerShoot : OutgoingPacket<PlayerShoot> {
 

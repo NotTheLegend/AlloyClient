@@ -6,7 +6,6 @@ using AlloyClient.Game.Components.Options;
 using AlloyClient.Networking;
 using AlloyClient.Networking.Packets.Outgoing;
 using Alloy.UiLib.Core;
-using Alloy.Common;
 using Alloy.Engine;
 using AlloyClient.Display;
 using AlloyClient.Logging;

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using AlloyClient.Display;
 using AlloyClient.Networking;
 using AlloyClient.Ui.Components.Buttons;
 using AlloyClient.Ui.Components.Panels;

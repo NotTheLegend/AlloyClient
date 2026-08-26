@@ -1,5 +1,4 @@
-﻿using System;
-using Alloy.Engine;
+﻿using Alloy.Engine;
 using AlloyClient.Game;
 using AlloyClient.Game.Objects;
 using Alloy.UiLib.BuiltIn;

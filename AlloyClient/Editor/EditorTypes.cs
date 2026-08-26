@@ -1,12 +1,11 @@
 using System;
-using System.Collections.Generic;
 
 namespace AlloyClient.Editor;
 
 public enum EditorDrawType {
     Ground,
     Objects,
-    Regions
+    Regions,
 }
 
 public enum EditorToolType {
@@ -17,7 +16,7 @@ public enum EditorToolType {
     Bucket,
     Picker,
     Eraser,
-    Edit
+    Edit,
 }
 
 public sealed class EditorTileData {
@@ -35,7 +34,7 @@ public sealed class EditorTileData {
             ObjectConfig = ObjectConfig,
             RegionType = RegionType,
             TerrainType = TerrainType,
-            Elevation = Elevation
+            Elevation = Elevation,
         };
     }
 
@@ -53,7 +52,7 @@ public sealed class EditorTileData {
             EditorDrawType.Ground => GroundType,
             EditorDrawType.Objects => ObjectType,
             EditorDrawType.Regions => RegionType,
-            _ => 0
+            _ => 0,
         };
     }
 
@@ -98,6 +97,7 @@ public sealed class EditorSelection {
             Clear();
             return;
         }
+
         StartX = selection.StartX;
         StartY = selection.StartY;
         EndX = selection.EndX;
@@ -118,6 +118,7 @@ public sealed class EditorClipboard {
 
     public void Copy(EditorMapData map, EditorSelection selection) {
         if (!selection.IsActive()) return;
+
         Width = selection.GetWidth();
         Height = selection.GetHeight();
         Tiles = new EditorTileData[Width * Height];
@@ -128,6 +129,7 @@ public sealed class EditorClipboard {
 
     public EditorTileData GetTile(int x, int y) {
         if (x < 0 || y < 0 || x >= Width || y >= Height) return null;
+
         return Tiles[x + y * Width];
     }
 }
@@ -148,7 +150,7 @@ public sealed class EditorBrush {
             EditorDrawType.Ground => GroundType,
             EditorDrawType.Objects => ObjectType,
             EditorDrawType.Regions => RegionType,
-            _ => 0
+            _ => 0,
         };
     }
 

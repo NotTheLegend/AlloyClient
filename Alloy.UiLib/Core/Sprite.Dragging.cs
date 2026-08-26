@@ -1,6 +1,5 @@
 ﻿using System;
 using Alloy.Common;
-using Alloy.UiLib.Input;
 using OpenTK.Mathematics;
 
 namespace Alloy.UiLib.Core;

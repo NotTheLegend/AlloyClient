@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using AlloyClient.Assets;
 using AlloyClient.Game.Components.Hud;
 using AlloyClient.Game.Objects;

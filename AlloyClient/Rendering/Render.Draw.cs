@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 using AlloyClient.Assets;
 using AlloyClient.Rendering.VertexData;
-using Alloy.Common;
 using OpenTK.Graphics.OpenGL;
 
 namespace AlloyClient.Rendering;

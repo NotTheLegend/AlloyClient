@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Alloy.Common.Structs;
 using Alloy.Engine;
 using AlloyClient.Assets;
 using AlloyClient.Assets.Libraries;

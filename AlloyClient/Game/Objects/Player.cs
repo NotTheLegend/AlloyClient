@@ -1,5 +1,4 @@
 ﻿using System;
-using Alloy.Common;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Game.Objects.Enums;
 using AlloyClient.Networking;

@@ -9,7 +9,6 @@ using AlloyClient.Logging;
 using AlloyClient.Networking.Packets;
 using AlloyClient.Networking.Packets.Outgoing;
 using AlloyClient.Screens;
-using AlloyClient.Utils;
 using Microsoft.Extensions.Logging;
 
 namespace AlloyClient.Networking;

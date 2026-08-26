@@ -1,7 +1,6 @@
 ﻿using AlloyClient.Display;
 using AlloyClient.Screens;
 using Alloy.UiLib.Extra;
-using Alloy.UiLib;
 
 namespace AlloyClient.Networking.Packets.Incoming;
 

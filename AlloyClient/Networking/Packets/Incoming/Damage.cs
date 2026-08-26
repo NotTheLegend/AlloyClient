@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace AlloyClient.Networking.Packets.Incoming;
+﻿namespace AlloyClient.Networking.Packets.Incoming;
 
 public class Damage : IncomingPacket<Damage> {
     public int TargetId;

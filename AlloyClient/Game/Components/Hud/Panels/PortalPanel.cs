@@ -4,7 +4,6 @@ using AlloyClient.Networking;
 using AlloyClient.Networking.Packets.Outgoing;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
-using Alloy.Common;
 using AlloyClient.Ui.Components.Buttons;
 
 namespace AlloyClient.Game.Components.Hud.Panels;

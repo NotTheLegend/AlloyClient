@@ -6,7 +6,6 @@ using AlloyClient.Assets.Libraries;
 using AlloyClient.Assets.XmlStructs;
 using AlloyClient.Game.Components;
 using AlloyClient.Game.Objects;
-using AlloyClient.Rendering;
 using AlloyClient.Rendering.VertexData;
 using Alloy.Common.Structs;
 using OpenTK.Mathematics;

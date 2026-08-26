@@ -1,8 +1,6 @@
 ﻿using AlloyClient.Game;
 using AlloyClient.Networking.Packets.Outgoing;
 using AlloyClient.Networking.Structs.DataObjects;
-using AlloyClient.Utils;
-using Alloy.Common;
 using Microsoft.Extensions.Logging;
 
 namespace AlloyClient.Networking.Packets.Incoming;

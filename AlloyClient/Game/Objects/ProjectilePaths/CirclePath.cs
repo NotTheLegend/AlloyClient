@@ -3,7 +3,6 @@
 using System;
 using OpenTK.Mathematics;
 using AlloyClient.Networking;
-using AlloyClient.Utils;
 
 #endregion
 

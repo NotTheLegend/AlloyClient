@@ -1,5 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using Alloy.UiLib.BuiltIn;
+﻿using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 
 namespace AlloyClient.Ui.Components.Tooltips;
