@@ -32,6 +32,7 @@ public static class EditorCatalog {
 
     public static void Load() {
         if (_loaded) return;
+
         _loaded = true;
 
         foreach (var pair in GroundLibrary.TypeToGroundProps.OrderBy(pair => pair.Value.ObjectId)) {
@@ -42,6 +43,7 @@ public static class EditorCatalog {
 
         foreach (var pair in ObjectLibrary.TypeToObjectProps.OrderBy(pair => pair.Value.DisplayName)) {
             if (!ObjectLibrary.TypeToTextureData.ContainsKey(pair.Key)) continue;
+
             var entry = new EditorCatalogEntry(pair.Key, pair.Value.ObjectId, pair.Value.DisplayName);
             Objects.Add(entry);
             ObjectIds[pair.Key] = pair.Value.ObjectId;
@@ -49,6 +51,7 @@ public static class EditorCatalog {
 
         var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content", "Xmls", "Regions.xml");
         if (!File.Exists(path)) return;
+
         foreach (var element in XDocument.Load(path).Root?.Elements("Region") ?? []) {
             var typeText = element.Attribute("type")?.Value ?? "0";
             var hexadecimal = typeText.StartsWith("0x", StringComparison.OrdinalIgnoreCase);
@@ -66,7 +69,7 @@ public static class EditorCatalog {
             EditorDrawType.Ground => Grounds,
             EditorDrawType.Objects => Objects,
             EditorDrawType.Regions => Regions,
-            _ => Grounds
+            _ => Grounds,
         };
     }
 
@@ -76,19 +79,21 @@ public static class EditorCatalog {
             EditorDrawType.Ground => GroundIds,
             EditorDrawType.Objects => ObjectIds,
             EditorDrawType.Regions => RegionIds,
-            _ => GroundIds
+            _ => GroundIds,
         };
+
         return ids.GetValueOrDefault(type, string.Empty);
     }
 
     public static int GetType(EditorDrawType drawType, string id) {
         Load();
         if (string.IsNullOrEmpty(id)) return drawType == EditorDrawType.Ground ? -1 : 0;
+
         return drawType switch {
             EditorDrawType.Ground when GroundLibrary.IdToTileType.TryGetValue(id, out var type) => type,
             EditorDrawType.Objects when ObjectLibrary.IdToObjectType.TryGetValue(id, out var type) => type,
             EditorDrawType.Regions when RegionTypes.TryGetValue(id, out var type) => type,
-            _ => drawType == EditorDrawType.Ground ? -1 : 0
+            _ => drawType == EditorDrawType.Ground ? -1 : 0,
         };
     }
 }

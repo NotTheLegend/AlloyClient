@@ -133,6 +133,8 @@ public sealed class EditorClipboard {
 }
 
 public sealed class EditorBrush {
+    public const int MaxSize = 32;
+
     public EditorDrawType DrawType = EditorDrawType.Ground;
     public int GroundType = -1;
     public int ObjectType;

@@ -24,8 +24,9 @@ internal sealed class EditorMapTab : Container {
             CutY = 5,
             Color = 0x333333,
             Alpha = 0.9f,
-            MouseEnabled = true
+            MouseEnabled = true,
         });
+
         AddChild(_background);
 
         _label = new SimpleText(new TextConfig {
@@ -36,8 +37,9 @@ internal sealed class EditorMapTab : Container {
             Y = 14,
             Anchor = UiAnchor.MiddleLeft,
             Color = 0xFFFFFF,
-            MaxWidth = 118
+            MaxWidth = 118,
         });
+
         AddChild(_label);
 
         _close = new SimpleText(new TextConfig {
@@ -47,8 +49,9 @@ internal sealed class EditorMapTab : Container {
             X = 140,
             Y = 14,
             Anchor = UiAnchor.Middle,
-            Color = 0xFFFFFF
+            Color = 0xFFFFFF,
         });
+
         AddChild(_close);
 
         var closeHit = new ColorRect(new ColorRectConfig {
@@ -57,12 +60,14 @@ internal sealed class EditorMapTab : Container {
             Height = 28,
             Color = 0xFFFFFF,
             Alpha = 0f,
-            MouseEnabled = true
+            MouseEnabled = true,
         });
+
         closeHit.AddEventListener(MouseEvent.LeftClick, args => {
             args.StopImmediatePropagation();
             closed();
         });
+
         AddChild(closeHit);
 
         AddEventListener(MouseEvent.MouseOver, () => _background.Alpha = _selected ? 1f : 0.7f);

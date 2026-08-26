@@ -22,14 +22,22 @@ public static partial class Render {
     #region Render Tile
 
     public static void DrawTiles(ReadOnlySpan<TileData> span) {
-        LastDrawCountTiles = span.Length;
+        UploadTiles(span);
+        DrawUploadedTiles(span.Length);
+    }
+
+    public static void UploadTiles(ReadOnlySpan<TileData> span) {
         _tileBuffer.SetData(span);
-        
+        TileUploadVersion++;
+    }
+
+    public static void DrawUploadedTiles(int count) {
+        LastDrawCountTiles = count;
         _defaultVao.Bind();
         _shaderGround.Apply();
         _tileBuffer.BindToIndex(0);
-        
-        GL.DrawArrays(PrimitiveType.Triangles, 0, span.Length * 6);
+
+        GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, 6, count);
     }
 
     #endregion

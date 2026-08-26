@@ -28,10 +28,12 @@ public sealed partial class EditorBackdropRenderer {
 
     public void Resize(int width, int height) {
         if (width <= 0 || height <= 0) return;
+
         var screenAspect = width / (float)height;
         var uvScale = screenAspect > _textureAspect
             ? new Vector2(1f, _textureAspect / screenAspect)
             : new Vector2(screenAspect / _textureAspect, 1f);
+
         _shader.SetValue("UvScale", uvScale);
     }
 

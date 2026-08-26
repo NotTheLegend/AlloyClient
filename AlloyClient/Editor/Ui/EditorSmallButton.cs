@@ -15,8 +15,9 @@ internal sealed class EditorSmallButton : Container {
         Resize(width, height);
         _background = new CutEdgeRect(new CutEdgeConfig {
             Width = width, Height = height, CutX = 4, CutY = 4,
-            Color = 0x333333, Alpha = 0.8f, MouseEnabled = true
+            Color = 0x333333, Alpha = 0.8f, MouseEnabled = true,
         });
+
         AddChild(_background);
         label.X = width / 2;
         label.Y = height / 2;

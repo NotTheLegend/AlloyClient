@@ -36,13 +36,15 @@ public sealed class EditorActionSet {
 
     private static bool SameSelection(EditorSelection first, EditorSelection second) {
         if (first is null || second is null) return first is null && second is null;
+
         return first.StartX == second.StartX && first.StartY == second.StartY
-            && first.EndX == second.EndX && first.EndY == second.EndY;
+                                             && first.EndX == second.EndX && first.EndY == second.EndY;
     }
 
     public void Undo(EditorMapData map, EditorSelection selection) {
         for (var i = Changes.Count - 1; i >= 0; i--)
             map.SetTile(Changes[i].X, Changes[i].Y, Changes[i].Before, false);
+
         if (SelectionChanged) selection.CopyFrom(BeforeSelection);
         if (Changes.Count > 0) map.MarkChanged();
     }
@@ -50,6 +52,7 @@ public sealed class EditorActionSet {
     public void Redo(EditorMapData map, EditorSelection selection) {
         for (var i = 0; i < Changes.Count; i++)
             map.SetTile(Changes[i].X, Changes[i].Y, Changes[i].After, false);
+
         if (SelectionChanged) selection.CopyFrom(AfterSelection);
         if (Changes.Count > 0) map.MarkChanged();
     }
@@ -61,12 +64,14 @@ public sealed class EditorHistory {
 
     public void Record(EditorActionSet actions) {
         if (actions is null || actions.IsEmpty()) return;
+
         _present.Add(actions);
         _erased.Clear();
     }
 
     public bool Undo(EditorMapData map, EditorSelection selection) {
         if (_present.Count == 0) return false;
+
         var index = _present.Count - 1;
         var actions = _present[index];
         _present.RemoveAt(index);
@@ -77,6 +82,7 @@ public sealed class EditorHistory {
 
     public bool Redo(EditorMapData map, EditorSelection selection) {
         if (_erased.Count == 0) return false;
+
         var index = _erased.Count - 1;
         var actions = _erased[index];
         _erased.RemoveAt(index);

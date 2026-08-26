@@ -17,35 +17,43 @@ internal sealed class EditorPaletteTooltip : Tooltip {
         var texture = drawType == EditorDrawType.Ground
             ? GroundLibrary.TypeToTextureData.GetValueOrDefault((ushort)entry.Type)
             : ObjectLibrary.TypeToTextureData.GetValueOrDefault((ushort)entry.Type);
+
         var useEditorTexture = drawType == EditorDrawType.Objects && texture?.EditorTexture.HasValue == true;
         var sheet = useEditorTexture && !string.IsNullOrEmpty(texture.EditorTextureFile)
             ? texture.EditorTextureFile
             : texture?.TextureFile ?? string.Empty;
+
         var index = useEditorTexture && texture.EditorTextureIndex >= 0
             ? texture.EditorTextureIndex
             : texture?.TextureIndex ?? -1;
 
         var title = new SimpleText(new TextConfig {
             Text = entry.Name, FontSize = 18, FontType = FontType.Bold,
-            Color = 0xFFFFFF, MaxWidth = MaximumTooltipWidth - Padding * 2
+            Color = 0xFFFFFF, MaxWidth = MaximumTooltipWidth - Padding * 2,
         });
+
         var typeText = new SimpleText(new TextConfig {
-            Text = $"Type: 0x{entry.Type:X}", FontSize = 15, Color = 0xD0D0D0
+            Text = $"Type: 0x{entry.Type:X}", FontSize = 15, Color = 0xD0D0D0,
         });
+
         var sheetText = new SimpleText(new TextConfig {
             Text = $"Sheet: {DisplayValue(sheet)}", FontSize = 15,
-            Color = 0xD0D0D0, MaxWidth = MaximumTooltipWidth - Padding * 2
+            Color = 0xD0D0D0, MaxWidth = MaximumTooltipWidth - Padding * 2,
         });
+
         var indexText = new SimpleText(new TextConfig {
-            Text = $"Index: {(index < 0 ? "-" : $"0x{index:X}")}", FontSize = 15, Color = 0xD0D0D0
+            Text = $"Index: {(index < 0 ? "-" : $"0x{index:X}")}", FontSize = 15, Color = 0xD0D0D0,
         });
+
         var propsLabel = new SimpleText(new TextConfig {
-            Text = "Props:", FontSize = 15, FontType = FontType.Bold, Color = 0xFFFFFF
+            Text = "Props:", FontSize = 15, FontType = FontType.Bold, Color = 0xFFFFFF,
         });
+
         var propsText = new SimpleText(new TextConfig {
             Text = BuildProperties(drawType, entry.Type), FontSize = 14,
-            Color = 0xD0D0D0, MaxWidth = MaximumTooltipWidth - Padding * 2
+            Color = 0xD0D0D0, MaxWidth = MaximumTooltipWidth - Padding * 2,
         });
+
         SimpleText[] labels = [title, typeText, sheetText, indexText, propsLabel, propsText];
 
         var y = 7;
@@ -62,8 +70,9 @@ internal sealed class EditorPaletteTooltip : Tooltip {
 
         AddChild(new CutEdgeRect(new CutEdgeConfig {
             Width = ToolWidth, Height = ToolHeight, CutX = 6, CutY = 6,
-            Color = 0x686868, Alpha = 0.94f
+            Color = 0x686868, Alpha = 0.94f,
         }));
+
         foreach (var label in labels) AddChild(label);
     }
 
@@ -72,6 +81,7 @@ internal sealed class EditorPaletteTooltip : Tooltip {
     private static string BuildProperties(EditorDrawType drawType, int type) {
         if (drawType == EditorDrawType.Ground)
             return BuildGroundProperties(GroundLibrary.TypeToGroundProps.GetValueOrDefault((ushort)type));
+
         return BuildObjectProperties(ObjectLibrary.TypeToObjectProps.GetValueOrDefault((ushort)type));
     }
 
@@ -107,9 +117,11 @@ internal sealed class EditorPaletteTooltip : Tooltip {
         AddFlag(values, "NoWalk", properties.NoWalk);
         if (properties.MinDamage != 0 || properties.MaxDamage != 0)
             values.Add($"Damage={properties.MinDamage}-{properties.MaxDamage}");
+
         AddFlag(values, "Push", properties.Push);
         if (properties.Animate.Type != GroundAnimate.State.None)
             values.Add($"Animate={properties.Animate.Type}");
+
         if (properties.BlendPriority != 0) values.Add($"Blend={properties.BlendPriority}");
         if (properties.CompositePriority != 0) values.Add($"Composite={properties.CompositePriority}");
         if (properties.Speed != 1f) values.Add($"Speed={properties.Speed:0.##}");

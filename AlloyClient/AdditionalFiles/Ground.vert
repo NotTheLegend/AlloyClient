@@ -44,8 +44,8 @@ out GROUND_OUTPUT {
 } vsOutput;
 
 void main() {
-    int instanceId = gl_VertexID / 6;
-    int verId = gl_VertexID % 6;
+    int instanceId = gl_InstanceID;
+    int verId = gl_VertexID;
     
     InstanceData data = instanceBuffer.data[instanceId];
 

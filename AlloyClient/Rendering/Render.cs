@@ -14,6 +14,7 @@ public static partial class Render {
     
     private const int BufferSize = 10000;
     public const int TileBufferSize = Map.VisibleChunks * TileMap.ChunkArea * 4;
+    public static int TileUploadVersion;
     private const int ShadowBufferSize = 4096;
     
     private static readonly (string, string)[] TileDefines = [("TileBuffer", $"{TileBufferSize}")];

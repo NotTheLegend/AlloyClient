@@ -33,17 +33,20 @@ internal sealed class EditorPalette : Container {
         _selected = selected;
         _background = new CutEdgeRect(new CutEdgeConfig {
             Width = PanelWidth, Height = height, CutX = 6, CutY = 6,
-            Color = 0x565656, Alpha = 0.8f, MouseEnabled = true
+            Color = 0x565656, Alpha = 0.8f, MouseEnabled = true,
         });
+
         AddChild(_background);
         _search = new TextInput(new InputConfig {
             X = 5, Y = 8, Width = PanelWidth - 10, FontSize = 17, FontType = FontType.Bold, DefaultText = string.Empty,
-            OnFocus = () => editing(true), OnUnfocus = () => editing(false), OnChange = ApplySearch
+            OnFocus = () => editing(true), OnUnfocus = () => editing(false), OnChange = ApplySearch,
         });
+
         AddChild(_search);
         _elements = new Container(new ContainerConfig {
-            X = 0, Y = ListTop, Width = PanelWidth, Height = height - ListTop, EnableClip = true
+            X = 0, Y = ListTop, Width = PanelWidth, Height = height - ListTop, EnableClip = true,
         });
+
         AddChild(_elements);
         MouseEnabled = true;
         AddEventListener(MouseEvent.ScrollVertical, OnScroll);
@@ -92,7 +95,8 @@ internal sealed class EditorPalette : Container {
         _entries = string.IsNullOrEmpty(query)
             ? source
             : source.FindAll(entry => entry.Name.Contains(query, StringComparison.OrdinalIgnoreCase)
-                || entry.Id.Contains(query, StringComparison.OrdinalIgnoreCase));
+                                      || entry.Id.Contains(query, StringComparison.OrdinalIgnoreCase));
+
         _scrollRows = 0;
         Rebuild();
     }
@@ -114,8 +118,9 @@ internal sealed class EditorPalette : Container {
             var hit = new CutEdgeRect(new CutEdgeConfig {
                 Width = ElementSize, Height = ElementSize, CutX = 3, CutY = 3,
                 Color = selected ? 0x777777u : 0x333333u,
-                Alpha = selected ? 0.75f : 0.18f
+                Alpha = selected ? 0.75f : 0.18f,
             });
+
             cell.AddChild(hit);
             AddIcon(cell, entry);
             if (selected) AddSelectionOutline(cell);
@@ -123,21 +128,25 @@ internal sealed class EditorPalette : Container {
             cell.AddEventListener(MouseEvent.MouseOver, () => {
                 hit.Alpha = selected ? 0.9f : 0.5f;
                 if (_drawType is not (EditorDrawType.Ground or EditorDrawType.Objects)) return;
+
                 ClearTooltip();
                 cellTooltip = new EditorPaletteTooltip(_drawType, entry);
                 _tooltip = cellTooltip;
                 TooltipManager.AddTooltip(cellTooltip);
             });
+
             cell.AddEventListener(MouseEvent.MouseOut, () => {
                 hit.Alpha = selected ? 0.75f : 0.18f;
                 ClearTooltip(cellTooltip);
                 cellTooltip = null;
             });
+
             cell.AddEventListener(MouseEvent.LeftClick, () => {
                 _selectedType = entry.Type;
                 _selected(entry.Type);
                 Rebuild();
             });
+
             _elements.AddChild(cell);
         }
     }
@@ -145,6 +154,7 @@ internal sealed class EditorPalette : Container {
     private void ClearTooltip(EditorPaletteTooltip expected = null) {
         if (_tooltip is null) return;
         if (expected is not null && _tooltip != expected) return;
+
         TooltipManager.RemoveTooltip(_tooltip);
         _tooltip = null;
     }
@@ -158,19 +168,25 @@ internal sealed class EditorPalette : Container {
             var color = unchecked((uint)(entry.Type * 2654435761));
             cell.AddChild(new CutEdgeRect(new CutEdgeConfig {
                 Width = ElementSize, Height = ElementSize, CutX = 3, CutY = 3,
-                Color = 0x505050u | (color & 0xAFAFAFu)
+                Color = 0x505050u | (color & 0xAFAFAFu),
             }));
+
             return;
         }
+
         var found = _drawType == EditorDrawType.Ground
             ? GroundLibrary.TypeToTextureData.TryGetValue((ushort)entry.Type, out var texture)
             : ObjectLibrary.TypeToTextureData.TryGetValue((ushort)entry.Type, out texture);
+
         if (!found || texture is null) return;
+
         var atlas = _drawType == EditorDrawType.Objects && texture.EditorTexture.HasValue
-            ? texture.EditorTexture.Value : texture.GetTexture();
+            ? texture.EditorTexture.Value
+            : texture.GetTexture();
+
         cell.AddChild(new ObjectRect(new ObjectRectConfig {
             Texture = TextureHelper.Create(atlas, TextureType.GameAtlas), Width = ElementSize, Height = ElementSize,
-            OutlineEnabled = false, GlowEnabled = false
+            OutlineEnabled = false, GlowEnabled = false,
         }));
     }
 }

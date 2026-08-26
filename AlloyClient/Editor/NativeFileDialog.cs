@@ -65,6 +65,7 @@ internal static class NativeFileDialog {
         var fileName = suggestedName.EndsWith($".{extension}", StringComparison.OrdinalIgnoreCase)
             ? suggestedName
             : $"{suggestedName}.{extension}";
+
         var fileBuffer = AllocateFileBuffer(fileName);
 
         try {
@@ -85,7 +86,7 @@ internal static class NativeFileDialog {
             Filter = "JSON Map (*.jm)\0*.jm\0World Map (*.wmap)\0*.wmap\0All Map Files\0*.jm;*.wmap\0\0",
             FilterIndex = 1,
             File = fileBuffer,
-            MaxFile = FileBufferCharacters
+            MaxFile = FileBufferCharacters,
         };
     }
 

@@ -31,10 +31,13 @@ public sealed class EditorScreen : Screen {
     private const float BaseTileSize = 8f;
     private const float MinZoom = 1f;
     private const float MaxZoom = 1000f;
+    private const int ViewOverlaySettleMs = 55;
+    private const float MinGridTileSize = 5f;
 
     private readonly Container _root = new(new ContainerConfig { Width = BaseWidth, Height = BaseHeight });
     private readonly Container _canvas = new(new ContainerConfig { Width = BaseWidth, Height = BaseHeight, EnableClip = true });
-    private readonly Container _tileLayer = new(new ContainerConfig { Width = BaseWidth, Height = BaseHeight, EnableClip = true });
+    private readonly Container _tileLayer = new(new ContainerConfig { Width = BaseWidth, Height = BaseHeight });
+    private readonly Container _interactionLayer = new(new ContainerConfig { Width = BaseWidth, Height = BaseHeight });
     private readonly Container _toolButtons = new(new ContainerConfig { Width = ToolbarWidth, Height = ToolbarHeight });
     private readonly List<EditorSmallButton> _topButtons = [];
     private readonly List<EditorToolButton> _editorToolButtons = [];
@@ -79,6 +82,11 @@ public sealed class EditorScreen : Screen {
     private bool _mapRenderDirty = true;
     private readonly int[,] _tileHotkeys = new int[3, 10];
     private double _lastAutoSave;
+    private long _viewOverlayRefreshAt;
+    private bool _viewOverlayDirty;
+    private float _overlayOriginX;
+    private float _overlayOriginY;
+    private float _overlayTileSize;
     private EditorPrompt _prompt;
 
     public EditorScreen() {
@@ -111,6 +119,7 @@ public sealed class EditorScreen : Screen {
         AddEventListener(Event.RemovedFromStage, OnRemoved);
         BuildVisibleTiles();
         _tileLayer.Visible = false;
+        _interactionLayer.Visible = false;
         SelectDefaultGround();
         RefreshAll();
 
@@ -133,6 +142,7 @@ public sealed class EditorScreen : Screen {
         });
         _canvas.AddChild(_canvasHitArea);
         _canvas.AddChild(_tileLayer);
+        _canvas.AddChild(_interactionLayer);
         _root.AddChild(_canvas);
         _canvas.AddEventListener(MouseEvent.LeftDown, OnCanvasLeftDown);
         _canvas.AddEventListener(MouseEvent.MiddleDown, OnCanvasMiddleDown);
@@ -202,6 +212,7 @@ public sealed class EditorScreen : Screen {
         _grid = document.Grid;
         _mapOpen = true;
         _tileLayer.Visible = true;
+        _interactionLayer.Visible = true;
         _mapRenderDirty = true;
         _mouseTileX = -1;
         _mouseTileY = -1;
@@ -318,6 +329,7 @@ public sealed class EditorScreen : Screen {
         _canvas.Resize(_screenWidth, _screenHeight);
         _canvasHitArea.Resize(_screenWidth, _screenHeight);
         _tileLayer.Resize(_screenWidth, _screenHeight);
+        _interactionLayer.Resize(_screenWidth, _screenHeight);
         _backButton.X = _screenWidth - _backButton.Width - 10;
         _palette.X = _screenWidth - PaletteWidth - PaletteMargin;
         _palette.Y = _backButton.Y + _backButton.Height + 15;
@@ -339,6 +351,7 @@ public sealed class EditorScreen : Screen {
     }
 
     private void OnCanvasLeftDown(MouseEvent args) {
+        if (_viewOverlayDirty) RefreshMapOverlays();
         if (args.ShiftKey && _editor.Tool != EditorToolType.Select) {
             _toolBeforeShiftDrag = _editor.Tool;
             SelectTool(EditorToolType.Select);
@@ -360,7 +373,7 @@ public sealed class EditorScreen : Screen {
         _leftDrawing = true;
         _editor.Begin(x, y);
         _mapRenderDirty = true;
-        RefreshAll();
+        RefreshDuringDraw();
     }
 
     private void OnCanvasMiddleDown(MouseEvent args) {
@@ -381,7 +394,7 @@ public sealed class EditorScreen : Screen {
             } else if (_leftDrawing) {
                 _editor.Drag(x, y);
                 _mapRenderDirty = true;
-                RefreshCanvas();
+                RefreshDuringDraw();
             }
         } else {
             _mouseTileX = -1;
@@ -398,19 +411,20 @@ public sealed class EditorScreen : Screen {
                 ClampOffset();
                 SaveActiveViewState();
                 _lastPanMouse = logical;
-                RefreshCanvas();
+                DeferViewOverlays();
             }
         }
         if (!_leftDrawing && !_middlePanning && !_controlPanning
             && (previousTileX != _mouseTileX || previousTileY != _mouseTileY))
-            RefreshMapOverlays();
-        RefreshStatus();
+            RefreshInteractionOverlays();
+        if (previousTileX != _mouseTileX || previousTileY != _mouseTileY) RefreshStatus();
     }
 
     private void OnLeftUp(MouseEvent args) {
         if (_controlPanning) {
             _controlPanning = false;
             RestoreToolAfterShiftDrag();
+            RefreshMapOverlays();
             return;
         }
         if (_selectionMoving) {
@@ -431,7 +445,10 @@ public sealed class EditorScreen : Screen {
         RefreshAll();
     }
 
-    private void OnMiddleUp(MouseEvent args) => _middlePanning = false;
+    private void OnMiddleUp(MouseEvent args) {
+        _middlePanning = false;
+        if (_viewOverlayDirty) RefreshMapOverlays();
+    }
 
     private void RestoreToolAfterShiftDrag() {
         if (!_toolBeforeShiftDrag.HasValue) return;
@@ -442,8 +459,12 @@ public sealed class EditorScreen : Screen {
 
     private void OnCanvasScroll(MouseEvent args) {
         if (args.CtrlKey) {
-            _editor.Brush.Size = Math.Clamp(_editor.Brush.Size + (args.VerticalDelta > 0 ? 1 : -1), 0, 12);
-            RefreshMapOverlays();
+            _editor.Brush.Size = Math.Clamp(
+                _editor.Brush.Size + (args.VerticalDelta > 0 ? 1 : -1),
+                0,
+                EditorBrush.MaxSize
+            );
+            RefreshInteractionOverlays();
             RefreshStatus();
             return;
         }
@@ -470,7 +491,8 @@ public sealed class EditorScreen : Screen {
             _mouseTileX = tileX;
             _mouseTileY = tileY;
         }
-        RefreshAll();
+        DeferViewOverlays();
+        RefreshStatus();
     }
 
     private void OnKeyDown(KeyboardEvent args) {
@@ -689,6 +711,7 @@ public sealed class EditorScreen : Screen {
             _activeDocument = null;
             _mapOpen = false;
             _tileLayer.Visible = false;
+            _interactionLayer.Visible = false;
             _mouseTileX = -1;
             _mouseTileY = -1;
             _mapInfo.SetText(string.Empty);
@@ -754,18 +777,34 @@ public sealed class EditorScreen : Screen {
 
     private void RefreshCanvas() {
         if (!_mapOpen) return;
+        RefreshMapOverlays();
+    }
+
+    private void RefreshDuringDraw() {
+        if (!_mapOpen) return;
+        if (_editor.Brush.DrawType == EditorDrawType.Regions) RefreshMapOverlays();
+        else RefreshInteractionOverlays();
+    }
+
+    private void RefreshMapRender() {
         if (_mapRenderDirty) {
             _mapRenderer.Rebuild(_editor.Map);
             _mapRenderDirty = false;
         }
-        RefreshMapOverlays();
     }
 
     private void RefreshMapOverlays() {
+        ResetViewOverlayTransform();
         _tileLayer.RemoveChildren();
+        _viewOverlayDirty = false;
         if (!_mapOpen) return;
+        _tileLayer.Visible = true;
+        _interactionLayer.Visible = true;
         var tileSize = BaseTileSize * _zoom / 100f;
         GetMapOrigin(out var preciseOriginX, out var preciseOriginY);
+        _overlayOriginX = preciseOriginX;
+        _overlayOriginY = preciseOriginY;
+        _overlayTileSize = tileSize;
         var firstX = Math.Max(0, (int)Math.Floor(-preciseOriginX / tileSize));
         var firstY = Math.Max(0, (int)Math.Floor(-preciseOriginY / tileSize));
         var lastX = Math.Min(_editor.Map.Width - 1, (int)Math.Ceiling((_screenWidth - preciseOriginX) / tileSize));
@@ -785,10 +824,49 @@ public sealed class EditorScreen : Screen {
                 }));
             }
         }
-        if (_grid) AddGridOverlay(preciseOriginX, preciseOriginY, tileSize, firstX, firstY, lastX, lastY);
+        if (_grid && tileSize >= MinGridTileSize)
+            AddGridOverlay(preciseOriginX, preciseOriginY, tileSize, firstX, firstY, lastX, lastY);
         AddMapBoundsOverlay(preciseOriginX, preciseOriginY, tileSize);
-        AddSelectionOverlay(preciseOriginX, preciseOriginY, tileSize);
-        AddHoverOverlay(preciseOriginX, preciseOriginY, tileSize);
+        RefreshInteractionOverlays();
+    }
+
+    private void DeferViewOverlays() {
+        TransformViewOverlays();
+        _viewOverlayDirty = true;
+        _viewOverlayRefreshAt = Environment.TickCount64 + ViewOverlaySettleMs;
+    }
+
+    private void TransformViewOverlays() {
+        if (_overlayTileSize <= 0f) return;
+        var tileSize = BaseTileSize * _zoom / 100f;
+        GetMapOrigin(out var originX, out var originY);
+        var scale = tileSize / _overlayTileSize;
+        var x = (int)MathF.Round(originX - _overlayOriginX * scale);
+        var y = (int)MathF.Round(originY - _overlayOriginY * scale);
+        _tileLayer.Scale = new Vector2(scale, scale);
+        _interactionLayer.Scale = new Vector2(scale, scale);
+        _tileLayer.X = x;
+        _tileLayer.Y = y;
+        _interactionLayer.X = x;
+        _interactionLayer.Y = y;
+    }
+
+    private void ResetViewOverlayTransform() {
+        _tileLayer.Scale = Vector2.One;
+        _interactionLayer.Scale = Vector2.One;
+        _tileLayer.X = 0;
+        _tileLayer.Y = 0;
+        _interactionLayer.X = 0;
+        _interactionLayer.Y = 0;
+    }
+
+    private void RefreshInteractionOverlays() {
+        _interactionLayer.RemoveChildren();
+        if (!_mapOpen) return;
+        var tileSize = BaseTileSize * _zoom / 100f;
+        GetMapOrigin(out var originX, out var originY);
+        AddSelectionOverlay(originX, originY, tileSize);
+        AddHoverOverlay(originX, originY, tileSize);
     }
 
     private void AddMapBoundsOverlay(float originX, float originY, float tileSize) {
@@ -796,7 +874,7 @@ public sealed class EditorScreen : Screen {
         var right = ProjectMapCoordinate(originX, tileSize, _editor.Map.Width);
         var top = ProjectMapCoordinate(originY, tileSize, 0);
         var bottom = ProjectMapCoordinate(originY, tileSize, _editor.Map.Height);
-        AddOutline(left, top, Math.Max(1, right - left), Math.Max(1, bottom - top), 0xFFFFFF, 1f);
+        AddOutline(_tileLayer, left, top, Math.Max(1, right - left), Math.Max(1, bottom - top), 0xFFFFFF, 1f);
     }
 
     private void AddHoverOverlay(float originX, float originY, float tileSize) {
@@ -815,6 +893,7 @@ public sealed class EditorScreen : Screen {
         var top = ProjectMapCoordinate(originY, tileSize, _mouseTileY);
         var bottom = ProjectMapCoordinate(originY, tileSize, _mouseTileY + 1);
         AddOutline(
+            _interactionLayer,
             left,
             top,
             Math.Max(1, right - left),
@@ -825,41 +904,40 @@ public sealed class EditorScreen : Screen {
     }
 
     private void AddBrushHoverOutline(float originX, float originY, float tileSize, int radius) {
+        var radiusSquared = radius * radius;
         for (var offsetY = -radius; offsetY <= radius; offsetY++) {
-            for (var offsetX = -radius; offsetX <= radius; offsetX++) {
-                if (offsetX * offsetX + offsetY * offsetY > radius * radius) continue;
+            var tileY = _mouseTileY + offsetY;
+            if (tileY < 0 || tileY >= _editor.Map.Height) continue;
+            var extent = (int)MathF.Sqrt(radiusSquared - offsetY * offsetY);
+            var leftTile = Math.Max(0, _mouseTileX - extent);
+            var rightTile = Math.Min(_editor.Map.Width - 1, _mouseTileX + extent);
+            if (leftTile > rightTile) continue;
+            var top = ProjectMapCoordinate(originY, tileSize, tileY);
+            var bottom = ProjectMapCoordinate(originY, tileSize, tileY + 1);
+            var left = ProjectMapCoordinate(originX, tileSize, leftTile);
+            var right = ProjectMapCoordinate(originX, tileSize, rightTile + 1);
+            AddHoverEdge(left, top, 1, Math.Max(1, bottom - top));
+            AddHoverEdge(right - 1, top, 1, Math.Max(1, bottom - top));
+        }
 
-                var tileX = _mouseTileX + offsetX;
-                var tileY = _mouseTileY + offsetY;
-                if (tileX < 0 || tileY < 0 || tileX >= _editor.Map.Width || tileY >= _editor.Map.Height) continue;
-
-                var left = offsetX == -radius || !IsBrushTile(offsetX - 1, offsetY, radius);
-                var right = offsetX == radius || !IsBrushTile(offsetX + 1, offsetY, radius);
-                var top = offsetY == -radius || !IsBrushTile(offsetX, offsetY - 1, radius);
-                var bottom = offsetY == radius || !IsBrushTile(offsetX, offsetY + 1, radius);
-                var leftEdge = ProjectMapCoordinate(originX, tileSize, tileX);
-                var rightEdge = ProjectMapCoordinate(originX, tileSize, tileX + 1);
-                var topEdge = ProjectMapCoordinate(originY, tileSize, tileY);
-                var bottomEdge = ProjectMapCoordinate(originY, tileSize, tileY + 1);
-                var x = leftEdge;
-                var y = topEdge;
-                var width = Math.Max(1, rightEdge - leftEdge);
-                var height = Math.Max(1, bottomEdge - topEdge);
-
-                if (top) AddHoverEdge(x, y, width, 1);
-                if (bottom) AddHoverEdge(x, y + height - 1, width, 1);
-                if (left) AddHoverEdge(x, y, 1, height);
-                if (right) AddHoverEdge(x + width - 1, y, 1, height);
-            }
+        for (var offsetX = -radius; offsetX <= radius; offsetX++) {
+            var tileX = _mouseTileX + offsetX;
+            if (tileX < 0 || tileX >= _editor.Map.Width) continue;
+            var extent = (int)MathF.Sqrt(radiusSquared - offsetX * offsetX);
+            var topTile = Math.Max(0, _mouseTileY - extent);
+            var bottomTile = Math.Min(_editor.Map.Height - 1, _mouseTileY + extent);
+            if (topTile > bottomTile) continue;
+            var left = ProjectMapCoordinate(originX, tileSize, tileX);
+            var right = ProjectMapCoordinate(originX, tileSize, tileX + 1);
+            var top = ProjectMapCoordinate(originY, tileSize, topTile);
+            var bottom = ProjectMapCoordinate(originY, tileSize, bottomTile + 1);
+            AddHoverEdge(left, top, Math.Max(1, right - left), 1);
+            AddHoverEdge(left, bottom - 1, Math.Max(1, right - left), 1);
         }
     }
 
-    private static bool IsBrushTile(int offsetX, int offsetY, int radius) {
-        return offsetX * offsetX + offsetY * offsetY <= radius * radius;
-    }
-
     private void AddHoverEdge(int x, int y, int width, int height) {
-        _tileLayer.AddChild(new ColorRect(new ColorRectConfig {
+        _interactionLayer.AddChild(new ColorRect(new ColorRectConfig {
             X = x, Y = y, Width = width, Height = height, Color = 0xFFFFFF, Alpha = 1f
         }));
     }
@@ -888,18 +966,18 @@ public sealed class EditorScreen : Screen {
         var y = ProjectMapCoordinate(originY, tileSize, _editor.Selection.StartY);
         var right = ProjectMapCoordinate(originX, tileSize, _editor.Selection.EndX + 1);
         var bottom = ProjectMapCoordinate(originY, tileSize, _editor.Selection.EndY + 1);
-        AddOutline(x, y, Math.Max(1, right - x), Math.Max(1, bottom - y), 0xFFFFFF, 1f);
+        AddOutline(_interactionLayer, x, y, Math.Max(1, right - x), Math.Max(1, bottom - y), 0xFFFFFF, 1f);
     }
 
     private static int ProjectMapCoordinate(float origin, float tileSize, int coordinate) {
         return (int)MathF.Round(origin + coordinate * tileSize);
     }
 
-    private void AddOutline(int x, int y, int width, int height, uint color, float alpha) {
-        _tileLayer.AddChild(new ColorRect(new ColorRectConfig { X = x, Y = y, Width = width, Height = 1, Color = color, Alpha = alpha }));
-        _tileLayer.AddChild(new ColorRect(new ColorRectConfig { X = x, Y = y + height - 1, Width = width, Height = 1, Color = color, Alpha = alpha }));
-        _tileLayer.AddChild(new ColorRect(new ColorRectConfig { X = x, Y = y, Width = 1, Height = height, Color = color, Alpha = alpha }));
-        _tileLayer.AddChild(new ColorRect(new ColorRectConfig { X = x + width - 1, Y = y, Width = 1, Height = height, Color = color, Alpha = alpha }));
+    private static void AddOutline(Container layer, int x, int y, int width, int height, uint color, float alpha) {
+        layer.AddChild(new ColorRect(new ColorRectConfig { X = x, Y = y, Width = width, Height = 1, Color = color, Alpha = alpha }));
+        layer.AddChild(new ColorRect(new ColorRectConfig { X = x, Y = y + height - 1, Width = width, Height = 1, Color = color, Alpha = alpha }));
+        layer.AddChild(new ColorRect(new ColorRectConfig { X = x, Y = y, Width = 1, Height = height, Color = color, Alpha = alpha }));
+        layer.AddChild(new ColorRect(new ColorRectConfig { X = x + width - 1, Y = y, Width = 1, Height = height, Color = color, Alpha = alpha }));
     }
 
     private static uint RegionColor(int type) {
@@ -986,6 +1064,8 @@ public sealed class EditorScreen : Screen {
     }
 
     public override void Update(GameTime gameTime) {
+        if (_viewOverlayDirty && Environment.TickCount64 >= _viewOverlayRefreshAt)
+            RefreshMapOverlays();
         if (!_mapOpen || !_autoSave || _editor.Map.SavedChanges || gameTime.TotalMs - _lastAutoSave < 30000) return;
         _lastAutoSave = gameTime.TotalMs;
         try {
@@ -1001,6 +1081,7 @@ public sealed class EditorScreen : Screen {
     public override void Draw(GameTime gameTime) {
         _backdropRenderer.Draw();
         if (!_mapOpen) return;
+        RefreshMapRender();
         var tileSize = BaseTileSize * _zoom / 100f;
         var center = new Vector2(
             _editor.Map.Width * 0.5f - _panX / (float)tileSize,

@@ -24,34 +24,42 @@ internal sealed class EditorPrompt : Container {
         _panelHeight = 95 + labels.Length * 42;
         _panel = new Container(new ContainerConfig {
             X = 0, Y = 0,
-            Width = _panelWidth, Height = _panelHeight, Anchor = UiAnchor.Middle
+            Width = _panelWidth, Height = _panelHeight, Anchor = UiAnchor.Middle,
         });
-        _panel.AddChild(new ColorRect(new ColorRectConfig { Width = _panelWidth, Height = _panelHeight, Color = 0x303030, MouseEnabled = true }));
+
+        _panel.AddChild(new ColorRect(new ColorRectConfig
+            { Width = _panelWidth, Height = _panelHeight, Color = 0x303030, MouseEnabled = true }));
+
         _panel.AddChild(new CutCornerOutline(_panelWidth, _panelHeight, 0xFFFFFF, 0.65f));
         _panel.AddChild(new SimpleText(new TextConfig {
-            Text = title, FontSize = 24, FontType = FontType.Bold, X = 16, Y = 14
+            Text = title, FontSize = 24, FontType = FontType.Bold, X = 16, Y = 14,
         }));
+
         Inputs = new TextInput[labels.Length];
         for (var i = 0; i < labels.Length; i++) {
             var y = 52 + i * 42;
             var inputWidth = labels[i] is "Width" or "Height" ? 82 : 212;
             _panel.AddChild(new SimpleText(new TextConfig {
-                Text = labels[i], FontSize = 16, X = 18, Y = y, Anchor = UiAnchor.LeftTop
+                Text = labels[i], FontSize = 16, X = 18, Y = y, Anchor = UiAnchor.LeftTop,
             }));
+
             Inputs[i] = new TextInput(new InputConfig {
-                X = 130, Y = y - 4, Width = inputWidth, FontSize = 18, DefaultText = values[i], MaxCharacters = 80
+                X = 130, Y = y - 4, Width = inputWidth, FontSize = 18, DefaultText = values[i], MaxCharacters = 80,
             });
+
             _panel.AddChild(Inputs[i]);
         }
 
         _panel.AddChild(new TextButton(new TextButtonConfig {
             Text = "Cancel", FontSize = 22, X = _panelWidth / 2 - 52, Y = _panelHeight - 22,
-            Anchor = UiAnchor.Middle, OnClicked = Close
+            Anchor = UiAnchor.Middle, OnClicked = Close,
         }));
+
         _panel.AddChild(new TextButton(new TextButtonConfig {
             Text = "Ok", FontSize = 22, X = _panelWidth / 2 + 52, Y = _panelHeight - 22,
-            Anchor = UiAnchor.Middle, OnClicked = Accept
+            Anchor = UiAnchor.Middle, OnClicked = Accept,
         }));
+
         AddChild(_panel);
         AddEventListener(Event.AddedToStage, OnAddedToStage);
         AddEventListener(Event.RemovedFromStage, OnRemovedFromStage);
