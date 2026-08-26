@@ -26,7 +26,7 @@ public static class EditorMapSerializer {
         map.SavedChanges = true;
     }
 
-    public static EditorMapData LoadJson(string path) {
+    private static EditorMapData LoadJson(string path) {
         EditorCatalog.Load();
         using var document = JsonDocument.Parse(File.ReadAllText(path));
         var root = document.RootElement;
@@ -63,7 +63,7 @@ public static class EditorMapSerializer {
         return map;
     }
 
-    public static void SaveJson(EditorMapData map, string path) {
+    private static void SaveJson(EditorMapData map, string path) {
         EditorCatalog.Load();
         var entries = new JsonArray();
         var lookup = new Dictionary<string, ushort>(StringComparer.Ordinal);
@@ -97,7 +97,7 @@ public static class EditorMapSerializer {
         File.WriteAllText(path, root.ToJsonString());
     }
 
-    public static EditorMapData LoadWmap(string path) {
+    private static EditorMapData LoadWmap(string path) {
         EditorCatalog.Load();
         using var file = File.OpenRead(path);
         var version = file.ReadByte();
@@ -124,12 +124,16 @@ public static class EditorMapSerializer {
         var width = reader.ReadInt32();
         var height = reader.ReadInt32();
         var map = new EditorMapData(Path.GetFileNameWithoutExtension(path), width, height);
-        for (var i = 0; i < map.Tiles.Length; i++) {
+        foreach (var tileData in map.Tiles) {
             var index = reader.ReadUInt16();
-            if (index >= dictionary.Length) throw new InvalidDataException("WMAP tile index is outside its dictionary.");
+            if (index >= dictionary.Length) {
+                throw new InvalidDataException("WMAP tile index is outside its dictionary.");
+            }
 
-            map.Tiles[i].CopyFrom(dictionary[index]);
-            if (version == 2) map.Tiles[i].Elevation = reader.ReadByte();
+            tileData.CopyFrom(dictionary[index]);
+            if (version == 2) {
+                tileData.Elevation = reader.ReadByte();
+            }
         }
 
         map.SavedChanges = true;
@@ -145,7 +149,9 @@ public static class EditorMapSerializer {
             var tile = map.Tiles[i];
             var key = $"{tile.GroundType}|{tile.ObjectType}|{tile.ObjectConfig}|{tile.TerrainType}|{tile.RegionType}|{tile.Elevation}";
             if (!lookup.TryGetValue(key, out var index)) {
-                if (dictionary.Count >= ushort.MaxValue) throw new InvalidDataException("Map has too many unique tile combinations.");
+                if (dictionary.Count >= ushort.MaxValue) {
+                    throw new InvalidDataException("Map has too many unique tile combinations.");
+                }
 
                 index = (ushort)dictionary.Count;
                 lookup[key] = index;
@@ -180,17 +186,21 @@ public static class EditorMapSerializer {
     }
 
     private static void ReadJsonTile(JsonElement entry, EditorTileData tile) {
-        if (entry.TryGetProperty("ground", out var ground))
+        if (entry.TryGetProperty("ground", out var ground)) {
             tile.GroundType = EditorCatalog.GetType(EditorDrawType.Ground, ground.GetString());
+        }
 
         if (entry.TryGetProperty("objs", out var objects) && objects.GetArrayLength() > 0) {
             var obj = objects[objects.GetArrayLength() - 1];
             tile.ObjectType = EditorCatalog.GetType(EditorDrawType.Objects, obj.GetProperty("id").GetString());
-            if (obj.TryGetProperty("name", out var name)) tile.ObjectConfig = name.GetString();
+            if (obj.TryGetProperty("name", out var name)) {
+                tile.ObjectConfig = name.GetString();
+            }
         }
 
-        if (entry.TryGetProperty("regions", out var regions) && regions.GetArrayLength() > 0)
+        if (entry.TryGetProperty("regions", out var regions) && regions.GetArrayLength() > 0) {
             tile.RegionType = EditorCatalog.GetType(EditorDrawType.Regions, regions[0].GetProperty("id").GetString());
+        }
 
         if (entry.TryGetProperty("terrain", out var terrain)) {
             var text = terrain.ValueKind == JsonValueKind.String ? terrain.GetString() : terrain.GetRawText();
@@ -206,7 +216,9 @@ public static class EditorMapSerializer {
                 ? BinaryPrimitives.ReadUInt16BigEndian(bytes)
                 : BinaryPrimitives.ReadUInt16LittleEndian(bytes);
 
-            if (index < dictionaryCount) valid++;
+            if (index < dictionaryCount) {
+                valid++;
+            }
         }
 
         return valid;
@@ -217,14 +229,21 @@ public static class EditorMapSerializer {
         if (tile.GroundType != -1) entry["ground"] = EditorCatalog.GetId(EditorDrawType.Ground, tile.GroundType);
         if (tile.ObjectType != 0) {
             var obj = new JsonObject { ["id"] = EditorCatalog.GetId(EditorDrawType.Objects, tile.ObjectType) };
-            if (!string.IsNullOrEmpty(tile.ObjectConfig)) obj["name"] = tile.ObjectConfig;
+            if (!string.IsNullOrEmpty(tile.ObjectConfig)) {
+                obj["name"] = tile.ObjectConfig;
+            }
+            
             entry["objs"] = new JsonArray(obj);
         }
 
-        if (tile.RegionType != 0)
+        if (tile.RegionType != 0) {
             entry["regions"] = new JsonArray(new JsonObject { ["id"] = EditorCatalog.GetId(EditorDrawType.Regions, tile.RegionType) });
+        }
 
-        if (tile.TerrainType != 0) entry["terrain"] = tile.TerrainType.ToString();
+        if (tile.TerrainType != 0) {
+            entry["terrain"] = tile.TerrainType.ToString();
+        }
+        
         return entry;
     }
 

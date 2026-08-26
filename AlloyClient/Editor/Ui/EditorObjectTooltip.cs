@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Assets.XmlStructs;
 using AlloyClient.Ui.Components.Tooltips;
@@ -63,8 +65,7 @@ internal sealed class EditorPaletteTooltip : Tooltip {
             y += labels[i].Height + (i == 3 ? 7 : 3);
         }
 
-        var contentWidth = 0;
-        foreach (var label in labels) contentWidth = System.Math.Max(contentWidth, label.Width);
+        var contentWidth = labels.Aggregate(0, (current, label) => System.Math.Max(current, label.Width));
         ToolWidth = System.Math.Clamp(contentWidth + Padding * 2, MinimumTooltipWidth, MaximumTooltipWidth);
         ToolHeight = y + 6;
 
@@ -79,14 +80,17 @@ internal sealed class EditorPaletteTooltip : Tooltip {
     private static string DisplayValue(string value) => string.IsNullOrEmpty(value) ? "-" : value;
 
     private static string BuildProperties(EditorDrawType drawType, int type) {
-        if (drawType == EditorDrawType.Ground)
+        if (drawType == EditorDrawType.Ground) {
             return BuildGroundProperties(GroundLibrary.TypeToGroundProps.GetValueOrDefault((ushort)type));
+        }
 
         return BuildObjectProperties(ObjectLibrary.TypeToObjectProps.GetValueOrDefault((ushort)type));
     }
 
     private static string BuildObjectProperties(ObjectProperties properties) {
-        if (properties is null) return "-";
+        if (properties is null) {
+            return "-";
+        }
 
         var values = new List<string>();
         AddText(values, "Class", properties.Class);
@@ -103,29 +107,51 @@ internal sealed class EditorPaletteTooltip : Tooltip {
         AddFlag(values, "LockedPortal", properties.LockedPortal);
         AddFlag(values, "Skin", properties.Skin);
         AddFlag(values, "NoSkinSelect", properties.NoSkinSelect);
-        if (properties.RealSize >= 0) values.Add($"RealSize={properties.RealSize}");
-        if (properties.MinSize != 0 || properties.MaxSize != 0) values.Add($"Size={properties.MinSize}-{properties.MaxSize}");
-        if (properties.Projectiles.Count > 0) values.Add($"Projectiles={properties.Projectiles.Count}");
+        if (properties.RealSize >= 0) {
+            values.Add($"RealSize={properties.RealSize}");
+        }
+        if (properties.MinSize != 0 || properties.MaxSize != 0) {
+            values.Add($"Size={properties.MinSize}-{properties.MaxSize}");
+        }
+        if (properties.Projectiles.Count > 0) {
+            values.Add($"Projectiles={properties.Projectiles.Count}");
+        }
 
         return values.Count == 0 ? "-" : string.Join(", ", values);
     }
 
     private static string BuildGroundProperties(GroundProperties properties) {
-        if (properties is null) return "-";
+        if (properties is null) {
+            return "-";
+        }
 
         var values = new List<string>();
         AddFlag(values, "NoWalk", properties.NoWalk);
-        if (properties.MinDamage != 0 || properties.MaxDamage != 0)
+        if (properties.MinDamage != 0 || properties.MaxDamage != 0) {
             values.Add($"Damage={properties.MinDamage}-{properties.MaxDamage}");
+        }
 
         AddFlag(values, "Push", properties.Push);
-        if (properties.Animate.Type != GroundAnimate.State.None)
+        if (properties.Animate.Type != GroundAnimate.State.None) {
             values.Add($"Animate={properties.Animate.Type}");
+        }
 
-        if (properties.BlendPriority != 0) values.Add($"Blend={properties.BlendPriority}");
-        if (properties.CompositePriority != 0) values.Add($"Composite={properties.CompositePriority}");
-        if (properties.Speed != 1f) values.Add($"Speed={properties.Speed:0.##}");
-        if (properties.SlideAmount != 0f) values.Add($"Slide={properties.SlideAmount:0.##}");
+        if (properties.BlendPriority != 0) {
+            values.Add($"Blend={properties.BlendPriority}");
+        }
+        
+        if (properties.CompositePriority != 0) {
+            values.Add($"Composite={properties.CompositePriority}");
+        }
+        
+        if (Math.Abs(properties.Speed - 1f) > 0.01) {
+            values.Add($"Speed={properties.Speed:0.##}");
+        }
+        
+        if (properties.SlideAmount != 0f) {
+            values.Add($"Slide={properties.SlideAmount:0.##}");
+        }
+        
         AddFlag(values, "Sink", properties.Sink);
         AddFlag(values, "Sinking", properties.Sinking);
         AddFlag(values, "RandomOffset", properties.RandomOffset);
@@ -136,7 +162,9 @@ internal sealed class EditorPaletteTooltip : Tooltip {
     }
 
     private static void AddText(List<string> values, string label, string value) {
-        if (!string.IsNullOrWhiteSpace(value)) values.Add($"{label}={value}");
+        if (!string.IsNullOrWhiteSpace(value)) {
+            values.Add($"{label}={value}");
+        }
     }
 
     private static void AddFlag(List<string> values, string label, bool value) {

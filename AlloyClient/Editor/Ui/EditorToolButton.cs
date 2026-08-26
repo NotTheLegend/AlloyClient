@@ -20,15 +20,15 @@ internal sealed class EditorToolButton : Container {
             Width = 30, Height = 26, CutX = 4, CutY = 4,
             Color = 0x565656, Alpha = 0f, MouseEnabled = true,
         });
-
         AddChild(_background);
+        
         _icon = new ObjectRect(new ObjectRectConfig {
             Texture = TextureHelper.FromUiAtlas("MapEditor/Tools", iconIndex),
             X = 15, Y = 13, Width = 20, Height = 20, Anchor = UiAnchor.Middle,
             OutlineEnabled = false, GlowEnabled = false,
         });
-
         AddChild(_icon);
+        
         _background.AddEventListener(MouseEvent.MouseOver, OnMouseOver);
         _background.AddEventListener(MouseEvent.MouseOut, OnMouseOut);
         _background.AddEventListener(MouseEvent.LeftClick, () => clicked(Tool));

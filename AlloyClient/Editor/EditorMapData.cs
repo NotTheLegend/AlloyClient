@@ -32,18 +32,28 @@ public sealed class EditorMapData {
     }
 
     public void SetTile(int x, int y, EditorTileData tile, bool notify = true) {
-        if (!InBounds(x, y)) return;
+        if (!InBounds(x, y)) {
+            return;
+        }
 
         var current = Tiles[x + y * Width];
         var changes = 0;
         if (current.GroundType != tile.GroundType
             || current.TerrainType != tile.TerrainType
-            || current.Elevation != tile.Elevation) changes |= GroundRenderChange;
+            || current.Elevation != tile.Elevation) {
+            changes |= GroundRenderChange;
+        }
 
-        if (current.ObjectType != tile.ObjectType) changes |= ObjectRenderChange;
+        if (current.ObjectType != tile.ObjectType) {
+            changes |= ObjectRenderChange;
+        }
+
         current.CopyFrom(tile);
         MarkRenderDirty(x, y, changes);
-        if (notify) MarkChanged();
+
+        if (notify) {
+            MarkChanged();
+        }
     }
 
     public void ResizeMap(int width, int height) {
@@ -53,27 +63,20 @@ public sealed class EditorMapData {
         var oldWidth = Width;
         var oldHeight = Height;
         ResizeStorage(width, height);
+
         var offsetX = (width - oldWidth) / 2;
         var offsetY = (height - oldHeight) / 2;
         for (var y = 0; y < oldHeight; y++) {
             for (var x = 0; x < oldWidth; x++) {
                 var nx = x + offsetX;
                 var ny = y + offsetY;
-                if (InBounds(nx, ny)) Tiles[nx + ny * Width].CopyFrom(oldTiles[x + y * oldWidth]);
+                if (InBounds(nx, ny)) {
+                    Tiles[nx + ny * Width].CopyFrom(oldTiles[x + y * oldWidth]);
+                }
             }
         }
 
         MarkChanged();
-    }
-
-    public void ReplaceAll(string name, int width, int height, EditorTileData[] tiles) {
-        Name = name;
-        Width = width;
-        Height = height;
-        Tiles = tiles;
-        MarkAllRenderDirty();
-        SavedChanges = true;
-        Changed?.Invoke();
     }
 
     public void MarkChanged() {
@@ -81,17 +84,16 @@ public sealed class EditorMapData {
         Changed?.Invoke();
     }
 
-    public bool ConsumeRenderChanges(out int minX, out int minY, out int maxX, out int maxY, out int changes) {
+    public void ConsumeRenderChanges(out int minX, out int minY, out int maxX, out int maxY, out int changes) {
         changes = _renderChanges;
         minX = _dirtyMinX;
         minY = _dirtyMinY;
         maxX = _dirtyMaxX;
         maxY = _dirtyMaxY;
         _renderChanges = 0;
-        return changes != 0;
     }
 
-    public void MarkAllRenderDirty() {
+    private void MarkAllRenderDirty() {
         _renderChanges = GroundRenderChange | ObjectRenderChange;
         _dirtyMinX = 0;
         _dirtyMinY = 0;
@@ -100,7 +102,9 @@ public sealed class EditorMapData {
     }
 
     private void MarkRenderDirty(int x, int y, int changes) {
-        if (changes == 0) return;
+        if (changes == 0) {
+            return;
+        }
 
         if (_renderChanges == 0) {
             _dirtyMinX = _dirtyMaxX = x;
@@ -119,7 +123,11 @@ public sealed class EditorMapData {
         Width = Math.Clamp(width, 1, 2048);
         Height = Math.Clamp(height, 1, 2048);
         Tiles = new EditorTileData[Width * Height];
-        for (var i = 0; i < Tiles.Length; i++) Tiles[i] = new EditorTileData();
+
+        for (var i = 0; i < Tiles.Length; i++) {
+            Tiles[i] = new EditorTileData();
+        }
+
         MarkAllRenderDirty();
     }
 }

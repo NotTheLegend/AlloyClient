@@ -8,8 +8,6 @@ internal sealed class EditorMapTab : Container {
     public readonly int MapId;
 
     private readonly CutEdgeRect _background;
-    private readonly SimpleText _label;
-    private readonly SimpleText _close;
     private bool _selected;
 
     public EditorMapTab(int mapId, string text, Action selected, Action closed)
@@ -26,10 +24,9 @@ internal sealed class EditorMapTab : Container {
             Alpha = 0.9f,
             MouseEnabled = true,
         });
-
         AddChild(_background);
 
-        _label = new SimpleText(new TextConfig {
+        var label = new SimpleText(new TextConfig {
             Text = text,
             FontSize = 16,
             FontType = FontType.Bold,
@@ -39,10 +36,9 @@ internal sealed class EditorMapTab : Container {
             Color = 0xFFFFFF,
             MaxWidth = 118,
         });
+        AddChild(label);
 
-        AddChild(_label);
-
-        _close = new SimpleText(new TextConfig {
+        var close = new SimpleText(new TextConfig {
             Text = "x",
             FontSize = 16,
             FontType = FontType.Bold,
@@ -51,8 +47,7 @@ internal sealed class EditorMapTab : Container {
             Anchor = UiAnchor.Middle,
             Color = 0xFFFFFF,
         });
-
-        AddChild(_close);
+        AddChild(close);
 
         var closeHit = new ColorRect(new ColorRectConfig {
             X = 127,
@@ -80,6 +75,4 @@ internal sealed class EditorMapTab : Container {
         _background.SetColor(selected ? 0x565656u : 0x333333u);
         _background.Alpha = selected ? 0.9f : 0.35f;
     }
-
-    public void SetText(string text) => _label.SetText(text);
 }

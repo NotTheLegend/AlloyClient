@@ -136,13 +136,13 @@ public sealed class EditorClipboard {
 
 public sealed class EditorBrush {
     public const int MaxSize = 32;
+    public const int Chance = 25;
 
     public EditorDrawType DrawType = EditorDrawType.Ground;
     public int GroundType = -1;
     public int ObjectType;
     public int RegionType;
     public int Size;
-    public int Chance = 25;
     public bool Replace = true;
 
     public int GetSelectedType() {
@@ -156,9 +156,15 @@ public sealed class EditorBrush {
 
     public void SetSelectedType(int type) {
         switch (DrawType) {
-            case EditorDrawType.Ground: GroundType = type; break;
-            case EditorDrawType.Objects: ObjectType = type; break;
-            case EditorDrawType.Regions: RegionType = type; break;
+            case EditorDrawType.Ground:
+                GroundType = type;
+                break;
+            case EditorDrawType.Objects:
+                ObjectType = type;
+                break;
+            case EditorDrawType.Regions:
+                RegionType = type;
+                break;
         }
     }
 }

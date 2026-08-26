@@ -59,7 +59,9 @@ internal static class NativeFileDialog {
     }
 
     public static string SaveMap(string suggestedName, bool wmap) {
-        if (!OperatingSystem.IsWindows()) return null;
+        if (!OperatingSystem.IsWindows()) {
+            return null;
+        }
 
         var extension = wmap ? "wmap" : "jm";
         var fileName = suggestedName.EndsWith($".{extension}", StringComparison.OrdinalIgnoreCase)
@@ -72,6 +74,7 @@ internal static class NativeFileDialog {
             var data = Create("Save map", Explorer | PathMustExist | OverwritePrompt, fileBuffer);
             data.DefaultExtension = extension;
             data.FilterIndex = wmap ? 2 : 1;
+            
             return GetSaveFileNameW(ref data) ? Marshal.PtrToStringUni(fileBuffer) : null;
         } finally {
             Marshal.FreeHGlobal(fileBuffer);
@@ -92,14 +95,18 @@ internal static class NativeFileDialog {
 
     private static IntPtr AllocateFileBuffer(string initialValue) {
         var buffer = Marshal.AllocHGlobal(FileBufferCharacters * sizeof(char));
-        for (var offset = 0; offset < FileBufferCharacters * sizeof(char); offset += sizeof(char))
+        for (var offset = 0; offset < FileBufferCharacters * sizeof(char); offset += sizeof(char)) {
             Marshal.WriteInt16(buffer, offset, 0);
+        }
 
-        if (string.IsNullOrEmpty(initialValue)) return buffer;
+        if (string.IsNullOrEmpty(initialValue)) {
+            return buffer;
+        }
 
         var characters = initialValue.ToCharArray();
         var count = Math.Min(characters.Length, FileBufferCharacters - 1);
         Marshal.Copy(characters, 0, buffer, count);
+        
         return buffer;
     }
 }

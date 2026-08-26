@@ -27,12 +27,14 @@ internal sealed class EditorOutlineRect : Sprite {
             new VertexUi(new Vector2(right - inset, bottom - inset)),
             new VertexUi(new Vector2(inset, bottom - inset))
         ];
+        
         Indices = [
             0, 1, 5, 0, 5, 4,
             1, 2, 6, 1, 6, 5,
             2, 3, 7, 2, 7, 6,
             3, 0, 4, 3, 4, 7
         ];
+        
         SetGraphicsBuffer();
     }
 }

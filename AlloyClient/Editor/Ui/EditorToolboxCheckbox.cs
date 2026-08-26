@@ -15,15 +15,14 @@ internal sealed class EditorToolboxCheckbox : Container {
             Text = text, FontSize = 17, FontType = FontType.Bold,
             X = 7, Y = 14, Anchor = UiAnchor.MiddleLeft, Color = 0xFFFFFF,
         });
-
         AddChild(_label);
 
         _box = new CutEdgeRect(new CutEdgeConfig {
             X = 84, Y = 3, Width = 22, Height = 22,
             CutX = 4, CutY = 4, Color = 0xFFFFFF,
         });
-
         AddChild(_box);
+        
         AddChild(new CutEdgeRect(new CutEdgeConfig {
             X = 86, Y = 5, Width = 18, Height = 18,
             CutX = 3, CutY = 3, Color = 0x565656,
@@ -33,7 +32,6 @@ internal sealed class EditorToolboxCheckbox : Container {
             X = 90, Y = 9, Width = 10, Height = 10,
             CutX = 2, CutY = 2, Color = 0xFFFFFF,
         });
-
         _fill.Visible = initialState;
         AddChild(_fill);
 

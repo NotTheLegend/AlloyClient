@@ -26,7 +26,9 @@ public static class EditorCatalog {
     private static bool _loaded;
 
     public static void Load() {
-        if (_loaded) return;
+        if (_loaded) {
+            return;
+        }
 
         _loaded = true;
 
@@ -37,7 +39,9 @@ public static class EditorCatalog {
         }
 
         foreach (var pair in ObjectLibrary.TypeToObjectProps.OrderBy(pair => pair.Value.DisplayName)) {
-            if (!ObjectLibrary.TypeToTextureData.ContainsKey(pair.Key)) continue;
+            if (!ObjectLibrary.TypeToTextureData.ContainsKey(pair.Key)) {
+                continue;
+            }
 
             var entry = new EditorCatalogEntry(pair.Key, pair.Value.ObjectId, pair.Value.DisplayName);
             Objects.Add(entry);
@@ -45,7 +49,9 @@ public static class EditorCatalog {
         }
 
         var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content", "Xmls", "Regions.xml");
-        if (!File.Exists(path)) return;
+        if (!File.Exists(path)) {
+            return;
+        }
 
         foreach (var element in XDocument.Load(path).Root?.Elements("Region") ?? []) {
             var typeText = element.Attribute("type")?.Value ?? "0";
@@ -82,7 +88,9 @@ public static class EditorCatalog {
 
     public static int GetType(EditorDrawType drawType, string id) {
         Load();
-        if (string.IsNullOrEmpty(id)) return drawType == EditorDrawType.Ground ? -1 : 0;
+        if (string.IsNullOrEmpty(id)) {
+            return drawType == EditorDrawType.Ground ? -1 : 0;
+        }
 
         return drawType switch {
             EditorDrawType.Ground when GroundLibrary.IdToTileType.TryGetValue(id, out var type) => type,

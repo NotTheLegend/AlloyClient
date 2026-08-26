@@ -40,7 +40,9 @@ public sealed class EditorController {
     }
 
     public void Begin(int x, int y) {
-        if (!Map.InBounds(x, y)) return;
+        if (!Map.InBounds(x, y)) {
+            return;
+        }
 
         _startX = x;
         _startY = y;
@@ -60,7 +62,9 @@ public sealed class EditorController {
     }
 
     public void Drag(int x, int y) {
-        if (!Map.InBounds(x, y) || (x == _lastX && y == _lastY)) return;
+        if (!Map.InBounds(x, y) || x == _lastX && y == _lastY) {
+            return;
+        }
 
         _lastX = x;
         _lastY = y;
@@ -75,7 +79,9 @@ public sealed class EditorController {
     }
 
     public void End(int x, int y) {
-        if (_stroke is null) return;
+        if (_stroke is null) {
+            return;
+        }
 
         if (Map.InBounds(x, y)) {
             if (Tool == EditorToolType.Line) ApplyLine(_startX, _startY, x, y, _stroke);
@@ -85,18 +91,25 @@ public sealed class EditorController {
             }
         }
 
-        if (Tool == EditorToolType.Select) _stroke.SetSelection(_selectionBefore, Selection);
+        if (Tool == EditorToolType.Select) {
+            _stroke.SetSelection(_selectionBefore, Selection);
+        }
+        
         Record(_stroke);
         _stroke = null;
         Changed?.Invoke();
     }
 
     public void Undo() {
-        if (History.Undo(Map, Selection)) Changed?.Invoke();
+        if (History.Undo(Map, Selection)) {
+            Changed?.Invoke();
+        }
     }
 
     public void Redo() {
-        if (History.Redo(Map, Selection)) Changed?.Invoke();
+        if (History.Redo(Map, Selection)) {
+            Changed?.Invoke();
+        }
     }
 
     public void Copy() {
@@ -111,7 +124,9 @@ public sealed class EditorController {
     }
 
     public void Paste(int x, int y) {
-        if (Clipboard.Tiles.Length == 0) return;
+        if (Clipboard.Tiles.Length == 0) {
+            return;
+        }
 
         if (x < 0 || y < 0 || x + Clipboard.Width > Map.Width || y + Clipboard.Height > Map.Height) {
             Status?.Invoke("The copied tiles do not fit at that position.");
@@ -136,7 +151,9 @@ public sealed class EditorController {
     }
 
     public void ClearSelection() {
-        if (!Selection.IsActive()) return;
+        if (!Selection.IsActive()) {
+            return;
+        }
 
         var actions = new EditorActionSet();
         var previous = Selection.Clone();
@@ -147,7 +164,9 @@ public sealed class EditorController {
     }
 
     public bool BeginSelectionMove(int pointerX, int pointerY) {
-        if (Tool != EditorToolType.Select || !Selection.IsActive() || !Selection.Contains(pointerX, pointerY)) return false;
+        if (Tool != EditorToolType.Select || !Selection.IsActive() || !Selection.Contains(pointerX, pointerY)) {
+            return false;
+        }
 
         _selectionMoving = true;
         _selectionPointerX = pointerX;
@@ -160,7 +179,9 @@ public sealed class EditorController {
     }
 
     public void DragSelectionMove(int pointerX, int pointerY) {
-        if (!_selectionMoving) return;
+        if (!_selectionMoving) {
+            return;
+        }
 
         var startX = _moveOrigin.StartX + pointerX - _selectionPointerX;
         var startY = _moveOrigin.StartY + pointerY - _selectionPointerY;
@@ -170,6 +191,7 @@ public sealed class EditorController {
                                           || startX == Selection.StartX && startY == Selection.StartY) return;
 
         RestoreMovingUnder();
+        
         var nextUnder = CaptureTiles(startX, startY, endX, endY);
         TrackAreaBefore(startX, startY, endX, endY);
         PasteTiles(_movingTiles, startX, startY, _moveOrigin.GetWidth(), _moveOrigin.GetHeight());
@@ -179,7 +201,9 @@ public sealed class EditorController {
     }
 
     public void EndSelectionMove() {
-        if (!_selectionMoving) return;
+        if (!_selectionMoving) {
+            return;
+        }
 
         _selectionMoving = false;
         var actions = new EditorActionSet();
@@ -196,7 +220,9 @@ public sealed class EditorController {
     }
 
     public void DeleteSelection() {
-        if (!Selection.IsActive()) return;
+        if (!Selection.IsActive()) {
+            return;
+        }
 
         var actions = new EditorActionSet();
         for (var y = Selection.StartY; y <= Selection.EndY; y++)
@@ -208,11 +234,15 @@ public sealed class EditorController {
     }
 
     public void MoveSelection(int dx, int dy) {
-        if (!Selection.IsActive() || (dx == 0 && dy == 0)) return;
+        if (!Selection.IsActive() || dx == 0 && dy == 0) {
+            return;
+        }
 
         var pointerX = Selection.StartX;
         var pointerY = Selection.StartY;
-        if (!BeginSelectionMove(pointerX, pointerY)) return;
+        if (!BeginSelectionMove(pointerX, pointerY)) {
+            return;
+        }
 
         DragSelectionMove(pointerX + dx, pointerY + dy);
         EndSelectionMove();
@@ -220,7 +250,9 @@ public sealed class EditorController {
 
     public void SetObjectConfig(int x, int y, string config) {
         var tile = Map.GetTile(x, y);
-        if (tile is null || tile.ObjectType == 0) return;
+        if (tile is null || tile.ObjectType == 0) {
+            return;
+        }
 
         var next = tile.Clone();
         next.ObjectConfig = string.IsNullOrWhiteSpace(config) ? null : config;
@@ -236,10 +268,16 @@ public sealed class EditorController {
             for (var x = centerX - radius; x <= centerX + radius; x++) {
                 var dx = x - centerX;
                 var dy = y - centerY;
-                if (dx * dx + dy * dy > radius * radius || !Selection.Contains(x, y)) continue;
+                if (dx * dx + dy * dy > radius * radius || !Selection.Contains(x, y)) {
+                    continue;
+                }
 
-                if (erase) EraseTile(x, y, actions);
-                else PaintTile(x, y, actions);
+                if (erase) {
+                    EraseTile(x, y, actions);
+                }
+                else {
+                    PaintTile(x, y, actions);
+                }
             }
         }
     }
@@ -255,7 +293,9 @@ public sealed class EditorController {
             for (var x = centerX - radius; x <= centerX + radius; x++) {
                 var dx = x - centerX;
                 var dy = y - centerY;
-                if (dx * dx + dy * dy > radius * radius || Random.Shared.Next(100) >= Brush.Chance) continue;
+                if (dx * dx + dy * dy > radius * radius || Random.Shared.Next(100) >= EditorBrush.Chance) {
+                    continue;
+                }
 
                 PaintTile(x, y, actions);
             }
@@ -270,7 +310,9 @@ public sealed class EditorController {
         var error = dx + dy;
         while (true) {
             ApplyBrush(x0, y0, false, actions);
-            if (x0 == x1 && y0 == y1) break;
+            if (x0 == x1 && y0 == y1) {
+                break;
+            }
 
             var twice = error * 2;
             if (twice >= dy) {
@@ -288,16 +330,22 @@ public sealed class EditorController {
     private void Fill(int startX, int startY, EditorActionSet actions) {
         var target = Map.GetTile(startX, startY).GetType(Brush.DrawType);
         var replacement = Brush.GetSelectedType();
-        if (target == replacement || replacement == (Brush.DrawType == EditorDrawType.Ground ? -1 : 0)) return;
+        if (target == replacement || replacement == (Brush.DrawType == EditorDrawType.Ground ? -1 : 0)) {
+            return;
+        }
 
         var pending = new Stack<(int X, int Y)>();
         var visited = new HashSet<int>();
         pending.Push((startX, startY));
         while (pending.TryPop(out var pos)) {
-            if (!Map.InBounds(pos.X, pos.Y) || !Selection.Contains(pos.X, pos.Y)) continue;
+            if (!Map.InBounds(pos.X, pos.Y) || !Selection.Contains(pos.X, pos.Y)) {
+                continue;
+            }
 
             var index = pos.X + pos.Y * Map.Width;
-            if (!visited.Add(index) || Map.GetTile(pos.X, pos.Y).GetType(Brush.DrawType) != target) continue;
+            if (!visited.Add(index) || Map.GetTile(pos.X, pos.Y).GetType(Brush.DrawType) != target) {
+                continue;
+            }
 
             PaintTile(pos.X, pos.Y, actions);
             pending.Push((pos.X - 1, pos.Y));
@@ -310,7 +358,9 @@ public sealed class EditorController {
     private void Pick(int x, int y) {
         var tile = Map.GetTile(x, y);
         var type = tile.GetType(Brush.DrawType);
-        if (type == (Brush.DrawType == EditorDrawType.Ground ? -1 : 0)) return;
+        if (type == (Brush.DrawType == EditorDrawType.Ground ? -1 : 0)) {
+            return;
+        }
 
         Brush.SetSelectedType(type);
         Status?.Invoke($"Picked {EditorCatalog.GetId(Brush.DrawType, type)}.");
@@ -319,12 +369,19 @@ public sealed class EditorController {
 
     private void PaintTile(int x, int y, EditorActionSet actions) {
         var tile = Map.GetTile(x, y);
-        if (tile is null) return;
+        if (tile is null) {
+            return;
+        }
 
         var selected = Brush.GetSelectedType();
         var empty = Brush.DrawType == EditorDrawType.Ground ? -1 : 0;
-        if (selected == empty || tile.GetType(Brush.DrawType) == selected) return;
-        if (!Brush.Replace && tile.GetType(Brush.DrawType) != empty) return;
+        if (selected == empty || tile.GetType(Brush.DrawType) == selected) {
+            return;
+        }
+        
+        if (!Brush.Replace && tile.GetType(Brush.DrawType) != empty) {
+            return;
+        }
 
         var next = tile.Clone();
         switch (Brush.DrawType) {
@@ -338,16 +395,20 @@ public sealed class EditorController {
 
     private void EraseTile(int x, int y, EditorActionSet actions) {
         var tile = Map.GetTile(x, y);
-        if (tile is null) return;
+        if (tile is null) {
+            return;
+        }
 
         var next = tile.Clone();
         switch (Brush.DrawType) {
-            case EditorDrawType.Ground: next.GroundType = -1; break;
+            case EditorDrawType.Ground: next.GroundType = -1; 
+                break;
             case EditorDrawType.Objects:
                 next.ObjectType = 0;
                 next.ObjectConfig = null;
                 break;
-            case EditorDrawType.Regions: next.RegionType = 0; break;
+            case EditorDrawType.Regions: next.RegionType = 0; 
+                break;
         }
 
         Replace(x, y, next, actions);
@@ -355,17 +416,23 @@ public sealed class EditorController {
 
     private void Replace(int x, int y, EditorTileData next, EditorActionSet actions) {
         var before = Map.GetTile(x, y);
-        if (before is null || before.SameAs(next)) return;
+        if (before is null || before.SameAs(next)) {
+            return;
+        }
 
         actions.Add(x, y, before, next);
         Map.SetTile(x, y, next, false);
     }
 
     private void Record(EditorActionSet actions) {
-        if (actions is null || actions.IsEmpty()) return;
+        if (actions is null || actions.IsEmpty()) {
+            return;
+        }
 
         History.Record(actions);
-        if (actions.Changes.Count > 0) Map.MarkChanged();
+        if (actions.Changes.Count > 0) {
+            Map.MarkChanged();
+        }
     }
 
     private EditorTileData[] CaptureTiles(EditorSelection selection) {
@@ -376,16 +443,20 @@ public sealed class EditorController {
         var width = endX - startX + 1;
         var height = endY - startY + 1;
         var tiles = new EditorTileData[width * height];
-        for (var y = 0; y < height; y++)
-        for (var x = 0; x < width; x++)
-            tiles[x + y * width] = Map.GetTile(startX + x, startY + y).Clone();
+        for (var y = 0; y < height; y++) {
+            for (var x = 0; x < width; x++) {
+                tiles[x + y * width] = Map.GetTile(startX + x, startY + y).Clone();
+            }
+        }
 
         return tiles;
     }
 
     private static EditorTileData[] CreateEmptyTiles(int count) {
         var tiles = new EditorTileData[count];
-        for (var i = 0; i < count; i++) tiles[i] = new EditorTileData();
+        for (var i = 0; i < count; i++) {
+            tiles[i] = new EditorTileData();
+        }
         return tiles;
     }
 
@@ -395,16 +466,20 @@ public sealed class EditorController {
     }
 
     private void PasteTiles(EditorTileData[] tiles, int startX, int startY, int width, int height) {
-        for (var y = 0; y < height; y++)
-        for (var x = 0; x < width; x++)
-            Map.SetTile(startX + x, startY + y, tiles[x + y * width], false);
+        for (var y = 0; y < height; y++) {
+            for (var x = 0; x < width; x++) {
+                Map.SetTile(startX + x, startY + y, tiles[x + y * width], false);
+            }
+        }
     }
 
     private void TrackAreaBefore(int startX, int startY, int endX, int endY) {
         for (var y = startY; y <= endY; y++) {
             for (var x = startX; x <= endX; x++) {
                 var index = x + y * Map.Width;
-                if (!_moveBefore.ContainsKey(index)) _moveBefore[index] = Map.GetTile(x, y).Clone();
+                if (!_moveBefore.ContainsKey(index)) {
+                    _moveBefore[index] = Map.GetTile(x, y).Clone();
+                }
             }
         }
     }

@@ -45,7 +45,9 @@ public sealed class EditorMapRenderer {
             changes = EditorMapData.GroundRenderChange | EditorMapData.ObjectRenderChange;
         }
 
-        if (changes == 0) return;
+        if (changes == 0) {
+            return;
+        }
 
         if ((changes & EditorMapData.GroundRenderChange) != 0) {
             UpdateGroundTypes(map, minX, minY, maxX, maxY);
@@ -53,8 +55,9 @@ public sealed class EditorMapRenderer {
             _visibleTilesDirty = true;
         }
 
-        if ((changes & EditorMapData.ObjectRenderChange) != 0)
+        if ((changes & EditorMapData.ObjectRenderChange) != 0) {
             RebuildObjectRegion(map, minX, minY, maxX, maxY, fullRebuild);
+        }
     }
 
     public void Draw(GameTime gameTime, Camera camera) {
@@ -86,12 +89,16 @@ public sealed class EditorMapRenderer {
         Render.StartDrawModel();
         for (var typeIndex = 0; typeIndex < (int)ModelType.Count; typeIndex++) {
             var modelType = (ModelType)typeIndex;
-            if (!ModelData.ModelRenderInfo.ContainsKey(modelType)) continue;
+            if (!ModelData.ModelRenderInfo.ContainsKey(modelType)) {
+                continue;
+            }
 
             Render.SetEntityModel(modelType);
-            foreach (var render in _rendersByModel[typeIndex])
-                if (IsVisible(render, camera))
+            foreach (var render in _rendersByModel[typeIndex]) {
+                if (IsVisible(render, camera)) {
                     render.Draw(_objectData, gameTime.TotalMs);
+                }
+            }
 
             Render.FlushBufferModel();
         }
@@ -104,7 +111,9 @@ public sealed class EditorMapRenderer {
 
     private void EnsureStorage(int width, int height, bool clear) {
         if (_width == width && _height == height) {
-            if (!clear) return;
+            if (!clear) {
+                return;
+            }
 
             Array.Clear(_groundTiles);
             Array.Fill(_groundTypes, int.MinValue);
@@ -127,21 +136,24 @@ public sealed class EditorMapRenderer {
         minY = Math.Max(0, minY);
         maxX = Math.Min(map.Width - 1, maxX);
         maxY = Math.Min(map.Height - 1, maxY);
-        for (var y = minY; y <= maxY; y++)
-        for (var x = minX; x <= maxX; x++) {
-            var index = x + y * map.Width;
-            var type = map.Tiles[index].GroundType;
-            if (_groundTypes[index] == type) continue;
+        for (var y = minY; y <= maxY; y++) {
+            for (var x = minX; x <= maxX; x++) {
+                var index = x + y * map.Width;
+                var type = map.Tiles[index].GroundType;
+                if (_groundTypes[index] == type) {
+                    continue;
+                }
 
-            _groundTypes[index] = type;
-            if (type < 0 || !GroundLibrary.TypeToTextureData.ContainsKey((ushort)type)) {
-                _groundTiles[index] = null;
-                continue;
+                _groundTypes[index] = type;
+                if (type < 0 || !GroundLibrary.TypeToTextureData.ContainsKey((ushort)type)) {
+                    _groundTiles[index] = null;
+                    continue;
+                }
+
+                var tile = new MapTile(new Vector2i(x, y));
+                tile.SetType((ushort)type);
+                _groundTiles[index] = tile;
             }
-
-            var tile = new MapTile(new Vector2i(x, y));
-            tile.SetType((ushort)type);
-            _groundTiles[index] = tile;
         }
     }
 
@@ -154,23 +166,29 @@ public sealed class EditorMapRenderer {
         for (var y = minY; y <= maxY; y++)
         for (var x = minX; x <= maxX; x++) {
             var tile = _groundTiles[x + y * map.Width];
-            if (tile is null) continue;
+            if (tile is null) {
+                continue;
+            }
 
             var neighborIndex = 0;
-            for (var ny = y - 1; ny <= y + 1; ny++)
-            for (var nx = x - 1; nx <= x + 1; nx++)
-                neighbors[neighborIndex++] = nx >= 0 && ny >= 0 && nx < map.Width && ny < map.Height
-                    ? _groundTiles[nx + ny * map.Width]
-                    : null;
+            for (var ny = y - 1; ny <= y + 1; ny++) {
+                for (var nx = x - 1; nx <= x + 1; nx++) {
+                    neighbors[neighborIndex++] = nx >= 0 && ny >= 0 && nx < map.Width && ny < map.Height
+                        ? _groundTiles[nx + ny * map.Width]
+                        : null;
+                }
+            }
 
             tile.Rebuild(neighbors);
         }
     }
 
     private void RebuildObjectRegion(EditorMapData map, int minX, int minY, int maxX, int maxY, bool fullRebuild) {
-        if (fullRebuild)
-            foreach (var renders in _rendersByModel)
+        if (fullRebuild) {
+            foreach (var renders in _rendersByModel) {
                 renders.Clear();
+            }
+        }
 
         minX = Math.Max(0, minX);
         minY = Math.Max(0, minY);
@@ -186,10 +204,13 @@ public sealed class EditorMapRenderer {
 
             _primaryObjectRenders[index] = null;
             _secondaryObjectRenders[index] = null;
+
             var type = map.Tiles[index].ObjectType;
             if (type <= 0
                 || !ObjectLibrary.TypeToTextureData.ContainsKey((ushort)type)
-                || !ObjectLibrary.TypeToObjectProps.TryGetValue((ushort)type, out var properties)) continue;
+                || !ObjectLibrary.TypeToObjectProps.TryGetValue((ushort)type, out var properties)) {
+                continue;
+            }
 
             var entity = new Entity { Properties = properties };
             entity.SetType((ushort)type);
@@ -203,7 +224,10 @@ public sealed class EditorMapRenderer {
             entity.RenderBaseType.SetDepth(0.5f + y / (float)Math.Max(1, map.Height) * 0.4f);
             _primaryObjectRenders[index] = entity.RenderBaseType;
             AddRender(entity.RenderBaseType);
-            if (entity.RenderBaseType is not TypeWall wall) continue;
+
+            if (entity.RenderBaseType is not TypeWall wall) {
+                continue;
+            }
 
             _secondaryObjectRenders[index] = wall.Top;
             AddRender(wall.Top);
@@ -236,37 +260,46 @@ public sealed class EditorMapRenderer {
         _visibleTilesDirty = false;
         _visibleTileData.Clear();
         AppendTileData(firstX, firstY, lastX, lastY);
-        if (_visibleTileData.Count > Render.TileBufferSize
-            && (firstX != neededFirstX || firstY != neededFirstY || lastX != neededLastX || lastY != neededLastY)) {
-            _visibleFirstX = neededFirstX;
-            _visibleFirstY = neededFirstY;
-            _visibleLastX = neededLastX;
-            _visibleLastY = neededLastY;
-            _visibleTileData.Clear();
-            AppendTileData(neededFirstX, neededFirstY, neededLastX, neededLastY);
+        if (_visibleTileData.Count <= Render.TileBufferSize
+            || firstX == neededFirstX && firstY == neededFirstY && lastX == neededLastX && lastY == neededLastY) {
+            return true;
         }
+
+        _visibleFirstX = neededFirstX;
+        _visibleFirstY = neededFirstY;
+        _visibleLastX = neededLastX;
+        _visibleLastY = neededLastY;
+        _visibleTileData.Clear();
+        AppendTileData(neededFirstX, neededFirstY, neededLastX, neededLastY);
 
         return true;
     }
 
     private void AppendTileData(int firstX, int firstY, int lastX, int lastY) {
-        for (var y = firstY; y <= lastY; y++)
-        for (var x = firstX; x <= lastX; x++) {
-            var tile = _groundTiles[x + y * _width];
-            if (tile is not null) _visibleTileData.AddRange(tile.DrawTile());
+        for (var y = firstY; y <= lastY; y++) {
+            for (var x = firstX; x <= lastX; x++) {
+                var tile = _groundTiles[x + y * _width];
+                if (tile is not null) _visibleTileData.AddRange(tile.DrawTile());
+            }
         }
     }
 
     private void AddRender(RenderBase render) {
         var index = (int)render.ModelType;
-        if (index >= 0 && index < _rendersByModel.Length) _rendersByModel[index].Add(render);
+        if (index >= 0 && index < _rendersByModel.Length) {
+            _rendersByModel[index].Add(render);
+        }
     }
 
     private void RemoveRender(RenderBase render) {
-        if (render is null) return;
+        if (render is null) {
+            return;
+        }
 
         var index = (int)render.ModelType;
-        if (index >= 0 && index < _rendersByModel.Length) _rendersByModel[index].Remove(render);
+        if (index >= 0 && index < _rendersByModel.Length) {
+            _rendersByModel[index].Remove(render);
+        }
     }
 
     private static bool IsVisible(RenderBase render, Camera camera) {
@@ -277,7 +310,10 @@ public sealed class EditorMapRenderer {
 
     private static List<RenderBase>[] CreateRenderBuckets() {
         var buckets = new List<RenderBase>[(int)ModelType.Count];
-        for (var i = 0; i < buckets.Length; i++) buckets[i] = [];
+        for (var i = 0; i < buckets.Length; i++) {
+            buckets[i] = [];
+        }
+        
         return buckets;
     }
 }

@@ -27,7 +27,9 @@ public sealed partial class EditorBackdropRenderer {
     }
 
     public void Resize(int width, int height) {
-        if (width <= 0 || height <= 0) return;
+        if (width <= 0 || height <= 0) {
+            return;
+        }
 
         var screenAspect = width / (float)height;
         var uvScale = screenAspect > _textureAspect
