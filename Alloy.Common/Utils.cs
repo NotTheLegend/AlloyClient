@@ -29,7 +29,7 @@ public static class Utils {
         public int GetValueInt(string name) => element.GetProperty(name).GetInt32();
     }
 
-    private static readonly Regex _letterRegex = new("[a-zA-Z]");
+    private readonly static Regex _letterRegex = new("[a-zA-Z]");
     public static int GetBase(string val) {
         var isHex = _letterRegex.IsMatch(val) && !val.EndsWith('x');
         return isHex ? 16 : 10;

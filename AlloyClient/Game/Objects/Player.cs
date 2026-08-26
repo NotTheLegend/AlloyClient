@@ -25,7 +25,7 @@ public class Player : Entity {
     private const float MinAttackFreq = 0.0015f;
     private const float MaxAttackFreq = 0.008f;
 
-    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(Player));
+    private readonly static ILogger Logger = ILogger.CreateLogger(nameof(Player));
 
     public float Rotate;
     public Vector2 RelativeMoveVector;

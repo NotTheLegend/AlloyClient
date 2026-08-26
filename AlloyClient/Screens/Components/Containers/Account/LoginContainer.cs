@@ -5,7 +5,7 @@ using AlloyClient.Display;
 namespace AlloyClient.Screens.Components.Containers.Account;
 
 public class LoginContainer : AccountFrame {
-    public static readonly EventType<Event> LoginEvent = "loginSuccess";
+    public readonly static EventType<Event> LoginEvent = "loginSuccess";
 
     private readonly AccountFormField _usernameInput;
     private readonly AccountFormField _passwordInput;

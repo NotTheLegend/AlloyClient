@@ -13,11 +13,11 @@ namespace AlloyClient.Game.Components.Hud;
 
 public sealed class Minimap : Sprite {
 
-    public static readonly SingleSignal<int> OnZoom = new();
-    public static readonly SingleSignal<int, int> OnNewMap = new();
+    public readonly static SingleSignal<int> OnZoom = new();
+    public readonly static SingleSignal<int, int> OnNewMap = new();
 
-    private static readonly ColorTransform DefaultCt = new (1f, 1f, 1f, 1f);
-    private static readonly ColorTransform FadeCt = new (0.5f, 0.5f, 0.5f, 1f);
+    private readonly static ColorTransform DefaultCt = new (1f, 1f, 1f, 1f);
+    private readonly static ColorTransform FadeCt = new (0.5f, 0.5f, 0.5f, 1f);
     
     public const int MapSize = 230;
     

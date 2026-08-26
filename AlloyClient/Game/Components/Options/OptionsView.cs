@@ -17,11 +17,11 @@ public sealed class OptionsView : Overlay {
     public const string SoundTab = "Sound";
     public const string ExtraTab = "Extra";
 
-    private static readonly string[] Tabs = [ControlsTab, HotkeysTab, ChatTab, GraphicsTab, SoundTab, ExtraTab];
+    private readonly static string[] Tabs = [ControlsTab, HotkeysTab, ChatTab, GraphicsTab, SoundTab, ExtraTab];
     
     private readonly Dictionary<string, OptionTabView> _tabViews = [];
 
-    public static readonly SingleSignal RefreshOptions = new ();//TODO: holds refs, redo
+    public readonly static SingleSignal RefreshOptions = new ();//TODO: holds refs, redo
 
     private TextButton _selectedTab;
 

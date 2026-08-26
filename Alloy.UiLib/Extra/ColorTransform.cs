@@ -5,7 +5,7 @@ namespace Alloy.UiLib.Extra;
 
 public struct ColorTransform : IEquatable<ColorTransform> {
 
-    public static readonly ColorTransform Default = new ColorTransform(1f, 1f, 1f, 1f);
+    public readonly static ColorTransform Default = new ColorTransform(1f, 1f, 1f, 1f);
     
     private Vector4 _mult = new Vector4(1f);
     private Vector4 _add = new Vector4(0f);

@@ -15,7 +15,7 @@ public class ShaderGenerator : IIncrementalGenerator {
 
     private const string AttributeFullName = "Alloy.Common.SourceGen.ShaderAttribute";
     
-    private static readonly DiagnosticDescriptor MissingShaderFileDescriptor = new("SHADERGEN001", "Missing shader source file", "Could not find a '{1}' AdditionalFile for shader '{0}'", "ShaderGen", DiagnosticSeverity.Error, isEnabledByDefault: true);
+    private readonly static DiagnosticDescriptor MissingShaderFileDescriptor = new("SHADERGEN001", "Missing shader source file", "Could not find a '{1}' AdditionalFile for shader '{0}'", "ShaderGen", DiagnosticSeverity.Error, isEnabledByDefault: true);
 
     public void Initialize(IncrementalGeneratorInitializationContext context) {
         var candidates = context.SyntaxProvider.ForAttributeWithMetadataName(AttributeFullName, IsValidNode, ToProperty).Where(static x => x is not null);

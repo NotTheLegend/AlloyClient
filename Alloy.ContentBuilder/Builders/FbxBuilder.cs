@@ -8,7 +8,7 @@ public static class FbxBuilder {
     //Copied from monogame
     private const PostProcessSteps Flags = PostProcessSteps.FindDegenerates | PostProcessSteps.FindInvalidData | PostProcessSteps.FlipUVs | /* <- Required for Direct3D -> */ PostProcessSteps.FlipWindingOrder | PostProcessSteps.JoinIdenticalVertices | PostProcessSteps.ImproveCacheLocality | PostProcessSteps.OptimizeMeshes | PostProcessSteps.Triangulate;
 
-    private static readonly AssimpContext Importer = new ();
+    private readonly static AssimpContext Importer = new ();
     
     public static void Process(FolderSettings settings, Paths paths) {
         var files = Directory.GetFiles(settings.Folder, settings.Ext, SearchOption.AllDirectories);

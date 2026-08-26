@@ -10,7 +10,7 @@ namespace AlloyClient.Screens.Components;
 
 public class AccountOverlay : Sprite {
 
-    public static readonly EventType<Event> AccountChangedEvent = "accountChanged";
+    public readonly static EventType<Event> AccountChangedEvent = "accountChanged";
 
     private const int LinkSpacing = 8;
 

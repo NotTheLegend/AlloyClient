@@ -62,9 +62,9 @@ public static class ConditionEffects {
 
     private record struct ConditionEffectData(string Name, ConditionEffect Index, int[] IconLookup);
 
-    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(ConditionEffects));
+    private readonly static ILogger Logger = ILogger.CreateLogger(nameof(ConditionEffects));
 
-    private static readonly ConditionEffectData[] EffectTable = [
+    private readonly static ConditionEffectData[] EffectTable = [
         new("Nothing", ConditionEffect.None, null),
         new("Dead", ConditionEffect.Dead, [0]),
         new("Quiet", ConditionEffect.Quiet, [32]),
@@ -98,9 +98,9 @@ public static class ConditionEffects {
 
     public static Span<BucketType> IconlessEffects => new BucketType[MaxEffectBuckets];
 
-    public static readonly Dictionary<ConditionEffect, Vector4[]> EffectIcons = [];
+    public readonly static Dictionary<ConditionEffect, Vector4[]> EffectIcons = [];
 
-    private static readonly Dictionary<string, ConditionEffect> NameToEffect = [];
+    private readonly static Dictionary<string, ConditionEffect> NameToEffect = [];
 
     public static void Init() {
         foreach (var effect in EffectTable) {

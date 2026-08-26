@@ -8,7 +8,7 @@ public interface IGlobalData;
 
 public static class GlobalData {
 
-    private static readonly ConcurrentDictionary<Type, IGlobalData> DataStorage = [];
+    private readonly static ConcurrentDictionary<Type, IGlobalData> DataStorage = [];
 
     public static int SelectedCharacterId;
     

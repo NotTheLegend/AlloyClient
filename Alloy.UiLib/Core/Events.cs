@@ -37,11 +37,11 @@ public class Event(EventType<Event> type, bool bubbles = false) {
     
     public void StopImmediatePropagation() => ImmediateStop = true;
     
-    public static readonly EventType<Event> AddedToStage = "addedToStage";
-    public static readonly EventType<Event> RemovedFromStage = "removedFromStage";
-    public static readonly EventType<Event> Added = "added";
-    public static readonly EventType<Event> Removed = "removed";
-    public static readonly EventType<Event> EnterFrame = "enterFrame";
+    public readonly static EventType<Event> AddedToStage = "addedToStage";
+    public readonly static EventType<Event> RemovedFromStage = "removedFromStage";
+    public readonly static EventType<Event> Added = "added";
+    public readonly static EventType<Event> Removed = "removed";
+    public readonly static EventType<Event> EnterFrame = "enterFrame";
 }
 
 /// <summary>
@@ -54,8 +54,8 @@ public class KeyboardEvent(EventType<KeyboardEvent> type, Key key, Scancode code
     public readonly bool Shift = shift;
     public readonly bool Alt = alt;
     
-    public static readonly EventType<KeyboardEvent> KeyDown = "keyDown";
-    public static readonly EventType<KeyboardEvent> KeyUp = "keyUp";
+    public readonly static EventType<KeyboardEvent> KeyDown = "keyDown";
+    public readonly static EventType<KeyboardEvent> KeyUp = "keyUp";
 }
 
 public class MouseEvent(EventType<MouseEvent> type, Vector2i coords = new (), Vector2 delta = new (), bool shiftKey = false, bool ctrlKey = false, bool altKey = false) : Event(type.Id, true) {
@@ -66,22 +66,22 @@ public class MouseEvent(EventType<MouseEvent> type, Vector2i coords = new (), Ve
     public readonly bool CtrlKey = ctrlKey;
     public readonly bool AltKey = altKey;
 
-    public static readonly EventType<MouseEvent> LeftClick = "leftClick";
-    public static readonly EventType<MouseEvent> MiddleClick = "middleClick";
-    public static readonly EventType<MouseEvent> RightClick = "rightClick";
-    public static readonly EventType<MouseEvent> MouseOver = "mouseOver";
-    public static readonly EventType<MouseEvent> MouseOut = "mouseOut";
-    public static readonly EventType<MouseEvent> LeftDown = "leftDown";
-    public static readonly EventType<MouseEvent> MiddleDown = "middleDown";
-    public static readonly EventType<MouseEvent> RightDown = "rightDown";
-    public static readonly EventType<MouseEvent> LeftUp = "leftUp";
-    public static readonly EventType<MouseEvent> MiddleUp = "middleUp";
-    public static readonly EventType<MouseEvent> RightUp = "rightUp";
-    public static readonly EventType<MouseEvent> MouseMove = "mouseMove";
-    public static readonly EventType<MouseEvent> ScrollVertical = "scrollVertical";
-    public static readonly EventType<MouseEvent> ScrollHorizontal = "scrollHorizontal";
+    public readonly static EventType<MouseEvent> LeftClick = "leftClick";
+    public readonly static EventType<MouseEvent> MiddleClick = "middleClick";
+    public readonly static EventType<MouseEvent> RightClick = "rightClick";
+    public readonly static EventType<MouseEvent> MouseOver = "mouseOver";
+    public readonly static EventType<MouseEvent> MouseOut = "mouseOut";
+    public readonly static EventType<MouseEvent> LeftDown = "leftDown";
+    public readonly static EventType<MouseEvent> MiddleDown = "middleDown";
+    public readonly static EventType<MouseEvent> RightDown = "rightDown";
+    public readonly static EventType<MouseEvent> LeftUp = "leftUp";
+    public readonly static EventType<MouseEvent> MiddleUp = "middleUp";
+    public readonly static EventType<MouseEvent> RightUp = "rightUp";
+    public readonly static EventType<MouseEvent> MouseMove = "mouseMove";
+    public readonly static EventType<MouseEvent> ScrollVertical = "scrollVertical";
+    public readonly static EventType<MouseEvent> ScrollHorizontal = "scrollHorizontal";
 
-    private static readonly HashSet<EventType<MouseEvent>> ButtonTypes = [LeftClick, MiddleClick, RightClick, LeftDown, MiddleDown, RightUp, LeftUp, MiddleUp, RightUp, ScrollVertical, ScrollHorizontal];
+    private readonly static HashSet<EventType<MouseEvent>> ButtonTypes = [LeftClick, MiddleClick, RightClick, LeftDown, MiddleDown, RightUp, LeftUp, MiddleUp, RightUp, ScrollVertical, ScrollHorizontal];
     
     internal static bool IsButtonType(EventType<MouseEvent> type) => ButtonTypes.Contains(type);
 }
@@ -93,5 +93,5 @@ public class ResizeEvent(EventType<ResizeEvent> type, int width, int height) : E
     public readonly int Width = width;
     public readonly int Height = height;
     
-    public static readonly EventType<ResizeEvent> Resize = "resize";
+    public readonly static EventType<ResizeEvent> Resize = "resize";
 }

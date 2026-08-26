@@ -9,7 +9,7 @@ public class ServerRect : Container {
 
     #region Config
 
-    private static readonly ContainerConfig Config = new() {
+    private readonly static ContainerConfig Config = new() {
         Anchor = UiAnchor.MiddleTop,
         Width = Settings.DefaultScreenWidth / 4,
         Height = 64

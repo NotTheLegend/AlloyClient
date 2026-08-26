@@ -15,11 +15,11 @@ public class ChatBox : Sprite {
     private const int MaxLines = 7;
     private const int LinePadding = 4;
 
-    public static readonly SingleSignal<ChatBoxLineData> AddChatLine = new();
+    public readonly static SingleSignal<ChatBoxLineData> AddChatLine = new();
     
-    public static readonly Signal<string> OnChatOpen = new();
-    public static readonly Signal OnChatHistoryUp = new();
-    public static readonly Signal OnChatHistoryDown = new();
+    public readonly static Signal<string> OnChatOpen = new();
+    public readonly static Signal OnChatHistoryUp = new();
+    public readonly static Signal OnChatHistoryDown = new();
 
     private readonly RollingList<ChatBoxLineData> _lines = new(100);
 

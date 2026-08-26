@@ -8,10 +8,10 @@ using OpenTK.Platform;
 namespace AlloyClient.Game.Components.Options;
 
 public class OptionTabView : Container {
-    private static readonly string[] OnOffLabels = ["On", "Off"];
-    private static readonly object[] OnOffValues = [true, false];
-    private static readonly string[] WindowLabels = ["Windowed", "Maximized", "Borderless", "Fullscreen"];
-    private static readonly object[] WindowValues = [WindowMode.Normal, WindowMode.Maximized, WindowMode.WindowedFullscreen, WindowMode.ExclusiveFullscreen];
+    private readonly static string[] OnOffLabels = ["On", "Off"];
+    private readonly static object[] OnOffValues = [true, false];
+    private readonly static string[] WindowLabels = ["Windowed", "Maximized", "Borderless", "Fullscreen"];
+    private readonly static object[] WindowValues = [WindowMode.Normal, WindowMode.Maximized, WindowMode.WindowedFullscreen, WindowMode.ExclusiveFullscreen];
     
     private readonly OptionsView _optionsView;
 

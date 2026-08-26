@@ -13,17 +13,17 @@ public static class PartyData {
 
     private const int MaxDistance = 50 * 50;
 
-    public static readonly HashSet<int> LockedPlayers = [];
+    public readonly static HashSet<int> LockedPlayers = [];
     
-    public static readonly HashSet<int> IgnoredPlayers = [];
+    public readonly static HashSet<int> IgnoredPlayers = [];
 
     private static double _lastUpdateTime;
 
-    private static readonly PartyInfo[] Members = new PartyInfo[1000];
+    private readonly static PartyInfo[] Members = new PartyInfo[1000];
 
-    public static readonly ArraySegment<PartyInfo> PartyMembers = new(Members, 0, MaxVisibleMembers);
+    public readonly static ArraySegment<PartyInfo> PartyMembers = new(Members, 0, MaxVisibleMembers);
 
-    private static readonly PartyComparison PartyComparer = new();
+    private readonly static PartyComparison PartyComparer = new();
 
     public static void Clear() {
         LockedPlayers.Clear();

@@ -65,15 +65,15 @@ public enum ModelType {
 }
 
 public static partial class ModelData {
-    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(ModelData));
+    private readonly static ILogger Logger = ILogger.CreateLogger(nameof(ModelData));
     
-    public static readonly Dictionary<ModelType, ModelInfo> ModelRenderInfo = [];
+    public readonly static Dictionary<ModelType, ModelInfo> ModelRenderInfo = [];
 
     public static VertexBase[] Vertices;
     public static ushort[] Indices;
 
-    private static readonly List<VertexBase> TempVertices = [];
-    private static readonly List<ushort> TempIndices = [];
+    private readonly static List<VertexBase> TempVertices = [];
+    private readonly static List<ushort> TempIndices = [];
 
     public static void Load() {
         LoadPrebuilt();

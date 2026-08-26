@@ -9,7 +9,7 @@ namespace AlloyClient.Game;
 
 public static class TileBuilder {
 
-    private static readonly Vector4[] Masks = Main.Atlas.GetAtlasData("tileAlphaBlend").Select(x => x.ToVector4(true)).ToArray();
+    private readonly static Vector4[] Masks = Main.Atlas.GetAtlasData("tileAlphaBlend").Select(x => x.ToVector4(true)).ToArray();
 
     public static int Build(MapTile self, Span<TileData> data, Span<MapTile> tiles) {
         if (self.Type == Const.CompositeTile) {

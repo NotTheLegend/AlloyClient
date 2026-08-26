@@ -8,7 +8,7 @@ public sealed class InventoryGrid : Sprite {
 
     private const int NumSlots = 8;
 
-    private static readonly CutEdges[] Cuts = [CutEdges.TopLeft, CutEdges.None, CutEdges.None, CutEdges.TopRight, CutEdges.BottomLeft, CutEdges.None, CutEdges.None, CutEdges.BottomRight];
+    private readonly static CutEdges[] Cuts = [CutEdges.TopLeft, CutEdges.None, CutEdges.None, CutEdges.TopRight, CutEdges.BottomLeft, CutEdges.None, CutEdges.None, CutEdges.BottomRight];
     private readonly ItemTile[] _tiles = new ItemTile[NumSlots];
 
     private readonly Entity _owner;

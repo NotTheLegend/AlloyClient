@@ -1,9 +1,9 @@
 ﻿namespace Alloy.Audio;
 
 internal static class Pools {
-    public static readonly SourcePool<int> Sources = new (256);
-    public static readonly TrackPool<StaticTrack> StaticTracks = new (64);
-    public static readonly TrackPool<StreamTrack> StreamTracks = new (4);
+    public readonly static SourcePool<int> Sources = new (256);
+    public readonly static TrackPool<StaticTrack> StaticTracks = new (64);
+    public readonly static TrackPool<StreamTrack> StreamTracks = new (4);
 }
 
 internal interface IPoolable;

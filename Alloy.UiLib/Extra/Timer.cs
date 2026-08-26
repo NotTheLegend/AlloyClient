@@ -9,8 +9,8 @@ public sealed class Timer {
     
     private const long TicksPerMs = 10000;
 
-    private static readonly Queue<Timer> Queue = [];
-    private static readonly List<Timer> Timers = [];
+    private readonly static Queue<Timer> Queue = [];
+    private readonly static List<Timer> Timers = [];
 
     private readonly Queue<(TimerEvent, Delegate, bool)> _queue = [];
     private readonly List<Delegate> _timerEvents = [];

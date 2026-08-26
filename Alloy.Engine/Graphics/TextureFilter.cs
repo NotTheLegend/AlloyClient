@@ -2,9 +2,9 @@
 
 public readonly struct TextureFilter {
     
-    public static readonly TextureFilter Nearest = new (TextureMinFilter.Nearest, TextureMagFilter.Nearest);
+    public readonly static TextureFilter Nearest = new (TextureMinFilter.Nearest, TextureMagFilter.Nearest);
     
-    public static readonly TextureFilter Linear = new (TextureMinFilter.Linear, TextureMagFilter.Linear);
+    public readonly static TextureFilter Linear = new (TextureMinFilter.Linear, TextureMagFilter.Linear);
     
     public readonly int MinFilter;
 

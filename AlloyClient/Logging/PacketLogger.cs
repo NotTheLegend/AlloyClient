@@ -18,7 +18,7 @@ public enum PacketLogLevel {
 }
 
 public static class PacketLogger {
-    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(PacketLogger));
+    private readonly static ILogger Logger = ILogger.CreateLogger(nameof(PacketLogger));
 
     public static void LogPacket(IPacket packet) {
         switch (Settings.PacketLogging.Value) {

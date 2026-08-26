@@ -5,8 +5,8 @@ using AlloyClient.Screens;
 namespace AlloyClient.Ui.Components.Dialogs;
 
 public class RetryLoadDialog : Dialog {
-    private static readonly DialogOption Retry = new ("Retry", () => ScreenManager.FadeToScreen(new LoadingScreen(true), Easing.SineInOut, 500, 0));
-    private static readonly DialogOption Quit = new ("Quit", () => Main.OnQuit.Dispatch());
+    private readonly static DialogOption Retry = new ("Retry", () => ScreenManager.FadeToScreen(new LoadingScreen(true), Easing.SineInOut, 500, 0));
+    private readonly static DialogOption Quit = new ("Quit", () => Main.OnQuit.Dispatch());
 
     public RetryLoadDialog()
         : base(

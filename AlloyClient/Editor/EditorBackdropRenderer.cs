@@ -9,7 +9,6 @@ public sealed partial class EditorBackdropRenderer {
     [Shader("EditorBackdrop")] private static partial ShaderSource BackdropShaderSource { get; }
 
     private readonly Shader _shader;
-    private readonly Sampler _sampler;
     private readonly VertexArrayObject _vao;
     private readonly float _textureAspect;
 
@@ -17,9 +16,10 @@ public sealed partial class EditorBackdropRenderer {
         var atlas = Main.UiAtlas.GetAtlasData("MapEditor/Background", 0);
         atlas.RemovePadding();
         _textureAspect = atlas.RawW() / (float)atlas.RawH();
-        _sampler = new Sampler(Main.UiAtlas.Texture, 7);
+        
+        var sampler = new Sampler(Main.UiAtlas.Texture, 7);
         _shader = Shader.FromSource(BackdropShaderSource);
-        _shader.SetValue("BackdropTexture", _sampler);
+        _shader.SetValue("BackdropTexture", sampler);
         _shader.SetValue("UvOrigin", new Vector2(atlas.U, atlas.V));
         _shader.SetValue("UvSize", new Vector2(atlas.W, atlas.H));
         _shader.SetValue("UvScale", Vector2.One);

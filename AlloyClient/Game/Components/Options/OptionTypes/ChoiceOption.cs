@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 namespace AlloyClient.Game.Components.Options.OptionTypes;
 
 public class ChoiceOption<T> : Option {
-    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(ChoiceBox<T>));
+    private readonly static ILogger Logger = ILogger.CreateLogger(nameof(ChoiceBox<T>));
 
     private readonly ChoiceBox<T> _choiceBox;
     private readonly Action _choiceCallback;

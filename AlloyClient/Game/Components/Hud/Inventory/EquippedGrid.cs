@@ -10,7 +10,7 @@ public sealed class EquippedGrid : Sprite {
 
     private const byte NumSlots = 4;
 
-    private static readonly CutEdges[] Cuts = [CutEdges.Left, CutEdges.None, CutEdges.None, CutEdges.Right];
+    private readonly static CutEdges[] Cuts = [CutEdges.Left, CutEdges.None, CutEdges.None, CutEdges.Right];
     private readonly ItemTile[] _tileSlots = new ItemTile[4];
 
     private readonly Player _owner;

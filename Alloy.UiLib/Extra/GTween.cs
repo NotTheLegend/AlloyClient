@@ -8,8 +8,8 @@ namespace Alloy.UiLib.Extra;
 
 public static class GTween {
     
-    private static readonly Dictionary<Easing, Func<double, double>> Easings = new();
-    private static readonly List<Tween> Tweens = [];
+    private readonly static Dictionary<Easing, Func<double, double>> Easings = new();
+    private readonly static List<Tween> Tweens = [];
 
     static GTween() {
         Easings[Easing.Linear] = r => r;

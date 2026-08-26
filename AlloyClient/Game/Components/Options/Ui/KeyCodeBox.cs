@@ -10,7 +10,7 @@ public class KeyCodeBox : Sprite {
     public const int BoxWidth = 128;
     public const int BoxHeight = 51;
 
-    private static readonly string[] CharCodes = [
+    private readonly static string[] CharCodes = [
         "[Unset]", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
         "Enter", "Esc", "Backspace", "Tab", "Space", "-", "=", "[", "]", "\\", ";", "\'", "`", ",", ".", "/", "CapsLock", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
         "F13", "F14", "F15", "F16", "F17", "F18", "F19", "F20", "F21", "F22", "F23", "F24", "PrtScrn", "ScrLock", "Pause", "Insert", "Home", "PgUp", "Delete", "End", "PgDn", "Right", "Left", "Down",

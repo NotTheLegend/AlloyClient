@@ -11,7 +11,7 @@ namespace AlloyClient.Networking.Packets.Incoming;
 
 public class EnemyShoot : IncomingPacket<EnemyShoot> {
 
-    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(EnemyShoot));
+    private readonly static ILogger Logger = ILogger.CreateLogger(nameof(EnemyShoot));
     
     public ushort FirstBulletId;
     public int OwnerId;

@@ -123,7 +123,7 @@ public static class Map {
     public const int ViewDiameterY = ViewRadiusY * 2 + 1;
     public const int VisibleChunks = ViewDiameterX * ViewDiameterY;
 
-    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(Map));
+    private readonly static ILogger Logger = ILogger.CreateLogger(nameof(Map));
     
     public const int TileRenderDistance = 20;
 
@@ -141,31 +141,31 @@ public static class Map {
     public static bool AllowPlayerTeleport;
     public static bool ShowDisplays;
     
-    private static readonly TileMap Tiles = new ();
-    public static readonly RenderStorage EntityStorage = new();
-    public static readonly Dictionary<int, Player> Players = new();
-    public static readonly Dictionary<int, Entity> Entities = new(); // todo: add players to separate dic for minimap prio
-    public static readonly Dictionary<int, Entity> InteractiveObjects = new();
+    private readonly static TileMap Tiles = new ();
+    public readonly static RenderStorage EntityStorage = new();
+    public readonly static Dictionary<int, Player> Players = new();
+    public readonly static Dictionary<int, Entity> Entities = new(); // todo: add players to separate dic for minimap prio
+    public readonly static Dictionary<int, Entity> InteractiveObjects = new();
     
-    public static readonly List<ParticleEffect> ParticleGenerators = [];
+    public readonly static List<ParticleEffect> ParticleGenerators = [];
 
     public static int ParticleGenCount;
 
-    private static readonly List<Projectile> Projectiles = [];
+    private readonly static List<Projectile> Projectiles = [];
 
     public static int LocalPlayerId;
     public static Player LocalPlayer;
 
     public static int LastTickId;
 
-    public static readonly Signal<Player> OnPlayerUpdate = new();
+    public readonly static Signal<Player> OnPlayerUpdate = new();
 
     private static int _particleCount;
-    private static readonly ParticleData[] Particles = new ParticleData[30000];
+    private readonly static ParticleData[] Particles = new ParticleData[30000];
 
-    private static readonly List<VertexObject> RenderTargets = [];
+    private readonly static List<VertexObject> RenderTargets = [];
 
-    private static readonly HashSet<Vector2i> SightCircle = [];
+    private readonly static HashSet<Vector2i> SightCircle = [];
 
     static Map() {
         for (var x = -TileRenderDistance; x < TileRenderDistance; x++) {
@@ -242,7 +242,7 @@ public static class Map {
     }
     
 
-    private static readonly List<TileData> VisibleTiles = new (Render.TileBufferSize);
+    private readonly static List<TileData> VisibleTiles = new (Render.TileBufferSize);
 
     public static void Draw(in GameTime gameTime, in Camera camera) {
         GL.Disable(EnableCap.DepthTest);
@@ -348,7 +348,7 @@ public static class Map {
     
     public static MapTile LookupTile(Vector2i position) => Tiles[position];
 
-    private static readonly MapTile[] RebuildData = new MapTile[9];
+    private readonly static MapTile[] RebuildData = new MapTile[9];
 
     public static void SetTileData(int x, int y, ushort type) {
         if (!LookupTile(x, y, out var tile)) {

@@ -22,18 +22,18 @@ public static class Client {
     public const int RECV_BUFFER_SIZE = 0x40000;
     public const int SEND_BUFFER_SIZE = 0x10000;
 
-    public static readonly ILogger Logger = ILogger.CreateLogger(nameof(Client));
+    public readonly static ILogger Logger = ILogger.CreateLogger(nameof(Client));
 
-    private static readonly ConcurrentQueue<IIncomingPacket> IncomingQueue = new();
+    private readonly static ConcurrentQueue<IIncomingPacket> IncomingQueue = new();
 
     public static ConnectionState State;
 
     public static bool IsReconnecting;
 
-    private static readonly SocketAsyncEventArgs _receiveSAEA;
-    private static readonly SocketReceiveState _receiveState;
-    private static readonly SocketAsyncEventArgs _sendSAEA;
-    private static readonly SocketSendState _sendState;
+    private readonly static SocketAsyncEventArgs _receiveSAEA;
+    private readonly static SocketReceiveState _receiveState;
+    private readonly static SocketAsyncEventArgs _sendSAEA;
+    private readonly static SocketSendState _sendState;
 
     private static Socket _socket;
     private static TcpClient _tcp;

@@ -7,9 +7,9 @@ namespace Alloy.UiLib.Core;
 
 public abstract class EventManager {
 
-    private static readonly ILogger Logger = UiRender.LogFactory.CreateLogger(nameof(EventManager));
+    private readonly static ILogger Logger = UiRender.LogFactory.CreateLogger(nameof(EventManager));
 
-    private static readonly HashSet<EventType<Event>> BroadcastEvents = [Event.EnterFrame];
+    private readonly static HashSet<EventType<Event>> BroadcastEvents = [Event.EnterFrame];
     
     internal EventManager() { }
 
@@ -24,9 +24,9 @@ public abstract class EventManager {
 
     #region Broadcast
 
-    private static readonly Queue<BroadcastData> BroadcastQueue = [];
+    private readonly static Queue<BroadcastData> BroadcastQueue = [];
 
-    private static readonly Dictionary<string, List<EventManager>> BroadcastMap = new();
+    private readonly static Dictionary<string, List<EventManager>> BroadcastMap = new();
     
     private static bool _isBroadcasting;
 
@@ -37,7 +37,7 @@ public abstract class EventManager {
 
     private readonly Dictionary<string, List<Listener>> _eventMap = [];
 
-    private static readonly Queue<Action> CompletedTasks = [];
+    private readonly static Queue<Action> CompletedTasks = [];
 
     private readonly Stack<string> _currentEventState = [];
     

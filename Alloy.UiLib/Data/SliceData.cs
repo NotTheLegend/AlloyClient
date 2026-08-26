@@ -8,7 +8,7 @@ public record SliceData(AtlasPosition AtlasData, Vector2 Cuts);
 
 public static class SliceLookup {
     
-    private static readonly Dictionary<string, SliceData> Slices = new();
+    private readonly static Dictionary<string, SliceData> Slices = new();
 
     public static bool CheckLookup(string lookup) {
         return Slices.ContainsKey(lookup);

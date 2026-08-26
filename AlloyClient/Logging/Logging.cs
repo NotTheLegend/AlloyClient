@@ -9,7 +9,7 @@ namespace AlloyClient.Logging;
 
 public static class Logging {
 
-    public static readonly ILoggerFactory Factory;
+    public readonly static ILoggerFactory Factory;
 
     static Logging() {
         Factory = LoggerFactory.Create(builder => 

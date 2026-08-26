@@ -14,8 +14,8 @@ namespace AlloyClient.Assets;
 
 public static class AssetParser {
 
-    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(AssetParser));
-    private static readonly object GroundLoadLock = new();
+    private readonly static ILogger Logger = ILogger.CreateLogger(nameof(AssetParser));
+    private readonly static object GroundLoadLock = new();
     
     public static async Task LoadAssetsAsync() {
         using var _ = TimedScope.EnterScope(Logger, "Loaded assets in {0}");
@@ -83,7 +83,7 @@ public static class AssetParser {
 }
 
 public sealed class TextureData {
-    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(TextureData));
+    private readonly static ILogger Logger = ILogger.CreateLogger(nameof(TextureData));
 
     public bool HasAnimationData = false;
     

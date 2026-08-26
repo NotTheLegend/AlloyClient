@@ -8,7 +8,7 @@ namespace AlloyClient.Game.Components.Hud;
 
 public sealed class InteractPanel : Sprite {
 
-    public static readonly SingleSignal<Panel> AddOverride = new();
+    public readonly static SingleSignal<Panel> AddOverride = new();
 
     private Entity _currentObject;
 

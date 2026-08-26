@@ -20,14 +20,14 @@ public sealed class EditorCatalogEntry {
 }
 
 public static class EditorCatalog {
-    public static readonly List<EditorCatalogEntry> Grounds = [];
-    public static readonly List<EditorCatalogEntry> Objects = [];
-    public static readonly List<EditorCatalogEntry> Regions = [];
+    public readonly static List<EditorCatalogEntry> Grounds = [];
+    public readonly static List<EditorCatalogEntry> Objects = [];
+    public readonly static List<EditorCatalogEntry> Regions = [];
 
-    private static readonly Dictionary<int, string> GroundIds = [];
-    private static readonly Dictionary<int, string> ObjectIds = [];
-    private static readonly Dictionary<int, string> RegionIds = [];
-    private static readonly Dictionary<string, int> RegionTypes = new(StringComparer.Ordinal);
+    private readonly static Dictionary<int, string> GroundIds = [];
+    private readonly static Dictionary<int, string> ObjectIds = [];
+    private readonly static Dictionary<int, string> RegionIds = [];
+    private readonly static Dictionary<string, int> RegionTypes = new(StringComparer.Ordinal);
     private static bool _loaded;
 
     public static void Load() {

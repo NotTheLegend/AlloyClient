@@ -7,7 +7,7 @@ namespace AlloyClient.Ui;
 
 public static class FameUtils {
 
-    public static readonly int[] StarFameRequirements = [20, 150, 400, 800, 2000];
+    public readonly static int[] StarFameRequirements = [20, 150, 400, 800, 2000];
     
     public static int ClassCount => ObjectLibrary.TypeToClassProps.Count;
 

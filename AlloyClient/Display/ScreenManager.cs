@@ -11,7 +11,7 @@ namespace AlloyClient.Display;
 
 public sealed class ScreenManager : Sprite {
     private static ScreenManager _instance;
-    public static readonly FadeScreen FadeScreen = new(0);
+    public readonly static FadeScreen FadeScreen = new(0);
 
     private static Screen _prevScreen;
     private static Screen _currScreen = FadeScreen;

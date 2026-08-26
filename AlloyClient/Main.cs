@@ -27,11 +27,11 @@ namespace AlloyClient;
 
 public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
 
-    public static readonly Signal OnQuit = new ();
-    public static readonly Signal<ScreenType> OnScreenChange = new();
-    public static readonly Signal OnFullscreenToggle = new();
+    public readonly static Signal OnQuit = new ();
+    public readonly static Signal<ScreenType> OnScreenChange = new();
+    public readonly static Signal OnFullscreenToggle = new();
     
-    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(Main));
+    private readonly static ILogger Logger = ILogger.CreateLogger(nameof(Main));
     
     public static Atlas Atlas { get; private set; }
     public static Atlas UiAtlas { get; private set; }

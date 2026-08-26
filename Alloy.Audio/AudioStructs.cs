@@ -4,7 +4,7 @@ using StbVorbisSharp;
 namespace Alloy.Audio;
 
 public readonly record struct FadeState(AudioFade Fade, double DurationMs) {
-    public static readonly FadeState Default = new(AudioFade.In, 0f);
+    public readonly static FadeState Default = new(AudioFade.In, 0f);
 
     public static FadeState Out(double durationMs) => new FadeState(AudioFade.Out, durationMs);
     

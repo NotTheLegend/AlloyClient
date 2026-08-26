@@ -8,7 +8,7 @@ namespace AlloyClient;
 
 public static class Program {
     
-    private static readonly ILogger Log = ILogger.CreateLogger(nameof(Program));
+    private readonly static ILogger Log = ILogger.CreateLogger(nameof(Program));
 
     public static void Main() {
         Log.Log(LogLevel.Information, "Starting Game...");

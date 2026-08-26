@@ -2,7 +2,7 @@
 namespace AlloyClient.Game.Objects;
 
 public static class ObjectPools {
-    public static readonly ObjectPool<Projectile> Projectiles = new();
+    public readonly static ObjectPool<Projectile> Projectiles = new();
 }
 
 // any object you want to pool needs to impliment this interface :p

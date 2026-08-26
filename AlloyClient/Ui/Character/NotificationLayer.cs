@@ -9,7 +9,7 @@ namespace AlloyClient.Ui.Character;
 public record struct StatusData(Entity Owner, string Text, uint Color, int Lifetime, int OffsetTime);
 
 public class NotificationLayer : Sprite {
-    private static readonly Queue<StatusData> TextQueue = new();
+    private readonly static Queue<StatusData> TextQueue = new();
     private readonly List<CharacterStatusText> _list = [];
     
     public static void AddStatusText(Entity en, string text, uint color, int lifetime, int offsetTime) {

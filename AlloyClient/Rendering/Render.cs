@@ -17,9 +17,9 @@ public static partial class Render {
     public static int TileUploadVersion;
     private const int ShadowBufferSize = 4096;
     
-    private static readonly (string, string)[] TileDefines = [("TileBuffer", $"{TileBufferSize}")];
-    private static readonly (string, string)[] ShadowDefines = [("ShadowBuffer", $"{ShadowBufferSize}")];
-    private static readonly (string, string)[] ObjectDefines = [("ObjectBuffer", $"{BufferSize}")];
+    private readonly static (string, string)[] TileDefines = [("TileBuffer", $"{TileBufferSize}")];
+    private readonly static (string, string)[] ShadowDefines = [("ShadowBuffer", $"{ShadowBufferSize}")];
+    private readonly static (string, string)[] ObjectDefines = [("ObjectBuffer", $"{BufferSize}")];
     
     // Shader Sources
     [Shader("Ground")] private static partial ShaderSource GroundShaderSource { get; }

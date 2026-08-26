@@ -5,7 +5,7 @@ namespace AlloyClient.Game.Components.Hud.Panels;
 
 public abstract class Panel : Sprite {
 
-    public static readonly Signal OnInteract = new(); 
+    public readonly static Signal OnInteract = new(); 
     
     protected Panel() {
         //todo:SetBaseDimensions(218, 110);

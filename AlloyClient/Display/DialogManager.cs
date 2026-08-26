@@ -7,7 +7,7 @@ namespace AlloyClient.Display;
 
 public sealed class DialogManager : Sprite {
 
-    private static readonly Queue<Dialog> Dialogs = [];
+    private readonly static Queue<Dialog> Dialogs = [];
     private static Dialog _current;
 
     public DialogManager() {

@@ -11,7 +11,7 @@ using OpenTK.Mathematics;
 namespace AlloyClient.Rendering.Types;
 
 public sealed class TypeModel3D : RenderBase {
-    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(TypeModel3D));
+    private readonly static ILogger Logger = ILogger.CreateLogger(nameof(TypeModel3D));
     
     public override ModelType ModelType { get; }
 

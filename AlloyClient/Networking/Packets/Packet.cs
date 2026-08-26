@@ -22,7 +22,7 @@ public interface IOutgoingPacket : IPacket {
 }
 
 public abstract class BasePacket<T> : IPacket where T : BasePacket<T>, new() {
-    private static readonly ConcurrentQueue<T> PacketPool = new();
+    private readonly static ConcurrentQueue<T> PacketPool = new();
 
     public static T CreatePacket() {
         if (PacketPool.TryDequeue(out var packet)) {

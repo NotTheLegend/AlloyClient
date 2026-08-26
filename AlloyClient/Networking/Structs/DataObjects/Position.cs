@@ -1,7 +1,7 @@
 ﻿namespace AlloyClient.Networking.Structs.DataObjects;
 
 public struct Position : IDataObject {
-    public static readonly Position Zero = new();
+    public readonly static Position Zero = new();
 
     public float X;
     public float Y;

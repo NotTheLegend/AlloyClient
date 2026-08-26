@@ -7,9 +7,9 @@ namespace AlloyClient.Ui.Chat;
 
 public class ChatLayer : Sprite {
 
-    private static readonly Queue<SpeechData> Queue = new();
+    private readonly static Queue<SpeechData> Queue = new();
 
-    private static readonly Dictionary<int, SpeechBubble> Bubbles = [];
+    private readonly static Dictionary<int, SpeechBubble> Bubbles = [];
 
     public static void QueueSpeech(SpeechData data) => Queue.Enqueue(data);
 

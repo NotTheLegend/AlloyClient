@@ -10,9 +10,9 @@ using Microsoft.Extensions.Logging;
 namespace AlloyClient.AppEngine;
 
 public static class AppEngineClient {
-    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(AppEngineClient));
+    private readonly static ILogger Logger = ILogger.CreateLogger(nameof(AppEngineClient));
 
-    private static readonly HttpClient Client;
+    private readonly static HttpClient Client;
 
     static AppEngineClient() {
         Client = new HttpClient();

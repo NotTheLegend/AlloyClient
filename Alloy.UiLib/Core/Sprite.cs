@@ -15,7 +15,7 @@ namespace Alloy.UiLib.Core;
 
 public partial class Sprite : DisplayContainer {
     
-    public static readonly Vector4 NoScissor = new Vector4(0, 0, 10000, 10000);
+    public readonly static Vector4 NoScissor = new Vector4(0, 0, 10000, 10000);
 
     public int X { get; set { field = value; UpdateBounds(); } }
 

@@ -20,7 +20,7 @@ using OpenTK.Mathematics;
 namespace AlloyClient.Game.Objects;
 
 public class Entity {
-    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(Entity));
+    private readonly static ILogger Logger = ILogger.CreateLogger(nameof(Entity));
 
     public const float AttackPeriod = 300;
 

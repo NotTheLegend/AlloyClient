@@ -17,7 +17,7 @@ namespace AlloyClient.Game.Components;
 
 public sealed class UserInput : Sprite {
 
-    private static readonly ILogger Logger = ILogger.CreateLogger(nameof(UserInput));
+    private readonly static ILogger Logger = ILogger.CreateLogger(nameof(UserInput));
 
     private static Vector2 _mousePosition;
     
