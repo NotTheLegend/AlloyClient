@@ -391,12 +391,12 @@ public class CharacterListScreen : TitleScreenBase {
     }
 
     private void CheckForAppFailure() {
-        if (!GlobalData.TryRemove<AppRequestFailedFlag>(out var data)) {
+        if (!GlobalData.TryRemove<AppRequestFailedFlag>(out _)) {
             return;
         }
 
         AddChild(new ScreenDarkenOverlay());
 
-        DialogManager.Enqueue(new RetryLoadDialog(data.Message));
+        DialogManager.Enqueue(new RetryLoadDialog());
     }
 }

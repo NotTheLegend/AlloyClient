@@ -78,11 +78,15 @@ public sealed class TextureData {
     public bool HasAnimationData = false;
     
     public AtlasData Texture;
+    public string TextureFile = string.Empty;
+    public int TextureIndex = -1;
     public TextureData TopTexture;
     public AnimationAtlasData AnimatedTextures;
     public TextureData[] RandomTextures;
     public Dictionary<int, TextureData> AltTextures;
     public AtlasData? EditorTexture;
+    public string EditorTextureFile = string.Empty;
+    public int EditorTextureIndex = -1;
     public Color DominantColor = Color.Transparent;
 
     public TextureData EdgeTexture;
@@ -91,8 +95,10 @@ public sealed class TextureData {
 
     public TextureData(XElement xml) {
         if (xml.GetElement("Texture", out var elem)) {
-            Texture = Main.Atlas.GetAtlasData(elem.GetValue<string>("File"), (int) elem.GetValue<uint>("Index"));
-            DominantColor = Main.Atlas.GetDominantColor(elem.GetValue<string>("File"), elem.GetValue<int>("Index"));
+            TextureFile = elem.GetValue<string>("File");
+            TextureIndex = elem.GetValue<int>("Index");
+            Texture = Main.Atlas.GetAtlasData(TextureFile, TextureIndex);
+            DominantColor = Main.Atlas.GetDominantColor(TextureFile, TextureIndex);
         }
 
         if (xml.GetElement("Top", out elem)) {
@@ -124,7 +130,9 @@ public sealed class TextureData {
         }
 
         if (xml.GetElement("EditorTexture", out elem)) {
-            EditorTexture = Main.Atlas.GetAtlasData(elem.GetValue<string>("File"), elem.GetValue<int>("Index"));
+            EditorTextureFile = elem.GetValue<string>("File");
+            EditorTextureIndex = elem.GetValue<int>("Index");
+            EditorTexture = Main.Atlas.GetAtlasData(EditorTextureFile, EditorTextureIndex);
         }
 
         if (xml.GetElement("Edge", out elem)) {

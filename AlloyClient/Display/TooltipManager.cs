@@ -24,5 +24,6 @@ public sealed class TooltipManager : Sprite {
     public static void RemoveTooltip(Tooltip tooltip) {
         if (_current != tooltip) return;
         _instance.RemoveChild(_current);
+        _current = null;
     }
 }

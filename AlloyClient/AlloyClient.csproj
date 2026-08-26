@@ -60,6 +60,10 @@
       <AdditionalFiles Include="AdditionalFiles\Ground.vert" />
       <None Remove="AdditionalFiles\Ground.frag" />
       <AdditionalFiles Include="AdditionalFiles\Ground.frag" />
+      <None Remove="AdditionalFiles\EditorBackdrop.vert" />
+      <AdditionalFiles Include="AdditionalFiles\EditorBackdrop.vert" />
+      <None Remove="AdditionalFiles\EditorBackdrop.frag" />
+      <AdditionalFiles Include="AdditionalFiles\EditorBackdrop.frag" />
     </ItemGroup>
     
     <Target Name="RestoreDotnetTools" BeforeTargets="Restore">

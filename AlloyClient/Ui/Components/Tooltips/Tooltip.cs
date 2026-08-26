@@ -20,9 +20,6 @@ public abstract class Tooltip : Sprite {
         ToolWidth = width;
         ToolHeight = height;
 
-        Width = width;
-        Height = height;
-
         Contain = new Container();
         AddChild(Contain);
     }

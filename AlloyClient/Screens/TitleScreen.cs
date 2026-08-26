@@ -15,7 +15,7 @@ public class TitleScreen : TitleScreenBase {
     public const int FontSize = 30;
 
     public TitleScreen() : base(Components.ScreenType.Title) {
-        var editor = new MenuBarButton("editor", FontSize, () => { });
+        var editor = new MenuBarButton("editor", FontSize, () => ScreenManager.FadeTo(new EditorScreen()));
         editor.SetAnchor(UiAnchor.MiddleRight);
         MenuBar.AddChild(editor);
 
@@ -54,12 +54,12 @@ public class TitleScreen : TitleScreenBase {
     }
 
     private void CheckForAppFailure() {
-        if (!GlobalData.TryRemove<AppRequestFailedFlag>(out var data)) {
+        if (!GlobalData.TryRemove<AppRequestFailedFlag>(out _)) {
             return;
         }
 
         AddChild(new ScreenDarkenOverlay());
 
-        DialogManager.Enqueue(new RetryLoadDialog(data.Message));
+        DialogManager.Enqueue(new RetryLoadDialog());
     }
 }

@@ -16,4 +16,8 @@
     <Image name="KeysYellow">KeysView/KeysView_yellowKeyPng.png</Image>
     <Image name="ScrollBar/ScrollBarBackground">ScrollBar/ScrollBarBackground.png</Image>
     <Image name="ScrollBar/ScrollBarHandle">ScrollBar/ScrollBarHandle.png</Image>
+    <Image name="MapEditor/Background">MapEditor/EditorBackground.png</Image>
+    <Image name="MapEditor/Tools" w="16" h="16">MapEditor/EditorTools.png</Image>
+    <Image name="MapEditor/Cursors" w="32" h="32">MapEditor/EditorCursors.png</Image>
+    <Image name="MapEditor/TransBackground">MapEditor/transBackGround.png</Image>
 </Atlas>

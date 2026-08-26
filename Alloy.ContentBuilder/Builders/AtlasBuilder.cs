@@ -141,7 +141,7 @@ public static class AtlasBuilder {
     }
 
     private static unsafe void ParseSheet(StbRectPack.stbrp_context* contextPtr, StaticSheet sheet, Atlas atlas) {
-        var image = ImageResult.FromMemory(File.ReadAllBytes(sheet.File));
+        var image = ImageResult.FromMemory(File.ReadAllBytes(sheet.File), ColorComponents.RedGreenBlueAlpha);
         var cutWidth = sheet.Width;
         var cutHeight = sheet.Height;
         
@@ -241,7 +241,7 @@ public static class AtlasBuilder {
     }
 
     private static unsafe void ParseAnimated(StbRectPack.stbrp_context* contextPtr, AnimatedSheet sheet, Atlas atlas) {
-        var image = ImageResult.FromMemory(File.ReadAllBytes(sheet.File));
+        var image = ImageResult.FromMemory(File.ReadAllBytes(sheet.File), ColorComponents.RedGreenBlueAlpha);
         var cutWidth = sheet.Width;
         var cutHeight = sheet.Height;
         
