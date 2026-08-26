@@ -1038,13 +1038,7 @@ public sealed class EditorScreen : Screen {
     }
 
     private static void AddOutline(Container layer, int x, int y, int width, int height, uint color, float alpha) {
-        layer.AddChild(new ColorRect(new ColorRectConfig { X = x, Y = y, Width = width, Height = 1, Color = color, Alpha = alpha }));
-        layer.AddChild(new ColorRect(new ColorRectConfig
-            { X = x, Y = y + height - 1, Width = width, Height = 1, Color = color, Alpha = alpha }));
-
-        layer.AddChild(new ColorRect(new ColorRectConfig { X = x, Y = y, Width = 1, Height = height, Color = color, Alpha = alpha }));
-        layer.AddChild(new ColorRect(new ColorRectConfig
-            { X = x + width - 1, Y = y, Width = 1, Height = height, Color = color, Alpha = alpha }));
+        layer.AddChild(new EditorOutlineRect(x, y, width, height, color, alpha));
     }
 
     private static uint RegionColor(int type) {

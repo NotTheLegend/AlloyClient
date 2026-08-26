@@ -2,18 +2,12 @@ using System.Collections.Generic;
 
 namespace AlloyClient.Editor;
 
-public sealed class EditorTileChange {
-    public readonly int X;
-    public readonly int Y;
-    public readonly EditorTileData Before;
-    public readonly EditorTileData After;
+public sealed class EditorTileChange(int x, int y, EditorTileData before, EditorTileData after) {
+    public readonly int X = x;
+    public readonly int Y = y;
+    public readonly EditorTileData Before = before.Clone();
+    public readonly EditorTileData After = after.Clone();
 
-    public EditorTileChange(int x, int y, EditorTileData before, EditorTileData after) {
-        X = x;
-        Y = y;
-        Before = before.Clone();
-        After = after.Clone();
-    }
 }
 
 public sealed class EditorActionSet {

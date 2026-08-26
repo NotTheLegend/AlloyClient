@@ -1,9 +1,9 @@
 namespace AlloyClient.Editor;
 
-public sealed class EditorMapDocument {
-    public readonly int Id;
-    public readonly EditorController Controller;
-    public readonly EditorMapData Map;
+public sealed class EditorMapDocument(int id, EditorMapData map) {
+    public readonly int Id = id;
+    public readonly EditorController Controller = new(map);
+    public readonly EditorMapData Map = map;
 
     public string JsonPath;
     public string WmapPath;
@@ -12,9 +12,4 @@ public sealed class EditorMapDocument {
     public float Zoom = 100f;
     public bool Grid = true;
 
-    public EditorMapDocument(int id, EditorMapData map) {
-        Id = id;
-        Map = map;
-        Controller = new EditorController(map);
-    }
 }

@@ -7,16 +7,11 @@ using AlloyClient.Assets.Libraries;
 
 namespace AlloyClient.Editor;
 
-public sealed class EditorCatalogEntry {
-    public readonly int Type;
-    public readonly string Id;
-    public readonly string Name;
+public sealed class EditorCatalogEntry(int type, string id, string name) {
+    public readonly int Type = type;
+    public readonly string Id = id;
+    public readonly string Name = name;
 
-    public EditorCatalogEntry(int type, string id, string name) {
-        Type = type;
-        Id = id;
-        Name = name;
-    }
 }
 
 public static class EditorCatalog {
