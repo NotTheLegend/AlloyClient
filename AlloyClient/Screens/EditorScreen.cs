@@ -113,6 +113,7 @@ public sealed class EditorScreen : Screen {
         _tileLayer.Visible = false;
         SelectDefaultGround();
         RefreshAll();
+
     }
 
     private void BuildTopBar() {
@@ -602,6 +603,10 @@ public sealed class EditorScreen : Screen {
     private void LoadMap() {
         var path = NativeFileDialog.OpenMap();
         if (string.IsNullOrWhiteSpace(path)) return;
+        LoadMap(path);
+    }
+
+    private void LoadMap(string path) {
         try {
             var map = EditorMapSerializer.Load(path);
             var document = AddDocument(map);

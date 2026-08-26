@@ -15,7 +15,7 @@ namespace AlloyClient.Game;
 
 public class MapTile(Vector2i position) {
 
-    public const int MaxTileData = 9;
+    public const int MaxTileData = 13;
 
     public readonly int X = position.X;
     public readonly int Y = position.Y;
@@ -81,7 +81,7 @@ public class MapTile(Vector2i position) {
     }
 
     public void Rebuild(Span<MapTile> tiles) {
-        _dataCount = TileBuilder.Build(this, _data.AsSpan(1, 8), tiles) + 1;
+        _dataCount = TileBuilder.Build(this, _data.AsSpan(1, MaxTileData - 1), tiles) + 1;
     }
 
     public TileData CloneWithBlend(int x, int y, Vector4 mask) {
@@ -107,8 +107,8 @@ public class MapTile(Vector2i position) {
     private struct RenderData {
         private TileData _;
 
-        public Span<TileData> AsSpan() => MemoryMarshal.CreateSpan(ref _, 9);
+        public Span<TileData> AsSpan() => MemoryMarshal.CreateSpan(ref _, MaxTileData);
         
-        public Span<TileData> AsSpan(int offset, int length) => MemoryMarshal.CreateSpan(ref _, 9).Slice(offset, length);
+        public Span<TileData> AsSpan(int offset, int length) => MemoryMarshal.CreateSpan(ref _, MaxTileData).Slice(offset, length);
     }
 }

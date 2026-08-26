@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -35,10 +36,22 @@ public static class EditorMapSerializer {
         var compressed = Convert.FromBase64String(root.GetProperty("data").GetString() ?? string.Empty);
         using var source = new MemoryStream(compressed);
         using var zlib = new ZLibStream(source, CompressionMode.Decompress);
-        using var indices = new BinaryReader(zlib, Encoding.UTF8, false);
+        using var decoded = new MemoryStream();
+        zlib.CopyTo(decoded);
+        var indices = decoded.ToArray();
+        var requiredBytes = checked(map.Tiles.Length * sizeof(ushort));
+        if (indices.Length < requiredBytes)
+            throw new InvalidDataException("JM tile data is shorter than the declared map dimensions.");
+
+        var littleEndianScore = CountValidIndices(indices, map.Tiles.Length, dictionary.GetArrayLength(), false);
+        var bigEndianScore = CountValidIndices(indices, map.Tiles.Length, dictionary.GetArrayLength(), true);
+        var bigEndian = bigEndianScore > littleEndianScore;
 
         for (var i = 0; i < map.Tiles.Length; i++) {
-            var index = indices.ReadUInt16();
+            var bytes = indices.AsSpan(i * sizeof(ushort), sizeof(ushort));
+            var index = bigEndian
+                ? BinaryPrimitives.ReadUInt16BigEndian(bytes)
+                : BinaryPrimitives.ReadUInt16LittleEndian(bytes);
             if (index >= dictionary.GetArrayLength()) continue;
             ReadJsonTile(dictionary[index], map.Tiles[i]);
         }
@@ -157,7 +170,7 @@ public static class EditorMapSerializer {
         if (entry.TryGetProperty("ground", out var ground))
             tile.GroundType = EditorCatalog.GetType(EditorDrawType.Ground, ground.GetString());
         if (entry.TryGetProperty("objs", out var objects) && objects.GetArrayLength() > 0) {
-            var obj = objects[0];
+            var obj = objects[objects.GetArrayLength() - 1];
             tile.ObjectType = EditorCatalog.GetType(EditorDrawType.Objects, obj.GetProperty("id").GetString());
             if (obj.TryGetProperty("name", out var name)) tile.ObjectConfig = name.GetString();
         }
@@ -167,6 +180,18 @@ public static class EditorMapSerializer {
             var text = terrain.ValueKind == JsonValueKind.String ? terrain.GetString() : terrain.GetRawText();
             int.TryParse(text, out tile.TerrainType);
         }
+    }
+
+    private static int CountValidIndices(byte[] data, int tileCount, int dictionaryCount, bool bigEndian) {
+        var valid = 0;
+        for (var i = 0; i < tileCount; i++) {
+            var bytes = data.AsSpan(i * sizeof(ushort), sizeof(ushort));
+            var index = bigEndian
+                ? BinaryPrimitives.ReadUInt16BigEndian(bytes)
+                : BinaryPrimitives.ReadUInt16LittleEndian(bytes);
+            if (index < dictionaryCount) valid++;
+        }
+        return valid;
     }
 
     private static JsonObject BuildJsonTile(EditorTileData tile) {
@@ -194,4 +219,3 @@ public static class EditorMapSerializer {
         writer.Write(bytes);
     }
 }
-

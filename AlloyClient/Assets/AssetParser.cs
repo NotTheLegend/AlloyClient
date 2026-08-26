@@ -15,6 +15,7 @@ namespace AlloyClient.Assets;
 public static class AssetParser {
 
     private static readonly ILogger Logger = ILogger.CreateLogger(nameof(AssetParser));
+    private static readonly object GroundLoadLock = new();
     
     public static async Task LoadAssetsAsync() {
         using var _ = TimedScope.EnterScope(Logger, "Loaded assets in {0}");
@@ -22,19 +23,28 @@ public static class AssetParser {
     }
 
     private static void ParseGround() {
-        var path = File.ReadAllText("Content/Xmls/Ground.xml");
-        var groundContainer = XElement.Parse(path).Elements("Ground");
-        Parallel.ForEach(groundContainer, ground => {
-            var props = new GroundProperties(ground);
-            lock (GroundLibrary.TypeToGroundProps)
-                GroundLibrary.TypeToGroundProps.Add(props.ObjectType, props);
-            
-            lock (GroundLibrary.TypeToTextureData)
-                GroundLibrary.TypeToTextureData.Add(props.ObjectType, new TextureData(ground));
-            
-            lock (GroundLibrary.IdToTileType)
-                GroundLibrary.IdToTileType.Add(props.ObjectId, props.ObjectType);
+        var corePath = Path.GetFullPath(Path.Combine("Content", "Xmls", "Ground.xml"));
+        ParseGroundFile(corePath);
+
+        var xmlFiles = Directory.GetFiles(Path.Combine("Content", "Xmls"), "*.xml");
+        Parallel.ForEach(xmlFiles, xmlFile => {
+            if (string.Equals(Path.GetFullPath(xmlFile), corePath, StringComparison.OrdinalIgnoreCase)) return;
+            ParseGroundFile(xmlFile);
         });
+    }
+
+    private static void ParseGroundFile(string xmlFile) {
+        var groundContainer = XElement.Parse(File.ReadAllText(xmlFile)).Elements("Ground");
+        foreach (var ground in groundContainer) {
+            var props = new GroundProperties(ground);
+            lock (GroundLoadLock) {
+                if (!GroundLibrary.TypeToGroundProps.ContainsKey(props.ObjectType)) {
+                    GroundLibrary.TypeToGroundProps.Add(props.ObjectType, props);
+                    GroundLibrary.TypeToTextureData.Add(props.ObjectType, new TextureData(ground));
+                }
+                GroundLibrary.IdToTileType.TryAdd(props.ObjectId, props.ObjectType);
+            }
+        }
     }
 
     private static void ParseObjects() {

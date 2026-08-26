@@ -80,6 +80,7 @@ public sealed class EditorMapRenderer {
         Render.StartDrawModel();
         for (var typeIndex = 0; typeIndex < (int)ModelType.Count; typeIndex++) {
             var modelType = (ModelType)typeIndex;
+            if (!ModelData.ModelRenderInfo.ContainsKey(modelType)) continue;
             Render.SetEntityModel(modelType);
             foreach (var entity in _entities) {
                 var render = entity.RenderBaseType;
@@ -110,11 +111,18 @@ public sealed class EditorMapRenderer {
         for (var y = 0; y < map.Height; y++) {
             for (var x = 0; x < map.Width; x++) {
                 var type = map.Tiles[x + y * map.Width].ObjectType;
-                if (type <= 0 || !ObjectLibrary.TypeToTextureData.ContainsKey((ushort)type)
-                    || !ObjectLibrary.TypeToObjectProps.TryGetValue((ushort)type, out var properties)) continue;
+                if (type <= 0) continue;
+                if (!ObjectLibrary.TypeToTextureData.ContainsKey((ushort)type)
+                    || !ObjectLibrary.TypeToObjectProps.TryGetValue((ushort)type, out var properties)) {
+                    continue;
+                }
                 var entity = new Entity { Properties = properties };
                 entity.SetType((ushort)type);
                 entity.SetPos(x + 0.5f, y + 0.5f);
+                if (entity.RenderBaseType is TypeGameObject or TypePlayer) {
+                    entity.RenderBaseType.Scale.Z = 0f;
+                    entity.RenderBaseType.Scale.W = 0f;
+                }
                 entity.RenderBaseType.SetVisibility(true);
                 entity.RenderBaseType.SetDepth(0.5f + y / (float)Math.Max(1, map.Height) * 0.4f);
                 _entities.Add(entity);
