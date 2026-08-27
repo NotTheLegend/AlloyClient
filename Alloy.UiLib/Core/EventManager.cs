@@ -13,6 +13,19 @@ public abstract class EventManager {
     
     internal EventManager() { }
 
+    private sealed class Listener(Delegate callback, Action<Event> invoke, bool useCapture) {
+
+        public readonly Delegate Callback = callback;
+
+        public readonly Action<Event> Invoke = invoke;
+
+        public readonly bool UseCapture = useCapture;
+
+        public bool Matches(Delegate callback, bool useCapture) {
+            return Callback == callback && UseCapture == useCapture;
+        }
+    }
+
     private enum QueueState {
         Add,
         Remove,
@@ -20,7 +33,6 @@ public abstract class EventManager {
 
     private record BroadcastData(string Type, EventManager Manager, QueueState State);
     private record EventData(string Type, Listener Listener, QueueState State);
-    private sealed record Listener(Delegate Callback, bool UseCapture);
 
     #region Broadcast
 
@@ -32,7 +44,6 @@ public abstract class EventManager {
 
     #endregion
     
-    
     private readonly Dictionary<string, Queue<EventData>> _pending = [];
 
     private readonly Dictionary<string, List<Listener>> _eventMap = [];
@@ -40,7 +51,6 @@ public abstract class EventManager {
     private readonly static Queue<Action> CompletedTasks = [];
 
     private readonly Stack<string> _currentEventState = [];
-    
     
     private static TaskState GetStatus(Task task) {
         if (task.IsFaulted) return TaskState.Faulted;
@@ -57,6 +67,7 @@ public abstract class EventManager {
             if (task.IsFaulted) {
                 Logger.Log(LogLevel.Error, task.Exception, "Task Failed");
             }
+
             QueueTaskFinish(callback);
         });
     }
@@ -66,6 +77,7 @@ public abstract class EventManager {
             if (task.IsFaulted) {
                 Logger.Log(LogLevel.Error, task.Exception, "Task Failed");
             }
+
             QueueTaskFinish(() => callback(GetStatus(t)));
         });
     }
@@ -75,6 +87,7 @@ public abstract class EventManager {
             if (task.IsFaulted) {
                 Logger.Log(LogLevel.Error, task.Exception, "Task Failed");
             }
+
             QueueTaskFinish(() => callback(t.Result));
         });
     }
@@ -88,26 +101,49 @@ public abstract class EventManager {
         });
     }
     
-    public void AddEventListener<T>(EventType<T> type, Action callback, bool capture = false) where T : Event => AddEventListener(type, new Listener(callback, capture));
+    public void AddEventListener<T>(EventType<T> type, Action callback, bool capture = false) where T : Event {
+        AddEventListener(type, callback, _ => callback(), capture);
+    }
     
-    public void AddEventListener<T>(EventType<T> type, Action<Event> callback, bool capture = false) where T : Event => AddEventListener(type, new Listener(callback, capture));
+    public void AddEventListener<T>(EventType<T> type, Action<Event> callback, bool capture = false) where T : Event {
+        AddEventListener(type, callback, callback, capture);
+    }
 
-    public void AddEventListener<T>(EventType<T> type, Action<T> callback, bool capture = false) where T : Event => AddEventListener(type, new Listener(callback, capture));
+    public void AddEventListener<T>(EventType<T> type, Action<T> callback, bool capture = false) where T : Event {
+        AddEventListener(type, callback, @event => callback((T)@event), capture);
+    }
 
-    private void AddEventListener<T>(EventType<T> type, Listener listener) where T : Event {
-        if (_eventMap.TryGetValue(type, out var listeners) && listeners.Contains(listener)) return;
+    private void AddEventListener<T>(EventType<T> type, Delegate callback, Action<Event> invoke, bool capture) where T : Event {
+        if (_eventMap.TryGetValue(type, out var listeners) && listeners.Exists(listener => listener.Matches(callback, capture))) {
+            return;
+        }
+
+        var listener = new Listener(callback, invoke, capture);
         HandleListener(new EventData(type, listener, QueueState.Add));
     }
     
-    public void RemoveEventListener<T>(EventType<T> type, Action callback, bool capture = false) where T : Event => RemoveEventListener(type, new Listener(callback, capture));
+    public void RemoveEventListener<T>(EventType<T> type, Action callback, bool capture = false) where T : Event {
+        RemoveEventListenerInternal(type, callback, capture);
+    }
     
-    public void RemoveEventListener<T>(EventType<T> type, Action<Event> callback, bool capture = false) where T : Event => RemoveEventListener(type, new Listener(callback, capture));
+    public void RemoveEventListener<T>(EventType<T> type, Action<Event> callback, bool capture = false) where T : Event {
+        RemoveEventListenerInternal(type, callback, capture);
+    }
     
-    public void RemoveEventListener<T>(EventType<T> type, Action<T> callback, bool capture = false) where T : Event => RemoveEventListener(type, new Listener(callback, capture));
+    public void RemoveEventListener<T>(EventType<T> type, Action<T> callback, bool capture = false) where T : Event {
+        RemoveEventListenerInternal(type, callback, capture);
+    }
 
-    private void RemoveEventListener<T>(EventType<T> type, Listener listener) where T : Event {
-        if (!_eventMap.TryGetValue(type, out var listeners)) return;
-        if (!listeners.Contains(listener)) return;
+    private void RemoveEventListenerInternal<T>(EventType<T> type, Delegate callback, bool capture) where T : Event {
+        if (!_eventMap.TryGetValue(type, out var listeners)) {
+            return;
+        }
+
+        var listener = listeners.Find(item => item.Matches(callback, capture));
+        if (listener is null) {
+            return;
+        }
+
         HandleListener(new EventData(type, listener, QueueState.Remove));
     }
 
@@ -119,6 +155,7 @@ public abstract class EventManager {
                 _pending[pending.Type] = [];
                 _pending[pending.Type].Enqueue(pending);
             }
+
             return;
         }
         
@@ -127,8 +164,9 @@ public abstract class EventManager {
         }
 
         var hasType = _eventMap.TryGetValue(pending.Type, out var listeners);
-        if (pending.State == QueueState.Add && !hasType)
+        if (pending.State == QueueState.Add && !hasType) {
             _eventMap[pending.Type] = listeners = [];
+        }
             
         switch (pending.State) {
             case QueueState.Add:
@@ -164,8 +202,9 @@ public abstract class EventManager {
     }
 
     private void HandlePending(string type) {
-        if (!_pending.TryGetValue(type, out var queue))
+        if (!_pending.TryGetValue(type, out var queue)) {
             return;
+        }
         
         while (queue.TryDequeue(out var pending)) {
             HandleListener(pending);
@@ -185,8 +224,9 @@ public abstract class EventManager {
     }
 
     internal static void BroadcastEvent(Event @event) {
-        if (!BroadcastMap.TryGetValue(@event.Type, out var sprites))
+        if (!BroadcastMap.TryGetValue(@event.Type, out var sprites)) {
             return;
+        }
 
         _isBroadcasting = true;
 
@@ -199,22 +239,20 @@ public abstract class EventManager {
     }
 
     public bool DispatchEvent(Event @event) {
-        if (string.IsNullOrWhiteSpace(@event.Type)) throw new Exception("Event Type must not be null, empty, or whitespace");
+        if (string.IsNullOrWhiteSpace(@event.Type)) {
+            throw new Exception("Event Type must not be null, empty, or whitespace");
+        }
         
         var bubble = @event.Bubbles;
 
-        if (!bubble && !_eventMap.ContainsKey(@event.Type))
+        if (!bubble && !_eventMap.ContainsKey(@event.Type)) {
             return false;
+        }
 
         var prev = @event.Target;
         @event.SetTarget(this as Sprite);
 
-        bool stop;
-        if (bubble) {
-            stop = BubbleEvent(@event);
-        } else {
-           stop = InvokeEvent(@event, EventPhase.Target);
-        }
+        var stop = bubble ? BubbleEvent(@event) : InvokeEvent(@event, EventPhase.Target);
         
         @event.SetTarget(prev);
         return stop;
@@ -239,20 +277,19 @@ public abstract class EventManager {
         
         var isCapture = mouseEvent.Phase == EventPhase.Capture;
         foreach (var listener in listeners) {
-            if (isCapture && !listener.UseCapture)
+            if (isCapture && !listener.UseCapture) {
                 continue;
+            }
 
-            if (listener.Callback is Action callback)
-                callback();
-            else
-                listener.Callback.DynamicInvoke(mouseEvent);
-            
-            if (mouseEvent.ImmediateStop)
+            listener.Invoke(mouseEvent);
+
+            if (mouseEvent.ImmediateStop) {
                 break;
+            }
         }
-        
+
         HandlePending(_currentEventState.Pop());
-        
+
         return mouseEvent.Stop || mouseEvent.ImmediateStop;
     }
 
@@ -271,45 +308,46 @@ public abstract class EventManager {
 
         var isCapture = phase == EventPhase.Capture;
         foreach (var listener in listeners) {
-            if (isCapture && !listener.UseCapture)
+            if (isCapture && !listener.UseCapture) {
                 continue;
+            }
 
-            if (listener.Callback is Action callback)
-                callback();
-            else
-                listener.Callback.DynamicInvoke(@event);
-            
-            if (@event.ImmediateStop)
+            listener.Invoke(@event);
+
+            if (@event.ImmediateStop) {
                 break;
+            }
         }
+
         HandlePending(_currentEventState.Pop());
-        
+
         return @event.Stop || @event.ImmediateStop;
     }
     
     private bool BubbleEvent(Event @event) {
         var chain = new List<EventManager>();
-        
         var obj = this as DisplayContainer;
-
         while ((obj = obj!.Parent) != null) {
             chain.Add(obj);
         }
 
-        //capture phase
+        // Capture phase
         for (var i = chain.Count - 1; i >= 0; i--) {
-            if (chain[i].InvokeEvent(@event, EventPhase.Capture))
+            if (chain[i].InvokeEvent(@event, EventPhase.Capture)) {
                 return true;
+            }
         }
 
-        // target phase
-        if (InvokeEvent(@event, EventPhase.Target))
+        // Target phase
+        if (InvokeEvent(@event, EventPhase.Target)) {
             return true;
+        }
 
-        // bubble phase
-        for (var i = 0; i < chain.Count; i++) {
-            if (chain[i].InvokeEvent(@event, EventPhase.Bubble))
+        // Bubble phase
+        foreach (var manager in chain) {
+            if (manager.InvokeEvent(@event, EventPhase.Bubble)) {
                 return true;
+            }
         }
 
         return false;

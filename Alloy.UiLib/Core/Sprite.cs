@@ -126,6 +126,8 @@ public partial class Sprite : DisplayContainer {
 
     private bool _canInteract = true;
 
+    private float _boundsRotation = float.NaN;
+
     #endregion
 
     private void InternalUpdate() {
@@ -216,13 +218,26 @@ public partial class Sprite : DisplayContainer {
     private void Update() {
         InternalUpdate();
 
-        if (MouseEnabled && _canInteract && Stage.PointerPositionValid && IsInBounds(Stage.Mouse.GetMousePosition())) {
-            Stage.CurrentHighestSprite = this;
-        }
+        ResolvePointerTargetSelf();
 
         var span = GetChildrenSpan();
         foreach (var child in span) {
             child.Update();
+        }
+    }
+
+    private void ResolvePointerTargetSelf() {
+        if (MouseEnabled && _canInteract && Stage.PointerPositionValid && IsInBounds(Stage.Mouse.GetMousePosition())) {
+            Stage.CurrentHighestSprite = this;
+        }
+    }
+
+    internal void ResolvePointerTarget() {
+        ResolvePointerTargetSelf();
+
+        var span = GetChildrenSpan();
+        foreach (var child in span) {
+            child.ResolvePointerTarget();
         }
     }
 
@@ -231,8 +246,23 @@ public partial class Sprite : DisplayContainer {
     internal void InternalUpdateLoop() {
         BroadcastEvent(_cachedEnterFrame);
         HandleFinishedTasks();
-        
+
+        RefreshRotationBounds();
         Update();
+    }
+
+    private void RefreshRotationBounds() {
+        var span = GetChildrenSpan();
+        foreach (var child in span) {
+            child.RefreshRotationBounds();
+        }
+
+        if (_boundsRotation == Rotation) {
+            return;
+        }
+
+        _boundsRotation = Rotation;
+        Parent?.UpdateBounds();
     }
     
     /// <summary>

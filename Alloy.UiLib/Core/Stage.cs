@@ -56,15 +56,9 @@ public sealed class Stage : Sprite {
         GTween.Update(gameTime);
         Timer.Update(gameTime);
 
-        if (CurrentHighestSprite != _lastHighestSprite) {
-            CurrentHighestSprite?.DispatchEvent(new MouseEvent(MouseEvent.MouseOver, _mouse.GetMousePosition(), _mouse.GetScrollDelta(), _keyboard.IsShiftDown(), _keyboard.IsCtrlDown(), _keyboard.IsAltDown()));
-            _lastHighestSprite?.DispatchEvent(new MouseEvent(MouseEvent.MouseOut, _mouse.GetMousePosition(), _mouse.GetScrollDelta(), _keyboard.IsShiftDown(), _keyboard.IsCtrlDown(), _keyboard.IsAltDown()));
-            _lastHighestSprite = CurrentHighestSprite;
-        }
-
         CurrentHighestSprite = null;
-        
         InternalUpdateLoop();
+        UpdateHoverTarget();
     }
 
     public void Draw(GameTime gameTime) {
@@ -95,9 +89,15 @@ public sealed class Stage : Sprite {
         }
 
         switch (button) {
-            case MouseButton.Button1: _leftClickTarget = _lastHighestSprite; break;
-            case MouseButton.Button2: _middleClickTarget = _lastHighestSprite; break;
-            case MouseButton.Button3: _rightClickTarget = _lastHighestSprite; break;
+            case MouseButton.Button1:
+                _leftClickTarget = _lastHighestSprite;
+                break;
+            case MouseButton.Button2:
+                _rightClickTarget = _lastHighestSprite;
+                break;
+            case MouseButton.Button3:
+                _middleClickTarget = _lastHighestSprite;
+                break;
         }
             
         DispatchMouseEvent(button.AsEventType(true));
@@ -117,8 +117,12 @@ public sealed class Stage : Sprite {
                 }
                 DispatchMouseEvent(MouseEvent.LeftClick);
                 break;
-            case MouseButton.Button2 when _middleClickTarget == _lastHighestSprite: DispatchMouseEvent(MouseEvent.MiddleClick); break;
-            case MouseButton.Button3 when _rightClickTarget == _lastHighestSprite: DispatchMouseEvent(MouseEvent.RightClick); break;
+            case MouseButton.Button2 when _rightClickTarget == _lastHighestSprite:
+                DispatchMouseEvent(MouseEvent.RightClick);
+                break;
+            case MouseButton.Button3 when _middleClickTarget == _lastHighestSprite:
+                DispatchMouseEvent(MouseEvent.MiddleClick);
+                break;
         }
     }
 
@@ -137,6 +141,10 @@ public sealed class Stage : Sprite {
     internal void SetMousePosition(Vector2 position) {
         PointerPositionValid = true;
         _mouse.SetPosition(position);
+
+        CurrentHighestSprite = null;
+        ResolvePointerTarget();
+        UpdateHoverTarget();
         DispatchMouseEvent(MouseEvent.MouseMove);
     }
 
@@ -161,5 +169,21 @@ public sealed class Stage : Sprite {
 
         var args = new MouseEvent(type, _mouse.GetMousePosition(), _mouse.GetScrollDelta(), _keyboard.IsShiftDown(), _keyboard.IsCtrlDown(), _keyboard.IsAltDown());
         _lastHighestSprite.DispatchEvent(args);
+    }
+
+    private void UpdateHoverTarget() {
+        if (CurrentHighestSprite == _lastHighestSprite) {
+            return;
+        }
+
+        var mousePosition = _mouse.GetMousePosition();
+        var scrollDelta = _mouse.GetScrollDelta();
+        var shift = _keyboard.IsShiftDown();
+        var ctrl = _keyboard.IsCtrlDown();
+        var alt = _keyboard.IsAltDown();
+
+        _lastHighestSprite?.DispatchEvent(new MouseEvent(MouseEvent.MouseOut, mousePosition, scrollDelta, shift, ctrl, alt));
+        CurrentHighestSprite?.DispatchEvent(new MouseEvent(MouseEvent.MouseOver, mousePosition, scrollDelta, shift, ctrl, alt));
+        _lastHighestSprite = CurrentHighestSprite;
     }
 }

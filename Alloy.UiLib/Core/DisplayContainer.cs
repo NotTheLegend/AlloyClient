@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Alloy.UiLib.Utils;
-using OpenTK.Mathematics;
 
 namespace Alloy.UiLib.Core;
 
@@ -34,13 +32,16 @@ public abstract class DisplayContainer : EventManager {
 
     public T AddChildAt<T>(T child, int index) where T : Sprite {
         ValidateChild(child);
-        BoundsCheck(index);
+        ValidateInsertionIndex(index);
 
         if (child.Parent == this) {
-            if (_children[index - 1] != child) {
-                _children.Remove(child);
-                _children.Insert(index - 1, child);
+            var currentIndex = _children.IndexOf(child);
+            var targetIndex = Math.Min(index, _children.Count - 1);
+            if (currentIndex != targetIndex) {
+                _children.RemoveAt(currentIndex);
+                _children.Insert(targetIndex, child);
             }
+
             return child;
         }
 
@@ -87,7 +88,7 @@ public abstract class DisplayContainer : EventManager {
         if (child == null || child.Parent != this)
             return child;
         
-        DispatchEvent(new Event(Event.Removed));
+        child.DispatchEvent(new Event(Event.Removed, true));
 
         if (Stage != null) {
             //TODO[FOCUS]: clear focus if child matches
@@ -113,29 +114,36 @@ public abstract class DisplayContainer : EventManager {
     }
 
     public void RemoveChildren(int start = 0, int end = int.MaxValue) {
-        if (end == int.MaxValue) end = _children.Count;
-        if (start < 0 || end > _children.Count || end < start) throw new Exception("The supplied index is out of bounds");
+        if (end == int.MaxValue) {
+            end = _children.Count;
+        }
+
+        if (start < 0 || start > _children.Count || end > _children.Count || end < start) {
+            throw new Exception("The supplied index is out of bounds");
+        }
 
         var numRemovals = end - start;
-        while (numRemovals >= 0)
-        {
+        while (numRemovals > 0) {
             RemoveChildAt(start);
             numRemovals--;
         }
     }
 
     public void SetChildIndex(Sprite child, int index) {
-        BoundsCheck(index);
-        if (child.Parent != this) 
+        ValidateChildIndex(index);
+
+        if (child.Parent != this) {
             return;
+        }
 
         _children.Remove(child);
         _children.Insert(index, child);
     }
 
     public void SwapChildren(Sprite child1, Sprite child2) {
-        if (child1.Parent != this || child2.Parent != this)
+        if (child1.Parent != this || child2.Parent != this) {
             return;
+        }
 
         var idx1 = _children.IndexOf(child1);
         var idx2 = _children.IndexOf(child2);
@@ -145,8 +153,8 @@ public abstract class DisplayContainer : EventManager {
     }
 
     public void SwapChildrenAt(int index1, int index2) {
-        BoundsCheck(index1);
-        BoundsCheck(index2);
+        ValidateChildIndex(index1);
+        ValidateChildIndex(index2);
         
         (_children[index1], _children[index2]) = (_children[index2], _children[index1]);
     }
@@ -173,16 +181,15 @@ public abstract class DisplayContainer : EventManager {
         var yMax = SelfContentHeight;
 
         foreach (var child in _children) {
-            var (x, y) = child.Anchor.GetOffset(child.Width, child.Height);
-            var pos = new Vector2(child.X + x, child.Y + y);
-            xMin = Math.Min(xMin, pos.X);
-            xMax = Math.Max(xMax, pos.X + child.Width);
-            yMin = Math.Min(yMin, pos.Y);
-            yMax = Math.Max(yMax, pos.Y + child.Height);
+            child.GetBoundsInParent(out var childMinX, out var childMinY, out var childMaxX, out var childMaxY);
+            xMin = Math.Min(xMin, childMinX);
+            xMax = Math.Max(xMax, childMaxX);
+            yMin = Math.Min(yMin, childMinY);
+            yMax = Math.Max(yMax, childMaxY);
         }
         
-        var newWidth = (int)(xMax - xMin);
-        var newHeight = (int)(yMax - yMin);
+        var newWidth = (int)MathF.Ceiling(xMax - xMin);
+        var newHeight = (int)MathF.Ceiling(yMax - yMin);
 
         if (newWidth == ContentWidth && newHeight == ContentHeight) {
             return;
@@ -206,8 +213,15 @@ public abstract class DisplayContainer : EventManager {
         }
     }
 
-    private void BoundsCheck(int index) {
-        if (index < 0) throw new Exception("Index can not be less than 0");
-        if (index > _children.Count) throw new Exception("Index can not be greater than number of children");
+    private void ValidateInsertionIndex(int index) {
+        if (index < 0 || index > _children.Count) {
+            throw new Exception("Index must be between zero and the number of children");
+        }
+    }
+
+    private void ValidateChildIndex(int index) {
+        if (index < 0 || index >= _children.Count) {
+            throw new Exception("Index must reference an existing child position");
+        }
     }
 }

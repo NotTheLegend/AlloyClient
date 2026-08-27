@@ -87,9 +87,15 @@ public static class SpriteRender {
     }
 
     private static void Flush() {
-        _instanceBuffer.SetData(_instanceData.AsSpan());
-        _indexBuffer.SetData(_indices.AsSpan());
-        _vertexBuffer.SetData(_vertices.AsSpan());
+        if (_indexCount == 0) {
+            _instanceCount = 0;
+            _vertexCount = 0;
+            return;
+        }
+
+        _instanceBuffer.SetData(_instanceData.AsSpan(0, _instanceCount));
+        _indexBuffer.SetData(_indices.AsSpan(0, _indexCount));
+        _vertexBuffer.SetData(_vertices.AsSpan(0, _vertexCount));
         
         GL.DrawElements(PrimitiveType.Triangles, _indexCount, DrawElementsType.UnsignedShort, 0);
         

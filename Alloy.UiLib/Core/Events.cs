@@ -81,7 +81,7 @@ public class MouseEvent(EventType<MouseEvent> type, Vector2i coords = new (), Ve
     public readonly static EventType<MouseEvent> ScrollVertical = "scrollVertical";
     public readonly static EventType<MouseEvent> ScrollHorizontal = "scrollHorizontal";
 
-    private readonly static HashSet<EventType<MouseEvent>> ButtonTypes = [LeftClick, MiddleClick, RightClick, LeftDown, MiddleDown, RightUp, LeftUp, MiddleUp, RightUp, ScrollVertical, ScrollHorizontal];
+    private readonly static HashSet<EventType<MouseEvent>> ButtonTypes = [LeftClick, MiddleClick, RightClick, LeftDown, MiddleDown, RightDown, LeftUp, MiddleUp, RightUp, ScrollVertical, ScrollHorizontal];
     
     internal static bool IsButtonType(EventType<MouseEvent> type) => ButtonTypes.Contains(type);
 }
