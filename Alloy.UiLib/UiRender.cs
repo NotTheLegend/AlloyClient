@@ -122,6 +122,8 @@ public static partial class UiRender {
     private static void HandleEvents(EventArgs args) {
         if (args is FocusEventArgs fea) {
             SetFocus(fea.GotFocus);
+            if (!fea.GotFocus)
+                Stage.ResetMouseState();
         }
         if (!IsFocused) return;
         

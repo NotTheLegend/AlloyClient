@@ -137,6 +137,13 @@ public sealed class Stage : Sprite {
         DispatchMouseEvent(MouseEvent.MouseMove);
     }
 
+    internal void ResetMouseState() {
+        _mouse = default;
+        _leftClickTarget = null;
+        _middleClickTarget = null;
+        _rightClickTarget = null;
+    }
+
     private void DispatchMouseEvent(EventType<MouseEvent> type) {
         if (_lastHighestSprite is null) {
             return;
