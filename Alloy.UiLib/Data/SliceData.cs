@@ -15,7 +15,9 @@ public static class SliceLookup {
     }
 
     internal static SliceData GetSlice(string lookup) {
-        if (!Slices.TryGetValue(lookup, out var slice)) throw new Exception($"Unable to find data for lookup: {lookup}");
+        if (!Slices.TryGetValue(lookup, out var slice)) {
+            throw new Exception($"Unable to find data for lookup: {lookup}");
+        }
 
         return slice;
     }

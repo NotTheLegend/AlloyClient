@@ -5,21 +5,18 @@ namespace Alloy.UiLib.Extra;
 
 public struct ColorTransform : IEquatable<ColorTransform> {
 
-    public readonly static ColorTransform Default = new ColorTransform(1f, 1f, 1f, 1f);
+    public readonly static ColorTransform Default = new(1f, 1f, 1f, 1f);
 
-    private Vector4 _mult = new Vector4(1f);
-    private Vector4 _add = new Vector4(0f);
-
-    public ColorTransform(float redMult, float greenMult, float blueMult, float alphaMult) : this(redMult, greenMult, blueMult, alphaMult,
-        0, 0, 0, 0) {
-    }
+    private Vector4 _mult = new(1f);
+    private Vector4 _add = new(0f);
 
     public ColorTransform(byte redOff, byte greenOff, byte blueOff, byte alphaOff) :
         this(1, 1, 1, 1, redOff, greenOff, blueOff, alphaOff) {
     }
 
-    public ColorTransform(float redMult, float greenMult, float blueMult, float alphaMult, byte redOff, byte greenOff, byte blueOff,
-        byte alphaOff) {
+    public ColorTransform(float redMult, float greenMult, float blueMult, float alphaMult, byte redOff = 0, byte greenOff = 0,
+        byte blueOff = 0,
+        byte alphaOff = 0) {
         _mult = new Vector4(redMult, greenMult, blueMult, alphaMult);
         _add = new Vector4(redOff, greenOff, blueOff, alphaOff);
     }

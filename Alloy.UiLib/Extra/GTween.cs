@@ -86,7 +86,7 @@ public struct Tween {
     public EaseType Type;
     public Action OnFinish;
 
-    //TODO: add a start param otherwise delay dont really work right
+    // TODO: add a start param otherwise delay dont really work right
     public static Tween New(Sprite sprite, Easing ease, int durationMs, float end, EaseType type, int delayMs = 0,
         Action onFinish = null) {
         if (delayMs <= 0) {
@@ -102,7 +102,7 @@ public struct Tween {
             Start = GetStart(sprite, type),
             End = end,
             Type = type,
-            OnFinish = onFinish
+            OnFinish = onFinish,
         };
     }
 
@@ -116,7 +116,7 @@ public struct Tween {
             EaseType.X => sprite.X,
             EaseType.Y => sprite.Y,
             EaseType.Alpha => sprite.Alpha,
-            _ => throw new Exception()
+            _ => throw new Exception(),
         };
     }
 }
@@ -124,11 +124,11 @@ public struct Tween {
 public enum EaseType {
     X,
     Y,
-    Alpha
+    Alpha,
 }
 
 public enum Easing {
     Linear,
     SineInOut,
-    BackInOut
+    BackInOut,
 }

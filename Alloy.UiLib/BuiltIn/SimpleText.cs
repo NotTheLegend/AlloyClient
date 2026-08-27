@@ -1,4 +1,5 @@
-﻿using Alloy.UiLib.Core;
+﻿using System;
+using Alloy.UiLib.Core;
 using Alloy.UiLib.Data;
 using Alloy.UiLib.Rendering;
 using OpenTK.Mathematics;
@@ -24,9 +25,9 @@ public struct TextConfig {
 
 public sealed class SimpleText : Sprite {
 
-    private enum RenderType : int {
+    private enum RenderType {
         Normal = 0,
-        Small = 1
+        Small = 1,
     }
 
     public string Text { get; private set; }
@@ -146,7 +147,6 @@ public sealed class SimpleText : Sprite {
                 zero.X = _lineWrapStart;
                 boundHeight += _font.LineHeight * scale;
                 zero.Y += _font.LineHeight * scale;
-                continue;
             }
         }
 
@@ -166,7 +166,7 @@ public sealed class SimpleText : Sprite {
         if (activeVertexCount > VertexData.Length) {
             ResizeBackBuffer();
         } else if (activeVertexCount < VertexData.Length) {
-            System.Array.Clear(VertexData, activeVertexCount, VertexData.Length - activeVertexCount);
+            Array.Clear(VertexData, activeVertexCount, VertexData.Length - activeVertexCount);
         }
 
         OverridePrimCount = size * 2;

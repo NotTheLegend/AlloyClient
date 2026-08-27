@@ -8,7 +8,7 @@ namespace Alloy.UiLib.Core;
 public enum EventPhase {
     Capture,
     Target,
-    Bubble
+    Bubble,
 }
 
 public record struct EventType<T>(string Id) where T : Event {

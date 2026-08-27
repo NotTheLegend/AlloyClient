@@ -1,5 +1,4 @@
 ﻿using System;
-using Alloy.Common;
 using OpenTK.Mathematics;
 
 namespace Alloy.UiLib.Core;

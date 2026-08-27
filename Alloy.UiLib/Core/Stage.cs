@@ -11,11 +11,11 @@ using MouseState = Alloy.UiLib.Input.MouseState;
 namespace Alloy.UiLib.Core;
 
 public sealed class Stage : Sprite {
-    public Vector2 ScreenScale { get; private set; }
+    public Vector2 ScreenScale;
     public Vector2i Dimensions => new(StageWidth, StageHeight);
-    public int StageWidth { get; private set; }
-    public int StageHeight { get; private set; }
-    public static GameTime GameTime { get; private set; }
+    public int StageWidth;
+    public int StageHeight;
+    public static GameTime GameTime;
     public KeyboardState Keyboard => _keyboard;
     private KeyboardState _keyboard;
     private ManualTextInput _manualTextInput;
@@ -324,7 +324,7 @@ public sealed class Stage : Sprite {
             MouseButton.Button1 => _leftPointerCapture,
             MouseButton.Button2 => _rightPointerCapture,
             MouseButton.Button3 => _middlePointerCapture,
-            _ => null
+            _ => null,
         };
     }
 

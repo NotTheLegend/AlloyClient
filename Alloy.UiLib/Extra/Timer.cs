@@ -16,14 +16,10 @@ public sealed class Timer {
     private readonly List<Delegate> _timerEvents = [];
     private readonly List<Delegate> _timerCompleteEvents = [];
 
-    public int CurrentCount { get; private set; }
-
-    public int RepeatCount { get; set; }
-
-    public double Delay { get; set; }
-
+    public int CurrentCount;
+    public int RepeatCount;
+    public double Delay;
     private bool _isRunning;
-
     private long _startTime;
 
     public Timer(double delay, int repeatCount = 0) {
@@ -118,5 +114,5 @@ public sealed class Timer {
 
 public enum TimerEvent {
     Timer,
-    TimerComplete
+    TimerComplete,
 }

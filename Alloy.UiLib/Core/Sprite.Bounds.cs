@@ -19,7 +19,7 @@ public partial class Sprite {
             CollisionType.Vertices => ComplexHitbox(localPosition, pos),
             CollisionType.Custom => CustomHitbox(new Vector2i((int)(pos.X - _worldTransform.TX), (int)(pos.Y - _worldTransform.TY))),
             CollisionType.CustomNoScale => CustomHitbox(new Vector2i((int)localPosition.X, (int)localPosition.Y)),
-            _ => throw new ArgumentOutOfRangeException($"{CollisionType} not handled in InternalBoundsCheck")
+            _ => throw new ArgumentOutOfRangeException($"{CollisionType} not handled in InternalBoundsCheck"),
         };
     }
 
@@ -70,7 +70,7 @@ public partial class Sprite {
         GetTransformedBounds(transform, ContentWidth, ContentHeight, out minX, out minY, out maxX, out maxY);
     }
 
-    /// <param name="pos">mouse position local to sprite</param>
+    /// <param name="pos">Mouse position local to sprite</param>
     protected virtual bool CustomHitbox(Vector2i pos) {
         throw new MissingMethodException("Sprite must define override for CustomHitbox");
     }

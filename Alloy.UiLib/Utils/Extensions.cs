@@ -17,7 +17,7 @@ public static class Extensions {
             MouseButton.Button6 => MouseButtonFlags.Button6,
             MouseButton.Button7 => MouseButtonFlags.Button7,
             MouseButton.Button8 => MouseButtonFlags.Button8,
-            _ => throw new ArgumentOutOfRangeException(nameof(button), button, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(button), button, null),
         };
 
         internal EventType<MouseEvent> AsEventType(bool down) => button switch {
@@ -29,7 +29,7 @@ public static class Extensions {
             MouseButton.Button6 => "",
             MouseButton.Button7 => "",
             MouseButton.Button8 => "", //TODO: extra mouse buttons
-            _ => throw new ArgumentOutOfRangeException(nameof(button), button, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(button), button, null),
         };
     }
 
@@ -44,7 +44,7 @@ public static class Extensions {
             UiAnchor.LeftBottom => (0f, -h),
             UiAnchor.MiddleBottom => (-w / 2f, -h),
             UiAnchor.RightBottom => (-w, -h),
-            _ => (0f, 0f)
+            _ => (0f, 0f),
         };
     }
 

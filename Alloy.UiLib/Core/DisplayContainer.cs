@@ -11,9 +11,8 @@ public abstract class DisplayContainer : EventManager {
 
     public int NumChildren => _children.Count;
 
-    public Stage Stage { get; internal set; }
-
-    public Sprite Parent { get; private set; }
+    public Stage Stage;
+    public Sprite Parent;
 
     internal float SelfContentWidth;
 
@@ -111,8 +110,9 @@ public abstract class DisplayContainer : EventManager {
     }
 
     public Sprite RemoveChildAt(int index) {
-        if (index >= 0 && index < _children.Count)
+        if (index >= 0 && index < _children.Count) {
             return RemoveChild(_children[index]);
+        }
 
         return null;
     }
@@ -165,8 +165,9 @@ public abstract class DisplayContainer : EventManager {
 
     private void DispatchChildren(Event @event) {
         foreach (var child in _children) {
-            if (child.DispatchEvent(@event))
+            if (child.DispatchEvent(@event)) {
                 break;
+            }
 
             child.DispatchChildren(@event);
         }
@@ -174,6 +175,7 @@ public abstract class DisplayContainer : EventManager {
 
     private void SetStageReferenceChildren(Stage stage) {
         Stage = stage;
+
         foreach (var child in _children) {
             child.SetStageReferenceChildren(stage);
         }
@@ -213,7 +215,9 @@ public abstract class DisplayContainer : EventManager {
 
         var obj = Parent;
         while (obj != null) {
-            if (obj == child) throw new Exception("Tried to add parent as child");
+            if (obj == child) {
+                throw new Exception("Tried to add parent as child");
+            }
 
             obj = obj.Parent;
         }

@@ -1,4 +1,5 @@
-﻿using OpenTK.Platform;
+﻿using System.Runtime.CompilerServices;
+using OpenTK.Platform;
 
 namespace Alloy.UiLib.Input;
 
@@ -40,7 +41,7 @@ public struct KeyboardState {
         return true;
     }
 
-    [System.Runtime.CompilerServices.InlineArray(8)]
+    [InlineArray(8)]
     private struct InternalState {
         private uint _;
 
@@ -59,7 +60,7 @@ public struct KeyboardState {
 internal struct ManualTextInput {
 
     private const double InitDelay = 500; // ms
-    private const double RepeatDelay = 33; //ms
+    private const double RepeatDelay = 33; // ms
 
     private Key _lastKeyDown;
     private double _nextTickTime;

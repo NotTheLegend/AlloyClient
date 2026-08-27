@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Alloy.Engine.Graphics;
 using Alloy.Common.Structs;
 using Alloy.ContentReader;
+using Alloy.Engine.Graphics;
 using Alloy.UiLib.Core;
 
 namespace Alloy.UiLib.Data;
@@ -54,7 +54,7 @@ public class BitmapFont {
         PixelRange = range;
     }
 
-    //todo do this better
+    // Todo: do this better
     public float ValidateOutlineSize(float size) {
         return 2 * Math.Max(Math.Min(size, PixelRange / 2f), 0f);
     }

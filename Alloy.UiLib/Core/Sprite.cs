@@ -11,7 +11,7 @@ namespace Alloy.UiLib.Core;
 
 public partial class Sprite : DisplayContainer {
 
-    public readonly static Vector4 NoScissor = new Vector4(0, 0, 10000, 10000);
+    public readonly static Vector4 NoScissor = new(0, 0, 10000, 10000);
 
     public int X {
         get;
@@ -70,9 +70,9 @@ public partial class Sprite : DisplayContainer {
 
     public float Rotation = 0;
 
-    public UiAnchor Anchor { get; private set; } = UiAnchor.LeftTop;
+    public UiAnchor Anchor = UiAnchor.LeftTop;
 
-    public CollisionType CollisionType { get; private set; } = CollisionType.Square;
+    public CollisionType CollisionType = CollisionType.Square;
 
     public bool Visible = true;
 
@@ -89,7 +89,7 @@ public partial class Sprite : DisplayContainer {
     public bool TooltipMode = false;
 
     public bool EnableClipRect = false;
-    public bool ClipChildren = false;
+    public bool ClipChildren;
 
     internal bool TweenActive = false;
 
@@ -163,12 +163,12 @@ public partial class Sprite : DisplayContainer {
                 (mousePosition.X < UiRender.Screen.X / 2 ? UiAnchor.LeftBottom : UiAnchor.RightBottom).GetOffset(ContentWidth,
                     ContentHeight);
 
-            var localMouse = Parent is null ? (Vector2)mousePosition : Parent.GlobalToLocal(mousePosition);
+            var localMouse = Parent?.GlobalToLocal(mousePosition) ?? mousePosition;
             localX = localMouse.X;
             localY = localMouse.Y;
         } else if (_isDragging) {
             var mousePosition = Stage.Mouse.GetMousePosition();
-            var localMouse = Parent is null ? (Vector2)mousePosition : Parent.GlobalToLocal(mousePosition);
+            var localMouse = Parent?.GlobalToLocal(mousePosition) ?? mousePosition;
             var dragTransform = Transform2D.Create(0f, 0f, ScaleX, ScaleY, Rotation, _anchorX, _anchorY);
             var transformedOffset = dragTransform.TransformPoint(_dragOffset);
             localX = localMouse.X - transformedOffset.X;
@@ -266,7 +266,7 @@ public partial class Sprite : DisplayContainer {
             child.RefreshRotationBounds();
         }
 
-        if (_boundsRotation == Rotation) {
+        if (Math.Abs(_boundsRotation - Rotation) < 0.0001) {
             return;
         }
 
@@ -303,32 +303,20 @@ public partial class Sprite : DisplayContainer {
 
     public void SetHitboxType(CollisionType collision) => CollisionType = collision;
 
+    /// <summary>
+    /// Returns the pointer position in this sprite's local coordinate space.
+    /// </summary>
     public Vector2i GetRelativeMousePosition() {
-        if (Stage is null) {
-            // flash returns junk? coords if not on stage
-            return Vector2i.Zero; // TODO: check how flash handles mouse x/y when not on stage
-        }
-
-        /* returns coords relative to vertex data
-         * uses scale to map mouse to sprite
-         *
-         *
-         *
-         *
-         */
-
-        var pos = Stage.Mouse.GetMousePosition();
-        var origin = LocalToGlobal(Vector2.Zero);
-        return new Vector2i((int)(pos.X - origin.X), (int)(pos.Y - origin.Y));
-    }
-
-    protected Vector2i GetLocalMousePosition() {
         if (Stage is null) {
             return Vector2i.Zero;
         }
 
-        var pos = GlobalToLocal(Stage.Mouse.GetMousePosition());
-        return new Vector2i((int)pos.X, (int)pos.Y);
+        var position = GlobalToLocal(Stage.Mouse.GetMousePosition());
+        return new Vector2i((int)position.X, (int)position.Y);
+    }
+
+    protected Vector2i GetLocalMousePosition() {
+        return GetRelativeMousePosition();
     }
 
     public Vector2 LocalToGlobal(Vector2 point) {

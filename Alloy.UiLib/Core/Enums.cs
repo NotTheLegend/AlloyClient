@@ -11,7 +11,7 @@ public enum UiAnchor : byte {
     MiddleRight = 5,
     LeftBottom = 6,
     MiddleBottom = 7,
-    RightBottom = 8
+    RightBottom = 8,
 }
 
 public enum TextureType : byte {
@@ -47,17 +47,17 @@ public enum CutEdges : uint {
     Right = TopRight | BottomRight,
     Top = TopLeft | TopRight,
     Bottom = BottomLeft | BottomRight,
-    All = Top | Bottom
+    All = Top | Bottom,
 }
 
-public enum FontType : int {
+public enum FontType {
     Normal = 0,
     Bold = 1,
-    Bolder = 2
+    Bolder = 2,
 }
 
 public enum TaskState {
     Completed,
     Faulted,
-    Canceled
+    Canceled,
 }

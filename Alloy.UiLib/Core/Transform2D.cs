@@ -14,7 +14,7 @@ public struct Transform2D {
     public static Transform2D Identity() {
         return new Transform2D {
             M11 = 1f,
-            M22 = 1f
+            M22 = 1f,
         };
     }
 
@@ -25,7 +25,7 @@ public struct Transform2D {
             M11 = scaleX * cos,
             M12 = -scaleX * sin,
             M21 = scaleY * sin,
-            M22 = scaleY * cos
+            M22 = scaleY * cos,
         };
 
         transform.TX = x + transform.M11 * anchorX + transform.M12 * anchorY;
@@ -40,11 +40,11 @@ public struct Transform2D {
             M21 = parent.M21 * local.M11 + parent.M22 * local.M21,
             M22 = parent.M21 * local.M12 + parent.M22 * local.M22,
             TX = parent.M11 * local.TX + parent.M12 * local.TY + parent.TX,
-            TY = parent.M21 * local.TX + parent.M22 * local.TY + parent.TY
+            TY = parent.M21 * local.TX + parent.M22 * local.TY + parent.TY,
         };
     }
 
-    public bool TryInvert(out Transform2D inverse) {
+    public readonly bool TryInvert(out Transform2D inverse) {
         var determinant = M11 * M22 - M12 * M21;
         if (MathF.Abs(determinant) <= float.Epsilon) {
             inverse = default;
@@ -56,7 +56,7 @@ public struct Transform2D {
             M11 = M22 * reciprocal,
             M12 = -M12 * reciprocal,
             M21 = -M21 * reciprocal,
-            M22 = M11 * reciprocal
+            M22 = M11 * reciprocal,
         };
 
         inverse.TX = -(inverse.M11 * TX + inverse.M12 * TY);
@@ -64,14 +64,14 @@ public struct Transform2D {
         return true;
     }
 
-    public Vector2 TransformPoint(Vector2 point) {
+    public readonly Vector2 TransformPoint(Vector2 point) {
         return new Vector2(
             M11 * point.X + M12 * point.Y + TX,
             M21 * point.X + M22 * point.Y + TY
         );
     }
 
-    public Vector2 TransformVector(Vector2 vector) {
+    public readonly Vector2 TransformVector(Vector2 vector) {
         return new Vector2(
             M11 * vector.X + M12 * vector.Y,
             M21 * vector.X + M22 * vector.Y
