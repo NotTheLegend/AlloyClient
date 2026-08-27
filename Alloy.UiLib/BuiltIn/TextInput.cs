@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Data;
@@ -56,14 +57,24 @@ public sealed class TextInput : Sprite {
     private readonly Action _onChange;
 
     private readonly NineSliceRect _textBox;
-    private readonly SimpleText _caret;
+    private readonly ColorRect _caret;
+    private readonly ColorRect _selectionHighlight;
     private int _caretIndex = -1;
-    private bool _isCaretActive = false;
+    private int _selectionAnchor = -1;
+    private int _selectionEnd = -1;
+    private bool _isCaretActive;
     private double _lastCaretUpdateTime;
     private int _startIndex;
-    private bool _unFocusOnClick = false;
+    private int _endIndex;
+    private bool _mouseSelecting;
 
-    private Vector2i _mousePosition;
+    private readonly Stack<EditState> _undo = new();
+    private readonly Stack<EditState> _redo = new();
+
+    private struct EditState {
+        public string Text;
+        public int Caret;
+    }
 
     public TextInput(InputConfig config) {
         X = config.X;
@@ -90,9 +101,25 @@ public sealed class TextInput : Sprite {
         Extra1.X = _outlineThickness;
 
         _inputText.Append(config.DefaultText);
+
+        var selectionConfig = new ColorRectConfig {
+            X = CutX * 3,
+            Y = CutY * 3,
+            Width = 1,
+            Height = (int)(_font.LineHeight * _fontScale),
+            Color = 0x4A90E2,
+            Alpha = 0.45f,
+        };
+        _selectionHighlight = new ColorRect(selectionConfig);
+        _selectionHighlight.Visible = false;
+        AddChild(_selectionHighlight);
         
-        var caretConfig = new TextConfig { Text = "|", FontSize = config.FontSize, FontType = config.FontType, Color = config.Color, OutlineColor = config.OutlineColor, OutlineThickness = (int)_outlineThickness };
-        _caret = new SimpleText(caretConfig);
+        var caretConfig = new ColorRectConfig {
+            Width = 1,
+            Height = (int)(_font.LineHeight * _fontScale),
+            Color = config.Color,
+        };
+        _caret = new ColorRect(caretConfig);
         _caret.Visible = false;
         AddChild(_caret);
         
@@ -102,7 +129,7 @@ public sealed class TextInput : Sprite {
         
         SetHitboxType(CollisionType.CustomNoScale);
         
-        AddEventListener(MouseEvent.LeftClick, OnMouseClick);
+        AddEventListener(MouseEvent.LeftDown, OnSelectionDown);
         
         ResizeBackBuffer();
         FillData();
@@ -126,12 +153,27 @@ public sealed class TextInput : Sprite {
     }
     
     private void OnFrameEnter() {
-        if (!_isCaretActive) return;
+        if (!_isCaretActive) {
+            return;
+        }
+
+        if (HasSelection()) {
+            _caret.Visible = false;
+            return;
+        }
+
         var gameTime = Stage.GameTime;
-        if (gameTime.TotalMs - _lastCaretUpdateTime < 500) return;
+        if (gameTime.TotalMs - _lastCaretUpdateTime < 500) {
+            return;
+        }
 
         _lastCaretUpdateTime = gameTime.TotalMs;
         _caret.Visible = !_caret.Visible;
+    }
+
+    private void ShowCaretNow(bool visible) {
+        _caret.Visible = visible;
+        _lastCaretUpdateTime = Stage.GameTime.TotalMs;
     }
 
     private void FillData() {
@@ -141,6 +183,7 @@ public sealed class TextInput : Sprite {
 
         var (start, end) = _font.GetStartIndex(_inputText, _caretIndex, _width - startX * 2 - _caret.Width, _outlineThickness, _fontScale);
         _startIndex = start;
+        _endIndex = end;
         OverridePrimCount = 2;
         
         var idx = 4;
@@ -148,16 +191,16 @@ public sealed class TextInput : Sprite {
         var caret = false;
 
         var password = _password && !_isDefaultText;
+        var hasSelection = HasSelection();
         
         for (var i = start; i < end; i++) {
 
-            if (!caret && i == _caretIndex) {
+            if (!hasSelection && !caret && i == _caretIndex) {
                 caret = true;
                 i--;
                 
                 _caret.X = (int)zero.X;
                 _caret.Y = CutY * 3;
-                zero.X += _caret.Width;
                 
                 continue;
             }
@@ -168,7 +211,9 @@ public sealed class TextInput : Sprite {
                 case '\r': 
                     continue;
                 default:
-                    if (!_font.Glyphs.TryGetValue(c, out var glyph)) continue;
+                    if (!_font.Glyphs.TryGetValue(c, out var glyph)) {
+                        continue;
+                    }
 
                     var uv = glyph.UV;
                     var pos = glyph.Position;
@@ -195,120 +240,275 @@ public sealed class TextInput : Sprite {
             _caret.X = (int)zero.X;
             _caret.Y = CutY * 3;
         }
+
+        UpdateSelectionHighlight(start, end, password);
         
         SetGraphicsBuffer();
     }
 
-    protected override bool CustomHitbox(Vector2i pos) {
-        var hit = pos.X > 0 && pos.X < _textBox.Width && pos.Y > 0 && pos.Y < _textBox.Height;
-
-        _unFocusOnClick = !hit && ActiveInput == this;
-        
-        _mousePosition = pos;
-        return hit;
-    }
-
-    private void OnMouseClick(MouseEvent args) {
-        if (_unFocusOnClick) {
-            UnFocus();
+    private void UpdateSelectionHighlight(int visibleStart, int visibleEnd, bool password) {
+        if (!HasSelection()) {
+            _selectionHighlight.Visible = false;
             return;
         }
-        
-        
+
+        var (selectionStart, selectionEnd) = GetSelectionRange();
+        selectionStart = Math.Max(selectionStart, visibleStart);
+        selectionEnd = Math.Min(selectionEnd, visibleEnd);
+        if (selectionStart >= selectionEnd) {
+            _selectionHighlight.Visible = false;
+            return;
+        }
+
+        var x1 = GetTextX(visibleStart, selectionStart, password);
+        var x2 = GetTextX(visibleStart, selectionEnd, password);
+        _selectionHighlight.X = (int)x1;
+        _selectionHighlight.Resize(Math.Max(1, (int)MathF.Ceiling(x2 - x1)), (int)(_font.LineHeight * _fontScale));
+        _selectionHighlight.Visible = true;
+    }
+
+    private float GetTextX(int start, int end, bool password) {
+        var x = CutX * 3f;
+        for (var i = start; i < end && i < _inputText.Length; i++) {
+            var c = password ? '*' : _inputText[i];
+            if (!_font.Glyphs.TryGetValue(c, out var glyph)) {
+                continue;
+            }
+
+            if (i < _inputText.Length - 1) {
+                var next = password ? '*' : _inputText[i + 1];
+                _font.Kernings.TryGetValue((c, next), out var kern);
+                x += kern * _fontScale;
+            }
+
+            x += glyph.Advance * _fontScale;
+        }
+
+        return x;
+    }
+
+    protected override bool CustomHitbox(Vector2i pos) {
+        return pos.X > 0 && pos.X < _textBox.Width && pos.Y > 0 && pos.Y < _textBox.Height;
+    }
+
+    private void OnSelectionDown(MouseEvent args) {
         if (ActiveInput != this && _clickActivate) {
             ActiveInput?.UnFocus();
             Focus();
         }
-        
-        SetCaretIndex();
+
+        if (ActiveInput != this) {
+            return;
+        }
+
+        var position = GetPositionAtX(GetLocalMousePosition().X);
+        if (args.ShiftKey) {
+            if (_selectionAnchor < 0) {
+                _selectionAnchor = GetCaretPosition();
+            }
+        } else {
+            _selectionAnchor = position;
+        }
+        _selectionEnd = position;
+        SetCaretPosition(position);
+        ShowCaretNow(!HasSelection());
+        FillData();
+
+        _mouseSelecting = true;
+        Stage.AddEventListener(MouseEvent.MouseMove, OnSelectionMove, true);
+        Stage.AddEventListener(MouseEvent.LeftUp, OnSelectionUp, true);
     }
 
-    private void SetCaretIndex() {
-        var i = 1;// Offset by 1 for rect
-        for (var j = _startIndex; j < _inputText.Length; j++) {
-            var p1 = VertexData[i * 4 + 1].Position.X;
-            var p2 = VertexData[i * 4 + 3].Position.X;
-            var half = (p2 - p1) / 2f;
-
-            if (j == _startIndex && _mousePosition.X <= p1) {
-                _caretIndex = 0;
-            } else if (_mousePosition.X >= p1 && _mousePosition.X < p1 + half) {
-                _caretIndex = _startIndex + i - 1;
-            } else if (_mousePosition.X <= p2 && _mousePosition.X >= p2 - half) {
-                _caretIndex = _startIndex + i;
-            } else if (j + 1 == _inputText.Length && _mousePosition.X >= p2) {
-                _caretIndex = -1;
-            }
-
-            i++;
+    private void OnSelectionMove(MouseEvent args) {
+        if (!_mouseSelecting) {
+            return;
         }
-        
+
+        var localX = GetLocalMousePosition().X;
+        var position = localX <= 0
+            ? 0
+            : localX >= _textBox.Width
+                ? _inputText.Length
+                : GetPositionAtX(localX);
+
+        _selectionEnd = position;
+        SetCaretPosition(position);
+        ShowCaretNow(!HasSelection());
         FillData();
+    }
+
+    private void OnSelectionUp(MouseEvent args) {
+        if (!_mouseSelecting) {
+            return;
+        }
+
+        StopMouseSelection();
+        if (!HasSelection()) {
+            ClearSelection();
+        }
+    }
+
+    private void StopMouseSelection() {
+        _mouseSelecting = false;
+        if (Stage is null) {
+            return;
+        }
+
+        Stage.RemoveEventListener(MouseEvent.MouseMove, OnSelectionMove, true);
+        Stage.RemoveEventListener(MouseEvent.LeftUp, OnSelectionUp, true);
+    }
+
+    private int GetPositionAtX(int x) {
+        if (_inputText.Length == 0 || x <= CutX * 3) {
+            return _startIndex;
+        }
+
+        var password = _password && !_isDefaultText;
+        for (var i = _startIndex; i < _endIndex; i++) {
+            var left = GetTextX(_startIndex, i, password);
+            var right = GetTextX(_startIndex, i + 1, password);
+            if (x < (left + right) * 0.5f) {
+                return i;
+            }
+        }
+
+        return _endIndex;
+    }
+
+    private int GetCaretPosition() {
+        return _caretIndex < 0 ? _inputText.Length : _caretIndex;
+    }
+
+    private void SetCaretPosition(int position) {
+        position = Math.Clamp(position, 0, _inputText.Length);
+        _caretIndex = position == _inputText.Length ? -1 : position;
+    }
+
+    private bool HasSelection() {
+        return _selectionAnchor >= 0 && _selectionEnd >= 0 && _selectionAnchor != _selectionEnd;
+    }
+
+    private (int, int) GetSelectionRange() {
+        return (Math.Min(_selectionAnchor, _selectionEnd), Math.Max(_selectionAnchor, _selectionEnd));
+    }
+
+    private void ClearSelection() {
+        _selectionAnchor = -1;
+        _selectionEnd = -1;
+        _selectionHighlight.Visible = false;
+    }
+
+    private void SelectAll() {
+        if (_inputText.Length == 0) {
+            return;
+        }
+
+        _selectionAnchor = 0;
+        _selectionEnd = _inputText.Length;
+        SetCaretPosition(_selectionEnd);
+        ShowCaretNow(false);
+        FillData();
+    }
+
+    private void MoveCaret(int position, bool extendSelection) {
+        var previous = GetCaretPosition();
+        position = Math.Clamp(position, 0, _inputText.Length);
+        if (extendSelection) {
+            if (_selectionAnchor < 0) {
+                _selectionAnchor = previous;
+            }
+            _selectionEnd = position;
+            if (_selectionAnchor == _selectionEnd) {
+                ClearSelection();
+            }
+        } else {
+            ClearSelection();
+        }
+
+        SetCaretPosition(position);
+        ShowCaretNow(!HasSelection());
+        FillData();
+    }
+
+    private int FindWordLeft(int position) {
+        while (position > 0 && char.IsWhiteSpace(_inputText[position - 1])) {
+            position--;
+        }
+
+        while (position > 0 && !char.IsWhiteSpace(_inputText[position - 1])) {
+            position--;
+        }
+        return position;
+    }
+
+    private int FindWordRight(int position) {
+        while (position < _inputText.Length && char.IsWhiteSpace(_inputText[position])) {
+            position++;
+        }
+
+        while (position < _inputText.Length && !char.IsWhiteSpace(_inputText[position])) {
+            position++;
+        }
+        return position;
     }
     
     internal void OnManualTextInput(Key key) {
-        switch (key) {
-            case Key.Backspace when _inputText.Length > 0:
-                if (_caretIndex == -1) {
-                    _inputText.Remove(_inputText.Length - 1, 1);
-                } else if (_caretIndex > 0) {
-                    _caretIndex--;
-                    _inputText.Remove(_caretIndex, 1);
-                }
-                FillData();
-                _onChange?.Invoke();
-                break;
-            case Key.Delete when _caretIndex < _inputText.Length && _caretIndex >= 0:
-                _inputText.Remove(_caretIndex, 1);
-                if (_caretIndex == _inputText.Length) {
-                    _caretIndex = -1;
-                }
-                FillData();
-                _onChange?.Invoke();
-                break;
-            case Key.C when Stage.Keyboard.IsOnlyCtrlDown() && Toolkit.Clipboard.GetClipboardFormat() == ClipboardFormat.Text:
-                //todo
-                //Toolkit.Clipboard.SetClipboardText();
-                break;
-            case Key.V when Stage.Keyboard.IsOnlyCtrlDown() && Toolkit.Clipboard.GetClipboardFormat() == ClipboardFormat.Text:
-                var text = Toolkit.Clipboard.GetClipboardText();
+        var ctrl = Stage.Keyboard.IsCtrlDown();
+        var shift = Stage.Keyboard.IsShiftDown();
 
-                if (string.IsNullOrEmpty(text)) {
-                    return;
-                }
-                
-                var span = text.AsSpan(0, Math.Min(text.Length, _maxCharacters - _inputText.Length));
-                
-                foreach (var input in span) { // Not ideal for long pastes but need to filter for invalid characters
-                    AddChar(input);
-                }
-                
-                FillData();
-                _onChange?.Invoke();
+        switch (key) {
+            case Key.A when ctrl:
+                SelectAll();
                 break;
-            case Key.A when Stage.Keyboard.IsOnlyCtrlDown():
-                //todo
+            case Key.C when ctrl:
+                CopySelection();
+                break;
+            case Key.X when ctrl:
+                CutSelection();
+                break;
+            case Key.V when ctrl:
+                PasteClipboard();
+                break;
+            case Key.Z when ctrl && !shift:
+                Undo();
+                break;
+            case Key.Y when ctrl:
+            case Key.Z when ctrl && shift:
+                Redo();
+                break;
+            case Key.Backspace when _inputText.Length > 0:
+                DeleteBackward(ctrl);
+                break;
+            case Key.Delete when _inputText.Length > 0:
+                DeleteForward(ctrl);
                 break;
             case Key.LeftArrow:
-                if (_caretIndex > 0) {
-                    _caretIndex--;
-                    FillData();
+                if (HasSelection() && !shift) {
+                    var (start, _) = GetSelectionRange();
+                    MoveCaret(start, false);
+                    break;
                 }
 
-                if (_caretIndex == -1) {
-                    _caretIndex = _inputText.Length - 1;
-                    FillData();
-                }
+                var left = GetCaretPosition();
+                left = ctrl ? FindWordLeft(left) : left - 1;
+                MoveCaret(left, shift);
                 break;
             case Key.RightArrow:
-                if (_caretIndex != -1) {
-                    _caretIndex++;
-
-                    if (_caretIndex == _inputText.Length) {
-                        _caretIndex = -1;
-                    }
-                    FillData();
+                if (HasSelection() && !shift) {
+                    var (_, end) = GetSelectionRange();
+                    MoveCaret(end, false);
+                    break;
                 }
+
+                var right = GetCaretPosition();
+                right = ctrl ? FindWordRight(right) : right + 1;
+                MoveCaret(right, shift);
+                break;
+            case Key.Home:
+                MoveCaret(0, shift);
+                break;
+            case Key.End:
+                MoveCaret(_inputText.Length, shift);
                 break;
         }
     }
@@ -317,25 +517,205 @@ public sealed class TextInput : Sprite {
         if (text.Length != 1) {
             return;
         }
-        
+
+        if (!CanAddChar(text[0])) {
+            return;
+        }
+        var selectedLength = 0;
+        if (HasSelection()) {
+            var (start, end) = GetSelectionRange();
+            selectedLength = end - start;
+        }
+
+        if (_inputText.Length - selectedLength >= _maxCharacters) {
+            return;
+        }
+
+        RecordUndo();
+        DeleteSelection(false);
         AddChar(text[0]);
-        
-        FillData();
-        _onChange?.Invoke();
+        FinishEdit();
+    }
+
+    private bool CanAddChar(char input) {
+        if (char.IsControl(input)) {
+            return false;
+        }
+
+        if (char.IsWhiteSpace(input) && input != ' ') {
+            return false;
+        }
+        return _font.Glyphs.ContainsKey(input);
     }
 
     private void AddChar(char input) {
-        if (char.IsControl(input)) return;
-        if (char.IsWhiteSpace(input) && input != ' ') return;
-        if (!_font.Glyphs.ContainsKey(input)) return;
-        if (_inputText.Length == _maxCharacters) return;
-        
-        if (_caretIndex == -1) {
-            _inputText.Append(input);
-        } else {
-            _inputText.Insert(_caretIndex, input);
-            _caretIndex++;
+        if (_inputText.Length == _maxCharacters) {
+            return;
         }
+
+        var position = GetCaretPosition();
+        _inputText.Insert(position, input);
+        SetCaretPosition(position + 1);
+    }
+
+    private void CopySelection() {
+        if (_password || !HasSelection()) {
+            return;
+        }
+
+        var (start, end) = GetSelectionRange();
+        Toolkit.Clipboard.SetClipboardText(_inputText.ToString(start, end - start));
+    }
+
+    private void CutSelection() {
+        if (_password || !HasSelection()) {
+            return;
+        }
+
+        CopySelection();
+        RecordUndo();
+        DeleteSelection(false);
+        FinishEdit();
+    }
+
+    private void PasteClipboard() {
+        if (Toolkit.Clipboard.GetClipboardFormat() != ClipboardFormat.Text) {
+            return;
+        }
+
+        var clipboardText = Toolkit.Clipboard.GetClipboardText();
+        if (string.IsNullOrEmpty(clipboardText)) {
+            return;
+        }
+
+        var replacementLength = HasSelection() ? GetSelectionRange().Item2 - GetSelectionRange().Item1 : 0;
+        var available = _maxCharacters - (_inputText.Length - replacementLength);
+        if (available <= 0) {
+            return;
+        }
+
+        var filtered = new StringBuilder(Math.Min(clipboardText.Length, available));
+        foreach (var input in clipboardText) {
+            if (!CanAddChar(input)) {
+                continue;
+            }
+            filtered.Append(input);
+            if (filtered.Length == available) {
+                break;
+            }
+        }
+
+        if (filtered.Length == 0) {
+            return;
+        }
+
+        RecordUndo();
+        DeleteSelection(false);
+        var position = GetCaretPosition();
+        _inputText.Insert(position, filtered);
+        SetCaretPosition(position + filtered.Length);
+        FinishEdit();
+    }
+
+    private void DeleteBackward(bool byWord) {
+        if (HasSelection()) {
+            RecordUndo();
+            DeleteSelection(false);
+            FinishEdit();
+            return;
+        }
+
+        var end = GetCaretPosition();
+        if (end == 0) {
+            return;
+        }
+
+        var start = byWord ? FindWordLeft(end) : end - 1;
+        RecordUndo();
+        _inputText.Remove(start, end - start);
+        SetCaretPosition(start);
+        FinishEdit();
+    }
+
+    private void DeleteForward(bool byWord) {
+        if (HasSelection()) {
+            RecordUndo();
+            DeleteSelection(false);
+            FinishEdit();
+            return;
+        }
+
+        var start = GetCaretPosition();
+        if (start == _inputText.Length) {
+            return;
+        }
+
+        var end = byWord ? FindWordRight(start) : start + 1;
+        RecordUndo();
+        _inputText.Remove(start, end - start);
+        SetCaretPosition(start);
+        FinishEdit();
+    }
+
+    private bool DeleteSelection(bool recordUndo) {
+        if (!HasSelection()) {
+            return false;
+        }
+
+        if (recordUndo) {
+            RecordUndo();
+        }
+        var (start, end) = GetSelectionRange();
+        _inputText.Remove(start, end - start);
+        ClearSelection();
+        SetCaretPosition(start);
+        return true;
+    }
+
+    private void RecordUndo() {
+        _undo.Push(new EditState { Text = _inputText.ToString(), Caret = GetCaretPosition() });
+        while (_undo.Count > 128) {
+            var states = _undo.ToArray();
+            _undo.Clear();
+            for (var i = states.Length - 2; i >= 0; i--) {
+                _undo.Push(states[i]);
+            }
+        }
+        _redo.Clear();
+    }
+
+    private void Undo() {
+        if (_undo.Count == 0) {
+            return;
+        }
+
+        _redo.Push(new EditState { Text = _inputText.ToString(), Caret = GetCaretPosition() });
+        ApplyEditState(_undo.Pop());
+    }
+
+    private void Redo() {
+        if (_redo.Count == 0) {
+            return;
+        }
+
+        _undo.Push(new EditState { Text = _inputText.ToString(), Caret = GetCaretPosition() });
+        ApplyEditState(_redo.Pop());
+    }
+
+    private void ApplyEditState(EditState state) {
+        _inputText.Clear();
+        _inputText.Append(state.Text);
+        _isDefaultText = false;
+        ClearSelection();
+        SetCaretPosition(state.Caret);
+        FinishEdit();
+    }
+
+    private void FinishEdit() {
+        ClearSelection();
+        ShowCaretNow(true);
+        FillData();
+        _onChange?.Invoke();
     }
 
     public bool HasText(bool ignoreWhitespace) {
@@ -353,7 +733,8 @@ public sealed class TextInput : Sprite {
         }
         
         _isCaretActive = true;
-        _caret.Visible = true;
+        ClearSelection();
+        ShowCaretNow(true);
         _caretIndex = -1;
         _onFocus?.Invoke();
 
@@ -365,14 +746,17 @@ public sealed class TextInput : Sprite {
     }
 
     public void UnFocus(bool clearText = false) {
+        StopMouseSelection();
         ActiveInput = null;
         _isCaretActive = false;
         _caretIndex = -1;
+        ClearSelection();
         _caret.Visible = false;
         _onUnfocus?.Invoke();
 
-        if (clearText)
+        if (clearText) {
             _inputText.Clear();
+        }
         
         if (_inputText.Length == 0) {
             SetDefault();

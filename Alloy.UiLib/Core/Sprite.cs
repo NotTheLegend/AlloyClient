@@ -281,6 +281,18 @@ public partial class Sprite : DisplayContainer {
         var pos = Stage.Mouse.GetMousePosition();
         return new Vector2i((int)(pos.X - _trueX), (int)(pos.Y - _trueY));
     }
+
+    protected Vector2i GetLocalMousePosition() {
+        if (Stage is null) {
+            return Vector2i.Zero;
+        }
+
+        var pos = Stage.Mouse.GetMousePosition();
+        return new Vector2i(
+            (int)((pos.X - _trueX) / _trueScale.X),
+            (int)((pos.Y - _trueY) / _trueScale.Y)
+        );
+    }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static float GetScale(int contentWidth, int newWidth) => contentWidth == 0 ? 0f : (float) newWidth / contentWidth;
