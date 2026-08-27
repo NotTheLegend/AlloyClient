@@ -10,12 +10,14 @@ public struct ContainerConfig {
     public UiAnchor Anchor = UiAnchor.LeftTop;
     public bool EnableClip = false;
 
-    public ContainerConfig() { }
+    public ContainerConfig() {
+    }
 }
 
 public class Container : Sprite {
-    public Container() : this(new ContainerConfig()) { }
-    
+    public Container() : this(new ContainerConfig()) {
+    }
+
     public Container(ContainerConfig config) {
         X = config.X;
         Y = config.Y;

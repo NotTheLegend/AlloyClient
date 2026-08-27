@@ -5,23 +5,24 @@ using System.Runtime.InteropServices;
 namespace Alloy.UiLib.Core;
 
 public abstract class DisplayContainer : EventManager {
-    
-    internal DisplayContainer() { }
+
+    internal DisplayContainer() {
+    }
 
     public int NumChildren => _children.Count;
-    
+
     public Stage Stage { get; internal set; }
-    
+
     public Sprite Parent { get; private set; }
-    
+
     internal float SelfContentWidth;
 
     internal float SelfContentHeight;
-    
+
     internal int ContentWidth;
 
     internal int ContentHeight;
-    
+
     private readonly List<Sprite> _children = [];
 
     internal ReadOnlySpan<Sprite> GetChildrenSpan() {
@@ -54,7 +55,7 @@ public abstract class DisplayContainer : EventManager {
         var addedToStage = (Stage != null && child.Stage == null);
         if (addedToStage)
             child.SetStageReferenceChildren(Stage);
-        
+
         child.DispatchEvent(new Event(Event.Added));
 
         if (addedToStage) {
@@ -62,7 +63,7 @@ public abstract class DisplayContainer : EventManager {
             child.DispatchEvent(evnt);
             child.DispatchChildren(evnt);
         }
-        
+
         return child;
     }
 
@@ -77,6 +78,7 @@ public abstract class DisplayContainer : EventManager {
     public Sprite GetChildAt(int index) {
         if (index >= 0 && index < _children.Count)
             return _children[index];
+
         return null;
     }
 
@@ -87,11 +89,12 @@ public abstract class DisplayContainer : EventManager {
     public T RemoveChild<T>(T child) where T : Sprite {
         if (child == null || child.Parent != this)
             return child;
-        
+
         child.DispatchEvent(new Event(Event.Removed, true));
 
         if (Stage != null) {
-            //TODO[FOCUS]: clear focus if child matches
+            Stage.ClearFocusWithin(child);
+            Stage.ReleasePointersWithin(child);
 
             var evnt = new Event(Event.RemovedFromStage);
             child.DispatchEvent(evnt);
@@ -101,7 +104,7 @@ public abstract class DisplayContainer : EventManager {
 
         child.Parent = null;
         _children.Remove(child);
-        
+
         UpdateBounds();
 
         return child;
@@ -110,6 +113,7 @@ public abstract class DisplayContainer : EventManager {
     public Sprite RemoveChildAt(int index) {
         if (index >= 0 && index < _children.Count)
             return RemoveChild(_children[index]);
+
         return null;
     }
 
@@ -155,7 +159,7 @@ public abstract class DisplayContainer : EventManager {
     public void SwapChildrenAt(int index1, int index2) {
         ValidateChildIndex(index1);
         ValidateChildIndex(index2);
-        
+
         (_children[index1], _children[index2]) = (_children[index2], _children[index1]);
     }
 
@@ -163,6 +167,7 @@ public abstract class DisplayContainer : EventManager {
         foreach (var child in _children) {
             if (child.DispatchEvent(@event))
                 break;
+
             child.DispatchChildren(@event);
         }
     }
@@ -187,7 +192,7 @@ public abstract class DisplayContainer : EventManager {
             yMin = Math.Min(yMin, childMinY);
             yMax = Math.Max(yMax, childMaxY);
         }
-        
+
         var newWidth = (int)MathF.Ceiling(xMax - xMin);
         var newHeight = (int)MathF.Ceiling(yMax - yMin);
 
@@ -205,10 +210,11 @@ public abstract class DisplayContainer : EventManager {
         if (child == null) throw new Exception("Tried to add null as child");
         if (child == this) throw new Exception("Tried to add self as child");
         if (child is Stage) throw new Exception("Tried to add stage as child");
-        
+
         var obj = Parent;
         while (obj != null) {
             if (obj == child) throw new Exception("Tried to add parent as child");
+
             obj = obj.Parent;
         }
     }

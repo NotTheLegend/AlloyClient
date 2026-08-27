@@ -6,7 +6,7 @@ using Alloy.Engine;
 namespace Alloy.UiLib.Extra;
 
 public sealed class Timer {
-    
+
     private const long TicksPerMs = 10000;
 
     private readonly static Queue<Timer> Queue = [];
@@ -15,11 +15,11 @@ public sealed class Timer {
     private readonly Queue<(TimerEvent, Delegate, bool)> _queue = [];
     private readonly List<Delegate> _timerEvents = [];
     private readonly List<Delegate> _timerCompleteEvents = [];
-    
+
     public int CurrentCount { get; private set; }
-    
+
     public int RepeatCount { get; set; }
-    
+
     public double Delay { get; set; }
 
     private bool _isRunning;
@@ -50,7 +50,7 @@ public sealed class Timer {
         while (Queue.TryDequeue(out var timer)) {
             Timers.Add(timer);
         }
-        
+
         foreach (var timer in Timers) {
             timer.Tick(gameTime);
         }
@@ -77,7 +77,7 @@ public sealed class Timer {
                     break;
             }
         }
-        
+
         var current = Stopwatch.GetTimestamp();
         var dt = (current - _startTime) / TicksPerMs;
 
@@ -93,6 +93,7 @@ public sealed class Timer {
             foreach (var callback in _timerCompleteEvents) {
                 callback.DynamicInvoke();
             }
+
             _isRunning = false;
         }
 
@@ -106,10 +107,10 @@ public sealed class Timer {
             Console.WriteLine("not a valid callback");
             return;
         }
-        
+
         _queue.Enqueue((timerEvent, callback, true));
     }
-    
+
     public void RemoveEventListener(TimerEvent timerEvent, Delegate callback) {
         _queue.Enqueue((timerEvent, callback, false));
     }

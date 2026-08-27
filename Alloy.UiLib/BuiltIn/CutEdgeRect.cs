@@ -18,11 +18,12 @@ public struct CutEdgeConfig {
 
     public bool MouseEnabled = false;
 
-    public CutEdgeConfig() { }
+    public CutEdgeConfig() {
+    }
 }
 
 public sealed class CutEdgeRect : Sprite {
-       
+
     private int _w;
     private int _h;
 
@@ -42,9 +43,9 @@ public sealed class CutEdgeRect : Sprite {
         Alpha = config.Alpha;
         SetAnchor(config.Anchor);
         MouseEnabled = config.MouseEnabled;
-        
+
         TextureId = TextureType.Color;
-        
+
         SetHitboxType(CollisionType.Vertices);
 
         ResizeBackBuffer();
@@ -57,11 +58,11 @@ public sealed class CutEdgeRect : Sprite {
             0, 1, 2, 0, 2, 3,
             4, 5, 6, 4, 6, 7,
             8, 9, 10, 8, 10, 11,
-            
+
             12, 13, 14, 12, 14, 15,
             16, 17, 18, 16, 18, 19,
             20, 21, 22, 20, 22, 23,
-            
+
             24, 25, 26, 24, 26, 27,
             28, 29, 30, 28, 30, 31,
             32, 33, 34, 32, 34, 35
@@ -110,11 +111,13 @@ public sealed class CutEdgeRect : Sprite {
         VertexData[30] = new VertexUi(new Vector2(_w - _cx, _h));
         VertexData[31] = new VertexUi(new Vector2(_cx, _h));
         // Bottom Right
-        VertexData[32] = new VertexUi((_cuts & CutEdges.BottomRight) != 0 ? new Vector2(_w - _cx / 2f, _h - _cy / 2f) : new Vector2(_w, _h));
+        VertexData[32] =
+            new VertexUi((_cuts & CutEdges.BottomRight) != 0 ? new Vector2(_w - _cx / 2f, _h - _cy / 2f) : new Vector2(_w, _h));
+
         VertexData[33] = new VertexUi(new Vector2(_w - _cx, _h));
         VertexData[34] = new VertexUi(new Vector2(_w - _cx, _h - _cy));
         VertexData[35] = new VertexUi(new Vector2(_w, _h - _cy));
-        
+
         SetGraphicsBuffer();
     }
 

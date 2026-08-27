@@ -7,14 +7,15 @@ using Alloy.UiLib.Core;
 namespace Alloy.UiLib.Extra;
 
 public static class GTween {
-    
+
     private readonly static Dictionary<Easing, Func<double, double>> Easings = new();
     private readonly static List<Tween> Tweens = [];
 
     static GTween() {
         Easings[Easing.Linear] = r => r;
         Easings[Easing.SineInOut] = r => -0.5f * (Math.Cos(r * Math.PI) - 1);
-        Easings[Easing.BackInOut] = r => (r *= 2) < 1 ? 0.5f * (r * r * (3.59490f * r - 2.59490f)) : 0.5f * ((r -= 2) * r * (3.59490f * r + 2.59490f) + 2);
+        Easings[Easing.BackInOut] = r =>
+            (r *= 2) < 1 ? 0.5f * (r * r * (3.59490f * r - 2.59490f)) : 0.5f * ((r -= 2) * r * (3.59490f * r + 2.59490f) + 2);
     }
 
     public static void Add(Tween tween) => Tweens.Add(tween);
@@ -33,6 +34,7 @@ public static class GTween {
 
                 if (tween.DeltaDelay >= tween.DelayMs)
                     tween.SetStart();
+
                 continue;
             }
 
@@ -85,12 +87,13 @@ public struct Tween {
     public Action OnFinish;
 
     //TODO: add a start param otherwise delay dont really work right
-    public static Tween New(Sprite sprite, Easing ease, int durationMs, float end, EaseType type, int delayMs = 0, Action onFinish = null) {
+    public static Tween New(Sprite sprite, Easing ease, int durationMs, float end, EaseType type, int delayMs = 0,
+        Action onFinish = null) {
         if (delayMs <= 0) {
             sprite.TweenActive = true;
             delayMs = 0;
         }
-        
+
         return new Tween {
             Sprite = sprite,
             Ease = ease,

@@ -18,7 +18,8 @@ public struct TextConfig {
     public float Alpha = 1.0f;
     public UiAnchor Anchor = UiAnchor.LeftTop;
 
-    public TextConfig() { }
+    public TextConfig() {
+    }
 }
 
 public sealed class SimpleText : Sprite {
@@ -27,9 +28,9 @@ public sealed class SimpleText : Sprite {
         Normal = 0,
         Small = 1
     }
-    
+
     public string Text { get; private set; }
-    
+
     private float _fontScale;
     private float _outlineThickness;
     private float _lineWrapStart;
@@ -50,11 +51,11 @@ public sealed class SimpleText : Sprite {
         SetAnchor(config.Anchor);
 
         TextureId = TextureType.Text;
-        
+
         ResizeBackBuffer();
         FillData();
     }
-    
+
     private void ResizeBackBuffer() {
         var size = _font.GetCharCount(Text);
         VertexData = new VertexUi[size * 4];
@@ -82,14 +83,16 @@ public sealed class SimpleText : Sprite {
         var idx = 0;
         for (var i = 0; i < len; i++) {
             var c = Text[i];
-            if (c == ' ') { // Track last space
+            if (c == ' ') {
+                // Track last space
                 lastSpaceIndex = i;
             }
-            
+
             switch (c) {
                 case '\n':
                     if (zero.X > boundWidth)
                         boundWidth = zero.X;
+
                     zero.X = _lineWrapStart;
                     boundHeight += _font.LineHeight * scale;
                     zero.Y += _font.LineHeight * scale;
@@ -103,10 +106,18 @@ public sealed class SimpleText : Sprite {
 
                     var uv = glyph.UV;
                     var pos = glyph.Position;
-                    VertexData[idx * 4 + 0] = new VertexUi(new Vector2(zero.X + pos.X0 * scale, zero.Y - pos.Y1 * scale), new Vector2(uv.X0, uv.Y1)); //bl
-                    VertexData[idx * 4 + 1] = new VertexUi(new Vector2(zero.X + pos.X0 * scale, zero.Y - pos.Y0 * scale), new Vector2(uv.X0, uv.Y0)); //tl
-                    VertexData[idx * 4 + 2] = new VertexUi(new Vector2(zero.X + pos.X1 * scale, zero.Y - pos.Y0 * scale), new Vector2(uv.X1, uv.Y0)); //tr
-                    VertexData[idx * 4 + 3] = new VertexUi(new Vector2(zero.X + pos.X1 * scale, zero.Y - pos.Y1 * scale), new Vector2(uv.X1, uv.Y1)); //br
+                    VertexData[idx * 4 + 0] = new VertexUi(new Vector2(zero.X + pos.X0 * scale, zero.Y - pos.Y1 * scale),
+                        new Vector2(uv.X0, uv.Y1)); //bl
+
+                    VertexData[idx * 4 + 1] = new VertexUi(new Vector2(zero.X + pos.X0 * scale, zero.Y - pos.Y0 * scale),
+                        new Vector2(uv.X0, uv.Y0)); //tl
+
+                    VertexData[idx * 4 + 2] = new VertexUi(new Vector2(zero.X + pos.X1 * scale, zero.Y - pos.Y0 * scale),
+                        new Vector2(uv.X1, uv.Y0)); //tr
+
+                    VertexData[idx * 4 + 3] = new VertexUi(new Vector2(zero.X + pos.X1 * scale, zero.Y - pos.Y1 * scale),
+                        new Vector2(uv.X1, uv.Y1)); //br
+
                     idx++;
 
                     if (i < len - 1) {
@@ -117,7 +128,7 @@ public sealed class SimpleText : Sprite {
                     zero.X += glyph.Advance * scale;
                     break;
             }
-            
+
             //todo add param for wordwrap
             // Max width hit, start new line
             if (_maxWidth > -1 && zero.X >= _maxWidth) {
@@ -127,11 +138,11 @@ public sealed class SimpleText : Sprite {
                     i = lastSpaceIndex;
                     lastSpaceIndex = 0;
                 }
-                
+
                 if (zero.X > boundWidth) {
                     boundWidth = zero.X;
                 }
-                
+
                 zero.X = _lineWrapStart;
                 boundHeight += _font.LineHeight * scale;
                 zero.Y += _font.LineHeight * scale;
@@ -142,11 +153,11 @@ public sealed class SimpleText : Sprite {
         if (zero.X > boundWidth) {
             boundWidth = zero.X;
         }
-        
+
         SetGraphicsBuffer();
-        
+
         Extra1.X = _outlineThickness;
-        Extra1.Y = (int) (_fontScale < 16 ? RenderType.Small : RenderType.Normal);
+        Extra1.Y = (int)(_fontScale < 16 ? RenderType.Small : RenderType.Normal);
     }
 
     private void Rebuild() {
@@ -159,7 +170,7 @@ public sealed class SimpleText : Sprite {
         }
 
         OverridePrimCount = size * 2;
-        
+
         FillData();
     }
 
@@ -167,16 +178,16 @@ public sealed class SimpleText : Sprite {
         if (text == Text) {
             return;
         }
-        
+
         Text = text;
         Rebuild();
     }
-    
+
     public void SetFontSize(float size) {
         if (size == _fontScale) {
             return;
         }
-        
+
         _fontScale = size;
         Rebuild();
     }
@@ -185,7 +196,7 @@ public sealed class SimpleText : Sprite {
         if (size == _outlineThickness) {
             return;
         }
-        
+
         _outlineThickness = _font.ValidateOutlineSize(size);
         Rebuild();
     }

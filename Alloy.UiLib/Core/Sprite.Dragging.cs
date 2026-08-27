@@ -6,14 +6,14 @@ namespace Alloy.UiLib.Core;
 
 public partial class Sprite {
     // TODO: add stage checks to this, cant drag whats not in the display list
-    
+
     private static Sprite _dragSprite;
     private static Type _dropType;
 
     public Sprite DropTarget;
-    
+
     private bool _isDragging;
-    
+
     private Vector2i _dragOffset;
 
     public void StartDrag() => StartDrag<Sprite>();
@@ -21,15 +21,10 @@ public partial class Sprite {
     public void StartDrag<T>() where T : Sprite {
         if (_dragSprite != null)
             _dragSprite._isDragging = false;
-        
-        var pos = Stage.Mouse.GetMousePosition();
-        pos.X -= (int)_trueX;
-        pos.Y -= (int)_trueY;
 
-        pos = pos.Scale(Scale);
-        
-        _dragOffset = new Vector2i((int)(pos.X / _trueScale.X), (int)(pos.Y / _trueScale.Y));
-        
+        var pos = GlobalToLocal(Stage.Mouse.GetMousePosition());
+        _dragOffset = new Vector2i((int)pos.X, (int)pos.Y);
+
         _dragSprite = this;
         _isDragging = true;
         _dropType = typeof(T);
@@ -54,7 +49,7 @@ public partial class Sprite {
             if (next != null)
                 current = next;
         }
-        
+
         DropTarget = null;
         var pos = Stage.Mouse.GetMousePosition();
         current.DropCheck(pos, ref DropTarget);
@@ -65,7 +60,7 @@ public partial class Sprite {
     private void DropCheck(Vector2i pos, ref Sprite target) {
         if (!Visible || !IsInBounds(pos) || this == _dragSprite)
             return;
-        
+
         if (_dropType.IsInstanceOfType(this))
             target = this;
 

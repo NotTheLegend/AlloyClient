@@ -4,10 +4,8 @@ uniform mat4 ViewMatrix;
 
 struct InstanceData {
     // Vertex Changes
-    vec2 VertexScale;
-    vec2 VertexRotation;
-    vec2 VertexOffset;
-    vec2 VertexAnchor;
+    vec4 TransformX;
+    vec4 TransformY;
 
     // Sprite Data
     uint Color;
@@ -42,11 +40,9 @@ out VS_OUT {
 
 void main() {
     InstanceData data = instanceBuffer.data[InstanceId];
-    float rotation = data.VertexRotation.x;
-    vec2 pos = Position + data.VertexAnchor;
-    float x = (pos.x * cos(rotation) - pos.y * sin(rotation) - data.VertexAnchor.x) * data.VertexScale.x + data.VertexOffset.x;
-    float y = (pos.x * sin(rotation) + pos.y * cos(rotation) - data.VertexAnchor.y) * data.VertexScale.y + data.VertexOffset.y;
-    pos = vec2(x, y);
+    float x = Position.x * data.TransformX.x + Position.y * data.TransformX.y + data.TransformX.z;
+    float y = Position.x * data.TransformY.x + Position.y * data.TransformY.y + data.TransformY.z;
+    vec2 pos = vec2(x, y);
     
     gl_Position = vec4(pos, 0, 1) * ViewMatrix;
     vsOutput.Position1 = gl_Position;

@@ -5,27 +5,35 @@ using Alloy.UiLib.Extra;
 using Alloy.UiLib.Rendering;
 using Alloy.UiLib.Utils;
 using OpenTK.Mathematics;
+using OpenTK.Platform;
 
 namespace Alloy.UiLib.Core;
 
-/* =TODO=
- * Focus
- * make resize broadcast event
- */
-
 public partial class Sprite : DisplayContainer {
-    
+
     public readonly static Vector4 NoScissor = new Vector4(0, 0, 10000, 10000);
 
-    public int X { get; set { field = value; UpdateBounds(); } }
+    public int X {
+        get;
+        set {
+            field = value;
+            UpdateBounds();
+        }
+    }
 
-    public int Y { get; set { field = value; UpdateBounds(); } }
+    public int Y {
+        get;
+        set {
+            field = value;
+            UpdateBounds();
+        }
+    }
 
     public int Width {
         get => (int)(ContentWidth * Scale.X);
         set => ScaleX = GetScale(ContentWidth, value);
     }
-    
+
     public int Height {
         get => (int)(ContentHeight * Scale.Y);
         set => ScaleY = GetScale(ContentHeight, value);
@@ -54,75 +62,84 @@ public partial class Sprite : DisplayContainer {
             ScaleY = value.Y;
         }
     }
-    
-    public float Alpha { get; set => field = Math.Clamp(value, 0f, 1f); } = 1f;
+
+    public float Alpha {
+        get;
+        set => field = Math.Clamp(value, 0f, 1f);
+    } = 1f;
 
     public float Rotation = 0;
 
     public UiAnchor Anchor { get; private set; } = UiAnchor.LeftTop;
 
     public CollisionType CollisionType { get; private set; } = CollisionType.Square;
-    
+
     public bool Visible = true;
-    
+
     public bool MouseEnabled = false;
+
+    public bool FocusEnabled = false;
+
+    public bool PointerFocusEnabled = true;
+
+    public bool TabEnabled = false;
+
+    public int TabIndex = -1;
 
     public bool TooltipMode = false;
 
     public bool EnableClipRect = false;
     public bool ClipChildren = false;
-    
+
     internal bool TweenActive = false;
-    
+
     protected ushort[] Indices = [];
-    
+
     protected VertexUi[] VertexData = [];
 
     public int OverridePrimCount = -1;
 
     internal Vector2i Radii;
-    
+
     #region VertexData
-    
+
     public TextureType TextureId = TextureType.None;
-    
+
     public Color Color = Color.Transparent;
-    
+
     public Color ColorSecondary = Color.Transparent;
-    
+
     public ColorTransform ColorTransformation = new(1f, 1f, 1f, 1f);
-    
+
     protected Vector4 Extra1 = Vector4.Zero;
-    
+
     protected Vector4 Extra2 = Vector4.Zero;
-    
+
     private Vector2 _info = Vector2.Zero;
-    
+
     private Vector4 _scissor = NoScissor;
-    
+
     #endregion VertexData
 
     #region Backers
 
     private float _anchorX;
-    
+
     private float _anchorY;
-    
-    #endregion    
+
+    #endregion
 
     #region TrueValues
 
-    private float _trueX;
-    
-    private float _trueY;
-
-    private float _trueRotation;
-
     private float _trueAlpha;
 
-    private Vector2 _trueScale;
-
     private ColorTransform _trueTransform;
+
+    private Transform2D _worldTransform = Transform2D.Identity();
+
+    private Transform2D _inverseWorldTransform = Transform2D.Identity();
+
+    private bool _hasInverseWorldTransform = true;
 
     private bool _canInteract = true;
 
@@ -135,84 +152,76 @@ public partial class Sprite : DisplayContainer {
         _scissor = NoScissor;
 
         (_anchorX, _anchorY) = Anchor.GetOffset(ContentWidth, ContentHeight);
-        var (tx, ty) = (0f, 0f);
         var ta = Alpha;
-        var ts = Scale;
         var tt = ColorTransformation;
-        var tr = Rotation;
-        var test = false;
-        
-        //TODO: maybe move these out into the client rather than being built in
+        var localX = (float)X;
+        var localY = (float)Y;
+
         if (TooltipMode) {
             var mousePosition = Stage.Mouse.GetMousePosition();
-            tx = mousePosition.X;
-            ty = mousePosition.Y;
-            (_anchorX, _anchorY) = (tx < UiRender.Screen.X / 2 ? UiAnchor.LeftBottom : UiAnchor.RightBottom).GetOffset(ContentWidth, ContentHeight);
-            tx += _anchorX * Parent._trueScale.X;
-            ty += _anchorY * Parent._trueScale.Y;
+            (_anchorX, _anchorY) =
+                (mousePosition.X < UiRender.Screen.X / 2 ? UiAnchor.LeftBottom : UiAnchor.RightBottom).GetOffset(ContentWidth,
+                    ContentHeight);
+
+            var localMouse = Parent is null ? (Vector2)mousePosition : Parent.GlobalToLocal(mousePosition);
+            localX = localMouse.X;
+            localY = localMouse.Y;
         } else if (_isDragging) {
-            var pos = Stage.Mouse.GetMousePosition();
-            tx = pos.X;
-            ty = pos.Y;
-            tx -= _dragOffset.X * Parent._trueScale.X;
-            ty -= _dragOffset.Y * Parent._trueScale.Y;
-        } else {
-            tx += X + _anchorX * ScaleX;
-            ty += Y + _anchorY * ScaleY;
-            test = true;
+            var mousePosition = Stage.Mouse.GetMousePosition();
+            var localMouse = Parent is null ? (Vector2)mousePosition : Parent.GlobalToLocal(mousePosition);
+            var dragTransform = Transform2D.Create(0f, 0f, ScaleX, ScaleY, Rotation, _anchorX, _anchorY);
+            var transformedOffset = dragTransform.TransformPoint(_dragOffset);
+            localX = localMouse.X - transformedOffset.X;
+            localY = localMouse.Y - transformedOffset.Y;
         }
-        
+
+        var localTransform = Transform2D.Create(localX, localY, ScaleX, ScaleY, Rotation, _anchorX, _anchorY);
         var parentInteract = true;
         if (Parent != null) {
-            if (test) {
-                tx *= Parent._trueScale.X;
-                ty *= Parent._trueScale.Y;
-                tx += Parent._trueX;
-                ty += Parent._trueY;
-            }
-
+            _worldTransform = Transform2D.Multiply(Parent._worldTransform, localTransform);
             ta *= Parent._trueAlpha;
-            ts *= Parent._trueScale;
             tt *= Parent._trueTransform;
-            tr += Parent.Rotation;
             parentInteract = Parent._canInteract;
-            
+
             if (Parent.EnableClipRect || Parent.ClipChildren) {
                 _scissor = Parent._scissor;
                 ClipChildren = true;
             }
+        } else {
+            _worldTransform = localTransform;
         }
-        
-        
-        _canInteract = parentInteract && Visible && !TweenActive;
 
-        _trueX = tx;
-        _trueY = ty;
+        _hasInverseWorldTransform = _worldTransform.TryInvert(out _inverseWorldTransform);
+        _canInteract = parentInteract && Visible && !TweenActive;
         _trueAlpha = ta;
-        _trueScale = ts;
         _trueTransform = tt;
-        _trueRotation = tr;
 
         if (TooltipMode) {
-            _trueX = Math.Clamp(_trueX, 0, UiRender.Screen.X - Width);
-            _trueY = Math.Clamp(_trueY, 0, UiRender.Screen.Y - Height);
+            GetWorldBounds(out var minX, out var minY, out var maxX, out var maxY);
+            var offsetX = minX < 0f ? -minX : maxX > UiRender.Screen.X ? UiRender.Screen.X - maxX : 0f;
+            var offsetY = minY < 0f ? -minY : maxY > UiRender.Screen.Y ? UiRender.Screen.Y - maxY : 0f;
+            _worldTransform.TX += offsetX;
+            _worldTransform.TY += offsetY;
+            _hasInverseWorldTransform = _worldTransform.TryInvert(out _inverseWorldTransform);
         }
 
         if (EnableClipRect) {
-            var scissor = new Vector4(tx, ty, tx + SelfContentWidth * _trueScale.X, ty + SelfContentHeight * _trueScale.Y);
+            GetTransformedBounds(_worldTransform, SelfContentWidth, SelfContentHeight, out var minX, out var minY, out var maxX,
+                out var maxY);
+
+            var scissor = new Vector4(minX, minY, maxX, maxY);
             if (ClipChildren) {
                 _scissor.X = Math.Max(_scissor.X, scissor.X);
                 _scissor.Y = Math.Max(_scissor.Y, scissor.Y);
                 _scissor.Z = Math.Min(_scissor.Z, scissor.Z);
                 _scissor.W = Math.Min(_scissor.W, scissor.W);
-            }
-            else {
+            } else {
                 _scissor = scissor;
                 ClipChildren = true;
             }
         }
-        
-        _info = new Vector2((float) TextureId, ta);
+
+        _info = new Vector2((float)TextureId, ta);
     }
 
     private void Update() {
@@ -264,7 +273,7 @@ public partial class Sprite : DisplayContainer {
         _boundsRotation = Rotation;
         Parent?.UpdateBounds();
     }
-    
+
     /// <summary>
     /// Sets the primary color channel. If sprite is using a texture, it multiplies the color by the sampled pixel 
     /// </summary>
@@ -291,7 +300,7 @@ public partial class Sprite : DisplayContainer {
         Anchor = anchor;
         UpdateBounds();
     }
-    
+
     public void SetHitboxType(CollisionType collision) => CollisionType = collision;
 
     public Vector2i GetRelativeMousePosition() {
@@ -299,17 +308,18 @@ public partial class Sprite : DisplayContainer {
             // flash returns junk? coords if not on stage
             return Vector2i.Zero; // TODO: check how flash handles mouse x/y when not on stage
         }
-        
+
         /* returns coords relative to vertex data
          * uses scale to map mouse to sprite
          *
          *
          *
-         * 
+         *
          */
-        
+
         var pos = Stage.Mouse.GetMousePosition();
-        return new Vector2i((int)(pos.X - _trueX), (int)(pos.Y - _trueY));
+        var origin = LocalToGlobal(Vector2.Zero);
+        return new Vector2i((int)(pos.X - origin.X), (int)(pos.Y - origin.Y));
     }
 
     protected Vector2i GetLocalMousePosition() {
@@ -317,13 +327,50 @@ public partial class Sprite : DisplayContainer {
             return Vector2i.Zero;
         }
 
-        var pos = Stage.Mouse.GetMousePosition();
-        return new Vector2i(
-            (int)((pos.X - _trueX) / _trueScale.X),
-            (int)((pos.Y - _trueY) / _trueScale.Y)
-        );
+        var pos = GlobalToLocal(Stage.Mouse.GetMousePosition());
+        return new Vector2i((int)pos.X, (int)pos.Y);
     }
-    
+
+    public Vector2 LocalToGlobal(Vector2 point) {
+        return _worldTransform.TransformPoint(point);
+    }
+
+    public Vector2 GlobalToLocal(Vector2 point) {
+        if (!_hasInverseWorldTransform) {
+            return new Vector2(float.PositiveInfinity);
+        }
+
+        return _inverseWorldTransform.TransformPoint(point);
+    }
+
+    public void CapturePointer(MouseButton button = MouseButton.Button1) {
+        Stage?.CapturePointer(this, button);
+    }
+
+    public void ReleasePointer(MouseButton button = MouseButton.Button1) {
+        Stage?.ReleasePointer(this, button);
+    }
+
+    internal bool CanReceiveFocus() {
+        return FocusEnabled && Visible && _canInteract && Stage is not null;
+    }
+
+    internal static void GetTransformedBounds(in Transform2D transform, float width, float height, out float minX, out float minY,
+        out float maxX, out float maxY) {
+        var topLeft = transform.TransformPoint(Vector2.Zero);
+        var topRight = transform.TransformPoint(new Vector2(width, 0f));
+        var bottomRight = transform.TransformPoint(new Vector2(width, height));
+        var bottomLeft = transform.TransformPoint(new Vector2(0f, height));
+        minX = MathF.Min(MathF.Min(topLeft.X, topRight.X), MathF.Min(bottomRight.X, bottomLeft.X));
+        minY = MathF.Min(MathF.Min(topLeft.Y, topRight.Y), MathF.Min(bottomRight.Y, bottomLeft.Y));
+        maxX = MathF.Max(MathF.Max(topLeft.X, topRight.X), MathF.Max(bottomRight.X, bottomLeft.X));
+        maxY = MathF.Max(MathF.Max(topLeft.Y, topRight.Y), MathF.Max(bottomRight.Y, bottomLeft.Y));
+    }
+
+    private void GetWorldBounds(out float minX, out float minY, out float maxX, out float maxY) {
+        GetTransformedBounds(_worldTransform, ContentWidth, ContentHeight, out minX, out minY, out maxX, out maxY);
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static float GetScale(int contentWidth, int newWidth) => contentWidth == 0 ? 0f : (float) newWidth / contentWidth;
+    private static float GetScale(int contentWidth, int newWidth) => contentWidth == 0 ? 0f : (float)newWidth / contentWidth;
 }

@@ -18,14 +18,15 @@ public struct NineSliceConfig {
 
     public bool MouseEnabled = false;
 
-    public NineSliceConfig() { }
+    public NineSliceConfig() {
+    }
 }
 
 public sealed class NineSliceRect : Sprite {
     private SliceData _slice;
     private int _w;
     private int _h;
-    
+
     private float _cutX;
     private float _cutY;
 
@@ -40,13 +41,13 @@ public sealed class NineSliceRect : Sprite {
         _cutX = config.CutX;
         _cutY = config.CutY;
         MouseEnabled = config.MouseEnabled;
-        
+
         TextureId = TextureType.UiSlice;
-        
+
         ResizeBackBuffer();
         Resize(_w, _h);
     }
-    
+
     private void ResizeBackBuffer() {
         VertexData = new VertexUi[4];
         Indices = [0, 1, 2, 0, 2, 3];
@@ -55,14 +56,14 @@ public sealed class NineSliceRect : Sprite {
     }
 
     public void Resize(int w, int h) {
-        _w = w; 
+        _w = w;
         _h = h;
 
         VertexData[0] = new VertexUi(new Vector2(0, 0), new Vector2(0, 0));
         VertexData[1] = new VertexUi(new Vector2(_w, 0), new Vector2(1, 0));
         VertexData[2] = new VertexUi(new Vector2(_w, _h), new Vector2(1, 1));
         VertexData[3] = new VertexUi(new Vector2(0, _h), new Vector2(0, 1));
-        
+
         SetGraphicsBuffer();
 
         var scaleX = _w / (_cutX * 2f);

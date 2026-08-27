@@ -71,7 +71,6 @@ public abstract class AccountFrame : Overlay {
 
         AddChild(_title);
 
-        AddEventListener(Event.AddedToStage, OnAddedToStage);
         AddEventListener(Event.RemovedFromStage, OnRemovedFromStage);
     }
 
@@ -83,6 +82,7 @@ public abstract class AccountFrame : Overlay {
 
         AddChild(field);
         _fields.Add(field);
+        field.SetTabIndex(_fields.Count - 1);
         return field;
     }
 
@@ -159,12 +159,7 @@ public abstract class AccountFrame : Overlay {
         }
     }
 
-    private void OnAddedToStage() {
-        Stage.AddEventListener(KeyboardEvent.KeyDown, OnKeyDown);
-    }
-
     private void OnRemovedFromStage() {
-        Stage.RemoveEventListener(KeyboardEvent.KeyDown, OnKeyDown);
         _fieldsEnabled = false;
 
         foreach (var field in _fields) {
@@ -172,18 +167,6 @@ public abstract class AccountFrame : Overlay {
         }
     }
 
-    private void OnKeyDown(KeyboardEvent args) {
-        if (args.Key != Key.Tab || !_fieldsEnabled || _fields.Count == 0) {
-            return;
-        }
-
-        var current = _fields.FindIndex(field => field.Focused);
-        var next = current < 0
-            ? args.Shift ? _fields.Count - 1 : 0
-            : (current + (args.Shift ? -1 : 1) + _fields.Count) % _fields.Count;
-
-        _fields[next].Focus();
-    }
 }
 
 public sealed class AccountFormField : Sprite {
@@ -238,12 +221,18 @@ public sealed class AccountFormField : Sprite {
 
     public void Focus() => _input.Focus();
 
+    public void SetTabIndex(int tabIndex) {
+        _input.TabIndex = tabIndex;
+    }
+
     public void SetError(string error) => _error.SetText(error);
 
     public void ClearError() => _error.SetText(string.Empty);
 
     public void SetEnabled(bool enabled) {
         _input.MouseEnabled = enabled;
+        _input.FocusEnabled = enabled;
+        _input.TabEnabled = enabled;
         if (!enabled) {
             _input.UnFocus();
         }

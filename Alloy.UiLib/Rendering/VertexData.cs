@@ -9,14 +9,20 @@ using OpenTK.Mathematics;
 namespace Alloy.UiLib.Rendering;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-internal struct SpriteInstanceData(SpriteVertexMatrix data, Color color, Color colorOverride, Vector2 info, Vector4 scissor, Vector4 extra1, Vector4 extra2, ColorTransform colorTransform) : IBufferData<SpriteInstanceData> {
+internal struct SpriteInstanceData(
+    SpriteVertexMatrix data,
+    Color color,
+    Color colorOverride,
+    Vector2 info,
+    Vector4 scissor,
+    Vector4 extra1,
+    Vector4 extra2,
+    ColorTransform colorTransform) : IBufferData<SpriteInstanceData> {
 
     // Vertex Changes
-    public Vector2 VertexScale = data.Scale;
-    public Vector2 VertexRotation = new(data.Rotation, 0f);
-    public Vector2 VertexOffset = data.Offset;
-    public Vector2 VertexAnchor = data.Anchor;
-    
+    public Vector4 TransformX = data.TransformX;
+    public Vector4 TransformY = data.TransformY;
+
     // Sprite Data
     public uint Color = color;
     public uint ColorOverride = colorOverride;
@@ -25,16 +31,18 @@ internal struct SpriteInstanceData(SpriteVertexMatrix data, Color color, Color c
     public Vector4 Extra1 = extra1;
     public Vector4 Extra2 = extra2;
     public Vector4 ColorTransform = colorTransform;
-    
+
     public static unsafe int Size { get; } = sizeof(SpriteInstanceData);
 
     public bool Equals(SpriteInstanceData other) {
-        return Color == other.Color && 
-               ColorOverride == other.ColorOverride && 
-               Info.Equals(other.Info) && 
-               Scissor.Equals(other.Scissor) && 
-               Extra1.Equals(other.Extra1) && 
-               Extra2.Equals(other.Extra2) && 
+        return TransformX.Equals(other.TransformX) &&
+               TransformY.Equals(other.TransformY) &&
+               Color == other.Color &&
+               ColorOverride == other.ColorOverride &&
+               Info.Equals(other.Info) &&
+               Scissor.Equals(other.Scissor) &&
+               Extra1.Equals(other.Extra1) &&
+               Extra2.Equals(other.Extra2) &&
                ColorTransform.Equals(other.ColorTransform);
     }
 
@@ -43,20 +51,30 @@ internal struct SpriteInstanceData(SpriteVertexMatrix data, Color color, Color c
     }
 
     public override int GetHashCode() {
-        return HashCode.Combine(Color, ColorOverride, Info, Scissor, Extra1, Extra2, ColorTransform);
+        var hash = new HashCode();
+        hash.Add(TransformX);
+        hash.Add(TransformY);
+        hash.Add(Color);
+        hash.Add(ColorOverride);
+        hash.Add(Info);
+        hash.Add(Scissor);
+        hash.Add(Extra1);
+        hash.Add(Extra2);
+        hash.Add(ColorTransform);
+        return hash.ToHashCode();
     }
 }
 
-internal readonly record struct SpriteVertexMatrix(Vector2 Scale, float Rotation, Vector2 Offset, Vector2 Anchor);
+internal readonly record struct SpriteVertexMatrix(Vector4 TransformX, Vector4 TransformY);
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 internal struct SpriteVertexData(VertexUi vertex, uint instanceId) : IVertexData<SpriteVertexData> {
-    
+
     public Vector2 Position = vertex.Position;
     public Vector2 UV = vertex.UV;
     public uint Color = vertex.Color;
     public uint InstanceId = instanceId;
-    
+
     public static VertexStride VertexStride { get; } = new([
         new ElementFormat(0, VertexAttribType.Float, FormatType.Vector2),
         new ElementFormat(1, VertexAttribType.Float, FormatType.Vector2),
@@ -65,9 +83,9 @@ internal struct SpriteVertexData(VertexUi vertex, uint instanceId) : IVertexData
     ]);
 
     public bool Equals(SpriteVertexData other) {
-        return Color == other.Color && 
-               Position == other.Position && 
-               UV.Equals(other.UV) && 
+        return Color == other.Color &&
+               Position == other.Position &&
+               UV.Equals(other.UV) &&
                InstanceId == other.InstanceId;
     }
 
@@ -81,7 +99,7 @@ internal struct SpriteVertexData(VertexUi vertex, uint instanceId) : IVertexData
 }
 
 public struct VertexUi {
-    
+
     public Vector2 Position;
     public Vector2 UV;
     public Color Color;
@@ -91,13 +109,13 @@ public struct VertexUi {
         UV = uv;
         Color = color;
     }
-    
+
     public VertexUi(Vector2 pos, Vector2 uv) {
         Position = pos;
         UV = uv;
         Color = new Color(0);
     }
-    
+
     public VertexUi(Vector2 pos, Color color) {
         Position = pos;
         UV = new Vector2(0f);
@@ -123,7 +141,8 @@ internal struct VertexDataUi : IVertexData<VertexDataUi> {
     public Vector4 Extra2;
     public Vector4 ColorTransform;
 
-    public VertexDataUi(Vector2 position, Color color, Color colorOverride, Vector2 info, Vector2 uvCoords, Vector4 scissor, Vector4 extra1, Vector4 extra2, ColorTransform colorTransform) {
+    public VertexDataUi(Vector2 position, Color color, Color colorOverride, Vector2 info, Vector2 uvCoords, Vector4 scissor,
+        Vector4 extra1, Vector4 extra2, ColorTransform colorTransform) {
         Position = position;
         Color = color.PackedValue;
         ColorOverride = colorOverride.PackedValue;
@@ -134,7 +153,7 @@ internal struct VertexDataUi : IVertexData<VertexDataUi> {
         Extra2 = extra2;
         ColorTransform = colorTransform.GetTransformData();
     }
-    
+
     public static VertexStride VertexStride { get; } = new([
         new ElementFormat(0, VertexAttribType.Float, FormatType.Vector2),
         new ElementFormat(1, VertexAttribType.UnsignedInt, FormatType.Color),
@@ -148,7 +167,7 @@ internal struct VertexDataUi : IVertexData<VertexDataUi> {
     ]);
 
     public override int GetHashCode() {
-        return (((((((Position.GetHashCode() 
+        return (((((((Position.GetHashCode()
                                         * 397 ^ Color.GetHashCode())
                                     * 397 ^ ColorOverride.GetHashCode())
                                 * 397 ^ Info.GetHashCode())
@@ -192,14 +211,14 @@ internal struct VertexDataUi : IVertexData<VertexDataUi> {
     }
 
     public bool Equals(VertexDataUi other) {
-        return Position.Equals(other.Position) && 
+        return Position.Equals(other.Position) &&
                Color.Equals(other.Color) &&
-               ColorOverride.Equals(other.ColorOverride) && 
-               Info.Equals(other.Info) && 
-               UVCoords.Equals(other.UVCoords) && 
-               Scissor.Equals(other.Scissor) && 
-               Extra1.Equals(other.Extra1) && 
-               Extra2.Equals(other.Extra2) && 
+               ColorOverride.Equals(other.ColorOverride) &&
+               Info.Equals(other.Info) &&
+               UVCoords.Equals(other.UVCoords) &&
+               Scissor.Equals(other.Scissor) &&
+               Extra1.Equals(other.Extra1) &&
+               Extra2.Equals(other.Extra2) &&
                ColorTransform.Equals(other.ColorTransform);
     }
 }

@@ -7,7 +7,7 @@ namespace Alloy.UiLib.Data;
 public record SliceData(AtlasPosition AtlasData, Vector2 Cuts);
 
 public static class SliceLookup {
-    
+
     private readonly static Dictionary<string, SliceData> Slices = new();
 
     public static bool CheckLookup(string lookup) {
@@ -16,6 +16,7 @@ public static class SliceLookup {
 
     internal static SliceData GetSlice(string lookup) {
         if (!Slices.TryGetValue(lookup, out var slice)) throw new Exception($"Unable to find data for lookup: {lookup}");
+
         return slice;
     }
 

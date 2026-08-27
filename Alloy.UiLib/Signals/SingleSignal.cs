@@ -9,7 +9,7 @@ public sealed class SingleSignal {
     public void Set(Action callback) {
         _listener = new SignalCallback<Action>(callback);
     }
-    
+
     public void Remove() {
         _listener = null;
     }
@@ -19,7 +19,7 @@ public sealed class SingleSignal {
             _listener = null;
             return;
         }
-        
+
         callback.Invoke();
     }
 }
@@ -41,7 +41,7 @@ public sealed class SingleSignal<T> {
             _listener = null;
             return;
         }
-        
+
         callback.Invoke(data);
     }
 }
@@ -63,7 +63,7 @@ public sealed class SingleSignal<T1, T2> {
             _listener = null;
             return;
         }
-        
+
         callback.Invoke(data1, data2);
     }
 }
@@ -85,7 +85,7 @@ public sealed class SingleSignal<T1, T2, T3> {
             _listener = null;
             return;
         }
-        
+
         callback.Invoke(data1, data2, data3);
     }
 }

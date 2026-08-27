@@ -13,7 +13,7 @@ public class BitmapFamily {
     public readonly Texture Atlas;
 
     public readonly Sampler Sampler;
-    
+
     public readonly Dictionary<FontType, BitmapFont> Fonts = [];
 
     public readonly float PixelRange;
@@ -26,7 +26,7 @@ public class BitmapFamily {
             if (!Enum.TryParse(kvp.Key, out FontType type)) {
                 throw new Exception($"No matching FontType value for font id : {kvp.Key}");
             }
-            
+
             Fonts[type] = new BitmapFont(kvp.Value, data.PixelRange);
         }
 
@@ -93,10 +93,10 @@ public class BitmapFont {
 
             index--;
         }
-        
+
         return (startIndex, endIndex);
     }
-    
+
     public int GetStartIndex(string text, int maxWidth, float outlineSize, float scale) {
         if (string.IsNullOrWhiteSpace(text) || maxWidth < 1)
             return 0;
@@ -133,7 +133,7 @@ public class BitmapFont {
 
         return startIndex;
     }
-    
+
     public int GetCharCount(StringBuilder text) {
         var count = 0;
 
@@ -146,6 +146,7 @@ public class BitmapFont {
                 default:
                     if (!Glyphs.TryGetValue(c, out _))
                         break;
+
                     count++;
                     continue;
             }
@@ -165,7 +166,7 @@ public class BitmapFont {
                     if (!Glyphs.ContainsKey(c)) {
                         break;
                     }
-                    
+
                     count++;
                     continue;
             }

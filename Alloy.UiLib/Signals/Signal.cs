@@ -10,7 +10,7 @@ public sealed class Signal {
     public void Add(Action callback) {
         _listeners.Add(new SignalCallback<Action>(callback));
     }
-    
+
     public void Remove(Action callback) {
         _listeners.Remove(new SignalCallback<Action>(callback));
     }
@@ -25,7 +25,7 @@ public sealed class Signal {
                 _listeners.RemoveAt(index);
                 continue;
             }
-            
+
             callback.Invoke();
         }
     }

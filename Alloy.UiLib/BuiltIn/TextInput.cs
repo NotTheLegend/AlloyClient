@@ -25,25 +25,24 @@ public struct InputConfig {
     public Action OnFocus = null;
     public Action OnUnfocus = null;
     public UiAnchor Anchor = UiAnchor.LeftTop;
-    
+
     public Action OnChange = null;
-    
-    public InputConfig() { }
+
+    public InputConfig() {
+    }
 }
 
-public sealed class TextInput : Sprite {
+public sealed class TextInput : Sprite, ITextInputTarget, IManualTextInputTarget {
 
     public const string BoxLookup = "textBox";
 
     private const int CutX = 2;
     private const int CutY = 2;
 
-    internal static TextInput ActiveInput;
-    
     public string Text => _inputText.ToString();
     private readonly StringBuilder _inputText = new();
     private bool _isDefaultText = true;
-    
+
     private readonly float _fontScale;
     private readonly BitmapFont _font;
     private readonly float _outlineThickness;
@@ -95,6 +94,9 @@ public sealed class TextInput : Sprite {
         SetAnchor(config.Anchor);
 
         MouseEnabled = true;
+        FocusEnabled = true;
+        TabEnabled = true;
+        PointerFocusEnabled = _clickActivate;
 
         TextureId = TextureType.Text;
 
@@ -110,31 +112,37 @@ public sealed class TextInput : Sprite {
             Color = 0x4A90E2,
             Alpha = 0.45f,
         };
+
         _selectionHighlight = new ColorRect(selectionConfig);
         _selectionHighlight.Visible = false;
         AddChild(_selectionHighlight);
-        
+
         var caretConfig = new ColorRectConfig {
             Width = 1,
             Height = (int)(_font.LineHeight * _fontScale),
             Color = config.Color,
         };
+
         _caret = new ColorRect(caretConfig);
         _caret.Visible = false;
         AddChild(_caret);
-        
-        var rectConfig = new NineSliceConfig { Width = _width, Height = (int)(_font.LineHeight * _fontScale) + CutY * 3, SliceData = BoxLookup, CutX = CutX, CutY = CutY};
+
+        var rectConfig = new NineSliceConfig
+            { Width = _width, Height = (int)(_font.LineHeight * _fontScale) + CutY * 3, SliceData = BoxLookup, CutX = CutX, CutY = CutY };
+
         _textBox = new NineSliceRect(rectConfig);
         AddChild(_textBox);
-        
+
         SetHitboxType(CollisionType.CustomNoScale);
-        
+
         AddEventListener(MouseEvent.LeftDown, OnSelectionDown);
-        
+        AddEventListener(FocusEvent.FocusIn, OnFocusIn);
+        AddEventListener(FocusEvent.FocusOut, OnFocusOut);
+
         ResizeBackBuffer();
         FillData();
     }
-    
+
     private void ResizeBackBuffer() {
         var size = _maxCharacters + 1;
         VertexData = new VertexUi[size * 4];
@@ -151,7 +159,7 @@ public sealed class TextInput : Sprite {
             Indices[idx6 + 5] = (ushort)(3 + idx4);
         }
     }
-    
+
     private void OnFrameEnter() {
         if (!_isCaretActive) {
             return;
@@ -185,30 +193,29 @@ public sealed class TextInput : Sprite {
         _startIndex = start;
         _endIndex = end;
         OverridePrimCount = 2;
-        
+
         var idx = 4;
         var len = _inputText.Length;
         var caret = false;
 
         var password = _password && !_isDefaultText;
         var hasSelection = HasSelection();
-        
-        for (var i = start; i < end; i++) {
 
+        for (var i = start; i < end; i++) {
             if (!hasSelection && !caret && i == _caretIndex) {
                 caret = true;
                 i--;
-                
+
                 _caret.X = (int)zero.X;
                 _caret.Y = CutY * 3;
-                
+
                 continue;
             }
-            
+
             var c = password ? '*' : _inputText[i];
             switch (c) {
                 case '\n':
-                case '\r': 
+                case '\r':
                     continue;
                 default:
                     if (!_font.Glyphs.TryGetValue(c, out var glyph)) {
@@ -217,11 +224,18 @@ public sealed class TextInput : Sprite {
 
                     var uv = glyph.UV;
                     var pos = glyph.Position;
-                    
-                    VertexData[idx + 0] = new VertexUi(new Vector2(zero.X + pos.X0 * _fontScale, zero.Y - pos.Y1 * _fontScale), new Vector2(uv.X0, uv.Y1)); //bl
-                    VertexData[idx + 1] = new VertexUi(new Vector2(zero.X + pos.X0 * _fontScale, zero.Y - pos.Y0 * _fontScale), new Vector2(uv.X0, uv.Y0)); //tl
-                    VertexData[idx + 2] = new VertexUi(new Vector2(zero.X + pos.X1 * _fontScale, zero.Y - pos.Y0 * _fontScale), new Vector2(uv.X1, uv.Y0)); //tr
-                    VertexData[idx + 3] = new VertexUi(new Vector2(zero.X + pos.X1 * _fontScale, zero.Y - pos.Y1 * _fontScale), new Vector2(uv.X1, uv.Y1)); //br
+
+                    VertexData[idx + 0] = new VertexUi(new Vector2(zero.X + pos.X0 * _fontScale, zero.Y - pos.Y1 * _fontScale),
+                        new Vector2(uv.X0, uv.Y1)); //bl
+
+                    VertexData[idx + 1] = new VertexUi(new Vector2(zero.X + pos.X0 * _fontScale, zero.Y - pos.Y0 * _fontScale),
+                        new Vector2(uv.X0, uv.Y0)); //tl
+
+                    VertexData[idx + 2] = new VertexUi(new Vector2(zero.X + pos.X1 * _fontScale, zero.Y - pos.Y0 * _fontScale),
+                        new Vector2(uv.X1, uv.Y0)); //tr
+
+                    VertexData[idx + 3] = new VertexUi(new Vector2(zero.X + pos.X1 * _fontScale, zero.Y - pos.Y1 * _fontScale),
+                        new Vector2(uv.X1, uv.Y1)); //br
 
                     if (i < len - 1) {
                         var k = password ? '*' : _inputText[i + 1];
@@ -242,7 +256,7 @@ public sealed class TextInput : Sprite {
         }
 
         UpdateSelectionHighlight(start, end, password);
-        
+
         SetGraphicsBuffer();
     }
 
@@ -292,12 +306,11 @@ public sealed class TextInput : Sprite {
     }
 
     private void OnSelectionDown(MouseEvent args) {
-        if (ActiveInput != this && _clickActivate) {
-            ActiveInput?.UnFocus();
+        if (Stage.GetFocus() != this && _clickActivate) {
             Focus();
         }
 
-        if (ActiveInput != this) {
+        if (Stage.GetFocus() != this) {
             return;
         }
 
@@ -309,14 +322,16 @@ public sealed class TextInput : Sprite {
         } else {
             _selectionAnchor = position;
         }
+
         _selectionEnd = position;
         SetCaretPosition(position);
         ShowCaretNow(!HasSelection());
         FillData();
 
         _mouseSelecting = true;
-        Stage.AddEventListener(MouseEvent.MouseMove, OnSelectionMove, true);
-        Stage.AddEventListener(MouseEvent.LeftUp, OnSelectionUp, true);
+        CapturePointer();
+        AddEventListener(MouseEvent.MouseMove, OnSelectionMove);
+        AddEventListener(MouseEvent.LeftUp, OnSelectionUp);
     }
 
     private void OnSelectionMove(MouseEvent args) {
@@ -354,8 +369,9 @@ public sealed class TextInput : Sprite {
             return;
         }
 
-        Stage.RemoveEventListener(MouseEvent.MouseMove, OnSelectionMove, true);
-        Stage.RemoveEventListener(MouseEvent.LeftUp, OnSelectionUp, true);
+        ReleasePointer();
+        RemoveEventListener(MouseEvent.MouseMove, OnSelectionMove);
+        RemoveEventListener(MouseEvent.LeftUp, OnSelectionUp);
     }
 
     private int GetPositionAtX(int x) {
@@ -417,6 +433,7 @@ public sealed class TextInput : Sprite {
             if (_selectionAnchor < 0) {
                 _selectionAnchor = previous;
             }
+
             _selectionEnd = position;
             if (_selectionAnchor == _selectionEnd) {
                 ClearSelection();
@@ -438,6 +455,7 @@ public sealed class TextInput : Sprite {
         while (position > 0 && !char.IsWhiteSpace(_inputText[position - 1])) {
             position--;
         }
+
         return position;
     }
 
@@ -449,10 +467,11 @@ public sealed class TextInput : Sprite {
         while (position < _inputText.Length && !char.IsWhiteSpace(_inputText[position])) {
             position++;
         }
+
         return position;
     }
-    
-    internal void OnManualTextInput(Key key) {
+
+    public void OnManualTextInput(Key key) {
         var ctrl = Stage.Keyboard.IsCtrlDown();
         var shift = Stage.Keyboard.IsShiftDown();
 
@@ -513,7 +532,7 @@ public sealed class TextInput : Sprite {
         }
     }
 
-    internal void OnTextInput(ReadOnlySpan<char> text) {
+    public void OnTextInput(ReadOnlySpan<char> text) {
         if (text.Length != 1) {
             return;
         }
@@ -521,6 +540,7 @@ public sealed class TextInput : Sprite {
         if (!CanAddChar(text[0])) {
             return;
         }
+
         var selectedLength = 0;
         if (HasSelection()) {
             var (start, end) = GetSelectionRange();
@@ -545,6 +565,7 @@ public sealed class TextInput : Sprite {
         if (char.IsWhiteSpace(input) && input != ' ') {
             return false;
         }
+
         return _font.Glyphs.ContainsKey(input);
     }
 
@@ -599,6 +620,7 @@ public sealed class TextInput : Sprite {
             if (!CanAddChar(input)) {
                 continue;
             }
+
             filtered.Append(input);
             if (filtered.Length == available) {
                 break;
@@ -665,6 +687,7 @@ public sealed class TextInput : Sprite {
         if (recordUndo) {
             RecordUndo();
         }
+
         var (start, end) = GetSelectionRange();
         _inputText.Remove(start, end - start);
         ClearSelection();
@@ -681,6 +704,7 @@ public sealed class TextInput : Sprite {
                 _undo.Push(states[i]);
             }
         }
+
         _redo.Clear();
     }
 
@@ -722,16 +746,19 @@ public sealed class TextInput : Sprite {
         if (ignoreWhitespace) {
             return !string.IsNullOrWhiteSpace(_inputText.ToString());
         }
-        
+
         return _inputText.Length > 0;
     }
 
     public void Focus() {
-        if (ActiveInput != this) {
-            ActiveInput?.UnFocus();
-            ActiveInput = this;
+        if (Stage is null) {
+            return;
         }
-        
+
+        Stage.SetFocus(this);
+    }
+
+    private void OnFocusIn(FocusEvent args) {
         _isCaretActive = true;
         ClearSelection();
         ShowCaretNow(true);
@@ -739,44 +766,56 @@ public sealed class TextInput : Sprite {
         _onFocus?.Invoke();
 
         ClearIfDefault();
-        
+
         AddEventListener(Event.EnterFrame, OnFrameEnter);
-        
+
         FillData();
     }
 
     public void UnFocus(bool clearText = false) {
+        if (Stage?.GetFocus() == this) {
+            Stage.ClearFocus();
+        } else if (_isCaretActive) {
+            OnFocusOut(null);
+        }
+
+        if (clearText) {
+            _inputText.Clear();
+            if (_inputText.Length == 0) {
+                SetDefault();
+            }
+
+            FillData();
+        }
+    }
+
+    private void OnFocusOut(FocusEvent args) {
         StopMouseSelection();
-        ActiveInput = null;
         _isCaretActive = false;
         _caretIndex = -1;
         ClearSelection();
         _caret.Visible = false;
         _onUnfocus?.Invoke();
 
-        if (clearText) {
-            _inputText.Clear();
-        }
-        
         if (_inputText.Length == 0) {
             SetDefault();
         }
-        
+
         RemoveEventListener(Event.EnterFrame, OnFrameEnter);
-        
+
         FillData();
     }
-    
+
     public void InsertText(string text) {
         ClearIfDefault();
-        
+
         if (_caretIndex == -1) {
             _inputText.Append(text);
         } else {
             _inputText.Insert(_caretIndex, text);
             _caretIndex += text.Length;
         }
-        
+
         FillData();
     }
 
@@ -795,7 +834,7 @@ public sealed class TextInput : Sprite {
         if (!_isDefaultText) {
             return;
         }
-        
+
         _inputText.Clear();
         _isDefaultText = false;
     }

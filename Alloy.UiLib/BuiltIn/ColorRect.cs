@@ -15,11 +15,12 @@ public struct ColorRectConfig {
 
     public bool MouseEnabled = false;
 
-    public ColorRectConfig() { }
+    public ColorRectConfig() {
+    }
 }
 
 public sealed class ColorRect : Sprite {
-    
+
     private int _w;
     private int _h;
 
@@ -32,7 +33,7 @@ public sealed class ColorRect : Sprite {
         Alpha = config.Alpha;
         SetAnchor(config.Anchor);
         MouseEnabled = config.MouseEnabled;
-        
+
         TextureId = TextureType.Color;
 
         ResizeBackBuffer();
@@ -49,7 +50,7 @@ public sealed class ColorRect : Sprite {
         VertexData[1] = new VertexUi(new Vector2(_w, 0)); //Top Right
         VertexData[2] = new VertexUi(new Vector2(_w, _h)); //Bottom Right
         VertexData[3] = new VertexUi(new Vector2(0, _h)); //Bottom Left
-        
+
         SetGraphicsBuffer();
     }
 

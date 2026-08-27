@@ -1,7 +1,6 @@
 ﻿using System;
 using Alloy.Common.SourceGen;
 using Alloy.Engine.Graphics;
-using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Data;
 using Alloy.UiLib.Rendering;
@@ -25,17 +24,17 @@ public static partial class UiRender {
     internal static bool IsFocused = true;
 
     internal static Stage Stage;
-    
+
     internal static Vector2i DefaultScreen;
-    
+
     internal static Vector2i Screen;
-    
+
     public static int LastRenderCount = 0;
 
     public static BitmapFamily MyriadPro;
-    
+
     public static Matrix4 ViewMatrix = new(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, -0.5f, 0f, -1f, 1f, 0.5f, 1f);
-    
+
     [Shader("Ui")] private static partial ShaderSource UiShaderSource { get; }
 
     internal static Shader UiShader;
@@ -49,13 +48,13 @@ public static partial class UiRender {
         LogFactory = logFactory;
         DefaultScreen = settings.DefaultScreen;
         Stage = stage = new Stage();
-        
+
         Toolkit.Event.EventRaised += HandleEvents;
 
         UiShader = Shader.FromSource(UiShaderSource);
-        
+
         SpriteRender.Init();
-        
+
         OnResize(settings.Screen);
     }
 
@@ -88,20 +87,20 @@ public static partial class UiRender {
 
     public static void RegisterFont(BitmapFamily font) {
         MyriadPro = font;
-        
+
         UiShader.SetValue("PixelRange", MyriadPro.PixelRange);
         UiShader.SetValue("TextTextureSize", new Vector2(MyriadPro.Atlas.Width, MyriadPro.Atlas.Height));
         UiShader.SetValue("TextTexture", MyriadPro.Sampler);
     }
 
     private static void OnResize(Vector2i screen) {
-        if (screen == Screen)
+        if (screen == Screen) {
             return;
+        }
 
         Screen = screen;
-        
+
         var ratio = MathF.Min((float)Screen.X / DefaultScreen.X, (float)Screen.Y / DefaultScreen.Y);
-        
         Stage.SetSize(screen, new Vector2(ratio, ratio));
 
         ViewMatrix.M11 = 2.0f / Screen.X;
@@ -109,7 +108,7 @@ public static partial class UiRender {
 
         UiShader.Apply();
         UiShader.SetValue("ViewMatrix", ViewMatrix);
-        
+
         Stage.DispatchEvent(new ResizeEvent(ResizeEvent.Resize, Screen.X, Screen.Y));
     }
 
@@ -121,19 +120,21 @@ public static partial class UiRender {
         IsFocused = focus;
         Stage.SetWindowFocus(focus);
     }
-    
+
     private static void HandleEvents(EventArgs args) {
-        if (args is FocusEventArgs fea) {
-            SetFocus(fea.GotFocus);
+        switch (args) {
+            case FocusEventArgs fea:
+                SetFocus(fea.GotFocus);
+                break;
+            case MouseMoveEventArgs mouseMove:
+                Stage.SetMousePosition(mouseMove.ClientPosition);
+                return;
         }
 
-        if (args is MouseMoveEventArgs mouseMove) {
-            Stage.SetMousePosition(mouseMove.ClientPosition);
+        if (!IsFocused) {
             return;
         }
 
-        if (!IsFocused) return;
-        
         switch (args) {
             case KeyDownEventArgs e:
                 Stage.SetKeyDown(e.Key, e.Scancode);
@@ -142,7 +143,7 @@ public static partial class UiRender {
                 Stage.SetKeyUp(e.Key, e.Scancode);
                 break;
             case TextInputEventArgs e:
-                TextInput.ActiveInput?.OnTextInput(e.Text.AsSpan());
+                Stage.SetTextInput(e.Text.AsSpan());
                 break;
             case WindowResizeEventArgs e:
                 OnResize(e.NewClientSize);

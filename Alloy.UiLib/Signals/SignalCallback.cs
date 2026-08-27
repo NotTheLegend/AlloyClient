@@ -8,7 +8,7 @@ internal sealed class SignalCallback<T> : IEquatable<SignalCallback<T>> where T 
     private readonly WeakReference<object> _reference;
     private readonly MethodInfo _callback;
     private readonly int _callbackHash;
-    
+
     public SignalCallback(T callback) {
         _reference = new WeakReference<object>(callback.Target);
         _callback = callback.GetMethodInfo();
@@ -28,6 +28,7 @@ internal sealed class SignalCallback<T> : IEquatable<SignalCallback<T>> where T 
 
     public bool Equals(SignalCallback<T> other) {
         if (other is null) return false;
+
         return _callbackHash == other._callbackHash;
     }
 
