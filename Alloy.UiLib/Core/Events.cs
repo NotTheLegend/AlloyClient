@@ -23,11 +23,11 @@ public class Event(EventType<Event> type, bool bubbles = false, bool cancelable 
     public readonly bool Bubbles = bubbles;
     public readonly bool Cancelable = cancelable;
 
-    public Sprite Target { get; private set; }
+    public Sprite Target;
 
-    public Sprite CurrentTarget { get; private set; }
+    public Sprite CurrentTarget;
 
-    public EventPhase Phase { get; internal set; }
+    public EventPhase Phase;
 
     internal bool Stop;
 

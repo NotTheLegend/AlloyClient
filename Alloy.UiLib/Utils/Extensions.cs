@@ -28,7 +28,7 @@ public static class Extensions {
             MouseButton.Button5 => "",
             MouseButton.Button6 => "",
             MouseButton.Button7 => "",
-            MouseButton.Button8 => "", //TODO: extra mouse buttons
+            MouseButton.Button8 => "", // TODO: extra mouse buttons
             _ => throw new ArgumentOutOfRangeException(nameof(button), button, null),
         };
     }

@@ -60,17 +60,17 @@ public sealed class Ellipse : Sprite {
         var u = rx + _oSize;
         var v = ry + _oSize;
 
-        VertexData[0] = new VertexUi(new Vector2(0 - _oSize, 0 - _oSize), new Vector2(u, v)); // Top Left
-        VertexData[1] = new VertexUi(new Vector2(rx, 0 - _oSize), new Vector2(0f, v)); // Top Center
-        VertexData[2] = new VertexUi(new Vector2(rx * 2 + _oSize, 0 - _oSize), new Vector2(u, v)); // Top Right
+        VertexData[0] = new VertexUi(new Vector2(-_oSize, -_oSize), new Vector2(u, v)); // Top left
+        VertexData[1] = new VertexUi(new Vector2(rx, -_oSize), new Vector2(0f, v)); // Top center
+        VertexData[2] = new VertexUi(new Vector2(rx * 2 + _oSize, -_oSize), new Vector2(u, v)); // Top right
 
-        VertexData[3] = new VertexUi(new Vector2(0 - _oSize, ry), new Vector2(u, 0f)); // Middle Left
+        VertexData[3] = new VertexUi(new Vector2(-_oSize, ry), new Vector2(u, 0f)); // Middle left
         VertexData[4] = new VertexUi(new Vector2(rx, ry), new Vector2(0f, 0f)); // Center
-        VertexData[5] = new VertexUi(new Vector2(rx * 2 + _oSize, ry), new Vector2(u, 0f)); // Middle Right
+        VertexData[5] = new VertexUi(new Vector2(rx * 2 + _oSize, ry), new Vector2(u, 0f)); // Middle right
 
-        VertexData[6] = new VertexUi(new Vector2(0 - _oSize, ry * 2 + _oSize), new Vector2(u, v)); // Bottom Left
-        VertexData[7] = new VertexUi(new Vector2(rx, ry * 2 + _oSize), new Vector2(0f, v)); // Bottom Center
-        VertexData[8] = new VertexUi(new Vector2(rx * 2 + _oSize, ry * 2 + _oSize), new Vector2(u, v)); // Bottom Right
+        VertexData[6] = new VertexUi(new Vector2(-_oSize, ry * 2 + _oSize), new Vector2(u, v)); // Bottom left
+        VertexData[7] = new VertexUi(new Vector2(rx, ry * 2 + _oSize), new Vector2(0f, v)); // Bottom center
+        VertexData[8] = new VertexUi(new Vector2(rx * 2 + _oSize, ry * 2 + _oSize), new Vector2(u, v)); // Bottom right
 
         SetGraphicsBuffer();
     }
@@ -78,8 +78,9 @@ public sealed class Ellipse : Sprite {
     public void Resize(int width, int height, int outlineThickness = -1) {
         _dX = width;
         _dY = height;
-        if (outlineThickness > -1)
+        if (outlineThickness > -1) {
             _oSize = outlineThickness;
+        }
 
         FillData();
     }

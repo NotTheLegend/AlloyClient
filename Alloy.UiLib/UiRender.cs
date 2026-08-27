@@ -29,7 +29,7 @@ public static partial class UiRender {
 
     internal static Vector2i Screen;
 
-    public static int LastRenderCount = 0;
+    public static int LastRenderCount;
 
     public static BitmapFamily MyriadPro;
 

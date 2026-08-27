@@ -27,7 +27,9 @@ internal sealed class SignalCallback<T> : IEquatable<SignalCallback<T>> where T 
     }
 
     public bool Equals(SignalCallback<T> other) {
-        if (other is null) return false;
+        if (other is null) {
+            return false;
+        }
 
         return _callbackHash == other._callbackHash;
     }

@@ -67,12 +67,14 @@ public sealed class NineSliceRect : Sprite {
         SetGraphicsBuffer();
 
         var scaleX = _w / (_cutX * 2f);
-        if (scaleX > 1.0f)
+        if (scaleX > 1.0f) {
             scaleX = 1.0f;
+        }
 
         var scaleY = _h / (_cutY * 2f);
-        if (scaleY > 1.0f)
+        if (scaleY > 1.0f) {
             scaleY = 1.0f;
+        }
 
         Extra2 = new Vector4(_slice.Cuts.X * scaleX, _slice.Cuts.Y * scaleY, _cutX / _w * scaleX, _cutY / _h * scaleY);
     }

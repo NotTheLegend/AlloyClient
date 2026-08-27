@@ -35,8 +35,13 @@ public partial class Sprite {
     }
 
     private void GetDragTarget() {
-        if (_dragSprite == null) return;
-        if (_dragSprite._isDragging) return;
+        if (_dragSprite == null) {
+            return;
+        }
+
+        if (_dragSprite._isDragging) {
+            return;
+        }
 
         // get lowest hierarchy sprite
         var current = this;
@@ -45,8 +50,9 @@ public partial class Sprite {
         while (next != null) {
             next = next.Parent;
 
-            if (next != null)
+            if (next != null) {
                 current = next;
+            }
         }
 
         DropTarget = null;
@@ -57,11 +63,13 @@ public partial class Sprite {
     }
 
     private void DropCheck(Vector2i pos, ref Sprite target) {
-        if (!Visible || !IsInBounds(pos) || this == _dragSprite)
+        if (!Visible || !IsInBounds(pos) || this == _dragSprite) {
             return;
+        }
 
-        if (_dropType.IsInstanceOfType(this))
+        if (_dropType.IsInstanceOfType(this)) {
             target = this;
+        }
 
         var span = GetChildrenSpan();
         foreach (var child in span) {

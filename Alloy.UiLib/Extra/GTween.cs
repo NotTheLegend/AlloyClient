@@ -23,7 +23,9 @@ public static class GTween {
     public static void Update(GameTime gameTime) {
         var count = Tweens.Count;
 
-        if (count == 0) return;
+        if (count == 0) {
+            return;
+        }
 
         for (var i = 0; i < count; i++) {
             ref var tween = ref CollectionsMarshal.AsSpan(Tweens)[i];
@@ -32,8 +34,9 @@ public static class GTween {
             if (tween.DeltaDelay < tween.DelayMs) {
                 tween.DeltaDelay += gameTime.ElapsedMs;
 
-                if (tween.DeltaDelay >= tween.DelayMs)
+                if (tween.DeltaDelay >= tween.DelayMs) {
                     tween.SetStart();
+                }
 
                 continue;
             }
@@ -49,8 +52,9 @@ public static class GTween {
 
             var value = (tween.End - tween.Start) * ratio + tween.Start;
 
-            if (tween.Finished)
+            if (tween.Finished) {
                 value = tween.End;
+            }
 
             switch (tween.Type) {
                 case EaseType.X:

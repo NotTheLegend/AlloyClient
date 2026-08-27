@@ -55,7 +55,9 @@ public sealed class Timer {
     }
 
     private void Tick(GameTime gameTime) {
-        if (!_isRunning) return;
+        if (!_isRunning) {
+            return;
+        }
 
         while (_queue.TryDequeue(out var data)) {
             switch (data.Item1) {

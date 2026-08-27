@@ -60,8 +60,9 @@ public class BitmapFont {
     }
 
     public (int, int) GetStartIndex(StringBuilder text, int caretIndex, int maxWidth, float outlineSize, float scale) {
-        if (text.Length < 1 || maxWidth < 1)
+        if (text.Length < 1 || maxWidth < 1) {
             return (0, 0);
+        }
 
         var index = text.Length - 1;
         var startIndex = 0;
@@ -74,8 +75,9 @@ public class BitmapFont {
                 case '\r':
                     break;
                 default:
-                    if (!Glyphs.TryGetValue(text[index], out var glyph))
+                    if (!Glyphs.TryGetValue(text[index], out var glyph)) {
                         break;
+                    }
 
                     if (index > 0) {
                         Kernings.TryGetValue((text[index - 1], text[index]), out var kern);
@@ -98,8 +100,9 @@ public class BitmapFont {
     }
 
     public int GetStartIndex(string text, int maxWidth, float outlineSize, float scale) {
-        if (string.IsNullOrWhiteSpace(text) || maxWidth < 1)
+        if (string.IsNullOrWhiteSpace(text) || maxWidth < 1) {
             return 0;
+        }
 
         var index = text.Length - 1;
         var startIndex = 0;
@@ -111,8 +114,9 @@ public class BitmapFont {
                 case '\r':
                     break;
                 default:
-                    if (!Glyphs.TryGetValue(text[index], out var glyph))
+                    if (!Glyphs.TryGetValue(text[index], out var glyph)) {
                         break;
+                    }
 
                     if (index > 0) {
                         Kernings.TryGetValue((text[index - 1], text[index]), out var kern);
@@ -144,8 +148,9 @@ public class BitmapFont {
                 case '\r':
                     continue;
                 default:
-                    if (!Glyphs.TryGetValue(c, out _))
+                    if (!Glyphs.TryGetValue(c, out _)) {
                         break;
+                    }
 
                     count++;
                     continue;

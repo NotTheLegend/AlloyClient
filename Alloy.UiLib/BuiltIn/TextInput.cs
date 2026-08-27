@@ -127,9 +127,7 @@ public sealed class TextInput : Sprite, ITextInputTarget, IManualTextInputTarget
         _caret.Visible = false;
         AddChild(_caret);
 
-        var rectConfig = new NineSliceConfig
-            { Width = _width, Height = (int)(_font.LineHeight * _fontScale) + CutY * 3, SliceData = BoxLookup, CutX = CutX, CutY = CutY };
-
+        var rectConfig = new NineSliceConfig { Width = _width, Height = (int)(_font.LineHeight * _fontScale) + CutY * 3, SliceData = BoxLookup, CutX = CutX, CutY = CutY };
         _textBox = new NineSliceRect(rectConfig);
         AddChild(_textBox);
 
@@ -226,16 +224,16 @@ public sealed class TextInput : Sprite, ITextInputTarget, IManualTextInputTarget
                     var pos = glyph.Position;
 
                     VertexData[idx + 0] = new VertexUi(new Vector2(zero.X + pos.X0 * _fontScale, zero.Y - pos.Y1 * _fontScale),
-                        new Vector2(uv.X0, uv.Y1)); //bl
+                        new Vector2(uv.X0, uv.Y1)); // Bottom left
 
                     VertexData[idx + 1] = new VertexUi(new Vector2(zero.X + pos.X0 * _fontScale, zero.Y - pos.Y0 * _fontScale),
-                        new Vector2(uv.X0, uv.Y0)); //tl
+                        new Vector2(uv.X0, uv.Y0)); // Top left
 
                     VertexData[idx + 2] = new VertexUi(new Vector2(zero.X + pos.X1 * _fontScale, zero.Y - pos.Y0 * _fontScale),
-                        new Vector2(uv.X1, uv.Y0)); //tr
+                        new Vector2(uv.X1, uv.Y0)); // Top right
 
                     VertexData[idx + 3] = new VertexUi(new Vector2(zero.X + pos.X1 * _fontScale, zero.Y - pos.Y1 * _fontScale),
-                        new Vector2(uv.X1, uv.Y1)); //br
+                        new Vector2(uv.X1, uv.Y1)); // Bottom right
 
                     if (i < len - 1) {
                         var k = password ? '*' : _inputText[i + 1];

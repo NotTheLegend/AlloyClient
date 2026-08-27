@@ -55,8 +55,13 @@ public abstract class EventManager {
     private readonly Stack<string> _currentEventState = [];
 
     private static TaskState GetStatus(Task task) {
-        if (task.IsFaulted) return TaskState.Faulted;
-        if (task.IsCanceled) return TaskState.Canceled;
+        if (task.IsFaulted) {
+            return TaskState.Faulted;
+        }
+
+        if (task.IsCanceled) {
+            return TaskState.Canceled;
+        }
 
         return TaskState.Completed;
     }
@@ -189,7 +194,9 @@ public abstract class EventManager {
         }
 
         var hasType = BroadcastMap.TryGetValue(pending.Type, out var managers);
-        if (pending.State == QueueState.Add && !hasType) BroadcastMap[pending.Type] = managers = [];
+        if (pending.State == QueueState.Add && !hasType) {
+            BroadcastMap[pending.Type] = managers = [];
+        }
 
         switch (pending.State) {
             case QueueState.Add:
@@ -265,8 +272,9 @@ public abstract class EventManager {
     private bool InvokeMouseEvent(MouseEvent mouseEvent, List<Listener> listeners, EventPhase phase) {
         var sprite = this as Sprite;
 
-        if (!sprite!.MouseEnabled)
+        if (!sprite!.MouseEnabled) {
             return false;
+        }
 
         mouseEvent.SetCurrentTarget(sprite);
         mouseEvent.Phase = phase;
@@ -274,8 +282,9 @@ public abstract class EventManager {
         var inBounds = sprite!.IsInBounds(mouseEvent.Coords);
         var button = MouseEvent.IsButtonType(mouseEvent.Type);
 
-        if (button && !mouseEvent.Captured && !inBounds)
+        if (button && !mouseEvent.Captured && !inBounds) {
             return false;
+        }
 
         _currentEventState.Push(mouseEvent.Type);
 
@@ -299,11 +308,13 @@ public abstract class EventManager {
 
     private bool InvokeEvent(Event @event, EventPhase phase) {
         var has = _eventMap.TryGetValue(@event.Type, out var listeners);
-        if (!has || listeners.Count < 1)
+        if (!has || listeners.Count < 1) {
             return false;
+        }
 
-        if (@event is MouseEvent mouseEvent)
+        if (@event is MouseEvent mouseEvent) {
             return InvokeMouseEvent(mouseEvent, listeners, phase);
+        }
 
         @event.SetCurrentTarget(this as Sprite);
         @event.Phase = phase;

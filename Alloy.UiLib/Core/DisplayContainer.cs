@@ -209,9 +209,17 @@ public abstract class DisplayContainer : EventManager {
     }
 
     private void ValidateChild(Sprite child) {
-        if (child == null) throw new Exception("Tried to add null as child");
-        if (child == this) throw new Exception("Tried to add self as child");
-        if (child is Stage) throw new Exception("Tried to add stage as child");
+        if (child == null) {
+            throw new Exception("Tried to add null as child");
+        }
+
+        if (child == this) {
+            throw new Exception("Tried to add self as child");
+        }
+
+        if (child is Stage) {
+            throw new Exception("Tried to add stage as child");
+        }
 
         var obj = Parent;
         while (obj != null) {

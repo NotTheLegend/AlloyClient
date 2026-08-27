@@ -46,10 +46,10 @@ public sealed class ColorRect : Sprite {
     }
 
     private void FillData() {
-        VertexData[0] = new VertexUi(new Vector2(0, 0)); //Top Left
-        VertexData[1] = new VertexUi(new Vector2(_w, 0)); //Top Right
-        VertexData[2] = new VertexUi(new Vector2(_w, _h)); //Bottom Right
-        VertexData[3] = new VertexUi(new Vector2(0, _h)); //Bottom Left
+        VertexData[0] = new VertexUi(new Vector2(0, 0)); // Top left
+        VertexData[1] = new VertexUi(new Vector2(_w, 0)); // Top right
+        VertexData[2] = new VertexUi(new Vector2(_w, _h)); // Bottom right
+        VertexData[3] = new VertexUi(new Vector2(0, _h)); // Bottom left
 
         SetGraphicsBuffer();
     }

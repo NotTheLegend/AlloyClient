@@ -30,7 +30,7 @@ public sealed class SimpleText : Sprite {
         Small = 1,
     }
 
-    public string Text { get; private set; }
+    public string Text;
 
     private float _fontScale;
     private float _outlineThickness;
@@ -91,8 +91,9 @@ public sealed class SimpleText : Sprite {
 
             switch (c) {
                 case '\n':
-                    if (zero.X > boundWidth)
+                    if (zero.X > boundWidth) {
                         boundWidth = zero.X;
+                    }
 
                     zero.X = _lineWrapStart;
                     boundHeight += _font.LineHeight * scale;
@@ -108,16 +109,16 @@ public sealed class SimpleText : Sprite {
                     var uv = glyph.UV;
                     var pos = glyph.Position;
                     VertexData[idx * 4 + 0] = new VertexUi(new Vector2(zero.X + pos.X0 * scale, zero.Y - pos.Y1 * scale),
-                        new Vector2(uv.X0, uv.Y1)); //bl
+                        new Vector2(uv.X0, uv.Y1)); // Bottom left
 
                     VertexData[idx * 4 + 1] = new VertexUi(new Vector2(zero.X + pos.X0 * scale, zero.Y - pos.Y0 * scale),
-                        new Vector2(uv.X0, uv.Y0)); //tl
+                        new Vector2(uv.X0, uv.Y0)); // Top left
 
                     VertexData[idx * 4 + 2] = new VertexUi(new Vector2(zero.X + pos.X1 * scale, zero.Y - pos.Y0 * scale),
-                        new Vector2(uv.X1, uv.Y0)); //tr
+                        new Vector2(uv.X1, uv.Y0)); // Top right
 
                     VertexData[idx * 4 + 3] = new VertexUi(new Vector2(zero.X + pos.X1 * scale, zero.Y - pos.Y1 * scale),
-                        new Vector2(uv.X1, uv.Y1)); //br
+                        new Vector2(uv.X1, uv.Y1)); // Bottom right
 
                     idx++;
 
@@ -130,7 +131,7 @@ public sealed class SimpleText : Sprite {
                     break;
             }
 
-            //todo add param for wordwrap
+            // Todo: add param for word wrap
             // Max width hit, start new line
             if (_maxWidth > -1 && zero.X >= _maxWidth) {
                 // Prevent word being cut by the new line if there was

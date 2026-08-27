@@ -32,7 +32,7 @@ internal struct SpriteInstanceData(
     public Vector4 Extra2 = extra2;
     public Vector4 ColorTransform = colorTransform;
 
-    public static unsafe int Size { get; } = sizeof(SpriteInstanceData);
+    public readonly static unsafe int Size = sizeof(SpriteInstanceData);
 
     public bool Equals(SpriteInstanceData other) {
         return TransformX.Equals(other.TransformX) &&
@@ -75,7 +75,7 @@ internal struct SpriteVertexData(VertexUi vertex, uint instanceId) : IVertexData
     public uint Color = vertex.Color;
     public uint InstanceId = instanceId;
 
-    public static VertexStride VertexStride { get; } = new([
+    public readonly static VertexStride VertexStride = new([
         new ElementFormat(0, VertexAttribType.Float, FormatType.Vector2),
         new ElementFormat(1, VertexAttribType.Float, FormatType.Vector2),
         new ElementFormat(2, VertexAttribType.UnsignedInt),
@@ -154,7 +154,7 @@ internal struct VertexDataUi : IVertexData<VertexDataUi> {
         ColorTransform = colorTransform.GetTransformData();
     }
 
-    public static VertexStride VertexStride { get; } = new([
+    public readonly static VertexStride VertexStride = new([
         new ElementFormat(0, VertexAttribType.Float, FormatType.Vector2),
         new ElementFormat(1, VertexAttribType.UnsignedInt),
         new ElementFormat(2, VertexAttribType.UnsignedInt),
