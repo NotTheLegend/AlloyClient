@@ -79,8 +79,8 @@ public sealed class SimpleText : Sprite {
         var zero = new Vector2(0f, _font.Ascender * scale);
         var lastSpaceIndex = 0;
         var boundWidth = 0f;
-        var boundHeight = _font.Descender * scale;
         var len = Text.Length;
+        var lineCount = len == 0 ? 0 : 1;
         var idx = 0;
         for (var i = 0; i < len; i++) {
             var c = Text[i];
@@ -96,8 +96,8 @@ public sealed class SimpleText : Sprite {
                     }
 
                     zero.X = _lineWrapStart;
-                    boundHeight += _font.LineHeight * scale;
                     zero.Y += _font.LineHeight * scale;
+                    lineCount++;
                     continue;
                 case '\r':
                     continue;
@@ -133,7 +133,7 @@ public sealed class SimpleText : Sprite {
 
             // Todo: add param for word wrap
             // Max width hit, start new line
-            if (_maxWidth > -1 && zero.X >= _maxWidth) {
+            if (_maxWidth > -1 && zero.X >= _maxWidth && i < len - 1) {
                 // Prevent word being cut by the new line if there was
                 if (lastSpaceIndex > 0) {
                     idx -= i - lastSpaceIndex;
@@ -146,8 +146,8 @@ public sealed class SimpleText : Sprite {
                 }
 
                 zero.X = _lineWrapStart;
-                boundHeight += _font.LineHeight * scale;
                 zero.Y += _font.LineHeight * scale;
+                lineCount++;
             }
         }
 
@@ -156,6 +156,11 @@ public sealed class SimpleText : Sprite {
         }
 
         SetGraphicsBuffer();
+
+        var measuredWidth = _maxWidth < 0 ? boundWidth : Math.Min(boundWidth, _maxWidth);
+        SelfContentWidth = (int)MathF.Ceiling(measuredWidth);
+        SelfContentHeight = (int)MathF.Ceiling(lineCount * _font.LineHeight * scale);
+        UpdateBounds();
 
         Extra1.X = _outlineThickness;
         Extra1.Y = (int)(_fontScale < 16 ? RenderType.Small : RenderType.Normal);

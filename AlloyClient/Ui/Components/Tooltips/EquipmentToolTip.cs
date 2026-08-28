@@ -122,9 +122,8 @@ public sealed class EquipmentToolTip : Tooltip
         }
     }
 
-    public override void DrawSprite()
-    {
-        ToolHeight = Height + 10;
+    public override void DrawSprite() {
+        ToolHeight = Math.Max(ToolHeight, Height + 10);
         base.DrawSprite();
     }
 
