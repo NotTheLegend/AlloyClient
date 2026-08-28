@@ -11,6 +11,7 @@ using AlloyClient.Rendering.VertexData;
 using Alloy.UiLib.Signals;
 using Alloy.Engine;
 using AlloyClient.Logging;
+using AlloyClient.Diagnostics;
 using AlloyClient.Utils;
 using Microsoft.Extensions.Logging;
 using OpenTK.Graphics.OpenGL;
@@ -152,6 +153,7 @@ public static class Map {
     public static int ParticleGenCount;
 
     private readonly static List<Projectile> Projectiles = [];
+    private readonly static List<Projectile> VisibleProjectiles = [];
 
     public static int LocalPlayerId;
     public static Player LocalPlayer;
@@ -164,6 +166,7 @@ public static class Map {
     private readonly static ParticleData[] Particles = new ParticleData[30000];
 
     private readonly static List<VertexObject> RenderTargets = [];
+    private readonly static List<int> RemovedEntities = [];
 
     private readonly static HashSet<Vector2i> SightCircle = [];
 
@@ -200,15 +203,25 @@ public static class Map {
         var dt = gameTime.ElapsedMs;
         
         _particleCount = 0;
-        var fullMatrix = camera.Matrix;
-        var matrix = new DepthMatrix(camera.Matrix);
+        Render.LastVisibleEntities = 0;
+        Render.LastCulledEntities = 0;
+        RemovedEntities.Clear();
 
         foreach (var (objectId, entity) in Entities) {
             if (!entity.Update(time, dt)) {
-                Entities.Remove(objectId);
+                RemovedEntities.Add(objectId);
+                continue;
             }
 
-            entity.UpdateVisibility(ref fullMatrix);
+            if (entity.UpdateVisibility(camera)) {
+                Render.LastVisibleEntities++;
+            } else {
+                Render.LastCulledEntities++;
+            }
+        }
+
+        foreach (var objectId in RemovedEntities) {
+            RemoveEntity(objectId);
         }
 
         for (var i = ParticleGenCount - 1; i >= 0; i--) {
@@ -224,8 +237,9 @@ public static class Map {
 
         for (var i = Projectiles.Count - 1; i >= 0; i--) {
             var proj = Projectiles[i];
-            if (proj.Update(gameTime))
+            if (proj.Update(gameTime)) {
                 continue;
+            }
             
             ObjectPools.Projectiles.Push(proj);
 
@@ -233,6 +247,18 @@ public static class Map {
             Projectiles[i] = Projectiles[idx];
             Projectiles.RemoveAt(idx);
         }
+
+        VisibleProjectiles.Clear();
+        foreach (var projectile in Projectiles) {
+            if (projectile.IsVisible(camera)) {
+                VisibleProjectiles.Add(projectile);
+            }
+        }
+
+        Render.LastVisibleProjectiles = VisibleProjectiles.Count;
+        Render.LastCulledProjectiles = Projectiles.Count - VisibleProjectiles.Count;
+        _particleCount = RenderStress.AddParticles(Particles, _particleCount, camera);
+        CullParticles(camera);
     }
 
     public static void FixedUpdate(in GameTime gameTime) {
@@ -245,6 +271,7 @@ public static class Map {
     private readonly static List<TileData> VisibleTiles = new (Render.TileBufferSize);
 
     public static void Draw(in GameTime gameTime, in Camera camera) {
+        Render.BeginWorldDraw();
         GL.Disable(EnableCap.DepthTest);
         GL.Disable(EnableCap.CullFace);
 
@@ -263,24 +290,32 @@ public static class Map {
             
             VisibleTiles.AddRange(data); // should probably not do this but cant be bothered currently
         }
+
+        RenderStress.AddTiles(VisibleTiles, camera);
         
+        Render.GpuGround.Begin();
         Render.DrawTiles(VisibleTiles.AsReadOnlySpan());
+        Render.GpuGround.End();
         
         #endregion
 
         #region Shadows
 
+        Render.GpuShadows.Begin();
         Render.StartDrawShadow();
 
         foreach (var type in EntityStorage[ModelType.PbObject]) {
-            type.DrawShadow();
+            if (type.Visible && type.HasShadow) {
+                type.DrawShadow();
+            }
         }
 
-        foreach (var projectile in Projectiles) {
+        foreach (var projectile in VisibleProjectiles) {
             Render.DrawShadow(projectile.DrawShadow());
         }
 
         Render.EndShadowDraw();
+        Render.GpuShadows.End();
 
         #endregion
 
@@ -288,7 +323,9 @@ public static class Map {
 
         #region Particles
 
+        Render.GpuParticles.Begin();
         Render.DrawParticles(Particles, _particleCount);
+        Render.GpuParticles.End();
 
         #endregion
         
@@ -298,6 +335,7 @@ public static class Map {
         
         RenderTargets.Clear();
         
+        Render.GpuModels.Begin();
         Render.StartDrawModel();
 
         for (var i = 0; i < EntityStorage.Types.Length; i++) {
@@ -310,16 +348,18 @@ public static class Map {
             foreach (var entity in list) {
                 if (entity.Visible) {
                     entity.Draw(RenderTargets, gameTime.TotalMs);
-                    Render.LastDrawCountEntities++;
                 }
 
             }
 
             Render.FlushBufferModel();
         }
+
+        Render.GpuModels.End();
         
         GL.Disable(EnableCap.CullFace);
         
+        Render.GpuObjects.Begin();
         Render.StartDrawEntity();
         
         foreach (var type in EntityStorage[ModelType.PbObject]) {
@@ -328,14 +368,38 @@ public static class Map {
             }
         }
 
-        foreach (var projectile in Projectiles) {
+        foreach (var projectile in VisibleProjectiles) {
             RenderTargets.Add(projectile.Draw(in camera.DepthMatrix));
         }
 
+        Render.LastVisibleEntities += RenderStress.AddObjects(RenderTargets, camera);
+
         Render.FlushBufferEntity(RenderTargets);
-        Render.LastDrawCountEntities += RenderTargets.Count;
+        Render.GpuObjects.End();
 
         #endregion
+    }
+
+    private static void CullParticles(in Camera camera) {
+        var visibleCount = 0;
+
+        for (var i = 0; i < _particleCount; i++) {
+            var particle = Particles[i];
+            var position = new Vector2(particle.Position.X, particle.Position.Y);
+            if (!camera.IsVisible(position, 0.5f, Settings.MaxRenderDistance.Value)) {
+                continue;
+            }
+
+            if (visibleCount != i) {
+                Particles[visibleCount] = particle;
+            }
+
+            visibleCount++;
+        }
+
+        Render.LastVisibleParticles = visibleCount;
+        Render.LastCulledParticles = _particleCount - visibleCount;
+        _particleCount = visibleCount;
     }
 
     public static MapTile LookupTile(Vector2 position) => LookupTile((int)position.X, (int)position.Y);
@@ -462,6 +526,7 @@ public static class Map {
         EntityStorage.Clear();
         
         Projectiles.Clear();
+        VisibleProjectiles.Clear();
 
         LocalPlayerId = 0;
         LocalPlayer = null;

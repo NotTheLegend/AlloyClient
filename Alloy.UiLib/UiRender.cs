@@ -1,6 +1,7 @@
 ﻿using System;
 using Alloy.Common.SourceGen;
 using Alloy.Engine.Graphics;
+using Alloy.Engine.Diagnostics;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Data;
 using Alloy.UiLib.Rendering;
@@ -39,6 +40,8 @@ public static partial class UiRender {
 
     internal static Shader UiShader;
 
+    public static GpuTimer GpuDraw;
+
     public static void ConfigureAndLoad(ILoggerFactory logFactory, UiSettings settings, out Stage stage) {
         if (Stage != null) {
             stage = Stage;
@@ -52,6 +55,7 @@ public static partial class UiRender {
         Toolkit.Event.EventRaised += HandleEvents;
 
         UiShader = Shader.FromSource(UiShaderSource);
+        GpuDraw = new GpuTimer();
 
         SpriteRender.Init();
 
@@ -97,6 +101,7 @@ public static partial class UiRender {
         Toolkit.Event.EventRaised -= HandleEvents;
         SpriteRender.Dispose();
         UiShader?.Dispose();
+        GpuDraw?.Dispose();
     }
 
     private static void OnResize(Vector2i screen) {
@@ -133,6 +138,7 @@ public static partial class UiRender {
                 SetFocus(fea.GotFocus);
                 break;
             case MouseMoveEventArgs mouseMove:
+                FrameMetrics.RecordPointerEvent();
                 Stage.SetMousePosition(mouseMove.ClientPosition);
                 return;
         }
@@ -155,12 +161,15 @@ public static partial class UiRender {
                 OnResize(e.NewClientSize);
                 break;
             case MouseButtonDownEventArgs e:
+                FrameMetrics.RecordPointerEvent();
                 Stage.SetMouseButtonDown(e.Button);
                 break;
             case MouseButtonUpEventArgs e:
+                FrameMetrics.RecordPointerEvent();
                 Stage.SetMouseButtonUp(e.Button);
                 break;
             case ScrollEventArgs e:
+                FrameMetrics.RecordPointerEvent();
                 Stage.SetMouseScroll(e.Delta);
                 break;
         }

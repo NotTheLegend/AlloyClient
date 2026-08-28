@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Alloy.Engine;
+using Alloy.Engine.Diagnostics;
 using Alloy.UiLib.Extra;
 using Alloy.UiLib.Input;
 using Alloy.UiLib.Utils;
@@ -48,6 +49,7 @@ public sealed class Stage : Sprite {
         GTween.Update(gameTime);
         Timer.Update(gameTime);
         CurrentHighestSprite = null;
+        FrameMetrics.RecordPointerResolution();
         InternalUpdateLoop();
         UpdateHoverTarget();
     }
@@ -146,6 +148,7 @@ public sealed class Stage : Sprite {
         PointerPositionValid = true;
         _mouse.SetPosition(position);
         CurrentHighestSprite = null;
+        FrameMetrics.RecordPointerResolution();
         ResolvePointerTarget();
         UpdateHoverTarget();
         DispatchMouseEvent(MouseEvent.MouseMove, GetActivePointerCapture());

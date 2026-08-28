@@ -1,4 +1,6 @@
-﻿namespace Alloy.Engine.Graphics.Buffers;
+﻿using Alloy.Engine.Diagnostics;
+
+namespace Alloy.Engine.Graphics.Buffers;
 
 public sealed unsafe class VertexBuffer<T> : IDisposable where T : unmanaged, IVertexData<T> {
     
@@ -23,8 +25,10 @@ public sealed unsafe class VertexBuffer<T> : IDisposable where T : unmanaged, IV
         if (data.Length > Length) {
             throw new Exception("Data larger than buffer");
         }
-        
-        GL.NamedBufferSubData(Handle, 0, sizeof(T) * data.Length, data);
+
+        var sizeInBytes = sizeof(T) * data.Length;
+        FrameMetrics.RecordUpload(sizeInBytes);
+        GL.NamedBufferSubData(Handle, 0, sizeInBytes, data);
     }
     
     

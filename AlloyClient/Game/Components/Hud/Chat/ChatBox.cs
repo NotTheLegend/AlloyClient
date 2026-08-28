@@ -130,6 +130,15 @@ public class ChatBox : Sprite {
         if (_inFocus) {
             var hasText = _chatInput.HasText(true);
             if (hasText) {
+                if (ClientCommands.TryDispatch(_chatInput.Text, out var response)) {
+                    if (!string.IsNullOrEmpty(response)) {
+                        AddChatLine.Dispatch(new ChatBoxLineData(Main.GetTime(), "*Client*", 0, string.Empty, response));
+                    }
+
+                    OnKeyUnfocus(true);
+                    return;
+                }
+
                 var textPacket = PlayerText.CreatePacket();
                 textPacket.Text = _chatInput.Text;
                 Client.QueuePacket(textPacket);

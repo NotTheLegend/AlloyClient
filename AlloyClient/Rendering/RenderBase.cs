@@ -79,6 +79,12 @@ public abstract class RenderBase : IComparable<RenderBase> {
     public void SetSize(float size) => Size = size;
 
     public abstract void Draw(List<VertexObject> targets, double time);
+
+    public float GetCullRadius() {
+        var sizeScale = Entity is null ? 1f : MathF.Max(Entity.Size / 100f, 0f);
+        var scale = MathF.Max(MathF.Abs(Scale.X), MathF.Abs(Scale.Y));
+        return MathF.Max(1f, scale * sizeScale * 0.5f);
+    }
     
     public virtual void DrawShadow() { }
 

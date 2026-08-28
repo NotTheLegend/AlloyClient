@@ -18,7 +18,7 @@ public sealed class GameScreen : Screen {
     public const double FixedUpdateStep = 1000d / 60d;
 
     public static GameScreen GameSprite;
-    
+
     private readonly UserInput _userInput;
     private readonly ChatLayer _chatLayer;
     private readonly NotificationLayer _notificationLayer;
@@ -31,14 +31,14 @@ public sealed class GameScreen : Screen {
 
     public GameScreen() {
         Client.Connect(Settings.GameServerAddress, Settings.SelectedGameServerPort);
-        
+
         AddChild(_userInput = new UserInput()); // add map as param
         AddChild(_chatLayer = new ChatLayer());
         AddChild(_notificationLayer = new NotificationLayer());
         AddChild(_hud = new HudView());
-        AddChild(_chat= new ChatBox());
+        AddChild(_chat = new ChatBox());
         AddChild(_debugStats = new DebugStats());
-        
+
         GameSprite = this; // TODO: remove this ;-;
     }
 
@@ -54,12 +54,14 @@ public sealed class GameScreen : Screen {
 
     public override void Update(GameTime gameTime) {
         Client.Tick();
-        
+
         if (Map.LocalPlayer is null) {
             return;
         }
-        
-        _camera = Camera.Update(Map.LocalPlayer.Position, new Vector3i(Stage.StageWidth, Stage.StageHeight, _hud.Width), Settings.CameraAngle, Settings.CameraZoom);
+
+        _camera = Camera.Update(Map.LocalPlayer.Position, new Vector3i(Stage.StageWidth, Stage.StageHeight, _hud.Width),
+            Settings.CameraAngle, Settings.CameraZoom);
+
         _userInput.Update(gameTime, _camera);
         _chatLayer.Update(gameTime, _camera);
         _notificationLayer.Update(gameTime, _camera);
@@ -72,7 +74,7 @@ public sealed class GameScreen : Screen {
             _fixedUpdateElapsed -= FixedUpdateStep;
             Map.FixedUpdate(new GameTime(gameTime.TotalMs, FixedUpdateStep));
         }
-        
+
         Map.Update(gameTime, _camera);
         PartyData.Update(gameTime.TotalMs);
     }
@@ -86,7 +88,7 @@ public sealed class GameScreen : Screen {
     protected override void OnResize(ResizeEvent args) {
         var width = args.Width;
         var height = args.Height;
-        
+
         _hud.X = width;
         _hud.Y = height / 2;
         _hud.Scale = Stage.ScreenScale;

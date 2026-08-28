@@ -16,6 +16,19 @@ public static partial class Render {
     public const int TileBufferSize = Map.VisibleChunks * TileMap.ChunkRenderData;
     public static int TileUploadVersion;
     private const int ShadowBufferSize = 4096;
+
+    public static int LastVisibleEntities;
+    public static int LastCulledEntities;
+    public static int LastVisibleProjectiles;
+    public static int LastCulledProjectiles;
+    public static int LastVisibleParticles;
+    public static int LastCulledParticles;
+
+    public static GpuTimer GpuGround;
+    public static GpuTimer GpuShadows;
+    public static GpuTimer GpuParticles;
+    public static GpuTimer GpuModels;
+    public static GpuTimer GpuObjects;
     
     private readonly static (string, string)[] TileDefines = [("TileBuffer", $"{TileBufferSize}")];
     private readonly static (string, string)[] ShadowDefines = [("ShadowBuffer", $"{ShadowBufferSize}")];
@@ -100,6 +113,12 @@ public static partial class Render {
         _entityDataBuffer = new StorageBuffer<VertexObject>(BufferSize);
         
         BuildParticleBuffers();
+
+        GpuGround = new GpuTimer();
+        GpuShadows = new GpuTimer();
+        GpuParticles = new GpuTimer();
+        GpuModels = new GpuTimer();
+        GpuObjects = new GpuTimer();
     }
 
     public static void Dispose() {
@@ -119,6 +138,19 @@ public static partial class Render {
         _shaderModel?.Dispose();
         _shaderShadow?.Dispose();
         _shaderGround?.Dispose();
+
+        GpuObjects?.Dispose();
+        GpuModels?.Dispose();
+        GpuParticles?.Dispose();
+        GpuShadows?.Dispose();
+        GpuGround?.Dispose();
+    }
+
+    public static void BeginWorldDraw() {
+        LastDrawCountTiles = 0;
+        LastDrawCountShadows = 0;
+        LastDrawCountEntities = 0;
+        LastDrawParticleCount = 0;
     }
     
     public static void SetShaderParams(GameTime gameTime, Camera camera) {

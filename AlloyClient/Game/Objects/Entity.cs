@@ -223,18 +223,18 @@ public class Entity {
         return true;
     }
 
-    public void UpdateVisibility(ref Matrix4 matrix) {
-        /*var dx = Position.X - Camera.Position.X;
-        var dy = Position.Y + Camera.Position.Y;
-        var distanceSquared = dx * dx + dy * dy;
-        const int playerSightRadiusSquared = Map.TileRenderDistance * Map.TileRenderDistance;
-        RenderBaseType.SetVisibility(distanceSquared <= playerSightRadiusSquared);*/
-        RenderBaseType.SetVisibility(true);
-        
-        //TODO: double check mg to make sure
-        //var sort = Vector3.Transform(new Vector3(Position.X, Position.Y, 0), matrix).Y;
-        var sort = Vector3.TransformPerspective(new Vector3(Position.X, Position.Y, 0), matrix).Y;
+    public bool UpdateVisibility(in Camera camera) {
+        var visible = camera.IsVisible(Position, RenderBaseType.GetCullRadius(), Settings.MaxRenderDistance.Value);
+        RenderBaseType.SetVisibility(visible);
+
+        if (!visible) {
+            return false;
+        }
+
+        var matrix = camera.DepthMatrix;
+        var sort = Position.X * matrix.M12 + Position.Y * matrix.M22 + matrix.M42;
         RenderBaseType.SetDepth(0.5f + 0.4f * sort + Jitter);
+        return true;
     }
 
     public bool MoveTo(float x, float y) {

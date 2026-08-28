@@ -1,4 +1,5 @@
 using Alloy.Common.SourceGen;
+using Alloy.Engine.Diagnostics;
 using Alloy.Engine.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
@@ -8,9 +9,12 @@ namespace AlloyClient.Editor;
 public sealed partial class EditorBackdropRenderer {
     [Shader("EditorBackdrop")] private static partial ShaderSource BackdropShaderSource { get; }
 
+    public static double LastGpuMilliseconds;
+
     private static Shader _shader;
     private static VertexArrayObject _vao;
     private static Sampler _sampler;
+    private static GpuTimer _gpuTimer;
     private static float _textureAspect;
     private static bool _initialized;
 
@@ -30,6 +34,7 @@ public sealed partial class EditorBackdropRenderer {
         _shader.SetValue("UvSize", new Vector2(atlas.W, atlas.H));
         _shader.SetValue("UvScale", Vector2.One);
         _vao = new VertexArrayObject();
+        _gpuTimer = new GpuTimer();
         _initialized = true;
     }
 
@@ -47,11 +52,15 @@ public sealed partial class EditorBackdropRenderer {
     }
 
     public void Draw() {
+        _gpuTimer.Begin();
+        LastGpuMilliseconds = _gpuTimer.LastMilliseconds;
         GL.Disable(EnableCap.DepthTest);
         GL.Disable(EnableCap.CullFace);
         _shader.Apply();
         _vao.Bind();
         GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
+        FrameMetrics.RecordDrawCall();
+        _gpuTimer.End();
     }
 
     public static void Dispose() {
@@ -62,6 +71,7 @@ public sealed partial class EditorBackdropRenderer {
         _vao.Dispose();
         _shader.Dispose();
         _sampler.Dispose();
+        _gpuTimer.Dispose();
         _initialized = false;
     }
 }

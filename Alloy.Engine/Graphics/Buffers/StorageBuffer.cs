@@ -1,4 +1,6 @@
-﻿namespace Alloy.Engine.Graphics.Buffers;
+﻿using Alloy.Engine.Diagnostics;
+
+namespace Alloy.Engine.Graphics.Buffers;
 
 public sealed unsafe class StorageBuffer<T> : IDisposable where T : unmanaged, IBufferData<T> {
 
@@ -20,7 +22,9 @@ public sealed unsafe class StorageBuffer<T> : IDisposable where T : unmanaged, I
             throw new Exception("Data larger than buffer");
         }
         
-        GL.NamedBufferSubData(Handle, 0, sizeof(T) * data.Length, data);
+        var sizeInBytes = sizeof(T) * data.Length;
+        FrameMetrics.RecordUpload(sizeInBytes);
+        GL.NamedBufferSubData(Handle, 0, sizeInBytes, data);
     }
 
     public void BindToIndex(uint index) => GL.BindBufferBase(BufferTarget.ShaderStorageBuffer, index, Handle);

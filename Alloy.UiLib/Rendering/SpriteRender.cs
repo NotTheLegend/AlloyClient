@@ -1,6 +1,7 @@
 ﻿using System;
 using Alloy.Engine.Graphics;
 using Alloy.Engine.Graphics.Buffers;
+using Alloy.Engine.Diagnostics;
 using OpenTK.Graphics.OpenGL;
 
 namespace Alloy.UiLib.Rendering;
@@ -44,6 +45,7 @@ public static class SpriteRender {
     }
 
     internal static void StartDraw() {
+        UiRender.GpuDraw.Begin();
         _vao.Bind();
         _instanceBuffer.BindToIndex(0);
 
@@ -89,6 +91,7 @@ public static class SpriteRender {
     internal static void EndDraw() {
         Flush();
         GL.BindVertexArray(0);
+        UiRender.GpuDraw.End();
     }
 
     internal static void Dispose() {
@@ -110,6 +113,7 @@ public static class SpriteRender {
         _vertexBuffer.SetData(_vertices.AsSpan(0, _vertexCount));
 
         GL.DrawElements(PrimitiveType.Triangles, _indexCount, DrawElementsType.UnsignedShort, 0);
+        FrameMetrics.RecordDrawCall();
 
         _instanceCount = 0;
         _indexCount = 0;

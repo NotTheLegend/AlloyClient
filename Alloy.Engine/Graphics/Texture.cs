@@ -1,5 +1,6 @@
 ﻿using Alloy.Common;
 using ReFuel.Stb;
+using Alloy.Engine.Diagnostics;
 
 namespace Alloy.Engine.Graphics;
 
@@ -29,9 +30,15 @@ public sealed class Texture : IDisposable {
         Handle = Create(data, width, height);
     }
 
-    public void SetData(ReadOnlySpan<Color> data, Vector4i rect) => GL.TextureSubImage2D(Handle, 0, rect.X, rect.Y, rect.Z, rect.W, PixelFormat.Rgba, PixelType.UnsignedByte, data);
+    public void SetData(ReadOnlySpan<Color> data, Vector4i rect) {
+        FrameMetrics.RecordUpload(data.Length * 4L);
+        GL.TextureSubImage2D(Handle, 0, rect.X, rect.Y, rect.Z, rect.W, PixelFormat.Rgba, PixelType.UnsignedByte, data);
+    }
 
-    public void SetData(ReadOnlySpan<Color> data, int width, int height) => GL.TextureSubImage2D(Handle, 0, 0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, data);
+    public void SetData(ReadOnlySpan<Color> data, int width, int height) {
+        FrameMetrics.RecordUpload(data.Length * 4L);
+        GL.TextureSubImage2D(Handle, 0, 0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, data);
+    }
 
     public void Dispose() {
         if (Handle == 0) {

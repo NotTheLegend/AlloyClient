@@ -1,5 +1,6 @@
 ﻿using System;
 using Alloy.Engine.Graphics.Buffers;
+using Alloy.Engine.Diagnostics;
 using AlloyClient.Rendering.VertexData;
 using OpenTK.Graphics.OpenGL;
 
@@ -18,9 +19,9 @@ public static partial class Render {
     }
 
     public static void DrawParticles(ParticleData[] particles, int count) {
-        if (count < 1) return;
-        
-        LastDrawParticleCount= 0;
+        if (count < 1) {
+            return;
+        }
         
         _defaultVao.Bind();
         
@@ -40,11 +41,14 @@ public static partial class Render {
     }
 
     private static void FlushBufferParticle(int count) {
-        if (count < 1) return;
+        if (count < 1) {
+            return;
+        }
 
         LastDrawParticleCount += count;
         
         GL.DrawArrays(PrimitiveType.Triangles, 0, count * 6);
+        FrameMetrics.RecordDrawCall();
     }
     
 }

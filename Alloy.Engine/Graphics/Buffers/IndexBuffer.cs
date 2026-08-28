@@ -1,4 +1,6 @@
-﻿namespace Alloy.Engine.Graphics.Buffers;
+﻿using Alloy.Engine.Diagnostics;
+
+namespace Alloy.Engine.Graphics.Buffers;
 
 public sealed unsafe class IndexBuffer : IDisposable {
     
@@ -22,13 +24,17 @@ public sealed unsafe class IndexBuffer : IDisposable {
         if (count > Length - bufferElementOffset) throw new Exception("count & bufferOffset exceeds the length of the buffer");
         if (bufferElementOffset < 0 || bufferElementOffset > Length) throw new Exception("bufferOffset is outside the bounds of the buffer");
         
-        GL.NamedBufferSubData(Handle, sizeof(ushort) * bufferElementOffset, sizeof(ushort) * count, indices.Slice(startIndex, count));
+        var sizeInBytes = sizeof(ushort) * count;
+        FrameMetrics.RecordUpload(sizeInBytes);
+        GL.NamedBufferSubData(Handle, sizeof(ushort) * bufferElementOffset, sizeInBytes, indices.Slice(startIndex, count));
     }
     
     public void SetData(ReadOnlySpan<ushort> indices) {
         if (indices.Length > Length) throw new Exception("Data larger than buffer");
         
-        GL.NamedBufferSubData(Handle, 0, sizeof(ushort) * indices.Length, indices);
+        var sizeInBytes = sizeof(ushort) * indices.Length;
+        FrameMetrics.RecordUpload(sizeInBytes);
+        GL.NamedBufferSubData(Handle, 0, sizeInBytes, indices);
     }
 
     public void BindTo(VertexArrayObject vao) => GL.VertexArrayElementBuffer(vao.Handle, Handle);

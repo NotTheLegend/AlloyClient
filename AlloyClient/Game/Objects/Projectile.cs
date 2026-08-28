@@ -176,6 +176,11 @@ public sealed class Projectile : IResettable { // TODO: make struct
     }
 
     public ShadowData DrawShadow() => new (_position, 0.5f, Color.Black);
+
+    public bool IsVisible(in Camera camera) {
+        var radius = MathF.Max(_texture.Scale.X, _texture.Scale.Y) * _size * 0.5f;
+        return camera.IsVisible(_position, MathF.Max(radius, 0.5f), Settings.MaxRenderDistance.Value);
+    }
     
     private bool MoveTo(Vector2 pos) {
         if (Vector2.Truncate(pos) != Vector2.Truncate(_position)) {

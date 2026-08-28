@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using Alloy.Common;
+using Alloy.Engine.Diagnostics;
 using Alloy.UiLib.Extra;
 using Alloy.UiLib.Rendering;
 using Alloy.UiLib.Utils;
@@ -225,6 +226,7 @@ public partial class Sprite : DisplayContainer {
     }
 
     private void Update() {
+        FrameMetrics.RecordUiNode();
         InternalUpdate();
 
         ResolvePointerTargetSelf();
@@ -236,6 +238,8 @@ public partial class Sprite : DisplayContainer {
     }
 
     private void ResolvePointerTargetSelf() {
+        FrameMetrics.RecordPointerNode();
+
         if (MouseEnabled && _canInteract && Stage.PointerPositionValid && IsInBounds(Stage.Mouse.GetMousePosition())) {
             Stage.CurrentHighestSprite = this;
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Alloy.Engine.Diagnostics;
 using AlloyClient.Assets;
 using AlloyClient.Rendering.VertexData;
 using OpenTK.Graphics.OpenGL;
@@ -29,12 +30,17 @@ public static partial class Render {
     }
 
     public static void DrawUploadedTiles(int count) {
+        if (count < 1) {
+            return;
+        }
+
         LastDrawCountTiles = count;
         _defaultVao.Bind();
         _shaderGround.Apply();
         _tileBuffer.BindToIndex(0);
 
         GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, 6, count);
+        FrameMetrics.RecordDrawCall();
     }
 
     #endregion
@@ -42,7 +48,7 @@ public static partial class Render {
     #region Render Shadow
 
     public static void StartDrawShadow() {
-        LastDrawCountShadows = _shadowCount = 0;
+        _shadowCount = 0;
 
         _defaultVao.Bind();
         _shaderShadow.SetValue("ShadowData", _shadowBuffer);
@@ -62,6 +68,7 @@ public static partial class Render {
         _shadowBuffer.SetData(_shadowData.AsSpan(0, _shadowCount), 0);
         
         GL.DrawArrays(PrimitiveType.Triangles, 0, _shadowCount * 6);
+        FrameMetrics.RecordDrawCall();
         
         LastDrawCountShadows += _shadowCount;
         _shadowCount = 0;
@@ -80,7 +87,6 @@ public static partial class Render {
     #region Render Model
 
     public static void StartDrawModel() {
-        LastDrawCountEntities = 0;
         _modelCount = 0;
         
         _shaderModel.Apply();
@@ -92,6 +98,7 @@ public static partial class Render {
     public static void DrawModel(VertexModel vertexModel) {
         _modelData[_modelCount] = vertexModel;
         _modelCount++;
+        LastDrawCountEntities++;
 
         if (_modelCount == _modelData.Length) {
             FlushBufferModel();
@@ -107,6 +114,7 @@ public static partial class Render {
 
         var info = ModelData.ModelRenderInfo[_entityModel];
         GL.DrawElementsInstanced(PrimitiveType.Triangles, info.PrimitiveCount * 3, DrawElementsType.UnsignedShort, info.IndexOffset * 2, _modelCount);
+        FrameMetrics.RecordDrawCall();
         _modelCount = 0;
     }
 
@@ -116,18 +124,19 @@ public static partial class Render {
     #region Render Entity
 
     public static void StartDrawEntity() {
-        LastDrawCountEntities = 0;
-        
         _shaderObject.Apply();
         _entityDataBuffer.BindToIndex(0);
     }
 
     public static void FlushBufferEntity(List<VertexObject> targets) {
-        if (targets.Count < 1) return;
+        if (targets.Count < 1) {
+            return;
+        }
 
-        var chunks = 1 + targets.Count / _entityData.Length;
+        var chunks = (targets.Count + _entityData.Length - 1) / _entityData.Length;
         var span = CollectionsMarshal.AsSpan(targets);
         span.Sort();
+        LastDrawCountEntities += targets.Count;
         
         for (var i = 0; i < chunks; i++) {
             // Pass 1: opaque pixels only — depth writes ON, no blend
@@ -140,6 +149,7 @@ public static partial class Render {
             GL.Disable(EnableCap.Blend);
             _shaderObject.SetValue("RenderPass", 0);
             GL.DrawArrays(PrimitiveType.Triangles, 0, len * 6);
+            FrameMetrics.RecordDrawCall();
 
             // Pass 2: glow/outline pixels only — depth writes OFF, test still rejects hidden glows
             GL.DepthMask(false);
@@ -147,6 +157,7 @@ public static partial class Render {
             GL.Enable(EnableCap.Blend);
             _shaderObject.SetValue("RenderPass", 1);
             GL.DrawArrays(PrimitiveType.Triangles, 0, len * 6);
+            FrameMetrics.RecordDrawCall();
 
             // Restore
             GL.DepthMask(true);

@@ -61,11 +61,13 @@ public sealed class EditorMapRenderer {
     }
 
     public void Draw(GameTime gameTime, Camera camera) {
+        Render.BeginWorldDraw();
         Render.SetShaderParams(gameTime, camera);
         GL.Disable(EnableCap.DepthTest);
         GL.Disable(EnableCap.CullFace);
         var tileBatchChanged = BuildVisibleTileData(camera);
         var tiles = CollectionsMarshal.AsSpan(_visibleTileData);
+        Render.GpuGround.Begin();
         if (tiles.Length <= Render.TileBufferSize) {
             if (tileBatchChanged || _tileUploadVersion != Render.TileUploadVersion) {
                 Render.UploadTiles(tiles);
@@ -82,10 +84,12 @@ public sealed class EditorMapRenderer {
 
             _tileUploadVersion = -1;
         }
+        Render.GpuGround.End();
 
         GL.Enable(EnableCap.DepthTest);
         GL.Enable(EnableCap.CullFace);
         _objectData.Clear();
+        Render.GpuModels.Begin();
         Render.StartDrawModel();
         for (var typeIndex = 0; typeIndex < (int)ModelType.Count; typeIndex++) {
             var modelType = (ModelType)typeIndex;
@@ -102,10 +106,13 @@ public sealed class EditorMapRenderer {
 
             Render.FlushBufferModel();
         }
+        Render.GpuModels.End();
 
         GL.Disable(EnableCap.CullFace);
+        Render.GpuObjects.Begin();
         Render.StartDrawEntity();
         Render.FlushBufferEntity(_objectData);
+        Render.GpuObjects.End();
         GL.Enable(EnableCap.CullFace);
     }
 

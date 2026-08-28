@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using Alloy.Common;
+using Alloy.Engine.Diagnostics;
 using Alloy.Engine.Utils;
 using Microsoft.Extensions.Logging;
 using OpenTK.Graphics;
@@ -83,6 +84,7 @@ public abstract partial class GameWindow {
         var totalMs = 0d;
 
         while (true) {
+            FrameMetrics.BeginFrame();
             Toolkit.Window.ProcessEvents(false);
 
             if (_exitFlag) {
@@ -100,6 +102,7 @@ public abstract partial class GameWindow {
             Draw(gameTime);
 
             Toolkit.OpenGL.SwapBuffers(Context);
+            FrameMetrics.EndFrame();
             
             if (TargetFrameTime > 0) {
                 var workMs = (Stopwatch.GetTimestamp() - currentTicks) * clockFrequency;

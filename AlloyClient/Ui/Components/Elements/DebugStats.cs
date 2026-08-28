@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Alloy.Engine;
+using Alloy.Engine.Diagnostics;
 using AlloyClient.Rendering;
 using Alloy.UiLib;
 using Alloy.UiLib.BuiltIn;
@@ -23,6 +24,13 @@ public class DebugStats : Sprite {
     private double[] _workingFrameTimes = new double[StartingFrameCount];
     private double _statisticsTimer;
     private int _frameCount;
+    private long _sampleAllocatedBytes;
+    private long _sampleUploadBytes;
+    private long _sampleDrawCalls;
+    private long _sampleUiNodes;
+    private long _samplePointerEvents;
+    private long _samplePointerResolutions;
+    private long _samplePointerNodes;
 
     private readonly SimpleText _frameTimeTimer = new (new TextConfig {Text = $"Frame time over the last {WindowTimeSeconds} seconds", X = 2, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop });
     private readonly SimpleText _avgFrameTime = new (new TextConfig {Text = "Avg: 0 ms", X = 8, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop });
@@ -40,6 +48,11 @@ public class DebugStats : Sprite {
     private readonly SimpleText _entities = new (new TextConfig {Text = "Entities: 0", X = 2, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop });
     private readonly SimpleText _particles = new (new TextConfig {Text = "Particles: 0", X = 2, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop });
     private readonly SimpleText _ui = new(new TextConfig {Text = "Ui: 0", X = 2, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop});
+    private readonly SimpleText _frameWork = new(new TextConfig {Text = "Frame avg: 0 draws | 0 KB upload | 0 KB alloc", X = 2, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop});
+    private readonly SimpleText _visibility = new(new TextConfig {Text = "Visible/culled: E 0/0 | P 0/0 | FX 0/0", X = 2, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop});
+    private readonly SimpleText _gpuWorld = new(new TextConfig {Text = "GPU: G 0 | S 0 | P 0 | M 0 | O 0 ms", X = 2, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop});
+    private readonly SimpleText _gpuUi = new(new TextConfig {Text = "GPU UI: 0 ms", X = 2, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop});
+    private readonly SimpleText _uiTraversal = new(new TextConfig {Text = "UI nodes: 0 | pointer 0/0/0", X = 2, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.LeftTop});
     
     private long _lastGcBytes;
     
@@ -60,6 +73,11 @@ public class DebugStats : Sprite {
         AddChild(_entities);
         AddChild(_particles);
         AddChild(_ui);
+        AddChild(_frameWork);
+        AddChild(_visibility);
+        AddChild(_gpuWorld);
+        AddChild(_gpuUi);
+        AddChild(_uiTraversal);
         
         _fps.Y = 4;
         _frameTimeTimer.Y = _fps.Y + _fps.Height + 4;
@@ -77,6 +95,11 @@ public class DebugStats : Sprite {
         _entities.Y = _shadows.Y + _shadows.Height + 4;
         _particles.Y = _entities.Y + _entities.Height + 4;
         _ui.Y = _particles.Y + _particles.Height + 4;
+        _frameWork.Y = _ui.Y + _ui.Height + 4;
+        _visibility.Y = _frameWork.Y + _frameWork.Height + 4;
+        _gpuWorld.Y = _visibility.Y + _visibility.Height + 4;
+        _gpuUi.Y = _gpuWorld.Y + _gpuWorld.Height + 4;
+        _uiTraversal.Y = _gpuUi.Y + _gpuUi.Height + 4;
     }
 
     public void Update(GameTime gameTime) {
@@ -91,6 +114,13 @@ public class DebugStats : Sprite {
         }
 
         _frameCount++;
+        _sampleAllocatedBytes += FrameMetrics.AllocatedBytes;
+        _sampleUploadBytes += FrameMetrics.GpuUploadBytes;
+        _sampleDrawCalls += FrameMetrics.DrawCalls;
+        _sampleUiNodes += FrameMetrics.UiNodesVisited;
+        _samplePointerEvents += FrameMetrics.PointerEvents;
+        _samplePointerResolutions += FrameMetrics.PointerResolutions;
+        _samplePointerNodes += FrameMetrics.PointerNodesVisited;
 
         if (_statisticsTimer < 1000) {
             return;
@@ -110,7 +140,8 @@ public class DebugStats : Sprite {
             sum += data[i];
         }
         
-        var fps = _frameCount / 1.0;
+        var sampleFrames = Math.Max(1, _frameCount);
+        var fps = _frameCount * 1000d / _statisticsTimer;
         var count = data.Length;
         var avgFrameTime = sum / count;
         var p90FrameTime = data[(int) (count * 0.90f)];
@@ -136,5 +167,18 @@ public class DebugStats : Sprite {
         _entities.SetText($"Entities: {Render.LastDrawCountEntities}");
         _particles.SetText($"Particles: {Render.LastDrawParticleCount}");
         _ui.SetText($"Ui: {UiRender.LastRenderCount}");
+        _frameWork.SetText($"Frame avg: {Math.Round(_sampleDrawCalls / (double)sampleFrames, 2)} draws | {Math.Round(_sampleUploadBytes / (double)sampleFrames / 1000.0, 2)} KB upload | {Math.Round(_sampleAllocatedBytes / (double)sampleFrames / 1000.0, 2)} KB alloc");
+        _visibility.SetText($"Visible/culled: E {Render.LastVisibleEntities}/{Render.LastCulledEntities} | P {Render.LastVisibleProjectiles}/{Render.LastCulledProjectiles} | FX {Render.LastVisibleParticles}/{Render.LastCulledParticles}");
+        _gpuWorld.SetText($"GPU: G {Math.Round(Render.GpuGround.LastMilliseconds, 3)} | S {Math.Round(Render.GpuShadows.LastMilliseconds, 3)} | P {Math.Round(Render.GpuParticles.LastMilliseconds, 3)} | M {Math.Round(Render.GpuModels.LastMilliseconds, 3)} | O {Math.Round(Render.GpuObjects.LastMilliseconds, 3)} ms");
+        _gpuUi.SetText($"GPU UI: {Math.Round(UiRender.GpuDraw.LastMilliseconds, 3)} ms");
+        _uiTraversal.SetText($"UI avg: {Math.Round(_sampleUiNodes / (double)sampleFrames, 2)} nodes | pointer {Math.Round(_samplePointerEvents / (double)sampleFrames, 2)}/{Math.Round(_samplePointerResolutions / (double)sampleFrames, 2)}/{Math.Round(_samplePointerNodes / (double)sampleFrames, 2)}");
+
+        _sampleAllocatedBytes = 0;
+        _sampleUploadBytes = 0;
+        _sampleDrawCalls = 0;
+        _sampleUiNodes = 0;
+        _samplePointerEvents = 0;
+        _samplePointerResolutions = 0;
+        _samplePointerNodes = 0;
     }
 }

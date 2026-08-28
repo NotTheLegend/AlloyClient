@@ -64,6 +64,21 @@ public readonly struct Camera(Vector2 pos, Matrix4 matrix, Matrix4 billboard, Ve
         return new Vector2i(x, y);
     }
 
+    public bool IsVisible(in Vector2 position, float radius, float maxRenderDistance) {
+        if (maxRenderDistance > 0f) {
+            var delta = position - Position;
+            var distance = maxRenderDistance + radius;
+            if (delta.LengthSquared > distance * distance) {
+                return false;
+            }
+        }
+
+        var clip = new Vector4(position.X, position.Y, 0f, 1f) * Matrix;
+        var marginX = radius / MathF.Max(VisibleTileRadius.X, float.Epsilon);
+        var marginY = radius / MathF.Max(VisibleTileRadius.Y, float.Epsilon);
+        return MathF.Abs(clip.X) <= clip.W + marginX && MathF.Abs(clip.Y) <= clip.W + marginY;
+    }
+
     private static Matrix4 CreateScaleWithRotationZ(in float angle, in float scale) {
         var cos = MathF.Cos(angle);
         var sin = MathF.Sin(angle);
