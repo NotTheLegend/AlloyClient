@@ -13,13 +13,11 @@ public class OptionTabView : Container {
     private readonly static string[] WindowLabels = ["Windowed", "Maximized", "Borderless", "Fullscreen"];
     private readonly static object[] WindowValues = [WindowMode.Normal, WindowMode.Maximized, WindowMode.WindowedFullscreen, WindowMode.ExclusiveFullscreen];
     
-    private readonly OptionsView _optionsView;
-
     private readonly Container _container;
     private readonly List<Option> _options = [];
     private readonly VerticalScrollBar _scrollbar;
     
-    public OptionTabView(string name) : base(new ContainerConfig { Width = 1280, Height = 507, EnableClip = true }) {
+    public OptionTabView(string name) : base(new ContainerConfig { Width = OptionsView.PanelWidth, Height = OptionsView.OptionsHeight, EnableClip = true }) {
         _container = new Container();
         AddChild(_container);
 
@@ -46,9 +44,9 @@ public class OptionTabView : Container {
 
         PositionChildren();
 
-        if (_container.Height >= Height) {
+        if (_container.Height > Height) {
             _scrollbar = new VerticalScrollBar(this, new VerticalScrollBarConfig {
-                X = Settings.DefaultScreenWidth - 15,
+                X = OptionsView.PanelWidth - 15,
                 Width = 15,
                 Height = Height,
                 TotalContentHeight = _container.Height,
@@ -60,14 +58,15 @@ public class OptionTabView : Container {
     }
 
     private void PositionChildren() {
-        var i = 0f;
+        var i = 0;
         foreach (var option in _options) {
             if (option == null) {
+                i++;
                 continue;
             }
 
             option.X += i % 2 == 0 ? 32 : 664;
-            option.Y += (int) (i / 2) * 70 + 22;
+            option.Y += i / 2 * 70 + 22;
 
             _container.AddChild(option);
 
@@ -79,6 +78,9 @@ public class OptionTabView : Container {
         foreach (var option in _options) {
             option?.Refresh();
         }
+
+        OnAllowRotationChange();
+        GetOption(Settings.FpsCap)?.SetDisabled(Settings.VSync);
     }
 
     private void AddControlsOptions() {
@@ -86,7 +88,7 @@ public class OptionTabView : Container {
         _options.Add(new KeyMapperOption(Settings.MoveLeft, "Move Left", "Key to will move character to the left"));
         _options.Add(new KeyMapperOption(Settings.MoveDown, "Move Down", "Key to will move character down"));
         _options.Add(new KeyMapperOption(Settings.MoveRight, "Move Right", "Key to will move character to the right"));
-        _options.Add(new ChoiceOption<bool>(Settings.AllowRotation, OnOffLabels, OnOffValues, "Allow Camera Rotation", "Toggles whether to allow for camera rotation"));
+        _options.Add(new ChoiceOption<bool>(Settings.AllowRotation, OnOffLabels, OnOffValues, "Allow Camera Rotation", "Toggles whether to allow for camera rotation", OnAllowRotationChange));
         _options.Add(null);
         _options.Add(new KeyMapperOption(Settings.RotateLeft, "Rotate Left", "Key to will rotate the camera to the left"));
         _options.Add(new KeyMapperOption(Settings.RotateRight, "Rotate Right", "Key to will rotate the camera to the right"));
@@ -121,8 +123,8 @@ public class OptionTabView : Container {
     private void AddChatOptions() {
         _options.Add(new KeyMapperOption(Settings.Chat, "Activate Chat", "This key will bring up the chat input box"));
         _options.Add(new KeyMapperOption(Settings.ChatCommand, "Start Chat Command",
-            "This key will bring up the chat with a \\'/\\' prepended to \" + \"allow for commands such as /who, /ignore, etc."));
-        _options.Add(new KeyMapperOption(Settings.TellKey, "Start Chat Command", "This key will bring up a tell in the chat input box"));
+            "This key will bring up chat with a '/' prepended to allow commands such as /who and /ignore."));
+        _options.Add(new KeyMapperOption(Settings.TellKey, "Begin Tell", "This key will bring up a tell in the chat input box"));
         _options.Add(new ChoiceOption<int>(Settings.ChatInclude, ["None", "Guild", "Party", "GP"], [0, 1, 2, 3], "Include In Begin Tell",
             "This key will include the chat in the chat input box"));
         _options.Add(new KeyMapperOption(Settings.GuildChat, "Begin Guild Chat", "This key will bring up a guild chat in the chat input box"));
@@ -137,7 +139,7 @@ public class OptionTabView : Container {
     }
 
     private void AddGraphicsOptions() {
-        _options.Add(new ChoiceOption<float>(Settings.CameraAngle, ["45", "0"], [7 * MathF.PI, 0f], "Default Camera Angle", "This toggles the default camera angle", OnDefautCameraAngleChange));
+        _options.Add(new ChoiceOption<float>(Settings.CameraAngle, ["45°", "0°"], [7 * MathF.PI / 4, 0f], "Default Camera Angle", "This toggles the default camera angle", OnDefautCameraAngleChange));
         _options.Add(new ChoiceOption<bool>(Settings.CenterPlayer, OnOffLabels, OnOffValues, "Center On Player", "This toggles whether the player is centered or offset"));
         _options.Add(new ChoiceOption<bool>(Settings.EyeCandyParticles, OnOffLabels, OnOffValues, "Eye Candy Particles", "This toggles whether to show eye candy particles, disabling this will improve performance."));
         _options.Add(new ChoiceOption<bool>(Settings.ReducedParticles, OnOffLabels, OnOffValues, "Reduced Particles", "This toggles whether to show reduced particles, enabling this will improve performance."));
@@ -150,11 +152,11 @@ public class OptionTabView : Container {
 
     private void AddSoundOptions() {
         _options.Add(new ChoiceOption<bool>(Settings.PlayMaster, OnOffLabels, OnOffValues, "Play Master", "This toggles whether all sound is played", OnPlayMasterChange));
-        _options.Add(new SliderOption(Settings.MasterVolume, "Vol:", OnMasterVolumeChange));
+        _options.Add(new SliderOption(Settings.MasterVolume, "Master Volume", OnMasterVolumeChange));
         _options.Add(new ChoiceOption<bool>(Settings.PlayMusic, OnOffLabels, OnOffValues, "Play Music", "This toggles whether music is played", OnPlayMusicChange));
-        _options.Add(new SliderOption(Settings.MusicVolume, "Vol:", OnMusicVolumeChange));
+        _options.Add(new SliderOption(Settings.MusicVolume, "Music Volume", OnMusicVolumeChange));
         _options.Add(new ChoiceOption<bool>(Settings.PlaySfx, OnOffLabels, OnOffValues, "Play Sound Effects", "This toggles whether sound effects are played", OnPlaySoundEffectsChange));
-        _options.Add(new SliderOption(Settings.SfxVolume, "Vol:", OnSfxVolumeChange));
+        _options.Add(new SliderOption(Settings.SfxVolume, "Effects Volume", OnSfxVolumeChange));
     }
 
     private void AddExtraOptions() {
@@ -167,7 +169,7 @@ public class OptionTabView : Container {
 
     private void OnMasterVolumeChange(float obj) {
         Settings.MasterVolume.Set(obj);
-        Audio.SetMasterVolume(Settings.GetSfxVolume());
+        Audio.SetMasterVolume(Settings.GetMasterVolume());
     }
     
     private void OnPlaySoundEffectsChange() {
@@ -189,17 +191,14 @@ public class OptionTabView : Container {
     }
 
     private void OnChatVisible() {
-        throw new NotImplementedException();
-        //GameSprite.Instance.ChatBox.Enabled = !GameSprite.Instance.ChatBox.Enabled;
+        GameScreen.RefreshChatOptions();
     }
 
     private void OnChatBoxScale() {
-        throw new NotImplementedException();
-        //GameSprite.Instance.ChatBox.Scale = new Vector2(Settings.ChatScaling);
+        GameScreen.RefreshChatOptions();
     }
 
     private void OnDefautCameraAngleChange() {
-        throw new NotImplementedException();
     }
 
     private void OnVSyncToggle() {
@@ -209,7 +208,6 @@ public class OptionTabView : Container {
     }
 
     private void OnRenderDistanceChange() {
-        throw new NotImplementedException();
     }
 
     private void OnFPSChange() {
@@ -217,14 +215,20 @@ public class OptionTabView : Container {
     }
 
     private void OnMScaleChange() {
-        throw new NotImplementedException();
     }
 
     private void OnWindowModeChange() {
-        Main.OnFullscreenToggle.Dispatch();
+        if (Settings.FullscreenState) {
+            Main.OnFullscreenToggle.Dispatch();
+        }
+    }
+
+    private void OnAllowRotationChange() {
+        GetOption(Settings.RotateLeft)?.SetDisabled(!Settings.AllowRotation);
+        GetOption(Settings.RotateRight)?.SetDisabled(!Settings.AllowRotation);
     }
     
     private Option GetOption(ISettingType setting) {
-        return _options.Find(option => option.Setting == setting);
+        return _options.Find(option => option?.Setting == setting);
     }
 }

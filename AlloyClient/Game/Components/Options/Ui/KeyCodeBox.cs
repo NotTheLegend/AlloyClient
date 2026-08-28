@@ -27,6 +27,7 @@ public class KeyCodeBox : Sprite {
 
     private Scancode _keyCode;
     private bool _inputMode;
+    private bool _disabled;
     private double _elapsed;
 
     public KeyCodeBox(InputSetting setting, Action callback) {
@@ -40,7 +41,20 @@ public class KeyCodeBox : Sprite {
 
         Value = setting;
 
-        _background = new ColorRect(new ColorRectConfig { Width = BoxWidth, Height = BoxHeight, Color = 0x444444 });
+        var outline = new ColorRect(new ColorRectConfig {
+            Width = BoxWidth,
+            Height = BoxHeight,
+            Color = 0x5A5A5A
+        });
+        AddChild(outline);
+
+        _background = new ColorRect(new ColorRectConfig {
+            X = 2,
+            Y = 2,
+            Width = BoxWidth - 4,
+            Height = BoxHeight - 4,
+            Color = 0x3A3A3A
+        });
         AddChild(_background);
 
         _char = new SimpleText(new TextConfig {
@@ -48,8 +62,8 @@ public class KeyCodeBox : Sprite {
         });
         AddChild(_char);
 
-        AddEventListener(MouseEvent.MouseOver, () => _background.SetColor(11776947));
-        AddEventListener(MouseEvent.MouseOut, () => _background.SetColor(4473924));
+        AddEventListener(MouseEvent.MouseOver, () => _background.SetColor(0x555555));
+        AddEventListener(MouseEvent.MouseOut, () => _background.SetColor(0x3A3A3A));
         AddEventListener(MouseEvent.LeftClick, OnLeftClick);
         AddEventListener(Event.EnterFrame, OnFrameEnter);
     }
@@ -75,6 +89,10 @@ public class KeyCodeBox : Sprite {
     }
 
     private void OnLeftClick() {
+        if (_disabled) {
+            return;
+        }
+
         if (_inputMode) {
             Stage.RemoveEventListener(KeyboardEvent.KeyUp, OnKeyPress);
             Reset();
@@ -98,6 +116,7 @@ public class KeyCodeBox : Sprite {
         Value.Set(_keyCode);
 
         _callback.Invoke();
+        Settings.SaveSettings();
 
         Reset();
     }
@@ -110,11 +129,20 @@ public class KeyCodeBox : Sprite {
     }
 
     public void SetValue(InputSetting setting) {
-        if (setting.Key != Scancode.Unknown) {
-            _keyCode = setting.Key;
-        }
-
+        _keyCode = setting.Key;
         Value = setting;
         Reset();
+    }
+
+    public void SetDisabled(bool disabled) {
+        if (_inputMode) {
+            Stage?.RemoveEventListener(KeyboardEvent.KeyUp, OnKeyPress);
+            Reset();
+        }
+
+        _disabled = disabled;
+        MouseEnabled = !disabled;
+        Alpha = disabled ? 0.45f : 1f;
+        _background.SetColor(disabled ? 0x303030u : 0x3A3A3Au);
     }
 }

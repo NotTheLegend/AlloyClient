@@ -133,7 +133,7 @@ public static class Settings {
     // Chat
     public readonly static ValueSetting<int> ChatInclude = new(0);
     public readonly static ValueSetting<bool> ChatVisible = new(true);
-    public readonly static ValueSetting<float> ChatScaling = new(0f);
+    public readonly static ValueSetting<float> ChatScaling = new(1f);
     public readonly static ValueSetting<int> ChatHideList = new(0);
 
     // Particles

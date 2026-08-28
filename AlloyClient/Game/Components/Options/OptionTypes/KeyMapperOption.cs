@@ -19,7 +19,8 @@ public class KeyMapperOption : Option {
     
     public override void SetDisabled(bool val) {
         _disabled = val;
-        // TODO: SetDisabled for KeyMapperOption
+        _keyCodeBox.SetDisabled(val);
+        DescText?.SetColor(val ? 0x666666u : 0xB3B3B3u);
     }
 
     private void OnKeyCodeChange() {

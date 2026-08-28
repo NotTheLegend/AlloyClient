@@ -26,12 +26,13 @@ public class ChoiceOption<T> : Option {
     }
 
     public override void Refresh() {
-        Console.WriteLine("Choice refresh");
+        _choiceBox.Refresh();
     }
 
     public override void SetDisabled(bool val) {
         _disabled = val;
-        // TODO: SetDisabled for ChoiceOption
+        _choiceBox.SetDisabled(val);
+        DescText?.SetColor(val ? 0x666666u : 0xB3B3B3u);
     }
 
     private void OnChoiceChange() {

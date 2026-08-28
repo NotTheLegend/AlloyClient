@@ -44,6 +44,14 @@ public sealed class GameScreen : Screen {
 
     public void CreatePlayerDependentAssets() => _hud.CreatePlayerDependentAssets(); // TODO: remove this ;-;
 
+    public static void RefreshChatOptions() {
+        if (GameSprite?.Stage is null) {
+            return;
+        }
+
+        GameSprite.ApplyChatOptions();
+    }
+
     public override void Update(GameTime gameTime) {
         Client.Tick();
         
@@ -85,8 +93,14 @@ public sealed class GameScreen : Screen {
 
         _chat.X = 0;
         _chat.Y = height;
-        _chat.Scale = Stage.ScreenScale;
+        ApplyChatOptions();
 
         _debugStats.Scale = Stage.ScreenScale;
+    }
+
+    private void ApplyChatOptions() {
+        var chatScale = Settings.ChatScaling.Value <= 0 ? 1f : Settings.ChatScaling.Value;
+        _chat.Visible = Settings.ChatVisible;
+        _chat.Scale = Stage.ScreenScale * chatScale;
     }
 }

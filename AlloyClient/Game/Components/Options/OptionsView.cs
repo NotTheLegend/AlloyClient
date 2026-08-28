@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using AlloyClient.Networking;
 using AlloyClient.Ui.Components.Buttons;
+using AlloyClient.Ui.Components.Graphics;
 using AlloyClient.Ui.Components.Panels;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
@@ -9,6 +10,11 @@ using Alloy.UiLib.Signals;
 namespace AlloyClient.Game.Components.Options;
 
 public sealed class OptionsView : Overlay {
+
+    public const int PanelWidth = Settings.DefaultScreenWidth;
+    public const int PanelHeight = Settings.DefaultScreenHeight;
+    public const int HeaderHeight = 120;
+    public const int OptionsHeight = 507;
     
     public const string ControlsTab = "Controls";
     public const string HotkeysTab = "Hot Keys";
@@ -27,64 +33,83 @@ public sealed class OptionsView : Overlay {
 
     public OptionsView() {
         RefreshOptions.Set(Refresh);
-        
-        //todo:SetBaseDimensions(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight);
+
+        SetAnchor(UiAnchor.Middle);
+
+        var background = new ColorRect(new ColorRectConfig {
+            Width = PanelWidth,
+            Height = PanelHeight,
+            Color = 0x2B2B2B,
+            Alpha = 0
+        });
+        AddChild(background);
 
         var titleText = new SimpleText(new TextConfig {
             Text = "Options",
-            FontSize = 57,
+            FontSize = 43,
             FontType = FontType.Bold,
-            X = Settings.DefaultScreenWidth / 2,
+            X = PanelWidth / 2,
             Y = 10,
             OutlineThickness = 2,
             Anchor = UiAnchor.MiddleTop
         });
         AddChild(titleText);
 
-        var header = new ColorRect(new ColorRectConfig { X = 0, Y = 120, Width = Settings.DefaultScreenWidth, Height = 2, Color = 0x5E5E5E });
+        var header = new ColorRect(new ColorRectConfig {
+            Y = HeaderHeight - 1,
+            Width = PanelWidth,
+            Height = 1,
+            Color = 0x5E5E5E
+        });
         AddChild(header);
+
+        var menuRibbon = new TitleMenuRibbon(PanelWidth) {
+            Y = TitleMenuRibbon.TopY
+        };
+        AddChild(menuRibbon);
 
         var continueButton = new MenuBarButton(new TextButtonConfig {
             Text = "continue",
-            FontSize = 57,
+            FontSize = 43,
             OnClicked = OnContinue,
-            X = Settings.DefaultScreenWidth / 2,
-            Y = Settings.DefaultScreenHeight - 40,
+            X = PanelWidth / 2,
+            Y = TitleMenuRibbon.MenuCenterY,
             Anchor = UiAnchor.Middle
-        }, true);
+        });
         AddChild(continueButton);
 
         var resetButton = new MenuBarButton(new TextButtonConfig {
             Text = "reset to defaults",
-            FontSize = 35,
+            FontSize = 26,
             OnClicked = OnResetToDefaults,
-            Y = Settings.DefaultScreenHeight - 40,
+            X = 20,
+            Y = TitleMenuRibbon.MenuCenterY,
             Anchor = UiAnchor.MiddleLeft
         });
-        resetButton.X = 20;
         AddChild(resetButton);
 
         var homeButton = new MenuBarButton(new TextButtonConfig {
-            Text = "home",
-            FontSize = 35,
+            Text = "back to home",
+            FontSize = 26,
             OnClicked = OnHome,
-            X = Settings.DefaultScreenWidth - 100,
-            Y = Settings.DefaultScreenHeight - 40,
+            X = PanelWidth - 20,
+            Y = TitleMenuRibbon.MenuCenterY,
             Anchor = UiAnchor.MiddleRight
         });
-        homeButton.X = Settings.DefaultScreenWidth - homeButton.Width - 20;
         AddChild(homeButton);
 
         AddTabs();
+        Refresh();
     }
 
     private void AddTabs() {
         var first = true;
         var xOffset = 22;
-        foreach (var tabName in Tabs) {
+        for (var i = 0; i < Tabs.Length; i++) {
+            var tabName = Tabs[i];
             var tab = new TextButton(new TextButtonConfig {
                 Text = tabName,
-                FontSize = 25,
+                FontSize = 19,
                 FontType = FontType.Bold,
                 ActiveColor = 0xB3B3B3,
                 HoverColor = 0xFFFFFF,
@@ -98,7 +123,7 @@ public sealed class OptionsView : Overlay {
 
             var view = new OptionTabView(tabName) {
                 Visible = false,
-                Y = 120
+                Y = HeaderHeight
             };
             _tabViews[tabName] = view;
             AddChild(view);
@@ -119,6 +144,10 @@ public sealed class OptionsView : Overlay {
     }
 
     private void SelectTab(TextButton tab) {
+        if (tab is null || tab == _selectedTab) {
+            return;
+        }
+
         if (_selectedTab != null) {
             _selectedTab.Activate();
             _tabViews[_selectedTab.Name].Visible = false;
@@ -137,10 +166,12 @@ public sealed class OptionsView : Overlay {
 
     private void OnResetToDefaults() {
         Settings.ResetToDefault();
+        ApplyLiveSettings();
         Refresh();
     }
 
     private void OnContinue() {
+        Settings.SaveSettings();
         CloseOverlay();
         UserInput.SetManualFocus(true);
     }
@@ -149,5 +180,17 @@ public sealed class OptionsView : Overlay {
         OnContinue();
         Client.Disconnect();
         Map.Reset();
+    }
+
+    private static void ApplyLiveSettings() {
+        Audio.SetMasterVolume(Settings.GetMasterVolume());
+        Audio.MusicChannel.SetVolume(Settings.GetMusicVolume());
+        Audio.SfxChannel.SetVolume(Settings.GetSfxVolume());
+        GameScreen.RefreshChatOptions();
+        Main.OnScreenChange.Dispatch(ScreenType.Game);
+
+        if (Settings.FullscreenState) {
+            Main.OnFullscreenToggle.Dispatch();
+        }
     }
 }
