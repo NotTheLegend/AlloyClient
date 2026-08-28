@@ -59,7 +59,7 @@ public class TileMap {
     public void Clear() => _chunks.Clear();
     
     private MapTile Get(Vector2i coords) {
-        if (coords.X < 0 || coords.X > _width || coords.Y < 0 || coords.Y > _height) {
+        if (coords.X < 0 || coords.X >= _width || coords.Y < 0 || coords.Y >= _height) {
             return null;
         }
         

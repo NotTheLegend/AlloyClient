@@ -3,7 +3,7 @@ using Alloy.Engine.Graphics.Buffers;
 
 namespace Alloy.Engine.Graphics;
 
-public sealed class Shader {
+public sealed class Shader : IDisposable {
 
     internal record struct UniformInfo(int Location, UniformType Type, int Size);
     
@@ -11,7 +11,7 @@ public sealed class Shader {
 
     public readonly string Name;
 
-    internal readonly int Handle;
+    internal int Handle;
 
     private readonly Dictionary<string, UniformInfo> _uniforms = new();
     
@@ -69,6 +69,15 @@ public sealed class Shader {
         }
 
         return info.Location;
+    }
+
+    public void Dispose() {
+        if (Handle == 0) {
+            return;
+        }
+
+        GL.DeleteProgram(Handle);
+        Handle = 0;
     }
 
     public static Shader FromSource(ShaderSource source, (string, string)[] defines = null) => new Shader(source, defines);

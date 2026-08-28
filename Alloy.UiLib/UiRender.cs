@@ -93,6 +93,12 @@ public static partial class UiRender {
         UiShader.SetValue("TextTexture", MyriadPro.Sampler);
     }
 
+    public static void Dispose() {
+        Toolkit.Event.EventRaised -= HandleEvents;
+        SpriteRender.Dispose();
+        UiShader?.Dispose();
+    }
+
     private static void OnResize(Vector2i screen) {
         if (screen == Screen) {
             return;

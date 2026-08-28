@@ -23,9 +23,14 @@ public class FontFamily {
     internal static FontFamily Read(BinaryReader reader) {
         var length = reader.ReadInt32();
         var png = ArrayPool<byte>.Shared.Rent(length);
-        reader.Read(png, 0, length);
-        var texture = new Texture(png);
-        ArrayPool<byte>.Shared.Return(png);
+        Texture texture;
+
+        try {
+            reader.ReadExactly(png.AsSpan(0, length));
+            texture = new Texture(png.AsSpan(0, length));
+        } finally {
+            ArrayPool<byte>.Shared.Return(png);
+        }
         
         var fontFamily = new Dictionary<string, FontData>();
         var fontOrder = new string[reader.ReadInt32()];

@@ -91,6 +91,13 @@ public static class SpriteRender {
         GL.BindVertexArray(0);
     }
 
+    internal static void Dispose() {
+        _vao?.Dispose();
+        _vertexBuffer?.Dispose();
+        _indexBuffer?.Dispose();
+        _instanceBuffer?.Dispose();
+    }
+
     private static void Flush() {
         if (_indexCount == 0) {
             _instanceCount = 0;

@@ -83,9 +83,14 @@ public class Atlas {
     internal static Atlas Read(BinaryReader reader) {
         var length = reader.ReadInt32();
         var png = ArrayPool<byte>.Shared.Rent(length);
-        reader.Read(png, 0, length);
-        var texture = new Texture(png);
-        ArrayPool<byte>.Shared.Return(png);
+        Texture texture;
+
+        try {
+            reader.ReadExactly(png.AsSpan(0, length));
+            texture = new Texture(png.AsSpan(0, length));
+        } finally {
+            ArrayPool<byte>.Shared.Return(png);
+        }
 
         var atlasMapStatic = new Dictionary<string, AtlasData[]>();
         var atlasDataMapCount = reader.ReadInt32();

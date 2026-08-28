@@ -1,12 +1,12 @@
 ﻿namespace Alloy.Engine.Graphics.Buffers;
 
-public sealed unsafe class IndexBuffer {
+public sealed unsafe class IndexBuffer : IDisposable {
     
     public readonly int Length;
     
     public readonly int LengthBytes;
     
-    internal readonly int Handle;
+    internal int Handle;
 
     public IndexBuffer(int indicesCount) {
         if (indicesCount < 0) throw new Exception("Element count must be >= 0");
@@ -33,5 +33,16 @@ public sealed unsafe class IndexBuffer {
 
     public void BindTo(VertexArrayObject vao) => GL.VertexArrayElementBuffer(vao.Handle, Handle);
 
-    public void Delete() => GL.DeleteBuffer(Handle);
+    public void Delete() {
+        Dispose();
+    }
+
+    public void Dispose() {
+        if (Handle == 0) {
+            return;
+        }
+
+        GL.DeleteBuffer(Handle);
+        Handle = 0;
+    }
 }

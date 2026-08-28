@@ -1,10 +1,10 @@
 ﻿namespace Alloy.Engine.Graphics.Buffers;
 
-public sealed unsafe class UniformBuffer {
+public sealed unsafe class UniformBuffer : IDisposable {
     
     public readonly int LengthBytes;
     
-    internal readonly int Handle;
+    internal int Handle;
 
     public UniformBuffer(int sizeInBytes) {
         if ((sizeInBytes - 1) > ushort.MaxValue) {
@@ -25,4 +25,13 @@ public sealed unsafe class UniformBuffer {
     }
 
     public void Bind(Shader shader, string uniform) => GL.BindBufferBase(BufferTarget.UniformBuffer, shader.GetUniformBlock(uniform), Handle);
+
+    public void Dispose() {
+        if (Handle == 0) {
+            return;
+        }
+
+        GL.DeleteBuffer(Handle);
+        Handle = 0;
+    }
 }

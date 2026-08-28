@@ -171,7 +171,7 @@ public abstract partial class GameWindow {
 
     [SupportedOSPlatform("windows")]
     private void ClearWindowsJank() {
-        TimeBeginPeriod(1);
+        TimeEndPeriod(1);
     }
 
     #endregion

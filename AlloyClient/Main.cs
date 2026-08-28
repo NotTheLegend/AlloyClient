@@ -18,6 +18,7 @@ using Alloy.Engine;
 using Alloy.UiLib.Core;
 using AlloyClient.Game;
 using AlloyClient.Logging;
+using AlloyClient.Editor;
 using Microsoft.Extensions.Logging;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
@@ -32,6 +33,9 @@ public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
     public readonly static Signal OnFullscreenToggle = new();
     
     private readonly static ILogger Logger = ILogger.CreateLogger(nameof(Main));
+
+    private Texture[] _textures;
+    private Sampler[] _samplers;
     
     public static Atlas Atlas { get; private set; }
     public static Atlas UiAtlas { get; private set; }
@@ -118,6 +122,9 @@ public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
         var titleBackgroundSampler = new Sampler(titleBackground, 4);
         var titleGraphicSampler = new Sampler(titleGraphic, 5);
         font.Sampler.Bind(6);
+
+        _textures = [Atlas.Texture, UiAtlas.Texture, mapTexture, titleBackground, titleGraphic, font.Atlas];
+        _samplers = [gameAtlasSampler, uiAtlasSampler, uiAtlasLinear, mapTextureSampler, titleBackgroundSampler, titleGraphicSampler, font.Sampler];
         
         // Render setup
         Render.FirstTimeInit(gameAtlasSampler, font);
@@ -138,7 +145,25 @@ public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
 
     protected override void Draw(GameTime gameTime) => DisplayManager.Draw(gameTime);
     
-    protected override void Stop() => Audio.Stop();
+    protected override void Stop() {
+        Audio.Stop();
+
+        Render.Dispose();
+        UiRender.Dispose();
+        EditorBackdropRenderer.Dispose();
+
+        if (_samplers != null) {
+            foreach (var sampler in _samplers) {
+                sampler.Dispose();
+            }
+        }
+
+        if (_textures != null) {
+            foreach (var texture in _textures) {
+                texture.Dispose();
+            }
+        }
+    }
 
     protected override void HandleEvents(EventArgs args) {
         switch (args) {

@@ -15,7 +15,7 @@ namespace AlloyClient.Game;
 
 public sealed class GameScreen : Screen {
 
-    public const double FixedUpdateStep = 1d / 60;
+    public const double FixedUpdateStep = 1000d / 60d;
 
     public static GameScreen GameSprite;
     
@@ -68,7 +68,7 @@ public sealed class GameScreen : Screen {
 
         _fixedUpdateElapsed += gameTime.ElapsedMs;
 
-        while (_fixedUpdateElapsed > FixedUpdateStep) {
+        while (_fixedUpdateElapsed >= FixedUpdateStep) {
             _fixedUpdateElapsed -= FixedUpdateStep;
             Map.FixedUpdate(new GameTime(gameTime.TotalMs, FixedUpdateStep));
         }

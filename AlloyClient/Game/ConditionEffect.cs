@@ -96,13 +96,17 @@ public static class ConditionEffects {
         new("Ninja Speedy", ConditionEffect.NinjaSpeedy, [0])
     ];
 
-    public static Span<BucketType> IconlessEffects => new BucketType[MaxEffectBuckets];
+    internal readonly static BucketType[] IconlessEffects = new BucketType[MaxEffectBuckets];
 
     public readonly static Dictionary<ConditionEffect, Vector4[]> EffectIcons = [];
 
     private readonly static Dictionary<string, ConditionEffect> NameToEffect = [];
 
     public static void Init() {
+        Array.Clear(IconlessEffects);
+        EffectIcons.Clear();
+        NameToEffect.Clear();
+
         foreach (var effect in EffectTable) {
             if (effect.IconLookup != null) {
                 EffectIcons[effect.Index] = effect.IconLookup.Select(i => Main.Atlas.GetAtlasData("lofiInterface2", i).ToVector4()).ToArray();

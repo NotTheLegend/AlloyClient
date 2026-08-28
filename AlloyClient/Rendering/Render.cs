@@ -13,7 +13,7 @@ namespace AlloyClient.Rendering;
 public static partial class Render {
     
     private const int BufferSize = 10000;
-    public const int TileBufferSize = Map.VisibleChunks * TileMap.ChunkArea * 4;
+    public const int TileBufferSize = Map.VisibleChunks * TileMap.ChunkRenderData;
     public static int TileUploadVersion;
     private const int ShadowBufferSize = 4096;
     
@@ -100,6 +100,25 @@ public static partial class Render {
         _entityDataBuffer = new StorageBuffer<VertexObject>(BufferSize);
         
         BuildParticleBuffers();
+    }
+
+    public static void Dispose() {
+        _particleBuffer?.Dispose();
+        _entityDataBuffer?.Dispose();
+        _modelDataBuffer?.Dispose();
+        _modelVertexBuffer?.Dispose();
+        _modelIndexBuffer?.Dispose();
+        _shadowBuffer?.Dispose();
+        _tileBuffer?.Dispose();
+
+        _modelVao?.Dispose();
+        _defaultVao?.Dispose();
+
+        _shaderParticle?.Dispose();
+        _shaderObject?.Dispose();
+        _shaderModel?.Dispose();
+        _shaderShadow?.Dispose();
+        _shaderGround?.Dispose();
     }
     
     public static void SetShaderParams(GameTime gameTime, Camera camera) {

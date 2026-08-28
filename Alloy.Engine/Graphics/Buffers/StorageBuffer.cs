@@ -1,10 +1,10 @@
 ﻿namespace Alloy.Engine.Graphics.Buffers;
 
-public sealed unsafe class StorageBuffer<T> where T : unmanaged, IBufferData<T> {
+public sealed unsafe class StorageBuffer<T> : IDisposable where T : unmanaged, IBufferData<T> {
 
     public readonly int Length;
     
-    internal readonly int Handle;
+    internal int Handle;
 
     public StorageBuffer(int elementCount) {
         if (sizeof(T) % 16 != 0) throw new Exception("[SSBO] data size not multiple of 16, requirement of (stb140)");
@@ -24,4 +24,13 @@ public sealed unsafe class StorageBuffer<T> where T : unmanaged, IBufferData<T> 
     }
 
     public void BindToIndex(uint index) => GL.BindBufferBase(BufferTarget.ShaderStorageBuffer, index, Handle);
+
+    public void Dispose() {
+        if (Handle == 0) {
+            return;
+        }
+
+        GL.DeleteBuffer(Handle);
+        Handle = 0;
+    }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Alloy.Engine.Graphics.Buffers;
 
-public sealed unsafe class VertexBuffer<T> where T : unmanaged, IVertexData<T> {
+public sealed unsafe class VertexBuffer<T> : IDisposable where T : unmanaged, IVertexData<T> {
     
     public readonly int Length;
     
@@ -8,11 +8,11 @@ public sealed unsafe class VertexBuffer<T> where T : unmanaged, IVertexData<T> {
 
     public readonly VertexStride Stride;
     
-    internal readonly int Handle;
+    internal int Handle;
     
     public VertexBuffer(VertexStride stride, int vertexCount) {
         Length = vertexCount;
-        Length = vertexCount * sizeof(T);
+        LengthBytes = vertexCount * sizeof(T);
         Stride = stride;
         
         GL.CreateBuffer(out Handle);
@@ -33,5 +33,16 @@ public sealed unsafe class VertexBuffer<T> where T : unmanaged, IVertexData<T> {
         Stride.BindAttributes(vao, index);
     }
 
-    public void Delete() => GL.DeleteBuffer(Handle);
+    public void Delete() {
+        Dispose();
+    }
+
+    public void Dispose() {
+        if (Handle == 0) {
+            return;
+        }
+
+        GL.DeleteBuffer(Handle);
+        Handle = 0;
+    }
 }

@@ -1,8 +1,8 @@
 ﻿namespace Alloy.Engine.Graphics;
 
-public sealed class Sampler {
+public sealed class Sampler : IDisposable {
 
-    internal readonly int Handle;
+    internal int Handle;
 
     internal readonly int TextureHandle;
 
@@ -50,6 +50,17 @@ public sealed class Sampler {
         GL.SamplerParameterIi(Handle, SamplerParameterI.TextureMinFilter, in filter.MinFilter);
     }
 
-    public void Delete() => GL.DeleteSampler(Handle);
+    public void Delete() {
+        Dispose();
+    }
+
+    public void Dispose() {
+        if (Handle == 0) {
+            return;
+        }
+
+        GL.DeleteSampler(Handle);
+        Handle = 0;
+    }
 
 }
