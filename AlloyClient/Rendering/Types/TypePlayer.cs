@@ -78,19 +78,31 @@ public sealed class TypePlayer : RenderBase {
         var f = Entity.Flipped ? 1f : -1f;
         Rotation = new Vector4(s, c, k, f);
         
-        Entity.HeightOffset = -0.5f * Scale.Y * k + Scale.W * k;
+        Entity.HeightOffset = GetVisibleTopOffset(k);
         
         targets.Add(new VertexObject(Position, UV, Scale, Rotation, Extra, Color));
-        var y = 0.1f;
+        var isLocalPlayer = _player == Map.LocalPlayer;
         if (_player != Map.LocalPlayer) {
-            _typeName.Draw(y, targets, time);
-            y += _typeName.Height;
+            _typeName.Draw(0.1f, targets, time);
         }
-        
-        _hpBar.SetFill(1f * _player.Hp / _player.MaxHp);
-        _hpBar.Draw(y, targets, time);
-        y += _hpBar.Height;
-        _mpBar.Draw(y, targets, time);
+
+        var barOffset = TypeBar.BaseYOffsetPixels;
+        var drawHealthBar = _player.MaxHp > 0 && TypeHpBar.CanDrawForPlayer(_player);
+        if (drawHealthBar) {
+            if (!isLocalPlayer) {
+                barOffset += TypeBar.OtherPlayerYOffsetPixels;
+            }
+
+            var maximumHp = Math.Max(_player.MaxHp, _player.Hp);
+            _hpBar.SetFill(1f * _player.Hp / maximumHp);
+            _hpBar.Draw(barOffset, targets, time);
+            barOffset += TypeBar.RowSpacingPixels;
+        }
+
+        if (Settings.DrawMpBar && _player.MaxMp > 0) {
+            _mpBar.SetFill(1f * _player.Mp / _player.MaxMp);
+            _mpBar.Draw(barOffset, targets, time);
+        }
         
         _effects.Draw(Entity.HeightOffset, targets, time);
         

@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Security.Cryptography;
+using System.Text;
 using Alloy.Common;
 
 namespace Alloy.ContentBuilder;
@@ -42,9 +43,12 @@ public static class HashManager {
 
     
     /// <returns>true if file hash is the same</returns>
-    public static bool CheckFileHash(string filePath, Paths paths) {
+    public static bool CheckFileHash(string filePath, Paths paths, string salt = "") {
         var data = File.ReadAllBytes(filePath);
-        var md5 = MD5.HashData(data);
+        using var hashBuilder = IncrementalHash.CreateHash(HashAlgorithmName.MD5);
+        hashBuilder.AppendData(Encoding.UTF8.GetBytes(salt));
+        hashBuilder.AppendData(data);
+        var md5 = hashBuilder.GetHashAndReset();
         var hash = Convert.ToBase64String(md5);
         var name = filePath.Replace(paths.Content, "");
 

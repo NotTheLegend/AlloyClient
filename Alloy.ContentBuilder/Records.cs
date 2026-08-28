@@ -79,7 +79,8 @@ public record AnimatedSheet(string File, string Lookup, int Width, int Height, G
 
 public record struct Color(byte R, byte G, byte B, byte A);
 
-public record Atlas(ImageResult Png, Dictionary<string, AtlasData[]> AtlasMapStatic, Dictionary<string, AnimationAtlasData[]> AtlasMapAnimation, Dictionary<string, Color[]> DominantColors) {
+public record Atlas(ImageResult Png, Dictionary<string, AtlasData[]> AtlasMapStatic, Dictionary<string, AnimationAtlasData[]> AtlasMapAnimation,
+    Dictionary<string, Color[]> DominantColors, Dictionary<AtlasData, SpriteMetadata> SpriteMetadata) {
 
     public byte[] File;
     
@@ -133,6 +134,13 @@ public record Atlas(ImageResult Png, Dictionary<string, AtlasData[]> AtlasMapSta
                 writer.Write(color.B);
                 writer.Write(color.A);
             }
+        }
+
+        writer.Write(SpriteMetadata.Count);
+
+        foreach (var (sprite, metadata) in SpriteMetadata) {
+            sprite.Write(writer);
+            writer.Write(metadata.TopmostY);
         }
     }
 }

@@ -56,6 +56,18 @@ public abstract class RenderBase : IComparable<RenderBase> {
         Scale = new Vector4(widthScale, heightScale, padX, -padY);
     }
 
+    protected float GetVisibleTopOffset(float sizeScale) {
+        var rawHeight = Entity.Texture.RawH();
+        if (rawHeight <= 0) {
+            return (Scale.W - Scale.Y * 0.5f) * sizeScale;
+        }
+
+        var metadata = Main.Atlas.GetSpriteMetadata(Entity.Texture);
+        var topmostY = Math.Clamp(metadata.TopmostY, 0, rawHeight);
+        var transparentOffset = Scale.Y * topmostY / rawHeight;
+        return (Scale.W - Scale.Y * 0.5f + transparentOffset) * sizeScale;
+    }
+
     public abstract void SetVisibility(bool visible);
 
     public abstract void SetDepth(float depth);

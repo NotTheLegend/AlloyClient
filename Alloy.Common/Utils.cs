@@ -20,7 +20,7 @@ public static class Utils {
             U = reader.ReadSingle(),
             V = reader.ReadSingle(),
             W = reader.ReadSingle(),
-            H = reader.ReadSingle()
+            H = reader.ReadSingle(),
         };
     }
 

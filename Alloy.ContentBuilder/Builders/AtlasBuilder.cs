@@ -10,7 +10,8 @@ using ColorComponents = StbImageSharp.ColorComponents;
 namespace Alloy.ContentBuilder.Builders;
 
 public static class AtlasBuilder {
-    
+    private const string AtlasFormatVersion = "atlas-sprite-metadata-v1";
+
     private const int AtlasWidth = (int) AtlasConfig.AtlasWidth;
     private const int AtlasHeight = (int) AtlasConfig.AtlasHeight;
     private const int Padding = (int) AtlasConfig.Padding;
@@ -54,7 +55,7 @@ public static class AtlasBuilder {
     }
     
     private static bool CheckHash(string mainFile, List<StaticSheet> sheets1, List<AnimatedSheet> sheets2, Paths paths) {
-        var allSame = HashManager.CheckFileHash(mainFile, paths);
+        var allSame = HashManager.CheckFileHash(mainFile, paths, AtlasFormatVersion);
 
         foreach (var sheet in sheets1) {
             allSame = HashManager.CheckFileHash(sheet.File, paths) && allSame;
@@ -80,7 +81,8 @@ public static class AtlasBuilder {
             Data = new byte[AtlasWidth * AtlasHeight * 4]
         };
 
-        var atlas = new Atlas(png, new Dictionary<string, AtlasData[]>(), new Dictionary<string, AnimationAtlasData[]>(), new Dictionary<string, Color[]>());
+        var atlas = new Atlas(png, new Dictionary<string, AtlasData[]>(), new Dictionary<string, AnimationAtlasData[]>(),
+            new Dictionary<string, Color[]>(), new Dictionary<AtlasData, SpriteMetadata>());
 
         StbRectPack.stbrp_init_target(&stbContext, AtlasWidth, AtlasHeight, stbContext.all_nodes, numNodes);
 
@@ -140,6 +142,19 @@ public static class AtlasBuilder {
         return false;
     }
 
+    private static int GetTopmostY(ImageResult image, int startX, int startY, int width, int height) {
+        for (var y = 0; y < height; y++) {
+            for (var x = 0; x < width; x++) {
+                var index = ((startY + y) * image.Width + startX + x) * 4 + 3;
+                if (image.Data[index] != 0) {
+                    return y;
+                }
+            }
+        }
+
+        return 0;
+    }
+
     private static unsafe void ParseSheet(StbRectPack.stbrp_context* contextPtr, StaticSheet sheet, Atlas atlas) {
         var image = ImageResult.FromMemory(File.ReadAllBytes(sheet.File), ColorComponents.RedGreenBlueAlpha);
         var cutWidth = sheet.Width;
@@ -187,7 +202,12 @@ public static class AtlasBuilder {
 
         for (var i = 0; i < len; i++) {
             var rect = rectList[i];
-            adList[i] = AtlasData.FromRaw(rect.x, rect.y, rect.w, rect.h);
+            var sourceX = i * cutWidth % image.Width;
+            var sourceY = i * cutWidth / image.Width * cutHeight;
+            var topmostY = GetTopmostY(image, sourceX, sourceY, cutWidth, cutHeight);
+            var sprite = AtlasData.FromRaw(rect.x, rect.y, rect.w, rect.h);
+            adList[i] = sprite;
+            atlas.SpriteMetadata[sprite] = new SpriteMetadata(topmostY);
         }
 
         atlas.AtlasMapStatic[sheet.Lookup] = adList;
@@ -326,7 +346,13 @@ public static class AtlasBuilder {
 
                 for (var j = 0; j < framesPerRow; j++) {
                     var rect = rectList[i];
-                    frames[j] = AtlasData.FromRaw(rect.x, rect.y, rect.w, rect.h);
+                    var frameWidth = j == framesPerRow - 1 ? cutWidth * 2 : cutWidth;
+                    var sourceX = j * cutWidth;
+                    var sourceY = i / framesPerRow * cutHeight;
+                    var topmostY = GetTopmostY(image, sourceX, sourceY, frameWidth, cutHeight);
+                    var sprite = AtlasData.FromRaw(rect.x, rect.y, rect.w, rect.h);
+                    frames[j] = sprite;
+                    atlas.SpriteMetadata[sprite] = new SpriteMetadata(topmostY);
                     if (j == 2 && (rect.w == 0 || rect.h == 0)) {
                         frames[j] = frames[0];
                     }

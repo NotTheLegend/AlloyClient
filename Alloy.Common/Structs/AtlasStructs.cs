@@ -25,7 +25,7 @@ public struct AtlasData : IEquatable<AtlasData> {
             U = u / AtlasConfig.AtlasWidth,
             V = v / AtlasConfig.AtlasHeight,
             W = w / AtlasConfig.AtlasWidth,
-            H = h / AtlasConfig.AtlasHeight
+            H = h / AtlasConfig.AtlasHeight,
         };
     }
 
@@ -91,6 +91,10 @@ public struct AtlasData : IEquatable<AtlasData> {
     public override string ToString() {
         return $"U: {U}, V: {V}, W: {W}, H: {H}";
     }
+}
+
+public readonly struct SpriteMetadata(int topmostY) {
+    public readonly int TopmostY = topmostY;
 }
 
 public struct AnimationAtlasData {

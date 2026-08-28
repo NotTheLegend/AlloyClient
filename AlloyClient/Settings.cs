@@ -145,6 +145,8 @@ public static class Settings {
     public readonly static ValueSetting<bool> ToggleBarText = new(true);
     public readonly static ValueSetting<bool> InventorySwap = new(true);
     public readonly static ValueSetting<bool> MovementInterpolation = new(true);
+    public readonly static ValueSetting<int> HealthBars = new(1);
+    public readonly static ValueSetting<bool> DrawMpBar = new(false);
     
     #endregion
     

@@ -11,12 +11,15 @@ public class Atlas {
     private readonly Dictionary<string, AtlasData[]> _atlasMapStatic;
     private readonly Dictionary<string, AnimationAtlasData[]> _atlasMapAnimation;
     private readonly Dictionary<string, Color[]> _dominantColors;
+    private readonly Dictionary<AtlasData, SpriteMetadata> _spriteMetadata;
 
-    private Atlas(Texture texture, Dictionary<string, AtlasData[]> atlasMapStatic, Dictionary<string, AnimationAtlasData[]> atlasMapAnimation, Dictionary<string, Color[]> dominantColors) {
+    private Atlas(Texture texture, Dictionary<string, AtlasData[]> atlasMapStatic, Dictionary<string, AnimationAtlasData[]> atlasMapAnimation,
+        Dictionary<string, Color[]> dominantColors, Dictionary<AtlasData, SpriteMetadata> spriteMetadata) {
         Texture = texture;
         _atlasMapStatic = atlasMapStatic;
         _atlasMapAnimation = atlasMapAnimation;
         _dominantColors = dominantColors;
+        _spriteMetadata = spriteMetadata;
     }
     
     public AtlasData[] GetAtlasData(string lookup) {
@@ -67,6 +70,14 @@ public class Atlas {
 
         //Console.WriteLine($"Unable to lookup atlas[DominantColor]: {lookup} - {index}");
         return new Color(0);
+    }
+
+    public SpriteMetadata GetSpriteMetadata(in AtlasData sprite) {
+        if (_spriteMetadata.TryGetValue(sprite, out var metadata)) {
+            return metadata;
+        }
+
+        return default;
     }
 
     internal static Atlas Read(BinaryReader reader) {
@@ -143,6 +154,14 @@ public class Atlas {
             dominantColors[key] = value;
         }
 
-        return new Atlas(texture, atlasMapStatic, atlasMapAnimation, dominantColors);
+        var spriteMetadata = new Dictionary<AtlasData, SpriteMetadata>();
+        var spriteMetadataCount = reader.ReadInt32();
+
+        for (var i = 0; i < spriteMetadataCount; i++) {
+            var sprite = reader.ReadAtlasData();
+            spriteMetadata[sprite] = new SpriteMetadata(reader.ReadInt32());
+        }
+
+        return new Atlas(texture, atlasMapStatic, atlasMapAnimation, dominantColors, spriteMetadata);
     }
 }

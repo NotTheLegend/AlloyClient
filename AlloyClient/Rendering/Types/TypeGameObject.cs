@@ -68,17 +68,18 @@ public sealed class TypeGameObject : RenderBase {
         var f = Entity.Flipped ? 1f : -1f;
         Rotation = new Vector4(s, c, k, f);
         
-        Entity.HeightOffset = -1 * Scale.Y * k + Scale.W * k;
+        Entity.HeightOffset = GetVisibleTopOffset(k);
         
         targets.Add(new VertexObject(Position, UV, Scale, Rotation, Extra, Color));
         
-        if (Entity.Properties.Static) return;
-        
-        var y = 0.1f;
+        if (Entity.Properties.Static) {
+            return;
+        }
 
-        if (Entity.MaxHp != 0) {
-            _hpBar.SetFill(1f * Entity.Hp / Entity.MaxHp);
-            _hpBar.Draw(y, targets, time);
+        if (TypeHpBar.CanDrawForGameObject(Entity)) {
+            var maximumHp = Math.Max(Entity.MaxHp, Entity.Hp);
+            _hpBar.SetFill(1f * Entity.Hp / maximumHp);
+            _hpBar.Draw(TypeBar.BaseYOffsetPixels, targets, time);
         }
         
         _effects.Draw(Entity.HeightOffset, targets, time);
