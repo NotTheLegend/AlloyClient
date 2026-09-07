@@ -44,7 +44,7 @@ public sealed class IconButton : Sprite {
         _width = config.Width;
         _height = config.Height;
         Alpha = config.Alpha;
-        SetAnchor(config.Anchor);
+        Anchor = config.Anchor;
         _onClick = config.OnClick;
         _gameObjectShade = config.GameObjectShade;
 
@@ -57,23 +57,22 @@ public sealed class IconButton : Sprite {
     }
 
     private void ResizeBackBuffer() {
-        VertexData = new VertexUi[4];
-        Indices = [0, 1, 2, 0, 2, 3];
+        VertexData = new VertexUi[6];
     }
 
     private void FillData() {
-        VertexData[0] = new VertexUi(new Vector2(0, _height), new Vector2(_texture.U, _texture.V + _texture.H)); // Bottom Left
-        VertexData[1] = new VertexUi(new Vector2(0, 0), new Vector2(_texture.U, _texture.V)); // Top Left
-        VertexData[2] = new VertexUi(new Vector2(_width, 0), new Vector2(_texture.U + _texture.W, _texture.V)); // Top Right
-        VertexData[3] = new VertexUi(new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H)); // Bottom Right
+        VertexData[0] = new VertexUi(new Vector2(0, 0), new Vector2(_texture.U, _texture.V)); // Top Left
+        VertexData[1] = new VertexUi(new Vector2(_width, 0), new Vector2(_texture.U + _texture.W, _texture.V)); // Top Right
+        VertexData[2] = new VertexUi(new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H)); // Bottom Right
+        VertexData[3] = new VertexUi(new Vector2(0, 0), new Vector2(_texture.U, _texture.V)); // Top Left
+        VertexData[4] = new VertexUi(new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H)); // Bottom Right
+        VertexData[5] = new VertexUi(new Vector2(0, _height), new Vector2(_texture.U, _texture.V + _texture.H)); // Bottom Left
 
         if (_gameObjectShade) {
             Extra1 = new Vector4(_texture.V + _texture.H * 0.4f, _texture.V + _texture.H, -1f, -1f);
         } else {
             Extra1 = new Vector4(1f, -1f, -1f, -1f);
         }
-            
-        
         
         SetGraphicsBuffer();
     }

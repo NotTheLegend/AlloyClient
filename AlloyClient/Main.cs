@@ -131,7 +131,9 @@ public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
         
         Audio.MusicChannel.FadeTo("Music/sorc.ogg", 2f);
         
-        ScreenManager.FadeToScreen(new LoadingScreen(), Easing.SineInOut, 1000, 0x0);
+        //ScreenManager.FadeToScreen(new LoadingScreen(), Easing.SineInOut, 1000, 0x0);
+        //ScreenManager.SetScreen(new TestScreen());
+        ScreenManager.SetScreen(new LoadingScreen());
     }
 
     protected override void Update(GameTime gameTime) => DisplayManager.Update(GameTime = gameTime);

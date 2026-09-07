@@ -87,7 +87,7 @@ public sealed class ItemTile : Sprite {
 
         _tierText = new SimpleText(new TextConfig {FontSize = 16, FontType = FontType.Bold, Text = "", OutlineThickness = 6});
         _tierText.Visible = false;
-        _tierText.SetAnchor(UiAnchor.RightBottom);
+        _tierText.Anchor = UiAnchor.RightBottom;
         _tierText.X = Size - 2;
         _tierText.Y = Size;
         AddChild(_tierText);

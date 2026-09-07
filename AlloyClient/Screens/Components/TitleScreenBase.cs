@@ -34,7 +34,7 @@ public abstract class TitleScreenBase : Screen {
         Overlay = new AccountOverlay(type == ScreenType.Title);
         Overlay.X = Settings.DefaultScreenWidth - 10;
         Overlay.Y = 10;
-        Overlay.SetAnchor(UiAnchor.RightTop);
+        Overlay.Anchor = UiAnchor.RightTop;
 
         if (type != ScreenType.Loading) {
             AddChild(Overlay);
@@ -46,7 +46,7 @@ public abstract class TitleScreenBase : Screen {
 
     private void OnStageEnter() {
         Stage.AddEventListener(ResizeEvent.Resize, OnResize);
-        OnResize(new ResizeEvent(ResizeEvent.Resize, Stage.StageWidth, Stage.StageHeight));
+        OnResize(new ResizeEvent(Stage.StageWidth, Stage.StageHeight));
     }
 
     private void OnStageExit() {

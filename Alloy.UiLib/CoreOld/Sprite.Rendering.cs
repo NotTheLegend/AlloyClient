@@ -2,7 +2,7 @@
 using Alloy.UiLib.Rendering;
 using OpenTK.Mathematics;
 
-namespace Alloy.UiLib.Core;
+namespace Alloy.UiLib.CoreOld;
 
 public partial class Sprite {
     
@@ -71,7 +71,7 @@ public partial class Sprite {
         //var inst = new SpriteInstanceData(vertexMatrix, Color, ColorSecondary, new Vector2((float) TextureType.Color, 0.5f), _scissor, Extra1, Extra2, _trueTransform);
         //SpriteRender.Draw(inst, ind.AsSpan(), vert.AsSpan());
         
-        SpriteRender.Draw(instance, Indices.AsSpan(0, iCount), VertexData.AsSpan());
+        //SpriteRender.Draw(instance, Indices.AsSpan(0, iCount), VertexData.AsSpan());
         
         UiRender.LastRenderCount++;
     }

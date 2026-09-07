@@ -7,20 +7,20 @@ using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Components.Hud;
 
-public sealed class MinimapLayer : Container {
+public sealed class MinimapLayer : Sprite {
 
     private const int MaxEntities = 1000;
-    private const int VertexSize = MaxEntities * 4;
-    private const int IndexSize = MaxEntities * 6;
+    private const int VertexSize = MaxEntities * 6;
 
     private int _count = 0;
     private float _size;
 
     private static Entity _focus;
 
-    public MinimapLayer() : base(new ContainerConfig { EnableClip = true }) {
+    public MinimapLayer() {
         //todo:SetBaseDimensions(Minimap.MapSize, Minimap.MapSize);
         TextureId = TextureType.Color;
+        EnableClipRect = true;
         
         AddEventListener(Event.EnterFrame, OnFrameEnter);
 
@@ -29,7 +29,6 @@ public sealed class MinimapLayer : Container {
 
     private void ResizeBackBuffer() {
         VertexData = new VertexUi[VertexSize];
-        Indices = new ushort[IndexSize];
         OverridePrimCount = 0;
     }
 
@@ -45,17 +44,12 @@ public sealed class MinimapLayer : Container {
         const float size = 3.25f;
 
         var color = Color.FromHexRGB(rgb);
-        VertexData[_count * 4 + 0] = new VertexUi(new Vector2(pos.X - size, pos.Y - size), color);
-        VertexData[_count * 4 + 1] = new VertexUi(new Vector2(pos.X + size, pos.Y - size), color);
-        VertexData[_count * 4 + 2] = new VertexUi(new Vector2(pos.X + size, pos.Y + size), color);
-        VertexData[_count * 4 + 3] = new VertexUi(new Vector2(pos.X - size, pos.Y + size), color);
-
-        Indices[_count * 6 + 0] = (ushort)(_count * 4 + 0);
-        Indices[_count * 6 + 1] = (ushort)(_count * 4 + 1);
-        Indices[_count * 6 + 2] = (ushort)(_count * 4 + 2);
-        Indices[_count * 6 + 3] = (ushort)(_count * 4 + 0);
-        Indices[_count * 6 + 4] = (ushort)(_count * 4 + 2);
-        Indices[_count * 6 + 5] = (ushort)(_count * 4 + 3);
+        VertexData[_count * 6 + 0] = new VertexUi(new Vector2(pos.X - size, pos.Y - size), color);
+        VertexData[_count * 6 + 1] = new VertexUi(new Vector2(pos.X + size, pos.Y - size), color);
+        VertexData[_count * 6 + 2] = new VertexUi(new Vector2(pos.X + size, pos.Y + size), color);
+        VertexData[_count * 6 + 3] = new VertexUi(new Vector2(pos.X - size, pos.Y - size), color);
+        VertexData[_count * 6 + 4] = new VertexUi(new Vector2(pos.X + size, pos.Y + size), color);
+        VertexData[_count * 6 + 5] = new VertexUi(new Vector2(pos.X - size, pos.Y + size), color);
 
         _count++;
         OverridePrimCount += 2;

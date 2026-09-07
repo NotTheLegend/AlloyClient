@@ -38,28 +38,25 @@ public class ObjectRect : Sprite {
         _height = config.Height;
         Alpha = config.Alpha;
         SetColorSecondary(config.OutlineColor);
-        SetAnchor(config.Anchor);
+        Anchor = config.Anchor;
         MouseEnabled = config.MouseEnabled;
 
         _texture = config.Texture.AtlasPosition;
         TextureId = config.Texture.TextureType;
         _outline = config.OutlineEnabled;
         _glow = config.GlowEnabled;
-
-        ResizeBackBuffer();
+        
+        EnsureBufferCapacity(6);
         FillData();
-    }
-    
-    private void ResizeBackBuffer() {
-        VertexData = new VertexUi[4];
-        Indices = [0, 1, 2, 0, 2, 3];
     }
 
     private void FillData() {
-        VertexData[0] = new VertexUi(new Vector2(0, _height), new Vector2(_texture.U, _texture.V + _texture.H));
-        VertexData[1] = new VertexUi(new Vector2(0, 0), new Vector2(_texture.U, _texture.V));
-        VertexData[2] = new VertexUi(new Vector2(_width, 0), new Vector2(_texture.U + _texture.W, _texture.V));
-        VertexData[3] = new VertexUi(new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H));
+        VertexData[0] = new VertexUi(new Vector2(0, 0), new Vector2(_texture.U, _texture.V));
+        VertexData[1] = new VertexUi(new Vector2(_width, 0), new Vector2(_texture.U + _texture.W, _texture.V));
+        VertexData[2] = new VertexUi(new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H));
+        VertexData[3] = new VertexUi(new Vector2(0, 0), new Vector2(_texture.U, _texture.V));
+        VertexData[4] = new VertexUi(new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H));
+        VertexData[5] = new VertexUi(new Vector2(0, _height), new Vector2(_texture.U, _texture.V + _texture.H));
         
         SetGraphicsBuffer();
         

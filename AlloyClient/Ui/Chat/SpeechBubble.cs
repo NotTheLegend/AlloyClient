@@ -64,7 +64,7 @@ public sealed class SpeechBubble : Sprite {
         AddChild(rect);
         AddChild(txt);
         
-        SetAnchor(UiAnchor.MiddleBottom);
+        Anchor = UiAnchor.MiddleBottom;
     }
 
     public bool Update(in GameTime gameTime, in Camera camera) {

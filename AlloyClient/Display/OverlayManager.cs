@@ -1,11 +1,12 @@
 ﻿using AlloyClient.Ui.Components.Panels;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
+using AlloyClient.Ui.Components;
 using AlloyClient.Utils;
 
 namespace AlloyClient.Display;
 
-public sealed class OverlayManager : Sprite {
+public sealed class OverlayManager : UiContainer {
     
     private static readonly ColorRect Overlay = new (new ColorRectConfig { Width = Settings.DefaultScreenWidth, Height = Settings.DefaultScreenHeight, Color = 0x2B2B2B, Alpha = 0.8f });
 
@@ -46,7 +47,7 @@ public sealed class OverlayManager : Sprite {
 
     private void OnStageEnter() {
         Stage.AddEventListener(ResizeEvent.Resize, OnResize);
-        OnResize(new ResizeEvent(ResizeEvent.Resize, Stage.StageWidth, Stage.StageHeight));
+        OnResize(new ResizeEvent(Stage.StageWidth, Stage.StageHeight));
     }
 
     private void OnStageExit() {

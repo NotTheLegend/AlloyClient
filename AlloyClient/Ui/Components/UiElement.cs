@@ -12,7 +12,30 @@ public abstract class UiElement : Sprite {
     private void InternalOnAddedToStage() {
         Stage.AddEventListener(ResizeEvent.Resize, OnResize);
         OnAddedToStage();
-        OnResize(new ResizeEvent(ResizeEvent.Resize, Stage.StageWidth, Stage.StageHeight));
+        OnResize(new ResizeEvent(Stage.StageWidth, Stage.StageHeight));
+    }
+
+    private void InternalOnRemovedFromStage() {
+        Stage.RemoveEventListener(ResizeEvent.Resize, OnResize);
+        OnRemovedFromStage();
+    }
+
+    protected virtual void OnAddedToStage() {}
+    protected virtual void OnRemovedFromStage() {}
+    protected virtual void OnResize(ResizeEvent args) {}
+}
+
+public abstract class UiContainer : DisplayContainer {
+    
+    protected UiContainer() {
+        AddEventListener(Event.AddedToStage, InternalOnAddedToStage);
+        AddEventListener(Event.RemovedFromStage, InternalOnRemovedFromStage);
+    }
+
+    private void InternalOnAddedToStage() {
+        Stage.AddEventListener(ResizeEvent.Resize, OnResize);
+        OnAddedToStage();
+        OnResize(new ResizeEvent(Stage.StageWidth, Stage.StageHeight));
     }
 
     private void InternalOnRemovedFromStage() {

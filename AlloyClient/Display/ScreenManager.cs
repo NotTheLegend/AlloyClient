@@ -9,7 +9,7 @@ using OpenTK.Platform;
 
 namespace AlloyClient.Display;
 
-public sealed class ScreenManager : Sprite {
+public sealed class ScreenManager : UiContainer {
     private static ScreenManager _instance;
     public static readonly FadeScreen FadeScreen = new(0);
 
@@ -20,12 +20,14 @@ public sealed class ScreenManager : Sprite {
         _instance = this;
         FadeScreen.Visible = false;
         _instance.AddChild(FadeScreen);
-        
-        AddEventListener(Event.AddedToStage, AddedToStage);
     }
 
-    private void AddedToStage() {
+    protected override void OnAddedToStage() {
         Stage.AddEventListener(KeyboardEvent.KeyUp, OnKeyUp);
+    }
+
+    protected override void OnRemovedFromStage() {
+        Stage.RemoveEventListener(KeyboardEvent.KeyUp, OnKeyUp);
     }
 
     /// <summary>
@@ -76,7 +78,7 @@ public sealed class ScreenManager : Sprite {
     }
 }
 
-public abstract class Screen : UiElement {
+public abstract class Screen : UiContainer {
     public virtual void Update(GameTime gameTime) { }
     public virtual void Draw(GameTime gameTime) { }
 }

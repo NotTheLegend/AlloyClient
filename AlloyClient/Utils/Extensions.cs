@@ -18,8 +18,8 @@ public static class Extensions {
     }
     
     extension(Sprite sprite) {
-        public Sprite GetTypeFromList(Type[] list) {
-            var obj = sprite;
+        public DisplayObject GetTypeFromList(Type[] list) {
+            DisplayObject obj = sprite;
             var len = list.Length;
 
             while (obj != null) {

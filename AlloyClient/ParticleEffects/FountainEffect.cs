@@ -10,8 +10,8 @@ public class FountainEffect : ParticleEffect {
     private const int Buffer = 50;
 
     private int _count;
-    private readonly ParticleData[] _particles = new ParticleData[Buffer];
-    private readonly FountainParticle[] _data = new FountainParticle[Buffer];
+    private readonly ParticleData[] _particles = new ParticleData[Buffer]; // ssbo data
+    private readonly FountainParticle[] _data = new FountainParticle[Buffer]; // varying per particle data
 
     private readonly Vector4 _color;
 
@@ -55,7 +55,7 @@ public class FountainEffect : ParticleEffect {
             part.Position.Z = z;
         }
         
-        Map.AddParticles(_particles, _count);
+        Map.AddParticles(_particles, _count); // span.copyto ssbo data to per frame array
 
         _lastUpdate = time;
         return true;

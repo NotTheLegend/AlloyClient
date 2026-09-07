@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
 
-namespace Alloy.UiLib.Core;
+namespace Alloy.UiLib.CoreOld;
 
 public enum EventPhase {
     Capture,
@@ -11,28 +11,18 @@ public enum EventPhase {
     Bubble
 }
 
-[Flags]
-public enum EventMod {
-    None = 1 << 0,
-    Bubble = 1 << 1,
-}
-
 public record struct EventType<T>(string Id) where T : Event {
     public static implicit operator EventType<T>(string id) => string.IsNullOrWhiteSpace(id) ? throw new Exception() : new EventType<T>(id);
     public static implicit operator string(EventType<T> type) => type.Id;
 }
 
-public class Event(EventType<Event> type, EventMod mods = EventMod.None) {
-    
+public class Event(EventType<Event> type, bool bubbles = false) {
     public readonly string Type = type.Id;
-    
-    public readonly EventMod Mods = mods;
-    
-    public bool Bubbles => (Mods & EventMod.Bubble) != 0;
+    public readonly bool Bubbles = bubbles;
 
-    public object Target { get; private set; }
+    public Sprite Target { get; private set; }
     
-    public object CurrentTarget { get; private set; }
+    public Sprite CurrentTarget { get; private set; }
     
     public EventPhase Phase { get; internal set; }
 
@@ -40,12 +30,12 @@ public class Event(EventType<Event> type, EventMod mods = EventMod.None) {
     
     internal bool ImmediateStop;
 
-    internal void SetTarget(object target) => Target = target;
-    internal void SetCurrentTarget(object target) => CurrentTarget = target;
+    internal void SetTarget(Sprite target) => Target = target;
+    internal void SetCurrentTarget(Sprite target) => CurrentTarget = target;
 
     public void StopPropagation() => Stop = true;
     
-    public void StopImmediatePropagation() => ImmediateStop = Stop = true;
+    public void StopImmediatePropagation() => ImmediateStop = true;
     
     public static readonly EventType<Event> AddedToStage = "addedToStage";
     public static readonly EventType<Event> RemovedFromStage = "removedFromStage";
@@ -57,7 +47,7 @@ public class Event(EventType<Event> type, EventMod mods = EventMod.None) {
 /// <summary>
 /// Keyboard events are *ONLY* dispatched on stage layer, if listeners are put on any other sprite they will not trigger!
 /// </summary>
-public class KeyboardEvent(EventType<KeyboardEvent> type, Key key, Scancode code, bool ctrl, bool shift, bool alt) : Event(type.Id, EventMod.Bubble) {
+public class KeyboardEvent(EventType<KeyboardEvent> type, Key key, Scancode code, bool ctrl, bool shift, bool alt) : Event(type.Id, true) {
     public readonly Key Key = key;
     public readonly Scancode Code = code;
     public readonly bool Ctrl = ctrl;
@@ -68,7 +58,7 @@ public class KeyboardEvent(EventType<KeyboardEvent> type, Key key, Scancode code
     public static readonly EventType<KeyboardEvent> KeyUp = "keyUp";
 }
 
-public class MouseEvent(EventType<MouseEvent> type, Vector2i coords = new (), Vector2 delta = new (), bool shiftKey = false, bool ctrlKey = false, bool altKey = false) : Event(type.Id, EventMod.Bubble) {
+public class MouseEvent(EventType<MouseEvent> type, Vector2i coords = new (), Vector2 delta = new (), bool shiftKey = false, bool ctrlKey = false, bool altKey = false) : Event(type.Id, true) {
     public readonly Vector2i Coords = coords;
     public readonly float VerticalDelta = delta.Y;
     public readonly float HorizontalDelta = delta.X;
@@ -99,7 +89,7 @@ public class MouseEvent(EventType<MouseEvent> type, Vector2i coords = new (), Ve
 /// <summary>
 /// Resize events are *ONLY* dispatched on stage layer, if listeners are put on any other sprite they will not trigger!
 /// </summary>
-public class ResizeEvent(int width, int height) : Event(Resize.Id) {
+public class ResizeEvent(EventType<ResizeEvent> type, int width, int height) : Event(type.Id) {
     public readonly int Width = width;
     public readonly int Height = height;
     

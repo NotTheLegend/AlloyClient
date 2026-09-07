@@ -46,7 +46,7 @@ public class TextButton : Sprite {
         X = config.X;
         Y = config.Y;
         Alpha = config.Alpha;
-        SetAnchor(config.Anchor);
+        Anchor = config.Anchor;
         
         MouseEnabled = true;
 

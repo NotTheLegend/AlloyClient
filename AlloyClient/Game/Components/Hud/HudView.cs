@@ -19,7 +19,7 @@ public sealed class HudView : Sprite {
     private InteractPanel _interactPanel;
 
     public HudView() {
-        SetAnchor(UiAnchor.MiddleRight);
+        Anchor = UiAnchor.MiddleRight;
 
         var bg = new ColorRect(new ColorRectConfig {Width = HudWidth, Height = Settings.DefaultScreenHeight, Color = 0x363636});
         AddChild(bg);

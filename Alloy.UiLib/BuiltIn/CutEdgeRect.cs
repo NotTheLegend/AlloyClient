@@ -40,32 +40,15 @@ public sealed class CutEdgeRect : Sprite {
         _cuts = config.Cuts;
         SetColor(config.Color);
         Alpha = config.Alpha;
-        SetAnchor(config.Anchor);
+        Anchor = config.Anchor;
         MouseEnabled = config.MouseEnabled;
         
         TextureId = TextureType.Color;
         
         SetHitboxType(CollisionType.Vertices);
 
-        ResizeBackBuffer();
+        EnsureBufferCapacity(54);
         FillData();
-    }
-
-    private void ResizeBackBuffer() {
-        VertexData = new VertexUi[36];
-        Indices = new ushort[] {
-            0, 1, 2, 0, 2, 3,
-            4, 5, 6, 4, 6, 7,
-            8, 9, 10, 8, 10, 11,
-            
-            12, 13, 14, 12, 14, 15,
-            16, 17, 18, 16, 18, 19,
-            20, 21, 22, 20, 22, 23,
-            
-            24, 25, 26, 24, 26, 27,
-            28, 29, 30, 28, 30, 31,
-            32, 33, 34, 32, 34, 35
-        };
     }
 
     private void FillData() {
@@ -73,47 +56,65 @@ public sealed class CutEdgeRect : Sprite {
         VertexData[0] = new VertexUi((_cuts & CutEdges.TopLeft) != 0 ? new Vector2(_cx / 2f, _cy / 2f) : new Vector2(0f, 0f));
         VertexData[1] = new VertexUi(new Vector2(_cx, 0f));
         VertexData[2] = new VertexUi(new Vector2(_cx, _cy));
-        VertexData[3] = new VertexUi(new Vector2(0f, _cy));
+        VertexData[3] = new VertexUi((_cuts & CutEdges.TopLeft) != 0 ? new Vector2(_cx / 2f, _cy / 2f) : new Vector2(0f, 0f));
+        VertexData[4] = new VertexUi(new Vector2(_cx, _cy));
+        VertexData[5] = new VertexUi(new Vector2(0f, _cy));
         // Top Center
-        VertexData[4] = new VertexUi(new Vector2(_cx, 0));
-        VertexData[5] = new VertexUi(new Vector2(_w - _cx, 0));
-        VertexData[6] = new VertexUi(new Vector2(_w - _cx, _cy));
-        VertexData[7] = new VertexUi(new Vector2(_cx, _cy));
-        // Top Right
-        VertexData[8] = new VertexUi((_cuts & CutEdges.TopRight) != 0 ? new Vector2(_w - _cx / 2f, _cy / 2f) : new Vector2(_w, 0f));
-        VertexData[9] = new VertexUi(new Vector2(_w, _cy));
+        VertexData[6] = new VertexUi(new Vector2(_cx, 0));
+        VertexData[7] = new VertexUi(new Vector2(_w - _cx, 0));
+        VertexData[8] = new VertexUi(new Vector2(_w - _cx, _cy));
+        VertexData[9] = new VertexUi(new Vector2(_cx, 0));
         VertexData[10] = new VertexUi(new Vector2(_w - _cx, _cy));
-        VertexData[11] = new VertexUi(new Vector2(_w - _cx, 0f));
+        VertexData[11] = new VertexUi(new Vector2(_cx, _cy));
+        // Top Right
+        VertexData[12] = new VertexUi((_cuts & CutEdges.TopRight) != 0 ? new Vector2(_w - _cx / 2f, _cy / 2f) : new Vector2(_w, 0f));
+        VertexData[13] = new VertexUi(new Vector2(_w, _cy));
+        VertexData[14] = new VertexUi(new Vector2(_w - _cx, _cy));
+        VertexData[15] = new VertexUi((_cuts & CutEdges.TopRight) != 0 ? new Vector2(_w - _cx / 2f, _cy / 2f) : new Vector2(_w, 0f));
+        VertexData[16] = new VertexUi(new Vector2(_w - _cx, _cy));
+        VertexData[17] = new VertexUi(new Vector2(_w - _cx, 0f));
         // Middle Left
-        VertexData[12] = new VertexUi(new Vector2(0, _cy));
-        VertexData[13] = new VertexUi(new Vector2(_cx, _cy));
-        VertexData[14] = new VertexUi(new Vector2(_cx, _h - _cy));
-        VertexData[15] = new VertexUi(new Vector2(0, _h - _cy));
+        VertexData[18] = new VertexUi(new Vector2(0, _cy));
+        VertexData[19] = new VertexUi(new Vector2(_cx, _cy));
+        VertexData[20] = new VertexUi(new Vector2(_cx, _h - _cy));
+        VertexData[21] = new VertexUi(new Vector2(0, _cy));
+        VertexData[22] = new VertexUi(new Vector2(_cx, _h - _cy));
+        VertexData[23] = new VertexUi(new Vector2(0, _h - _cy));
         // Middle
-        VertexData[16] = new VertexUi(new Vector2(_cx, _cy));
-        VertexData[17] = new VertexUi(new Vector2(_w - _cx, _cy));
-        VertexData[18] = new VertexUi(new Vector2(_w - _cx, _h - _cy));
-        VertexData[19] = new VertexUi(new Vector2(_cx, _h - _cy));
+        VertexData[24] = new VertexUi(new Vector2(_cx, _cy));
+        VertexData[25] = new VertexUi(new Vector2(_w - _cx, _cy));
+        VertexData[26] = new VertexUi(new Vector2(_w - _cx, _h - _cy));
+        VertexData[27] = new VertexUi(new Vector2(_cx, _cy));
+        VertexData[28] = new VertexUi(new Vector2(_w - _cx, _h - _cy));
+        VertexData[29] = new VertexUi(new Vector2(_cx, _h - _cy));
         // Middle Right
-        VertexData[20] = new VertexUi(new Vector2(_w - _cx, _cy));
-        VertexData[21] = new VertexUi(new Vector2(_w, _cy));
-        VertexData[22] = new VertexUi(new Vector2(_w, _h - _cy));
-        VertexData[23] = new VertexUi(new Vector2(_w - _cx, _h - _cy));
+        VertexData[30] = new VertexUi(new Vector2(_w - _cx, _cy));
+        VertexData[31] = new VertexUi(new Vector2(_w, _cy));
+        VertexData[32] = new VertexUi(new Vector2(_w, _h - _cy));
+        VertexData[33] = new VertexUi(new Vector2(_w - _cx, _cy));
+        VertexData[34] = new VertexUi(new Vector2(_w, _h - _cy));
+        VertexData[35] = new VertexUi(new Vector2(_w - _cx, _h - _cy));
         // Bottom Left
-        VertexData[24] = new VertexUi((_cuts & CutEdges.BottomLeft) != 0 ? new Vector2(_cx / 2f, _h - _cy / 2f) : new Vector2(0f, _h));
-        VertexData[25] = new VertexUi(new Vector2(0, _h - _cy));
-        VertexData[26] = new VertexUi(new Vector2(_cx, _h - _cy));
-        VertexData[27] = new VertexUi(new Vector2(_cx, _h));
+        VertexData[36] = new VertexUi((_cuts & CutEdges.BottomLeft) != 0 ? new Vector2(_cx / 2f, _h - _cy / 2f) : new Vector2(0f, _h));
+        VertexData[37] = new VertexUi(new Vector2(0, _h - _cy));
+        VertexData[38] = new VertexUi(new Vector2(_cx, _h - _cy));
+        VertexData[39] = new VertexUi((_cuts & CutEdges.BottomLeft) != 0 ? new Vector2(_cx / 2f, _h - _cy / 2f) : new Vector2(0f, _h));
+        VertexData[40] = new VertexUi(new Vector2(_cx, _h - _cy));
+        VertexData[41] = new VertexUi(new Vector2(_cx, _h));
         // Bottom Middle
-        VertexData[28] = new VertexUi(new Vector2(_cx, _h - _cy));
-        VertexData[29] = new VertexUi(new Vector2(_w - _cx, _h - _cy));
-        VertexData[30] = new VertexUi(new Vector2(_w - _cx, _h));
-        VertexData[31] = new VertexUi(new Vector2(_cx, _h));
+        VertexData[42] = new VertexUi(new Vector2(_cx, _h - _cy));
+        VertexData[43] = new VertexUi(new Vector2(_w - _cx, _h - _cy));
+        VertexData[44] = new VertexUi(new Vector2(_w - _cx, _h));
+        VertexData[45] = new VertexUi(new Vector2(_cx, _h - _cy));
+        VertexData[46] = new VertexUi(new Vector2(_w - _cx, _h));
+        VertexData[47] = new VertexUi(new Vector2(_cx, _h));
         // Bottom Right
-        VertexData[32] = new VertexUi((_cuts & CutEdges.BottomRight) != 0 ? new Vector2(_w - _cx / 2f, _h - _cy / 2f) : new Vector2(_w, _h));
-        VertexData[33] = new VertexUi(new Vector2(_w - _cx, _h));
-        VertexData[34] = new VertexUi(new Vector2(_w - _cx, _h - _cy));
-        VertexData[35] = new VertexUi(new Vector2(_w, _h - _cy));
+        VertexData[48] = new VertexUi((_cuts & CutEdges.BottomRight) != 0 ? new Vector2(_w - _cx / 2f, _h - _cy / 2f) : new Vector2(_w, _h));
+        VertexData[49] = new VertexUi(new Vector2(_w - _cx, _h));
+        VertexData[50] = new VertexUi(new Vector2(_w - _cx, _h - _cy));
+        VertexData[51] = new VertexUi((_cuts & CutEdges.BottomRight) != 0 ? new Vector2(_w - _cx / 2f, _h - _cy / 2f) : new Vector2(_w, _h));
+        VertexData[52] = new VertexUi(new Vector2(_w - _cx, _h - _cy));
+        VertexData[53] = new VertexUi(new Vector2(_w, _h - _cy));
         
         SetGraphicsBuffer();
     }

@@ -13,16 +13,16 @@ public struct ContainerConfig {
     public ContainerConfig() { }
 }
 
-public class Container : Sprite {
+public class Container : DisplayContainer {
     public Container() : this(new ContainerConfig()) { }
     
     public Container(ContainerConfig config) {
         X = config.X;
         Y = config.Y;
         EnableClipRect = config.EnableClip;
-        SetAnchor(config.Anchor);
+        Anchor = config.Anchor;
         MouseEnabled = config.EnableClip;
-        SelfContentWidth = config.Width;
-        SelfContentHeight = config.Height;
+        //SelfContentWidth = config.Width;
+        //SelfContentHeight = config.Height;
     }
 }

@@ -30,7 +30,7 @@ public static class DisplayManager {
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         UiRender.LastRenderCount = 0;
         ScreenManager.Draw(gameTime);
-        _stage.Draw(gameTime);
+        _stage.Draw();
     }
     
 }

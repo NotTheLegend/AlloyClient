@@ -37,7 +37,7 @@ public class ChatBox : Sprite {
 
     public ChatBox() {
         Y = Settings.DefaultScreenHeight;
-        SetAnchor(UiAnchor.LeftBottom);
+        Anchor = UiAnchor.LeftBottom;
 
         _chatContainer = new Container(new ContainerConfig {
             Width = MaxWidth,

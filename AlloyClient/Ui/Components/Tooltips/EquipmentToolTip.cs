@@ -47,7 +47,7 @@ public sealed class EquipmentToolTip : Tooltip
     private void AddTitle()
     {
         TitleText = new SimpleText(SimpleConfig(_itemDesc.ObjectId, 16, FontType.Bold, maxWidth: 204));
-        TitleText.SetAnchor(UiAnchor.MiddleLeft);
+        TitleText.Anchor = UiAnchor.MiddleLeft;
         AddChild(TitleText);
     }
 
@@ -59,7 +59,7 @@ public sealed class EquipmentToolTip : Tooltip
         }
 
         TierTag = new TierText(_itemDesc);
-        TierTag.SetAnchor(UiAnchor.MiddleRight);
+        TierTag.Anchor = UiAnchor.MiddleRight;
         AddChild(TierTag);
     }
     

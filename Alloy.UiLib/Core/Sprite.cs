@@ -1,237 +1,114 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using Alloy.Common;
-using Alloy.UiLib.Extra;
 using Alloy.UiLib.Rendering;
 using Alloy.UiLib.Utils;
+using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
 
 namespace Alloy.UiLib.Core;
 
-/* =TODO=
- * Focus
- * make resize broadcast event
- */
+public abstract class Sprite : DisplayContainer {
 
-public partial class Sprite : DisplayContainer {
-    
-    public static readonly Vector4 NoScissor = new Vector4(0, 0, 10000, 10000);
+    private int _stateIndex;
+    private bool _noRenderData = true;
+    private Vector2i _selfContentDimension = Vector2i.Zero;
+    private Vector2i _selfContentOffset = Vector2i.Zero;
 
-    public int X { get; set { field = value; UpdateBounds(); } }
+    protected TextureType TextureId;
+    protected VertexUi[] VertexData;
 
-    public int Y { get; set { field = value; UpdateBounds(); } }
+    private protected sealed override Vector2i GetSelfContentDimensions() => _selfContentDimension;
 
-    public int Width {
-        get => (int)(ContentWidth * Scale.X);
-        set => ScaleX = GetScale(ContentWidth, value);
-    }
-    
-    public int Height {
-        get => (int)(ContentHeight * Scale.Y);
-        set => ScaleY = GetScale(ContentHeight, value);
-    }
-
-    public float ScaleX {
-        get;
-        set {
-            field = value;
-            UpdateBounds();
-        }
-    } = 1f;
-
-    public float ScaleY {
-        get;
-        set {
-            field = value;
-            UpdateBounds();
-        }
-    } = 1f;
-
-    public Vector2 Scale {
-        get => new(ScaleX, ScaleY);
-        set {
-            ScaleX = value.X;
-            ScaleY = value.Y;
-        }
-    }
-    
-    public float Alpha { get; set => field = Math.Clamp(value, 0f, 1f); } = 1f;
-
-    public float Rotation = 0;
-
-    public UiAnchor Anchor { get; private set; } = UiAnchor.LeftTop;
-
-    public CollisionType CollisionType { get; private set; } = CollisionType.Square;
-    
-    public bool Visible = true;
-    
-    public bool MouseEnabled = false;
-
-    public bool TooltipMode = false;
-
-    public bool EnableClipRect = false;
-    public bool ClipChildren = false;
-    
-    internal bool TweenActive = false;
-    
-    protected ushort[] Indices = [];
-    
-    protected VertexUi[] VertexData = [];
-
-    public int OverridePrimCount = -1;
-
-    internal Vector2i Radii;
-    
-    #region VertexData
-    
-    public TextureType TextureId = TextureType.None;
-    
-    public Color Color = Color.Transparent;
-    
-    public Color ColorSecondary = Color.Transparent;
-    
-    public ColorTransform ColorTransformation = new(1f, 1f, 1f, 1f);
-    
-    protected Vector4 Extra1 = Vector4.Zero;
-    
-    protected Vector4 Extra2 = Vector4.Zero;
-    
-    private Vector2 _info = Vector2.Zero;
-    
-    private Vector4 _scissor = NoScissor;
-    
-    #endregion VertexData
-
-    #region Backers
-
-    private int _anchorX;
-    
-    private int _anchorY;
-    
-    #endregion    
-
-    #region TrueValues
-
-    private int _trueX;
-    
-    private int _trueY;
-
-    private float _trueRotation;
-
-    private float _trueAlpha;
-
-    private Vector2 _trueScale;
-
-    private ColorTransform _trueTransform;
-
-    private bool _canInteract = true;
-
-    #endregion
-
-    private void InternalUpdate() {
-        (_anchorX, _anchorY) = Anchor.GetOffset(ContentWidth, ContentHeight);
-        var (tx, ty) = (0, 0);
-        var ta = Alpha;
-        var ts = Scale;
-        var tt = ColorTransformation;
-        var tr = Rotation;
-        var test = false;
-        
-        //TODO: maybe move these out into the client rather than being built in
-        if (TooltipMode) {
-            (tx, ty) = Stage.Mouse.GetMousePosition().ToPair();
-            (_anchorX, _anchorY) = (tx < UiRender.Screen.X / 2 ? UiAnchor.LeftBottom : UiAnchor.RightBottom).GetOffset(ContentWidth, ContentHeight);
-            tx += (int) (_anchorX * Parent._trueScale.X);
-            ty += (int) (_anchorY * Parent._trueScale.Y);
-        } else if (_isDragging) {
-            var pos = Stage.Mouse.GetMousePosition();
-            (tx, ty) = pos.ToPair();
-            tx -= (int)(_dragOffset.X * Parent._trueScale.X);
-            ty -= (int)(_dragOffset.Y * Parent._trueScale.Y);
+    internal sealed override void SetStageReference(Stage stage) {
+        if (stage is not null) {
+            _stateIndex = NewRender.StatePool.Pop();
+            SetGraphicsBuffer();
         } else {
-            tx += X + (int)(_anchorX * ScaleX);
-            ty += Y + (int)(_anchorY * ScaleY);
-            test = true;
+            NewRender.StatePool.Push(_stateIndex);
         }
         
-        var parentInteract = true;
-        if (Parent != null) {
-            if (test) {
-                tx = (int) (tx * Parent._trueScale.X);
-                ty = (int) (ty * Parent._trueScale.Y);
-                tx += Parent._trueX;
-                ty += Parent._trueY;
-            }
-
-            ta *= Parent._trueAlpha;
-            ts *= Parent._trueScale;
-            tt *= Parent._trueTransform;
-            tr += Parent.Rotation;
-            parentInteract = Parent._canInteract;
-            
-            if (Parent.EnableClipRect || Parent.ClipChildren) {
-                _scissor = Parent._scissor;
-                ClipChildren = true;
-            }
-        }
-        
-        
-        _canInteract = parentInteract && Visible && !TweenActive;
-
-        _trueX = tx;
-        _trueY = ty;
-        _trueAlpha = ta;
-        _trueScale = ts;
-        _trueTransform = tt;
-        _trueRotation = tr;
-
-        if (TooltipMode) {
-            _trueX = Math.Clamp(_trueX, 0, UiRender.Screen.X - Width);
-            _trueY = Math.Clamp(_trueY, 0, UiRender.Screen.Y - Height);
-        }
-
-        if (EnableClipRect) {
-            var scissor = new Vector4(tx, ty, tx + SelfContentWidth * _trueScale.X, ty + SelfContentHeight * _trueScale.Y);
-            if (ClipChildren) {
-                _scissor.X = Math.Max(_scissor.X, scissor.X);
-                _scissor.Y = Math.Max(_scissor.Y, scissor.Y);
-                _scissor.Z = Math.Min(_scissor.Z, scissor.Z);
-                _scissor.W = Math.Min(_scissor.W, scissor.W);
-            }
-            else {
-                _scissor = scissor;
-                ClipChildren = true;
-            }
-        }
-        
-        _info = new Vector2((float) TextureId, ta);
-    }
-
-    private void Update() {
-        InternalUpdate();
-
-        if (MouseEnabled && _canInteract && IsInBounds(Stage.Mouse.GetMousePosition())) {
-            Stage.CurrentHighestSprite = this;
-        }
-
-        var span = GetChildrenSpan();
-        foreach (var child in span) {
-            child.Update();
-        }
-    }
-
-    private readonly Event _cachedEnterFrame = new Event(Event.EnterFrame);
-
-    internal void InternalUpdateLoop() {
-        BroadcastEvent(_cachedEnterFrame);
-        HandleFinishedTasks();
-        
-        Update();
+        base.SetStageReference(stage);
     }
     
-    /// <summary>
-    /// Sets the primary color channel. If sprite is using a texture, it multiplies the color by the sampled pixel 
-    /// </summary>
+    protected void SetGraphicsBuffer() {
+        if (VertexData is not null && VertexData.Length % 3 != 0) {
+            throw new Exception("VertexData length needs to be a multiple of 3");
+        }
+        
+        _noRenderData = VertexData is null;
+
+        if (!_noRenderData) {
+            var x = 0f;
+            var y = 0f;
+            var x1 = 0f;
+            var y1 = 0f;
+            
+            foreach (ref var vertex in VertexData!.AsSpan()) {
+                x = Math.Min(x, vertex.Position.X);
+                y = Math.Min(y, vertex.Position.Y);
+                x1 = Math.Max(x1, vertex.Position.X);
+                y1 = Math.Max(y1, vertex.Position.Y);
+                //vertex.StateIndex = _stateIndex;
+            }
+
+            _selfContentDimension = new Vector2i((int)(x1 - x), (int)(y1 - y));
+            _selfContentOffset = new Vector2i((int)x, (int)y);
+        } else {
+            _selfContentDimension = Vector2i.Zero;
+            _selfContentOffset = Vector2i.Zero;
+        }
+        
+        DoBoundsUpdate();
+    }
+
+    internal sealed override void Draw() {
+        if (!Visible) {
+            return;
+        }
+
+        if (_noRenderData) {
+            base.Draw();
+            return;
+        }
+
+        if (DirtyInstance) {
+            //render.ssbo.subdata(State)
+        }
+        
+        var vertexMatrix = new SpriteVertexMatrix(State.Scale, 0f, new Vector2(State.X, State.Y), new Vector2(0, 0));
+        var instance = new SpriteInstanceData(vertexMatrix, Color, ColorSecondary, new Vector2((float) TextureId, Alpha), _scissor, Extra1, Extra2, ColorTransformation);
+
+        var vCount = OverridePrimCount > 0 ? OverridePrimCount * 3 : VertexData.Length;
+        
+        SpriteRender.Draw(instance, VertexData.AsSpan(0, vCount));
+        
+        UiRender.LastRenderCount++;
+        
+        base.Draw();
+    }
+    
+    
+    // do something with
+    private Vector2 _info;
+    private Vector4 _scissor = new Vector4(0, 0, 10000, 10000);
+    
+    
+    
+    
+    public bool TooltipMode;
+    public Color Color;
+    public Color ColorSecondary;
+    //protected ushort[] Indices;
+    protected Vector4 Extra1;
+    protected Vector4 Extra2;
+    protected Vector2 Radii;
+    protected int OverridePrimCount;
+    public Vector2i GetRelativeMousePosition() => Vector2i.Zero;
+    public void StartDrag() { }
+    public void EndDrag() {}
+    public Sprite DropTarget;
+    
+    // migrate into vertex data
     public void SetColor(uint rgb, float alpha = 1f) {
         var r = (byte)(rgb >> 16);
         var g = (byte)(rgb >> 8);
@@ -239,10 +116,7 @@ public partial class Sprite : DisplayContainer {
         var a = (byte)(Math.Max(Math.Min(alpha, 1f), 0f) * byte.MaxValue);
         Color.PackedValue = (uint)(a << 24 | b << 16 | g << 8 | r);
     }
-
-    /// <summary>
-    /// Sets the secondary color channel, this will control outlines if supported by the set <see cref="TextureType"/>
-    /// </summary>
+    
     public void SetColorSecondary(uint rgb, float alpha = 1f) {
         var r = (byte)(rgb >> 16);
         var g = (byte)(rgb >> 8);
@@ -250,32 +124,29 @@ public partial class Sprite : DisplayContainer {
         var a = (byte)(Math.Max(Math.Min(alpha, 1f), 0f) * byte.MaxValue);
         ColorSecondary.PackedValue = (uint)(a << 24 | b << 16 | g << 8 | r);
     }
-
-    public void SetAnchor(UiAnchor anchor) {
-        Anchor = anchor;
-        UpdateBounds();
-    }
     
-    public void SetHitboxType(CollisionType collision) => CollisionType = collision;
+    
+    // to impl
+    public void SetHitboxType(CollisionType type) {}
+    protected virtual bool CustomHitbox(Vector2i pos) {
+        throw new MissingMethodException("Sprite must define override for CustomHitbox");
+    }
 
-    public Vector2i GetRelativeMousePosition() {
-        if (Stage is null) {
-            // flash returns junk? coords if not on stage
-            return Vector2i.Zero; // TODO: check how flash handles mouse x/y when not on stage
+    protected void EnsureBufferCapacity(int length) {
+        if (length % 3 != 0) {
+            throw new Exception("length needs to be a multiple of 3");
         }
         
-        /* returns coords relative to vertex data
-         * uses scale to map mouse to sprite
-         *
-         *
-         *
-         * 
-         */
+        if (VertexData is null) {
+            VertexData = new VertexUi[length];
+            return;
+        }
+
+        if (VertexData.Length > length) {
+            OverridePrimCount = length / 3;
+            return;
+        }
         
-        var pos = Stage.Mouse.GetMousePosition();
-        return new Vector2i(pos.X - _trueX, pos.Y - _trueY);
+        Array.Resize(ref VertexData, length);
     }
-    
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static float GetScale(int contentWidth, int newWidth) => contentWidth == 0 ? 0f : (float) newWidth / contentWidth;
 }

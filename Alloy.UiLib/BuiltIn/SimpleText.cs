@@ -47,7 +47,7 @@ public sealed class SimpleText : Sprite {
         _outlineThickness = _font.ValidateOutlineSize(config.OutlineThickness);
         SetColor(config.Color);
         SetColorSecondary(config.OutlineColor);
-        SetAnchor(config.Anchor);
+        Anchor = config.Anchor;
 
         TextureId = TextureType.Text;
         
@@ -57,19 +57,7 @@ public sealed class SimpleText : Sprite {
     
     private void ResizeBackBuffer() {
         var size = _font.GetCharCount(Text);
-        VertexData = new VertexUi[size * 4];
-        Indices = new ushort[size * 6];
-        for (var i = 0; i < Indices.Length / 6; i++) {
-            var idx6 = i * 6;
-            var idx4 = i * 4;
-
-            Indices[idx6] = (ushort)(0 + idx4);
-            Indices[idx6 + 1] = (ushort)(1 + idx4);
-            Indices[idx6 + 2] = (ushort)(2 + idx4);
-            Indices[idx6 + 3] = (ushort)(0 + idx4);
-            Indices[idx6 + 4] = (ushort)(2 + idx4);
-            Indices[idx6 + 5] = (ushort)(3 + idx4);
-        }
+        EnsureBufferCapacity(size * 6);
     }
 
     private void FillData() {
@@ -103,10 +91,12 @@ public sealed class SimpleText : Sprite {
 
                     var uv = glyph.UV;
                     var pos = glyph.Position;
-                    VertexData[idx * 4 + 0] = new VertexUi(new Vector2(zero.X + pos.X0 * scale, zero.Y - pos.Y1 * scale), new Vector2(uv.X0, uv.Y1)); //bl
-                    VertexData[idx * 4 + 1] = new VertexUi(new Vector2(zero.X + pos.X0 * scale, zero.Y - pos.Y0 * scale), new Vector2(uv.X0, uv.Y0)); //tl
-                    VertexData[idx * 4 + 2] = new VertexUi(new Vector2(zero.X + pos.X1 * scale, zero.Y - pos.Y0 * scale), new Vector2(uv.X1, uv.Y0)); //tr
-                    VertexData[idx * 4 + 3] = new VertexUi(new Vector2(zero.X + pos.X1 * scale, zero.Y - pos.Y1 * scale), new Vector2(uv.X1, uv.Y1)); //br
+                    VertexData[idx * 6 + 0] = new VertexUi(new Vector2(zero.X + pos.X0 * scale, zero.Y - pos.Y0 * scale), new Vector2(uv.X0, uv.Y0)); //tl
+                    VertexData[idx * 6 + 1] = new VertexUi(new Vector2(zero.X + pos.X1 * scale, zero.Y - pos.Y0 * scale), new Vector2(uv.X1, uv.Y0)); //tr
+                    VertexData[idx * 6 + 2] = new VertexUi(new Vector2(zero.X + pos.X1 * scale, zero.Y - pos.Y1 * scale), new Vector2(uv.X1, uv.Y1)); //br
+                    VertexData[idx * 6 + 3] = new VertexUi(new Vector2(zero.X + pos.X0 * scale, zero.Y - pos.Y0 * scale), new Vector2(uv.X0, uv.Y0)); //tl
+                    VertexData[idx * 6 + 4] = new VertexUi(new Vector2(zero.X + pos.X1 * scale, zero.Y - pos.Y1 * scale), new Vector2(uv.X1, uv.Y1)); //br
+                    VertexData[idx * 6 + 5] = new VertexUi(new Vector2(zero.X + pos.X0 * scale, zero.Y - pos.Y1 * scale), new Vector2(uv.X0, uv.Y1)); //bl
                     idx++;
 
                     if (i < len - 1) {

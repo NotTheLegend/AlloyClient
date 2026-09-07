@@ -80,7 +80,7 @@ public sealed class TextInput : Sprite {
         _clickActivate = config.ClickToActivate;
         _onFocus = config.OnFocus;
         _onUnfocus = config.OnUnfocus;
-        SetAnchor(config.Anchor);
+        Anchor = config.Anchor;
 
         MouseEnabled = true;
 
@@ -109,19 +109,7 @@ public sealed class TextInput : Sprite {
     
     private void ResizeBackBuffer() {
         var size = _maxCharacters + 1;
-        VertexData = new VertexUi[size * 4];
-        Indices = new ushort[size * 6];
-        for (var i = 0; i < Indices.Length / 6; i++) {
-            var idx6 = i * 6;
-            var idx4 = i * 4;
-
-            Indices[idx6] = (ushort)(0 + idx4);
-            Indices[idx6 + 1] = (ushort)(1 + idx4);
-            Indices[idx6 + 2] = (ushort)(2 + idx4);
-            Indices[idx6 + 3] = (ushort)(0 + idx4);
-            Indices[idx6 + 4] = (ushort)(2 + idx4);
-            Indices[idx6 + 5] = (ushort)(3 + idx4);
-        }
+        EnsureBufferCapacity(size * 6);
     }
     
     private void OnFrameEnter() {
@@ -172,10 +160,12 @@ public sealed class TextInput : Sprite {
                     var uv = glyph.UV;
                     var pos = glyph.Position;
                     
-                    VertexData[idx + 0] = new VertexUi(new Vector2(zero.X + pos.X0 * _fontScale, zero.Y - pos.Y1 * _fontScale), new Vector2(uv.X0, uv.Y1)); //bl
-                    VertexData[idx + 1] = new VertexUi(new Vector2(zero.X + pos.X0 * _fontScale, zero.Y - pos.Y0 * _fontScale), new Vector2(uv.X0, uv.Y0)); //tl
-                    VertexData[idx + 2] = new VertexUi(new Vector2(zero.X + pos.X1 * _fontScale, zero.Y - pos.Y0 * _fontScale), new Vector2(uv.X1, uv.Y0)); //tr
-                    VertexData[idx + 3] = new VertexUi(new Vector2(zero.X + pos.X1 * _fontScale, zero.Y - pos.Y1 * _fontScale), new Vector2(uv.X1, uv.Y1)); //br
+                    VertexData[idx * 6 + 0] = new VertexUi(new Vector2(zero.X + pos.X0 * _fontScale, zero.Y - pos.Y0 * _fontScale), new Vector2(uv.X0, uv.Y0)); //tl
+                    VertexData[idx * 6 + 1] = new VertexUi(new Vector2(zero.X + pos.X1 * _fontScale, zero.Y - pos.Y0 * _fontScale), new Vector2(uv.X1, uv.Y0)); //tr
+                    VertexData[idx * 6 + 2] = new VertexUi(new Vector2(zero.X + pos.X1 * _fontScale, zero.Y - pos.Y1 * _fontScale), new Vector2(uv.X1, uv.Y1)); //br
+                    VertexData[idx * 6 + 3] = new VertexUi(new Vector2(zero.X + pos.X0 * _fontScale, zero.Y - pos.Y0 * _fontScale), new Vector2(uv.X0, uv.Y0)); //tl
+                    VertexData[idx * 6 + 4] = new VertexUi(new Vector2(zero.X + pos.X1 * _fontScale, zero.Y - pos.Y1 * _fontScale), new Vector2(uv.X1, uv.Y1)); //br
+                    VertexData[idx * 6 + 5] = new VertexUi(new Vector2(zero.X + pos.X0 * _fontScale, zero.Y - pos.Y1 * _fontScale), new Vector2(uv.X0, uv.Y1)); //bl
 
                     if (i < len - 1) {
                         var k = password ? '*' : _inputText[i + 1];

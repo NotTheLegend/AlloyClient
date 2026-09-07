@@ -32,23 +32,4 @@ public static class Extensions {
             _ => throw new ArgumentOutOfRangeException(nameof(button), button, null)
         };
     }
-
-    extension(UiAnchor anchor) {
-        internal (int, int) GetOffset(int w, int h) => anchor switch {
-            UiAnchor.LeftTop => (0, 0),
-            UiAnchor.MiddleTop => (-w / 2, 0),
-            UiAnchor.RightTop => (-w, 0),
-            UiAnchor.MiddleLeft => (0, -h / 2),
-            UiAnchor.Middle => (-w / 2, -h / 2),
-            UiAnchor.MiddleRight => (-w, -h / 2),
-            UiAnchor.LeftBottom => (0, -h),
-            UiAnchor.MiddleBottom => (-w / 2, -h),
-            UiAnchor.RightBottom => (-w, -h),
-            _ => (0, 0)
-        };
-    }
-
-    extension<T>(List<T> list) {
-        internal ReadOnlySpan<T> AsSpan() => CollectionsMarshal.AsSpan(list);
-    }
 }

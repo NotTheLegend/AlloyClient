@@ -101,15 +101,16 @@ public sealed class Minimap : Sprite {
     }
 
     private void ResizeBackBuffer() {
-        VertexData = new VertexUi[4];
-        Indices = [0, 1, 2, 0, 2, 3];
+        VertexData = new VertexUi[6];
     }
 
     private void FillData() {
         VertexData[0] = new VertexUi(new Vector2(0, 0)); //Top Left
         VertexData[1] = new VertexUi(new Vector2(MapSize, 0)); //Top Right
         VertexData[2] = new VertexUi(new Vector2(MapSize, MapSize)); //Bottom Right
-        VertexData[3] = new VertexUi(new Vector2(0, MapSize)); //Bottom Left
+        VertexData[3] = new VertexUi(new Vector2(0, 0)); //Top Left
+        VertexData[4] = new VertexUi(new Vector2(MapSize, MapSize)); //Bottom Right
+        VertexData[5] = new VertexUi(new Vector2(0, MapSize)); //Bottom Left
         
         SetGraphicsBuffer();
     }

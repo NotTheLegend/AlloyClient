@@ -110,7 +110,7 @@ public static partial class UiRender {
         UiShader.Apply();
         UiShader.SetValue("ViewMatrix", ViewMatrix);
         
-        Stage.DispatchEvent(new ResizeEvent(ResizeEvent.Resize, Screen.X, Screen.Y));
+        Stage.DispatchEvent(new ResizeEvent(Screen.X, Screen.Y));
     }
 
     public static BitmapFont GetFont(FontType type) {
@@ -120,10 +120,13 @@ public static partial class UiRender {
     private static void SetFocus(bool focus) => IsFocused = focus;
     
     private static void HandleEvents(EventArgs args) {
-        if (args is FocusEventArgs fea) {
-            SetFocus(fea.GotFocus);
+        if (args is FocusEventArgs focus) {
+            SetFocus(focus.GotFocus);
         }
-        if (!IsFocused) return;
+        
+        if (!IsFocused) {
+            return;
+        }
         
         switch (args) {
             case KeyDownEventArgs e:

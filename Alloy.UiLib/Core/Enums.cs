@@ -2,16 +2,40 @@
 
 namespace Alloy.UiLib.Core;
 
-public enum UiAnchor : byte {
-    LeftTop = 0,
-    MiddleTop = 1,
-    RightTop = 2,
-    MiddleLeft = 3,
-    Middle = 4,
-    MiddleRight = 5,
-    LeftBottom = 6,
-    MiddleBottom = 7,
-    RightBottom = 8
+public readonly record struct UiAnchor { // enums dont extend IEquatable, hence this hack
+
+    private readonly byte _value;
+
+    private UiAnchor(byte value) {
+        _value = value;
+    }
+
+    public static implicit operator UiAnchor(byte type) => new(type);
+
+    public static implicit operator byte(UiAnchor anchor) => anchor._value;
+
+    public static readonly UiAnchor LeftTop = 0;
+    public static readonly UiAnchor MiddleTop = 1;
+    public static readonly UiAnchor RightTop = 2;
+    public static readonly UiAnchor MiddleLeft = 3;
+    public static readonly UiAnchor Middle = 4;
+    public static readonly UiAnchor MiddleRight = 5;
+    public static readonly UiAnchor LeftBottom = 6;
+    public static readonly UiAnchor MiddleBottom = 7;
+    public static readonly UiAnchor RightBottom = 8;
+
+    internal (int, int) GetOffset(int w, int h) => _value switch {
+        0 => (0, 0),
+        1 => (-w / 2, 0),
+        2 => (-w, 0),
+        3 => (0, -h / 2),
+        4 => (-w / 2, -h / 2),
+        5 => (-w, -h / 2),
+        6 => (0, -h),
+        7 => (-w / 2, -h),
+        8 => (-w, -h),
+        _ => (0, 0)
+    };
 }
 
 public enum TextureType : byte {

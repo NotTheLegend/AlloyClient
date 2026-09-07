@@ -1,4 +1,5 @@
-﻿using AlloyClient.Data;
+﻿using System;
+using AlloyClient.Data;
 using AlloyClient.Display;
 using AlloyClient.Screens.Components;
 using AlloyClient.Screens.Components.Containers;
@@ -22,26 +23,26 @@ public class TitleScreen : TitleScreenBase {
     
     public TitleScreen() : base(Components.ScreenType.Title) {
         var editor = new MenuBarButton("editor", FontSize, () => { });
-        editor.SetAnchor(UiAnchor.MiddleLeft);
+        editor.Anchor = UiAnchor.MiddleLeft;
         _container.AddChild(editor);
         
         var servers = new MenuBarButton("servers", FontSize, () => ScreenManager.FadeTo(new ServersTitleScreen()));
-        servers.SetAnchor(UiAnchor.MiddleLeft);
+        servers.Anchor = UiAnchor.MiddleLeft;
         servers.X = editor.Width + 50;
         _container.AddChild(servers);
         
         var play = new MenuBarButton("play", PlayFontSize, OnPlay, true);
-        play.SetAnchor(UiAnchor.Middle);
+        play.Anchor = UiAnchor.Middle;
         play.X = servers.X + servers.Width + play.Width / 2 + 50;
         _container.AddChild(play);
         
         var legends = new MenuBarButton("legends", FontSize, () => ScreenManager.FadeTo(new LegendsTitleScreen()));
-        legends.SetAnchor(UiAnchor.MiddleLeft);
+        legends.Anchor = UiAnchor.MiddleLeft;
         legends.X = play.X + play.Width / 2 + 50;
         _container.AddChild(legends);
         
         var exit = new MenuBarButton("exit", FontSize, () => Main.OnQuit.Dispatch());
-        exit.SetAnchor(UiAnchor.MiddleLeft);
+        exit.Anchor = UiAnchor.MiddleLeft;
         exit.X = legends.X + legends.Width + 50;
         _container.AddChild(exit);
         
@@ -55,6 +56,9 @@ public class TitleScreen : TitleScreenBase {
 
     protected override void OnResize(ResizeEvent args) {
         _container.Scale = Stage.ScreenScale;
+        
+        Console.WriteLine(_container.Scale);
+        
         _container.X = Stage.StageWidth / 2 - _center;
         _container.Y = Stage.StageHeight - (int)(90 * Stage.ScreenScale.Y);
         base.OnResize(args);

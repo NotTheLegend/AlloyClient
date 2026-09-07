@@ -30,25 +30,22 @@ public sealed class ColorRect : Sprite {
         _h = config.Height;
         SetColor(config.Color);
         Alpha = config.Alpha;
-        SetAnchor(config.Anchor);
+        Anchor = config.Anchor;
         MouseEnabled = config.MouseEnabled;
         
         TextureId = TextureType.Color;
-
-        ResizeBackBuffer();
+        
+        EnsureBufferCapacity(6);
         FillData();
     }
 
-    private void ResizeBackBuffer() {
-        VertexData = new VertexUi[4];
-        Indices = [0, 1, 2, 0, 2, 3];
-    }
-
     private void FillData() {
-        VertexData[0] = new VertexUi(new Vector2(0, 0)); //Top Left
-        VertexData[1] = new VertexUi(new Vector2(_w, 0)); //Top Right
-        VertexData[2] = new VertexUi(new Vector2(_w, _h)); //Bottom Right
-        VertexData[3] = new VertexUi(new Vector2(0, _h)); //Bottom Left
+        VertexData[0] = new VertexUi(new Vector2(0, 0));
+        VertexData[1] = new VertexUi(new Vector2(_w, 0));
+        VertexData[2] = new VertexUi(new Vector2(_w, _h));
+        VertexData[3] = new VertexUi(new Vector2(0, 0));
+        VertexData[4] = new VertexUi(new Vector2(_w, _h));
+        VertexData[5] = new VertexUi(new Vector2(0, _h));
         
         SetGraphicsBuffer();
     }

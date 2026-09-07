@@ -2,40 +2,18 @@
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Extra;
 using Alloy.UiLib.Input;
-using Alloy.UiLib.Rendering;
 using Alloy.UiLib.Utils;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
 using MouseState = Alloy.UiLib.Input.MouseState;
 
-namespace Alloy.UiLib.Core;
+namespace Alloy.UiLib.CoreOld;
 
 /// <summary>
 /// This is the layer zero sprite that provides access to sprites internal Update/Draw functions, there can only be one
 /// </summary>
-public sealed class Stage : DisplayContainer {
-    
-    private readonly Event _cachedEnterFrame = new Event(Event.EnterFrame);
+public sealed class Stage : Sprite {
 
-    #region ReadonlyProperties
-
-    public new int X => base.X;
-    public new int Y => base.Y;
-    public new int Width => base.Width;
-    public new int Height => base.Height;
-    public new float ScaleX => base.ScaleX;
-    public new float ScaleY => base.ScaleY;
-    public new Vector2 Scale => base.Scale;
-    public new float Alpha => base.Alpha;
-    public new float Rotation => base.Rotation;
-    public new bool Visible => base.Visible;
-    public new UiAnchor Anchor => base.Anchor;
-    public new ColorTransform ColorTransformation => base.ColorTransformation;
-    public new bool MouseChildren => base.MouseChildren;
-    public new bool MouseEnabled => base.MouseEnabled;
-    
-    #endregion
-    
     public Vector2 ScreenScale { get; private set; }
 
     public Vector2i Dimensions => new (StageWidth, StageHeight);
@@ -61,9 +39,8 @@ public sealed class Stage : DisplayContainer {
     private Sprite _rightClickTarget;
 
     internal Stage() {
-        base.MouseEnabled = true;
-        base.MouseChildren = true;
-        SetStageReference(this);
+        MouseEnabled = true;
+        Stage = this;
     }
 
     internal void SetSize(Vector2i dim, Vector2 scale) {
@@ -85,15 +62,11 @@ public sealed class Stage : DisplayContainer {
 
         CurrentHighestSprite = null;
         
-        BroadcastEvent(_cachedEnterFrame);
-        HandleFinishedTasks();
-        Update(false, ObjectState.Default);
+        InternalUpdateLoop();
     }
 
-    public new void Draw() {
-        SpriteRender.StartDraw();
-        base.Draw();
-        SpriteRender.EndDraw();
+    public void Draw(GameTime gameTime) {
+        InternalDrawLoop();
     }
     
     internal void SetKeyDown(Key key, Scancode scancode) {
@@ -125,7 +98,7 @@ public sealed class Stage : DisplayContainer {
             case MouseButton.Button3: _rightClickTarget = _lastHighestSprite; break;
         }
             
-        DispatchMouseEvent(button.AsEventType(true));
+        //DispatchMouseEvent(button.AsEventType(true));
     }
     
     internal void SetMouseButtonUp(MouseButton button) {
@@ -133,13 +106,13 @@ public sealed class Stage : DisplayContainer {
             return;
         }
         
-        DispatchMouseEvent(button.AsEventType(false));
+        //DispatchMouseEvent(button.AsEventType(false));
 
         switch (button) {
             case MouseButton.Button1 when _leftClickTarget == _lastHighestSprite:
-                if (TextInput.ActiveInput != null && _lastHighestSprite != TextInput.ActiveInput) {
-                    TextInput.ActiveInput.UnFocus();
-                }
+                //if (TextInput.ActiveInput != null && _lastHighestSprite != TextInput.ActiveInput) {
+                //    TextInput.ActiveInput.UnFocus();
+                //}
                 DispatchMouseEvent(MouseEvent.LeftClick);
                 break;
             case MouseButton.Button2 when _middleClickTarget == _lastHighestSprite: DispatchMouseEvent(MouseEvent.MiddleClick); break;
@@ -171,14 +144,5 @@ public sealed class Stage : DisplayContainer {
 
         var args = new MouseEvent(type, _mouse.GetMousePosition(), _mouse.GetScrollDelta(), _keyboard.IsShiftDown(), _keyboard.IsCtrlDown(), _keyboard.IsAltDown());
         _lastHighestSprite.DispatchEvent(args);
-    }
-    
-    private static void BroadcastEvent(Event @event) {
-        if (!BroadcastMap.TryGetValue(@event.Type, out var sprites))
-            return;
-        
-        foreach (var sprite in sprites) {
-            sprite.DispatchEvent(@event);
-        }
     }
 }

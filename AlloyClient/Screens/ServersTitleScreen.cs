@@ -96,7 +96,7 @@ public class ServersTitleScreen : TitleScreenBase {
         var backButton = new MenuBarButton("back", TitleScreen.FontSize, () => {
             ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 1000, 0x0);
         });
-        backButton.SetAnchor(UiAnchor.Middle);
+        backButton.Anchor = UiAnchor.Middle;
         backButton.X = Settings.DefaultScreenWidth / 2;
         backButton.Y = Settings.DefaultScreenHeight - 50;
         AddChild(backButton);
@@ -141,7 +141,7 @@ public class ServersTitleScreen : TitleScreenBase {
         }
         
         var selectedRect = new ServerRect(server);
-        selectedRect.SetAnchor(UiAnchor.Middle);
+        selectedRect.Anchor = UiAnchor.Middle;
         selectedRect.X = _selectedServerContainer.Width / 2;
         selectedRect.Y = _selectedServerContainer.Height / 2;
         _selectedServerContainer.AddChild(selectedRect);

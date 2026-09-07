@@ -85,6 +85,7 @@ public struct VertexUi {
     public Vector2 Position;
     public Vector2 UV;
     public Color Color;
+    //internal int StateIndex;
 
     public VertexUi(Vector2 pos, Vector2 uv, Color color) {
         Position = pos;

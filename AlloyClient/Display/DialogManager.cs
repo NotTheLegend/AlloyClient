@@ -2,10 +2,11 @@
 using AlloyClient.Ui.Components.Dialogs;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Extra;
+using AlloyClient.Ui.Components;
 
 namespace AlloyClient.Display;
 
-public sealed class DialogManager : Sprite {
+public sealed class DialogManager : UiContainer {
 
     private static readonly Queue<Dialog> Dialogs = [];
     private static Dialog _current;

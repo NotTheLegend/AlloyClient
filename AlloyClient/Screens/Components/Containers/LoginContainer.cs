@@ -18,7 +18,7 @@ public class LoginContainer : Overlay {
     public LoginContainer() {
         X = Settings.DefaultScreenWidth / 2;
         Y = Settings.DefaultScreenHeight / 2;
-        SetAnchor(UiAnchor.Middle);
+        Anchor = UiAnchor.Middle;
         
         var background = new ColorRect(new ColorRectConfig { Width = 475, Height = 350, Color = 0x363636 });
         AddChild(background);

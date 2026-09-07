@@ -3,7 +3,7 @@ using Alloy.Common;
 using Alloy.UiLib.Input;
 using OpenTK.Mathematics;
 
-namespace Alloy.UiLib.Core;
+namespace Alloy.UiLib.CoreOld;
 
 public partial class Sprite {
     // TODO: add stage checks to this, cant drag whats not in the display list

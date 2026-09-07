@@ -22,7 +22,7 @@ public class Dialog : UiElement {
     public Dialog(string title, string message, DialogOption confirm, DialogOption cancel = null) {
         X = Settings.DefaultScreenWidth / 2;
         Y = Settings.DefaultScreenHeight / 2;
-        SetAnchor(UiAnchor.Middle);
+        Anchor = UiAnchor.Middle;
 
         var boxConfig = new ColorRectConfig { Width = BoxWidth, Height = 75, Color = 0x1C1C1C, Alpha = 0.8f, Anchor = UiAnchor.LeftTop};
         var box = new ColorRect(boxConfig);

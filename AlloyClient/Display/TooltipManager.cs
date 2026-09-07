@@ -1,9 +1,10 @@
 ﻿using AlloyClient.Ui.Components.Tooltips;
 using Alloy.UiLib.Core;
+using AlloyClient.Ui.Components;
 
 namespace AlloyClient.Display;
 
-public sealed class TooltipManager : Sprite {
+public sealed class TooltipManager : UiContainer {
 
     private static TooltipManager _instance;
     

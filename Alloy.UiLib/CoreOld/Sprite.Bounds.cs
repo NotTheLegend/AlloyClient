@@ -2,7 +2,7 @@
 using Alloy.Common;
 using OpenTK.Mathematics;
 
-namespace Alloy.UiLib.Core;
+namespace Alloy.UiLib.CoreOld;
 
 public partial class Sprite {
 

@@ -1,25 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
+using System.Runtime.InteropServices;
+using Alloy.UiLib.Utils;
 using OpenTK.Mathematics;
+using Alloy.UiLib.BuiltIn;
 
-namespace Alloy.UiLib.Core;
+namespace Alloy.UiLib.CoreOld;
 
-public abstract class DisplayContainer : DisplayObject {
+public abstract class DisplayContainer : EventManager {
     
-    
-    public bool EnableClipRect;
-    
+    internal DisplayContainer() { }
 
     public int NumChildren => _children.Count;
-
-    public bool MouseChildren = false;
     
-    private readonly List<DisplayObject> _children = [];
+    public Stage Stage { get; internal set; }
+    
+    public Sprite Parent { get; private set; }
+    
+    internal float SelfContentWidth;
 
-    public T AddChild<T>(T child) where T : DisplayObject => AddChildAt(child, _children.Count);
+    internal float SelfContentHeight;
+    
+    internal int ContentWidth;
 
-    public T AddChildAt<T>(T child, int index) where T : DisplayObject {
+    internal int ContentHeight;
+    
+    private readonly List<Sprite> _children = [];
+
+    internal ReadOnlySpan<Sprite> GetChildrenSpan() {
+        return CollectionsMarshal.AsSpan(_children);
+    }
+
+    public T AddChild<T>(T child) where T : Sprite => AddChildAt(child, _children.Count);
+
+    public T AddChildAt<T>(T child, int index) where T : Sprite {
         ValidateChild(child);
         BoundsCheck(index);
 
@@ -33,65 +47,67 @@ public abstract class DisplayContainer : DisplayObject {
 
         child.Parent?.RemoveChild(child);
         _children.Insert(index, child);
-        child.Parent = this;
+        child.Parent = this as Sprite;
 
-        DoBoundsUpdate();
+        UpdateBounds();
 
         var addedToStage = (Stage != null && child.Stage == null);
-        if (addedToStage) {
-            child.SetStageReference(Stage);
-        }
+        if (addedToStage)
+            child.SetStageReferenceChildren(Stage);
         
         child.DispatchEvent(new Event(Event.Added));
 
         if (addedToStage) {
             var evnt = new Event(Event.AddedToStage);
-            child.DispatchWithCapture(evnt);
-            DispatchChildren(evnt);
+            child.DispatchEvent(evnt);
+            child.DispatchChildren(evnt);
         }
         
         return child;
     }
 
-    public bool Contains(DisplayObject child) {
-        while (child != null && child != this) {
+    public bool Contains(Sprite child) {
+        while (child != this && child != null) {
             child = child.Parent;
-
-            if (child == this) {
-                return true;
-            }
         }
 
-        return false;
+        return child == this;
     }
 
-    public DisplayObject GetChildAt(int index) => index >= 0 && index < _children.Count ? _children[index] : null;
+    public Sprite GetChildAt(int index) {
+        if (index >= 0 && index < _children.Count)
+            return _children[index];
+        return null;
+    }
 
-    public int GetChildIndex(DisplayObject child) => _children.IndexOf(child);
+    public int GetChildIndex(Sprite child) {
+        return _children.IndexOf(child);
+    }
 
-    public T RemoveChild<T>(T child) where T : DisplayObject {
-        if (child == null || child.Parent != this) {
+    public T RemoveChild<T>(T child) where T : Sprite {
+        if (child == null || child.Parent != this)
             return child;
-        }
         
         DispatchEvent(new Event(Event.Removed));
 
         if (Stage != null) {
+            //TODO[FOCUS]: clear focus if child matches
+
             var evnt = new Event(Event.RemovedFromStage);
-            child.DispatchWithCapture(evnt);
-            DispatchChildren(evnt);
-            child.SetStageReference(null);
+            child.DispatchEvent(evnt);
+            child.DispatchChildren(evnt);
+            child.SetStageReferenceChildren(null);
         }
 
         child.Parent = null;
         _children.Remove(child);
         
-        DoBoundsUpdate();
+        UpdateBounds();
 
         return child;
     }
 
-    public DisplayObject RemoveChildAt(int index) {
+    public Sprite RemoveChildAt(int index) {
         if (index >= 0 && index < _children.Count)
             return RemoveChild(_children[index]);
         return null;
@@ -109,7 +125,7 @@ public abstract class DisplayContainer : DisplayObject {
         }
     }
 
-    public void SetChildIndex(DisplayObject child, int index) {
+    public void SetChildIndex(Sprite child, int index) {
         BoundsCheck(index);
         if (child.Parent != this) 
             return;
@@ -118,7 +134,7 @@ public abstract class DisplayContainer : DisplayObject {
         _children.Insert(index, child);
     }
 
-    public void SwapChildren(DisplayObject child1, DisplayObject child2) {
+    public void SwapChildren(Sprite child1, Sprite child2) {
         if (child1.Parent != this || child2.Parent != this)
             return;
 
@@ -136,47 +152,43 @@ public abstract class DisplayContainer : DisplayObject {
         (_children[index1], _children[index2]) = (_children[index2], _children[index1]);
     }
 
-    internal sealed override void DispatchChildren(Event @event) {
+    private void DispatchChildren(Event @event) {
         foreach (var child in _children) {
-            @event.SetTarget(child);
-            child.DispatchWithCapture(@event);
+            if (child.DispatchEvent(@event))
+                break;
             child.DispatchChildren(@event);
         }
     }
 
-    internal override void SetStageReference(Stage stage) {
-        base.SetStageReference(stage);
+    private void SetStageReferenceChildren(Stage stage) {
+        Stage = stage;
         foreach (var child in _children) {
-            child.SetStageReference(stage);
+            child.SetStageReferenceChildren(stage);
         }
     }
 
-    private protected sealed override void DoBoundsUpdate() {
-        var (xMin, yMin) = (0, 0);
-        var (xMax, yMax) = GetSelfContentDimensions();
+    internal void UpdateBounds() {
+        var xMin = 0f;
+        var xMax = SelfContentWidth;
+        var yMin = 0f;
+        var yMax = SelfContentHeight;
 
         foreach (var child in _children) {
-            var pos = child.GetPositionWithAnchor();
+            var (x, y) = (0, 0);//child.Anchor..GetOffset(child.Width, child.Height);
+            var pos = new Vector2(child.X + x, child.Y + y);
             xMin = Math.Min(xMin, pos.X);
             xMax = Math.Max(xMax, pos.X + child.Width);
             yMin = Math.Min(yMin, pos.Y);
             yMax = Math.Max(yMax, pos.Y + child.Height);
         }
 
-        var newX = xMax - xMin;
-        var newY = yMax - yMin;
+        ContentWidth = (int)(xMax - xMin);
+        ContentHeight = (int)(yMax - yMin);
 
-        if (ContentSizeWidth == newX && ContentSizeHeight == newY) {
-            return;
-        }
-
-        ContentSizeWidth = newX;
-        ContentSizeHeight = newY;
-        
-        Parent?.DoBoundsUpdate();
+        Parent?.UpdateBounds();
     }
 
-    private void ValidateChild(DisplayObject child) {
+    private void ValidateChild(Sprite child) {
         if (child == null) throw new Exception("Tried to add null as child");
         if (child == this) throw new Exception("Tried to add self as child");
         if (child is Stage) throw new Exception("Tried to add stage as child");
@@ -191,19 +203,5 @@ public abstract class DisplayContainer : DisplayObject {
     private void BoundsCheck(int index) {
         if (index < 0) throw new Exception("Index can not be less than 0");
         if (index > _children.Count) throw new Exception("Index can not be greater than number of children");
-    }
-
-    internal sealed override void Update(bool dirty, ObjectState state) {
-        base.Update(dirty, state);
-
-        foreach (var child in _children) {
-            child.Update(DirtyInstance, State);
-        }
-    }
-
-    internal override void Draw() {
-        foreach (var child in _children) {
-            child.Draw();
-        }
     }
 }
