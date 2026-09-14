@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Alloy.UiLib.Core;
+using OpenTK.Mathematics;
 using OpenTK.Platform;
 
 namespace Alloy.UiLib.Utils;
@@ -31,5 +32,9 @@ public static class Extensions {
             MouseButton.Button8 => "", //TODO: extra mouse buttons
             _ => throw new ArgumentOutOfRangeException(nameof(button), button, null)
         };
+    }
+
+    extension(Vector2 vector2) {
+        internal Vector2i AsInt() => new Vector2i((int)vector2.X, (int)vector2.Y);
     }
 }

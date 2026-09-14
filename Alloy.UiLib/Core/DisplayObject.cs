@@ -9,20 +9,18 @@ namespace Alloy.UiLib.Core;
 
 internal struct ObjectState(Vector2i pos, Vector2 scale, float alpha) {
 
-    public static readonly ObjectState Default = new ObjectState(Vector2i.Zero, Vector2.One, 1f);
+    public static readonly ObjectState Default = new(Vector2i.Zero, Vector2.One, 1f);
 
-    public int X = pos.X;
-    public int Y = pos.Y;
+    public Vector2i Position = pos;
     public Vector2 Scale = scale;
     public float Alpha = alpha;
 
-    public static ObjectState operator +(in ObjectState parent, in ObjectState child) => 
-        new() {
-            X = (int)(child.X * parent.Scale.X) + parent.X,
-            Y = (int)(child.Y * parent.Scale.Y) + parent.Y,
-            Scale = parent.Scale * child.Scale,
-            Alpha = parent.Alpha * child.Alpha
-        };
+    public static ObjectState operator +(ObjectState state, in ObjectState child) {
+        state.Position += (child.Position * state.Scale).AsInt();
+        state.Scale *= child.Scale;
+        state.Alpha *= child.Alpha;
+        return state;
+    }
 }
 
 public abstract class DisplayObject : EventManager {
@@ -40,6 +38,9 @@ public abstract class DisplayObject : EventManager {
 
         field = value;
         DirtyInstance = true;
+         
+        var (width, height) = Anchor.GetOffset(ContentSizeWidth, ContentSizeHeight);
+        _trueLocalPosition = new Vector2i((int)(X + width * ScaleX), (int)(Y + height * ScaleY));
 
         DoBoundsUpdate();
     }
@@ -84,16 +85,30 @@ public abstract class DisplayObject : EventManager {
     public DisplayContainer Parent { get; internal set; }
     
     public Stage Stage { get; private set; }
-    
-    private protected int ContentSizeWidth;
-    private protected int ContentSizeHeight;
 
-    private protected bool DirtyInstance;
+    protected CollisionType HitboxType = CollisionType.Square;
+    
+    
+
+    private protected Bounds ContentBounds = Bounds.Zero;
+    
+    private int ContentSizeWidth => ContentBounds.Width;
+    
+    private int ContentSizeHeight => ContentBounds.Height;
+
+    private protected bool DirtyInstance; // Unused, keep for possible future implementation
     private protected ObjectState State;
 
-    private protected bool _isDragging;
+    private bool _isDragging;
 
-    private protected virtual void DoBoundsUpdate() => ContentSizeWidth = ContentSizeHeight = 0;
+    private Vector2i _trueLocalPosition = Vector2i.Zero;
+    
+    
+    internal bool TweenActive; // TODO: remove & rework tween functionality
+
+    private protected virtual Bounds GetSelfBounds() => Bounds.Zero;
+
+    private protected virtual void DoBoundsUpdate() => ContentBounds = Bounds.Zero;
     
     private static int GetDimension(in int size, in float scale) => (int)(size * scale);
 
@@ -109,16 +124,10 @@ public abstract class DisplayObject : EventManager {
         return (float)newSize / size;
     }
 
-    private protected virtual Vector2i GetSelfContentDimensions() => Vector2i.Zero;
-    
-    internal Vector2i GetPositionWithAnchor() { // move tooltip mode out into client rather than built in feature
-        if (_isDragging) {
-            return Stage.Mouse.GetMousePosition();
-        }
-        
-        var (width, height) = Anchor.GetOffset(ContentSizeWidth, ContentSizeHeight);
-        return new Vector2i((int)(X + width * ScaleX), (int)(Y + height * ScaleY));
-    }
+    internal Bounds GetContentBounds() => Bounds.Scale(ContentBounds, Scale).Translate(GetPositionWithAnchor());
+
+    // move tooltip mode out into client rather than built in feature
+    private Vector2i GetPositionWithAnchor() => _isDragging ? Stage.Mouse.GetMousePosition() : _trueLocalPosition;
 
     internal virtual void SetStageReference(Stage stage) => Stage = stage;
 
@@ -126,19 +135,63 @@ public abstract class DisplayObject : EventManager {
         DirtyInstance = dirty || DirtyInstance;
         var currentState = new ObjectState(GetPositionWithAnchor(), Scale, Alpha);
         State = state + currentState;
+        
+        //if (FullBoundsCheck(Stage.Mouse.GetMousePosition()))
+        //    Logger.LogInformation($"{GetType().Name} In Bounds ({Stage.Mouse.GetMousePosition()})");
+        
+        
     }
 
     internal virtual void Draw() { }
+
+
+    private Vector2i GetLocalPosition(Vector2i position) => ((position - State.Position) / State.Scale).AsInt();
+
+    internal bool FullBoundsCheck(Vector2i position) {
+        // todo: scissor check
+        var hasBounds = ContentBounds.Width == 0 || ContentBounds.Height == 0; // guard for the one pixel hole in empty bounds
+        var firstCheck = IsInBounds(GetLocalPosition(position), CollisionType.SimpleSquare);
+
+        if (!firstCheck) { // Break early if rough bounds fails
+            return false;
+        }
+
+        if (hasBounds && HitboxType == CollisionType.SimpleSquare) { // SimpleSquare doesn't recursive check children
+            return true;
+        }
+
+        return IsInBounds(position);
+    }
+
+    internal virtual bool IsInBounds(Vector2i position) {
+        // todo: scissor check
+
+        if (ContentBounds.Width == 0 || ContentBounds.Height == 0) { // guard for the one pixel hole in empty bounds
+            return false;
+        }
+
+        return IsInBounds(GetLocalPosition(position), HitboxType);
+    }
+
+
+    private bool IsInBounds(Vector2i position, CollisionType type) => type switch {
+        CollisionType.SimpleSquare => ContentBounds.Contains(position),
+        CollisionType.Square => HitboxSquare(position),
+        CollisionType.Ellipse => HitboxEllipse(position),
+        CollisionType.Vertices => HitboxComplex(position),
+        CollisionType.Custom => CustomHitbox(position),
+        _ => throw new ArgumentOutOfRangeException($"{type} not handled in InternalBoundsCheck")
+    };
+
+    private protected virtual bool HitboxSquare(Vector2i position) => false;
     
+    private protected virtual bool HitboxEllipse(Vector2i position) => false;
     
-    
-    internal bool TweenActive;
-    
-    
-    
-    
-    
-    
+    private protected virtual bool HitboxComplex(Vector2i position) => false;
+
+    /// <param name="pos">local mouse coords</param>
+    protected virtual bool CustomHitbox(Vector2i pos) => throw new MissingMethodException("Sprite must define override for CustomHitbox");
+
     #region Events
     
     private static readonly HashSet<string> BroadcastEvents = [Event.EnterFrame];

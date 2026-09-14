@@ -8,7 +8,7 @@ namespace Alloy.UiLib.Core;
 public abstract class DisplayContainer : DisplayObject {
     
     
-    public bool EnableClipRect;
+    public bool EnableClipRect; // TODO
     
 
     public int NumChildren => _children.Count;
@@ -152,27 +152,17 @@ public abstract class DisplayContainer : DisplayObject {
     }
 
     private protected sealed override void DoBoundsUpdate() {
-        var (xMin, yMin) = (0, 0);
-        var (xMax, yMax) = GetSelfContentDimensions();
+        var bounds = GetSelfBounds();
 
         foreach (var child in _children) {
-            var pos = child.GetPositionWithAnchor();
-            xMin = Math.Min(xMin, pos.X);
-            xMax = Math.Max(xMax, pos.X + child.Width);
-            yMin = Math.Min(yMin, pos.Y);
-            yMax = Math.Max(yMax, pos.Y + child.Height);
+            bounds.Merge(child.GetContentBounds());
         }
 
-        var newX = xMax - xMin;
-        var newY = yMax - yMin;
-
-        if (ContentSizeWidth == newX && ContentSizeHeight == newY) {
+        if (bounds == ContentBounds) {
             return;
         }
 
-        ContentSizeWidth = newX;
-        ContentSizeHeight = newY;
-        
+        ContentBounds = bounds;
         Parent?.DoBoundsUpdate();
     }
 
@@ -205,5 +195,19 @@ public abstract class DisplayContainer : DisplayObject {
         foreach (var child in _children) {
             child.Draw();
         }
+    }
+
+    internal sealed override bool IsInBounds(Vector2i position) {
+        if (base.IsInBounds(position)) {
+            return true;
+        }
+
+        foreach (var child in _children) {
+            if (child.IsInBounds(position)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }

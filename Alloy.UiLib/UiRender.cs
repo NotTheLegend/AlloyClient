@@ -22,6 +22,8 @@ public static partial class UiRender {
 
     internal static ILoggerFactory LogFactory;
 
+    private static ILogger Logger;
+
     internal static bool IsFocused = true;
 
     internal static Stage Stage;
@@ -47,6 +49,7 @@ public static partial class UiRender {
         }
 
         LogFactory = logFactory;
+        Logger = LogFactory.CreateLogger(nameof(UiRender));
         DefaultScreen = settings.DefaultScreen;
         Stage = stage = new Stage();
         

@@ -8,25 +8,19 @@ using OpenTK.Mathematics;
 namespace Alloy.UiLib.Core;
 
 public abstract class Sprite : DisplayContainer {
-
-    private int _stateIndex;
+    
     private bool _noRenderData = true;
-    private Vector2i _selfContentDimension = Vector2i.Zero;
-    private Vector2i _selfContentOffset = Vector2i.Zero;
+    private Bounds _selfContentBounds = Bounds.Zero;
 
     protected TextureType TextureId;
     protected VertexUi[] VertexData;
+    protected int OverridePrimCount = -1; // TODO: make private, force EnsureBufferCapacity() usage
+    
+    protected Vector2 Radii;
 
-    private protected sealed override Vector2i GetSelfContentDimensions() => _selfContentDimension;
+    private protected sealed override Bounds GetSelfBounds() => _selfContentBounds;
 
     internal sealed override void SetStageReference(Stage stage) {
-        if (stage is not null) {
-            _stateIndex = NewRender.StatePool.Pop();
-            SetGraphicsBuffer();
-        } else {
-            NewRender.StatePool.Push(_stateIndex);
-        }
-        
         base.SetStageReference(stage);
     }
     
@@ -48,14 +42,11 @@ public abstract class Sprite : DisplayContainer {
                 y = Math.Min(y, vertex.Position.Y);
                 x1 = Math.Max(x1, vertex.Position.X);
                 y1 = Math.Max(y1, vertex.Position.Y);
-                //vertex.StateIndex = _stateIndex;
             }
-
-            _selfContentDimension = new Vector2i((int)(x1 - x), (int)(y1 - y));
-            _selfContentOffset = new Vector2i((int)x, (int)y);
+            
+            _selfContentBounds = new Bounds((int)x, (int)y, (int)x1, (int)y1);
         } else {
-            _selfContentDimension = Vector2i.Zero;
-            _selfContentOffset = Vector2i.Zero;
+            _selfContentBounds = Bounds.Zero;
         }
         
         DoBoundsUpdate();
@@ -74,8 +65,8 @@ public abstract class Sprite : DisplayContainer {
         if (DirtyInstance) {
             //render.ssbo.subdata(State)
         }
-        
-        var vertexMatrix = new SpriteVertexMatrix(State.Scale, 0f, new Vector2(State.X, State.Y), new Vector2(0, 0));
+        // TODO: anchor is dead reference, its built into position already
+        var vertexMatrix = new SpriteVertexMatrix(State.Scale, 0f, State.Position, new Vector2(0, 0));
         var instance = new SpriteInstanceData(vertexMatrix, Color, ColorSecondary, new Vector2((float) TextureId, Alpha), _scissor, Extra1, Extra2, ColorTransformation);
 
         var vCount = OverridePrimCount > 0 ? OverridePrimCount * 3 : VertexData.Length;
@@ -98,11 +89,10 @@ public abstract class Sprite : DisplayContainer {
     public bool TooltipMode;
     public Color Color;
     public Color ColorSecondary;
-    //protected ushort[] Indices;
     protected Vector4 Extra1;
     protected Vector4 Extra2;
-    protected Vector2 Radii;
-    protected int OverridePrimCount;
+    
+    
     public Vector2i GetRelativeMousePosition() => Vector2i.Zero;
     public void StartDrag() { }
     public void EndDrag() {}
@@ -125,28 +115,56 @@ public abstract class Sprite : DisplayContainer {
         ColorSecondary.PackedValue = (uint)(a << 24 | b << 16 | g << 8 | r);
     }
     
-    
-    // to impl
-    public void SetHitboxType(CollisionType type) {}
-    protected virtual bool CustomHitbox(Vector2i pos) {
-        throw new MissingMethodException("Sprite must define override for CustomHitbox");
-    }
+    // =========================================
 
     protected void EnsureBufferCapacity(int length) {
         if (length % 3 != 0) {
             throw new Exception("length needs to be a multiple of 3");
         }
+
+        OverridePrimCount = -1;
         
         if (VertexData is null) {
             VertexData = new VertexUi[length];
             return;
         }
 
-        if (VertexData.Length > length) {
+        if (length < VertexData.Length) {
             OverridePrimCount = length / 3;
             return;
         }
         
         Array.Resize(ref VertexData, length);
+    }
+    
+    private protected sealed override bool HitboxSquare(Vector2i position) => _selfContentBounds.Contains(position);
+    
+    private protected sealed override bool HitboxEllipse(Vector2i position) {
+        var (rx, ry) = Radii;
+        var (x, y) = position; // Mouse
+        return (x - rx) * (x - rx) / (rx * rx) + (y - ry) * (y - ry) / (ry * ry) <= 1;
+    }
+    
+    private protected sealed override bool HitboxComplex(Vector2i position) {
+        if (_noRenderData || OverridePrimCount == 0) {
+            return false;
+        }
+        
+        var len = OverridePrimCount > -1 ? OverridePrimCount * 3 : VertexData.Length;
+        for (var i = 0; i < len; i += 3) {
+            var t1 = VertexData[i + 0].Position;
+            var t2 = VertexData[i + 1].Position;
+            var t3 = VertexData[i + 2].Position;
+
+            var d1 = (position.X - t2.X) * (t1.Y - t2.Y) - (t1.X - t2.X) * (position.Y - t2.Y);
+            var d2 = (position.X - t3.X) * (t2.Y - t3.Y) - (t2.X - t3.X) * (position.Y - t3.Y);
+            var d3 = (position.X - t1.X) * (t3.Y - t1.Y) - (t3.X - t1.X) * (position.Y - t1.Y);
+            
+            if (!((d1 < 0 || d2 < 0 || d3 < 0) && (d1 > 0 || d2 > 0 || d3 > 0))) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }

@@ -44,8 +44,7 @@ public sealed class CutEdgeRect : Sprite {
         MouseEnabled = config.MouseEnabled;
         
         TextureId = TextureType.Color;
-        
-        SetHitboxType(CollisionType.Vertices);
+        HitboxType = CollisionType.Vertices;
 
         EnsureBufferCapacity(54);
         FillData();

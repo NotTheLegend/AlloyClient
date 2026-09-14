@@ -36,7 +36,7 @@ public sealed class Ellipse : Sprite {
         SetColorSecondary(config.OutlineColor);
         Alpha = config.Alpha;
         Anchor = config.Anchor;
-        SetHitboxType(CollisionType.Ellipse);
+        HitboxType = CollisionType.Ellipse;
         MouseEnabled = config.MouseEnabled;
         TextureId = TextureType.Ellipse;
         

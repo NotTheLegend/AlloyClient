@@ -52,12 +52,15 @@ public enum TextureType : byte {
     Ellipse = 9,
 }
 
+/// <summary>
+/// SimpleSquare only check bounds and skips children, the others check against self then loop children
+/// </summary>
 public enum CollisionType : byte {
+    SimpleSquare,
     Square,
     Ellipse,
     Vertices,
-    Custom,
-    CustomNoScale,
+    Custom
 }
 
 [Flags]
