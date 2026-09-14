@@ -33,6 +33,7 @@ public sealed class Stage : DisplayContainer {
     public new ColorTransform ColorTransformation => base.ColorTransformation;
     public new bool MouseChildren => base.MouseChildren;
     public new bool MouseEnabled => base.MouseEnabled;
+    public new ScissorRect Scissor => base.Scissor;
     
     #endregion
     

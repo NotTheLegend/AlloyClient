@@ -62,12 +62,13 @@ public abstract class Sprite : DisplayContainer {
             return;
         }
 
-        if (DirtyInstance) {
+        /*if (DirtyInstance) {
             //render.ssbo.subdata(State)
-        }
+        }*/
+        
         // TODO: anchor is dead reference, its built into position already
         var vertexMatrix = new SpriteVertexMatrix(State.Scale, 0f, State.Position, new Vector2(0, 0));
-        var instance = new SpriteInstanceData(vertexMatrix, Color, ColorSecondary, new Vector2((float) TextureId, Alpha), _scissor, Extra1, Extra2, ColorTransformation);
+        var instance = new SpriteInstanceData(vertexMatrix, Color, ColorSecondary, new Vector2((float) TextureId, Alpha), State.Scissor, Extra1, Extra2, ColorTransformation);
 
         var vCount = OverridePrimCount > 0 ? OverridePrimCount * 3 : VertexData.Length;
         
@@ -81,7 +82,6 @@ public abstract class Sprite : DisplayContainer {
     
     // do something with
     private Vector2 _info;
-    private Vector4 _scissor = new Vector4(0, 0, 10000, 10000);
     
     
     

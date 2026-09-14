@@ -7,18 +7,25 @@ using OpenTK.Mathematics;
 
 namespace Alloy.UiLib.Core;
 
-internal struct ObjectState(Vector2i pos, Vector2 scale, float alpha) {
+internal struct ObjectState(Vector2i pos, Vector2 scale, float alpha, ScissorRect scissor) {
 
-    public static readonly ObjectState Default = new(Vector2i.Zero, Vector2.One, 1f);
+    public static readonly ObjectState Default = new(Vector2i.Zero, Vector2.One, 1f, ScissorRect.Default);
 
     public Vector2i Position = pos;
     public Vector2 Scale = scale;
     public float Alpha = alpha;
+    public ScissorRect Scissor = scissor;
 
     public static ObjectState operator +(ObjectState state, in ObjectState child) {
         state.Position += (child.Position * state.Scale).AsInt();
         state.Scale *= child.Scale;
         state.Alpha *= child.Alpha;
+
+
+        if (child.Scissor != ScissorRect.Default) {
+            state.Scissor += child.Scissor.ToGlobal(state.Position, state.Scale);
+        }
+        
         return state;
     }
 }
@@ -87,9 +94,11 @@ public abstract class DisplayObject : EventManager {
     public Stage Stage { get; private set; }
 
     protected CollisionType HitboxType = CollisionType.Square;
-    
-    
 
+    protected ScissorRect Scissor = ScissorRect.Default;
+    
+    // ======================
+    
     private protected Bounds ContentBounds = Bounds.Zero;
     
     private int ContentSizeWidth => ContentBounds.Width;
@@ -133,7 +142,7 @@ public abstract class DisplayObject : EventManager {
 
     internal virtual void Update(bool dirty, ObjectState state) {
         DirtyInstance = dirty || DirtyInstance;
-        var currentState = new ObjectState(GetPositionWithAnchor(), Scale, Alpha);
+        var currentState = new ObjectState(GetPositionWithAnchor(), Scale, Alpha, Scissor);
         State = state + currentState;
         
         //if (FullBoundsCheck(Stage.Mouse.GetMousePosition()))
@@ -148,7 +157,10 @@ public abstract class DisplayObject : EventManager {
     private Vector2i GetLocalPosition(Vector2i position) => ((position - State.Position) / State.Scale).AsInt();
 
     internal bool FullBoundsCheck(Vector2i position) {
-        // todo: scissor check
+        if (!State.Scissor.Contains(position)) {
+            return false;
+        }
+        
         var hasBounds = ContentBounds.Width == 0 || ContentBounds.Height == 0; // guard for the one pixel hole in empty bounds
         var firstCheck = IsInBounds(GetLocalPosition(position), CollisionType.SimpleSquare);
 
@@ -164,7 +176,9 @@ public abstract class DisplayObject : EventManager {
     }
 
     internal virtual bool IsInBounds(Vector2i position) {
-        // todo: scissor check
+        if (!State.Scissor.Contains(position)) {
+            return false;
+        }
 
         if (ContentBounds.Width == 0 || ContentBounds.Height == 0) { // guard for the one pixel hole in empty bounds
             return false;
