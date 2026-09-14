@@ -68,7 +68,7 @@ public abstract class Sprite : DisplayContainer {
         
         // TODO: anchor is dead reference, its built into position already
         var vertexMatrix = new SpriteVertexMatrix(State.Scale, 0f, State.Position, new Vector2(0, 0));
-        var instance = new SpriteInstanceData(vertexMatrix, Color, ColorSecondary, new Vector2((float) TextureId, Alpha), State.Scissor, Extra1, Extra2, ColorTransformation);
+        var instance = new SpriteInstanceData(vertexMatrix, Color, ColorSecondary, new Vector2((float) TextureId, State.Alpha), State.Scissor, Extra1, Extra2, ColorTransformation);
 
         var vCount = OverridePrimCount > 0 ? OverridePrimCount * 3 : VertexData.Length;
         
