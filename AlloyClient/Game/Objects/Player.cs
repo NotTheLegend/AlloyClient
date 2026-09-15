@@ -139,9 +139,7 @@ public class Player : Entity {
                         X = moveSpeed * MathF.Cos(angle + moveVectorAngle),
                         Y = moveSpeed * MathF.Sin(angle + moveVectorAngle)
                     };
-
-                    //TODO: double check monogame to make sure its the same thing
-                    //var slideLen = slideVector.Length();
+                    
                     var slideLen = slideVector.LengthFast;
                     slideVector *= -1 * (Tile.GroundProperties.SlideAmount - 1);
                     MovementVector *= Tile.GroundProperties.SlideAmount;

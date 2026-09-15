@@ -21,8 +21,6 @@ public class ChoiceOption<T> : Option {
         AddChild(_choiceBox);
 
         _choiceCallback = choiceCallback;
-
-        //todo:SetBaseDimensions(_choiceBox.Width + DescText.X + DescText.Width, _choiceBox.Height);
     }
 
     public override void Refresh() {

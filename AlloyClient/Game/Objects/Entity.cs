@@ -231,8 +231,6 @@ public class Entity {
         RenderBaseType.SetVisibility(distanceSquared <= playerSightRadiusSquared);*/
         RenderBaseType.SetVisibility(true);
         
-        //TODO: double check mg to make sure
-        //var sort = Vector3.Transform(new Vector3(Position.X, Position.Y, 0), matrix).Y;
         var sort = Vector3.TransformPerspective(new Vector3(Position.X, Position.Y, 0), matrix).Y;
         RenderBaseType.SetDepth(0.5f + 0.4f * sort + Jitter);
     }

@@ -9,8 +9,6 @@ public class KeyMapperOption : Option {
     public KeyMapperOption(InputSetting setting, string desc, string tooltipDesc) : base(setting, desc, tooltipDesc) {
         _keyCodeBox = new KeyCodeBox(setting, OnKeyCodeChange);
         AddChild(_keyCodeBox);
-
-        //todo:SetBaseDimensions(_keyCodeBox.Width + DescText.X + DescText.Width, _keyCodeBox.Height);
     }
 
     public override void Refresh() {

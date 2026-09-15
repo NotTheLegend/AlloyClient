@@ -30,7 +30,6 @@ public class KeyCodeBox : Sprite {
     private double _elapsed;
 
     public KeyCodeBox(InputSetting setting, Action callback) {
-        //todo:SetBaseDimensions(BoxWidth, BoxHeight);
         HitboxType = CollisionType.Custom;
         MouseEnabled = true;
 

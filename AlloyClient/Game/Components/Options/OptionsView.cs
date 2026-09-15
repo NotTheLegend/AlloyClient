@@ -28,8 +28,6 @@ public sealed class OptionsView : Overlay {
 
     public OptionsView() {
         RefreshOptions.Set(Refresh);
-        
-        //todo:SetBaseDimensions(Settings.DefaultScreenWidth, Settings.DefaultScreenHeight);
 
         var titleText = new SimpleText(new TextConfig {
             Text = "Options",
