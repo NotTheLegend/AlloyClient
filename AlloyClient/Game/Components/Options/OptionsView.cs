@@ -38,7 +38,7 @@ public sealed class OptionsView : Overlay {
             X = Settings.DefaultScreenWidth / 2,
             Y = 10,
             OutlineThickness = 2,
-            Anchor = UiAnchor.MiddleTop
+            Anchor = UiAnchor.TopMiddle
         });
         AddChild(titleText);
 
@@ -92,7 +92,7 @@ public sealed class OptionsView : Overlay {
                 InactiveColor = 0xFFC800,
                 X = xOffset,
                 Y = 84,
-                Anchor = UiAnchor.LeftTop
+                Anchor = UiAnchor.Default
             });
             tab.AddEventListener(MouseEvent.LeftClick, OnSelectTab);
             AddChild(tab);

@@ -36,8 +36,10 @@ public class AudioEngine {
     }
     
     public void StopAndDispose() {
-        _cancelToken.Cancel();
-        _audioThread.Join();
+        _audioEngine.Stop(_cancelToken);
+        if (!_audioThread.Join(TimeSpan.FromSeconds(0.5f))) {
+            _log.LogError("Audio thread failed to stop!");
+        }
         _cancelToken.Dispose();
     }
 
@@ -86,6 +88,11 @@ internal class InternalAudioEngine {
     public void EnqueueCommand(EngineCommand command) {
         using var _ = _commandLock.EnterScope();
         _commandQueue.Enqueue(command);
+    }
+
+    public void Stop(CancellationTokenSource token) {
+        using var _ = _commandLock.EnterScope();
+        token.Cancel();
     }
 
     public void Run() {

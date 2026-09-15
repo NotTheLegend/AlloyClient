@@ -34,7 +34,7 @@ public abstract class TitleScreenBase : Screen {
         Overlay = new AccountOverlay(type == ScreenType.Title);
         Overlay.X = Settings.DefaultScreenWidth - 10;
         Overlay.Y = 10;
-        Overlay.Anchor = UiAnchor.RightTop;
+        Overlay.Anchor = UiAnchor.TopRight;
 
         if (type != ScreenType.Loading) {
             AddChild(Overlay);

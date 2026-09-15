@@ -2,7 +2,6 @@
 using Alloy.Common;
 using Alloy.UiLib.Rendering;
 using Alloy.UiLib.Utils;
-using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
 
 namespace Alloy.UiLib.Core;
@@ -36,8 +35,11 @@ public abstract class Sprite : DisplayContainer {
             var y = 0f;
             var x1 = 0f;
             var y1 = 0f;
+
+
+            var span = OverridePrimCount > 0 ? VertexData.AsSpan(0, OverridePrimCount * 3) : VertexData.AsSpan();
             
-            foreach (ref var vertex in VertexData!.AsSpan()) {
+            foreach (ref var vertex in span) {
                 x = Math.Min(x, vertex.Position.X);
                 y = Math.Min(y, vertex.Position.Y);
                 x1 = Math.Max(x1, vertex.Position.X);
@@ -66,8 +68,7 @@ public abstract class Sprite : DisplayContainer {
             //render.ssbo.subdata(State)
         }*/
         
-        // TODO: anchor is dead reference, its built into position already
-        var vertexMatrix = new SpriteVertexMatrix(State.Scale, 0f, State.Position, new Vector2(0, 0));
+        var vertexMatrix = new SpriteVertexMatrix(State.Scale, 0f, State.Position, -AnchorOffset);
         var instance = new SpriteInstanceData(vertexMatrix, Color, ColorSecondary, new Vector2((float) TextureId, State.Alpha), State.Scissor, Extra1, Extra2, ColorTransformation);
 
         var vCount = OverridePrimCount > 0 ? OverridePrimCount * 3 : VertexData.Length;

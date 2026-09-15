@@ -16,7 +16,7 @@ using OpenTK.Platform;
 
 namespace AlloyClient.Game.Components;
 
-public sealed class UserInput : Sprite {
+public sealed class UserInput : DisplayObject {
 
     private static readonly ILogger Logger = ILogger.CreateLogger(nameof(UserInput));
 

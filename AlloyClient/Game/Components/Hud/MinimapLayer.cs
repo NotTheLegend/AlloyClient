@@ -18,9 +18,7 @@ public sealed class MinimapLayer : Sprite {
     private static Entity _focus;
 
     public MinimapLayer() {
-        //todo:SetBaseDimensions(Minimap.MapSize, Minimap.MapSize);
         TextureId = TextureType.Color;
-        EnableClipRect = true;
         
         AddEventListener(Event.EnterFrame, OnFrameEnter);
 

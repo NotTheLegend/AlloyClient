@@ -4,38 +4,26 @@ namespace Alloy.UiLib.Core;
 
 public readonly record struct UiAnchor { // enums dont extend IEquatable, hence this hack
 
-    private readonly byte _value;
+    internal readonly byte Value;
 
     private UiAnchor(byte value) {
-        _value = value;
+        Value = value;
     }
 
     public static implicit operator UiAnchor(byte type) => new(type);
 
-    public static implicit operator byte(UiAnchor anchor) => anchor._value;
+    public static implicit operator byte(UiAnchor anchor) => anchor.Value;
 
-    public static readonly UiAnchor LeftTop = 0;
-    public static readonly UiAnchor MiddleTop = 1;
-    public static readonly UiAnchor RightTop = 2;
-    public static readonly UiAnchor MiddleLeft = 3;
-    public static readonly UiAnchor Middle = 4;
-    public static readonly UiAnchor MiddleRight = 5;
-    public static readonly UiAnchor LeftBottom = 6;
-    public static readonly UiAnchor MiddleBottom = 7;
-    public static readonly UiAnchor RightBottom = 8;
-
-    internal (int, int) GetOffset(int w, int h) => _value switch {
-        0 => (0, 0),
-        1 => (-w / 2, 0),
-        2 => (-w, 0),
-        3 => (0, -h / 2),
-        4 => (-w / 2, -h / 2),
-        5 => (-w, -h / 2),
-        6 => (0, -h),
-        7 => (-w / 2, -h),
-        8 => (-w, -h),
-        _ => (0, 0)
-    };
+    public static readonly UiAnchor Default = 0;
+    public static readonly UiAnchor TopLeft = 1;
+    public static readonly UiAnchor TopMiddle = 2;
+    public static readonly UiAnchor TopRight = 3;
+    public static readonly UiAnchor MiddleLeft = 4;
+    public static readonly UiAnchor Middle = 5;
+    public static readonly UiAnchor MiddleRight = 6;
+    public static readonly UiAnchor BottomLeft = 7;
+    public static readonly UiAnchor BottomMiddle = 8;
+    public static readonly UiAnchor BottomRight = 9;
 }
 
 public enum TextureType : byte {

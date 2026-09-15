@@ -17,7 +17,7 @@ public struct TextButtonConfig {
     public float Alpha = 1.0f;
     public uint OutlineColor = 0x0;
     public float OutlineThickness = 0;
-    public UiAnchor Anchor = UiAnchor.LeftTop;
+    public UiAnchor Anchor = UiAnchor.Default;
 
     public TextButtonConfig() { }
 }

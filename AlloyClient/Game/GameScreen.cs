@@ -84,7 +84,7 @@ public sealed class GameScreen : Screen {
         _hud.Scale = Stage.ScreenScale;
 
         _chat.X = 0;
-        _chat.Y = height;
+        _chat.Y = height - 0;
         _chat.Scale = Stage.ScreenScale;
 
         _debugStats.Scale = Stage.ScreenScale;

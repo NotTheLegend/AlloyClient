@@ -6,14 +6,10 @@ using OpenTK.Mathematics;
 namespace Alloy.UiLib.Core;
 
 public abstract class DisplayContainer : DisplayObject {
-    
-    
-    public bool EnableClipRect; // TODO
-    
 
     public int NumChildren => _children.Count;
 
-    public bool MouseChildren = false;
+    public bool MouseChildren = true;
     
     private readonly List<DisplayObject> _children = [];
 
@@ -183,11 +179,11 @@ public abstract class DisplayContainer : DisplayObject {
         if (index > _children.Count) throw new Exception("Index can not be greater than number of children");
     }
 
-    internal sealed override void Update(bool dirty, ObjectState state) {
-        base.Update(dirty, state);
+    internal sealed override void Update(bool dirty, ObjectState state, DisplayState displayState) {
+        base.Update(dirty, state, displayState);
 
         foreach (var child in _children) {
-            child.Update(DirtyInstance, State);
+            child.Update(DirtyInstance, State, DisplayState);
         }
     }
 
@@ -210,4 +206,6 @@ public abstract class DisplayContainer : DisplayObject {
         
         return false;
     }
+
+    private protected sealed override DisplayState GetDisplayState() => new(Visible, MouseChildren);
 }

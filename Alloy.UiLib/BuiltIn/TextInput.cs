@@ -24,7 +24,7 @@ public struct InputConfig {
     public bool ClickToActivate = true;
     public Action OnFocus = null;
     public Action OnUnfocus = null;
-    public UiAnchor Anchor = UiAnchor.LeftTop;
+    public UiAnchor Anchor = UiAnchor.Default;
     
     public Action OnChange = null;
     
@@ -130,7 +130,7 @@ public sealed class TextInput : Sprite {
         _startIndex = start;
         OverridePrimCount = 2;
         
-        var idx = 4;
+        var idx = 1;
         var len = _inputText.Length;
         var caret = false;
 
@@ -174,7 +174,7 @@ public sealed class TextInput : Sprite {
                     }
 
                     zero.X += glyph.Advance * _fontScale;
-                    idx += 4;
+                    idx += 1;
                     OverridePrimCount += 2;
                     continue;
             }
@@ -340,6 +340,7 @@ public sealed class TextInput : Sprite {
         _isCaretActive = true;
         _caret.Visible = true;
         _caretIndex = -1;
+        _lastCaretUpdateTime = 0d;
         _onFocus?.Invoke();
 
         ClearIfDefault();

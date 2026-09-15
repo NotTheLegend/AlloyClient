@@ -6,6 +6,7 @@ using AlloyClient.Utils;
 using Alloy.Common;
 using Alloy.Engine;
 using Alloy.UiLib.Core;
+using Alloy.UiLib.Utils;
 
 namespace AlloyClient.Screens.Components.CharacterSelection;
 
@@ -33,11 +34,9 @@ public class ClassInfo : Container {
         AddChild(_background);
         
         var scrollContainer = new Container(new ContainerConfig {
-            Width = 200,
-            Height = _background.Height,
             X = 600,
-            EnableClip = true
         });
+        scrollContainer.Scissor = new ScissorRect(0, 0, 200, _background.Height);
         _background.AddChild(scrollContainer);
     }
     

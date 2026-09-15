@@ -17,7 +17,7 @@ public class TitleScreen : TitleScreenBase {
     public const int PlayFontSize = 57;
     public const int FontSize = 35;
     
-    private readonly Container _container = new(new ContainerConfig { Anchor = UiAnchor.MiddleTop });
+    private readonly Container _container = new(new ContainerConfig { Anchor = UiAnchor.TopMiddle });
 
     private readonly int _center;
     
@@ -56,9 +56,6 @@ public class TitleScreen : TitleScreenBase {
 
     protected override void OnResize(ResizeEvent args) {
         _container.Scale = Stage.ScreenScale;
-        
-        Console.WriteLine(_container.Scale);
-        
         _container.X = Stage.StageWidth / 2 - _center;
         _container.Y = Stage.StageHeight - (int)(90 * Stage.ScreenScale.Y);
         base.OnResize(args);

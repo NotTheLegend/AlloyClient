@@ -6,6 +6,7 @@ using AlloyClient.Ui.Components.Buttons;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Extra;
+using Alloy.UiLib.Utils;
 
 namespace AlloyClient.Screens;
 
@@ -52,7 +53,7 @@ public class ServersTitleScreen : TitleScreenBase {
         #region Selected Server
         
         var selectedServerText = new SimpleText(new TextConfig() {
-            Anchor = UiAnchor.MiddleTop,
+            Anchor = UiAnchor.TopMiddle,
             Y = lineDivider.Y + lineDivider.Height + 10,
             X = Settings.DefaultScreenWidth / 2,
             Text = "Selected Server:",
@@ -61,9 +62,7 @@ public class ServersTitleScreen : TitleScreenBase {
         AddChild(selectedServerText);
 
         _selectedServerContainer = new Container(new ContainerConfig() {
-            Anchor = UiAnchor.MiddleTop,
-            Width = Settings.DefaultScreenWidth,
-            Height = 84,
+            Anchor = UiAnchor.TopMiddle,
             X = Settings.DefaultScreenWidth / 2,
             Y = selectedServerText.Y + selectedServerText.Height,
         });
@@ -74,19 +73,17 @@ public class ServersTitleScreen : TitleScreenBase {
         #region Server List
         
         _serverListContainer = new Container(new ContainerConfig() {
-            Anchor = UiAnchor.MiddleTop,
-            Width = Settings.DefaultScreenWidth / 2 + 20,
-            // Ugly way need to find a better solution for that
-            Height = Settings.DefaultScreenHeight 
-                     - 100 // Title
-                     - lineDivider.Height 
-                     - 22 // Selected Server Text
-                     - _selectedServerContainer.Height 
-                     - 100, // Bottom Menu Bar
+            Anchor = UiAnchor.TopMiddle,
             X = Settings.DefaultScreenWidth / 2,
             Y = _selectedServerContainer.Y + _selectedServerContainer.Height,
-            EnableClip = true
         });
+        _serverListContainer.Scissor = new ScissorRect(0, 0, Settings.DefaultScreenWidth / 2 + 20, Settings.DefaultScreenHeight 
+                                                                                                   - 100 // Title
+                                                                                                   - lineDivider.Height 
+                                                                                                   - 22 // Selected Server Text
+                                                                                                   - _selectedServerContainer.Height 
+                                                                                                   - 100 // Bottom Menu Bar
+            );
         AddChild(_serverListContainer);
         
         #endregion

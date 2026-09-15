@@ -24,19 +24,19 @@ public class Dialog : UiElement {
         Y = Settings.DefaultScreenHeight / 2;
         Anchor = UiAnchor.Middle;
 
-        var boxConfig = new ColorRectConfig { Width = BoxWidth, Height = 75, Color = 0x1C1C1C, Alpha = 0.8f, Anchor = UiAnchor.LeftTop};
+        var boxConfig = new ColorRectConfig { Width = BoxWidth, Height = 75, Color = 0x1C1C1C, Alpha = 0.8f, Anchor = UiAnchor.Default};
         var box = new ColorRect(boxConfig);
         AddChild(box);
 
-        var titleConfig = new TextConfig { Text = title, FontSize = 24, FontType = FontType.Bold, Color = 0xFFFFFF, Anchor = UiAnchor.MiddleTop};
+        var titleConfig = new TextConfig { Text = title, FontSize = 24, FontType = FontType.Bold, Color = 0xFFFFFF, Anchor = UiAnchor.TopMiddle};
         var titleText = new SimpleText(titleConfig);
         AddChild(titleText);
 
-        var messageConfig = new TextConfig {Text = message, FontSize = 20, Color = 0xFFFFFF, Anchor = UiAnchor.MiddleTop};
+        var messageConfig = new TextConfig {Text = message, FontSize = 20, Color = 0xFFFFFF, Anchor = UiAnchor.TopMiddle};
         var messageText = new SimpleText(messageConfig);
         box.AddChild(messageText);
 
-        var confirmConfig = new TextButtonConfig { Text = confirm.Text, FontSize = 22, OnClicked = () => { confirm.Callback?.Invoke(); State = DialogState.Closed; }, Anchor = UiAnchor.MiddleBottom};
+        var confirmConfig = new TextButtonConfig { Text = confirm.Text, FontSize = 22, OnClicked = () => { confirm.Callback?.Invoke(); State = DialogState.Closed; }, Anchor = UiAnchor.BottomMiddle};
         var confirmButton = new TextButton(confirmConfig);
         box.AddChild(confirmButton);
 
@@ -53,7 +53,7 @@ public class Dialog : UiElement {
         if (cancel != null) {
             confirmButton.X = 3 * box.Width / 4;
 
-            var cancelConfig = new TextButtonConfig { Text = cancel.Text, FontSize = 22, OnClicked = () => {cancel.Callback?.Invoke(); State = DialogState.Closed; }, Anchor = UiAnchor.MiddleBottom };
+            var cancelConfig = new TextButtonConfig { Text = cancel.Text, FontSize = 22, OnClicked = () => {cancel.Callback?.Invoke(); State = DialogState.Closed; }, Anchor = UiAnchor.BottomMiddle };
             var cancelButton = new TextButton(cancelConfig);
             box.AddChild(cancelButton);
 

@@ -11,6 +11,7 @@ using AlloyClient.Ui.Components.Scrollbars;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Extra;
+using Alloy.UiLib.Utils;
 using AlloyClient.Ui.Components.Dialogs;
 using AlloyClient.Ui.Components.Graphics;
 using AlloyClient.Utils;
@@ -118,7 +119,7 @@ public class CharacterListScreen : TitleScreenBase {
             Y = 88,
             Width = 16,
             Height = 16,
-            Anchor = UiAnchor.RightBottom,
+            Anchor = UiAnchor.BottomRight,
         });
         AddChild(goldIcon);
 
@@ -129,7 +130,7 @@ public class CharacterListScreen : TitleScreenBase {
             X = goldIcon.X - goldIcon.Width - 5,
             Y = 93,
             Color = 0xFFFFFF,
-            Anchor = UiAnchor.RightBottom,
+            Anchor = UiAnchor.BottomRight,
         });
         AddChild(goldText);
 
@@ -139,7 +140,7 @@ public class CharacterListScreen : TitleScreenBase {
             Y = 88,
             Width = 16,
             Height = 16,
-            Anchor = UiAnchor.RightBottom,
+            Anchor = UiAnchor.BottomRight,
         });
         AddChild(fameIcon);
 
@@ -150,7 +151,7 @@ public class CharacterListScreen : TitleScreenBase {
             X = fameIcon.X - fameIcon.Width - 5,
             Y = 93,
             Color = 0xFFFFFF,
-            Anchor = UiAnchor.RightBottom,
+            Anchor = UiAnchor.BottomRight,
         });
         AddChild(fameText);
 
@@ -161,11 +162,9 @@ public class CharacterListScreen : TitleScreenBase {
         var containerY = lineDivider.Y + lineDivider.Height;
         var containerHeight = Settings.DefaultScreenHeight - containerY - 80;
         _scrollContainer = new Container(new ContainerConfig {
-            Y = lineDivider.Y + lineDivider.Height,
-            Width = Settings.DefaultScreenWidth,
-            Height = containerHeight,
-            EnableClip = true
+            Y = lineDivider.Y + lineDivider.Height
         });
+        _scrollContainer.Scissor = new ScissorRect(0, 0, Settings.DefaultScreenWidth, containerHeight);
         AddChild(_scrollContainer);
 
         _characterListContainer = new Container();
@@ -250,8 +249,9 @@ public class CharacterListScreen : TitleScreenBase {
                     X = baseX,
                     Y = baseY
                 };
-                charRect.EnableClipRect = true;
+
                 charRect.Initialize(CharacterRectType.Character, character);
+                charRect.Scissor = new ScissorRect(0, 0, charRect.Width, charRect.Height);
                 _characterListContainer.AddChild(charRect);
                 
                 _characterListRects.Add(charRect);

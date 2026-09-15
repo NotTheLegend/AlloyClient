@@ -5,12 +5,11 @@ using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Extra;
 using Alloy.UiLib.Signals;
-using Alloy.Common;
 using Alloy.Common.Collections;
 
 namespace AlloyClient.Game.Components.Hud.Chat;
 
-public class ChatBox : Sprite {
+public class ChatBox : DisplayContainer {
     public const int MaxWidth = Settings.DefaultScreenWidth / 2;
     private const int MaxHeight = Settings.DefaultScreenHeight / 2 - 2;
     private const int MaxLines = 7;
@@ -37,17 +36,14 @@ public class ChatBox : Sprite {
 
     public ChatBox() {
         Y = Settings.DefaultScreenHeight;
-        Anchor = UiAnchor.LeftBottom;
+        Anchor = UiAnchor.BottomLeft;
 
-        _chatContainer = new Container(new ContainerConfig {
-            Width = MaxWidth,
-            Height = MaxHeight,
-            EnableClip = false
-        });
+
+        _chatContainer = new Container();
+        _chatContainer.Anchor = UiAnchor.BottomLeft;
         AddChild(_chatContainer);
         
         _chatInput = new TextInput(new InputConfig {
-            Y = MaxHeight,
             FontSize = 18,
             FontType = FontType.Bold,
             OutlineThickness = 3,

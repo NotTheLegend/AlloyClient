@@ -16,7 +16,7 @@ public struct TextConfig {
     public uint Color = 0xFFFFFF;
     public uint OutlineColor = 0x0;
     public float Alpha = 1.0f;
-    public UiAnchor Anchor = UiAnchor.LeftTop;
+    public UiAnchor Anchor = UiAnchor.Default;
 
     public TextConfig() { }
 }
@@ -61,6 +61,7 @@ public sealed class SimpleText : Sprite {
     }
 
     private void FillData() {
+        ResizeBackBuffer();
         var scale = _fontScale;
         var zero = new Vector2(0f, _font.Ascender * scale);
         var lastSpaceIndex = 0;

@@ -34,7 +34,7 @@ public class CharacterStatusText : Sprite {
         AddChild(new SimpleText(txtConfig));
 
         Visible = false;
-        Anchor = UiAnchor.MiddleBottom;
+        Anchor = UiAnchor.BottomMiddle;
 }
     
     public bool Update(in GameTime gameTime, in Camera camera) {

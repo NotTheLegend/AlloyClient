@@ -1,6 +1,7 @@
 ﻿using AlloyClient.Ui.Components.Elements;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
+using Alloy.UiLib.Utils;
 
 namespace AlloyClient.Game.Components.Hud.Chat;
 
@@ -49,7 +50,9 @@ public class ChatBoxLine : Container {
 
     private const int LineHeight = 18;
 
-    public ChatBoxLine(ChatBoxLineData data) : base(new ContainerConfig { Width = ChatBox.MaxWidth, Height = LineHeight }) {
+    public ChatBoxLine(ChatBoxLineData data) {
+        Scissor = new ScissorRect(0, 0, ChatBox.MaxWidth, LineHeight);
+        
         var x = 0;
 
         if (TryGetStar(LineHeight, data, out var fameStar)) {

@@ -36,7 +36,7 @@ public class PortalPanel : Panel {
             FontSize = 22,
             FontType = FontType.Bold,
             OutlineColor = 0xFFFFFF,
-            Anchor = UiAnchor.MiddleTop
+            Anchor = UiAnchor.TopMiddle
         });
         AddChild(name);
         
@@ -48,7 +48,7 @@ public class PortalPanel : Panel {
             FontType = FontType.Bold,
             OutlineColor = 0xFF0000,
             Color = 0xFF0000,
-            Anchor = UiAnchor.MiddleTop
+            Anchor = UiAnchor.TopMiddle
         });
         _fullText.Y = name.Height + 10;
 
@@ -59,7 +59,7 @@ public class PortalPanel : Panel {
             FontType = FontType.Bold,
             X = Width / 2,
             Y = name.Height + 50,
-            Anchor = UiAnchor.MiddleTop
+            Anchor = UiAnchor.TopMiddle
         });
         AddChild(_enterButton);
         

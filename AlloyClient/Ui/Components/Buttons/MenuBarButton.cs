@@ -11,11 +11,23 @@ public sealed class MenuBarButton : TextButton {
 
     public MenuBarButton(string text, float size, Action callback, bool pulse = false) : base (new TextButtonConfig { Text = text, FontSize = size, OnClicked = callback, OutlineThickness = 4 }) {
         _pulse = pulse;
-        AddEventListener(Event.EnterFrame, OnFrameEnter);
+        AddEventListener(Event.AddedToStage, AddedToStage);
+        AddEventListener(Event.RemovedFromStage, RemovedFromStage);
     }
 
     public MenuBarButton(TextButtonConfig config, bool pulse = false) : base(config) {
         _pulse = pulse;
+        
+        AddEventListener(Event.AddedToStage, AddedToStage);
+        AddEventListener(Event.RemovedFromStage, RemovedFromStage);
+    }
+
+    private void AddedToStage() {
+        AddEventListener(Event.EnterFrame, OnFrameEnter);
+    }
+
+    private void RemovedFromStage() {
+        RemoveEventListener(Event.EnterFrame, OnFrameEnter);
     }
 
     private void OnFrameEnter() {

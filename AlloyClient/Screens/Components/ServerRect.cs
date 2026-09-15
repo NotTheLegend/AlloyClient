@@ -9,9 +9,7 @@ public class ServerRect : Container {
     
     #region Config
     private static readonly ContainerConfig Config = new ContainerConfig() {
-        Anchor = UiAnchor.MiddleTop, 
-        Width = Settings.DefaultScreenWidth / 4, 
-        Height = 64
+        Anchor = UiAnchor.TopMiddle
     };
     private const float CrowdedServerThreshold = 0.75f;
     private const int FontSize = 22;

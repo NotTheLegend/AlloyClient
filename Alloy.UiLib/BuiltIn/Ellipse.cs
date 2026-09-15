@@ -13,7 +13,7 @@ public struct EllipseConfig {
     public uint Color = 0x000000;
     public uint OutlineColor = 0x000000;
     public float Alpha = 1.0f;
-    public UiAnchor Anchor = UiAnchor.LeftTop;
+    public UiAnchor Anchor = UiAnchor.Default;
 
     public bool MouseEnabled = false;
 

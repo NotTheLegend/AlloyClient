@@ -41,11 +41,11 @@ public class LoginContainer : Overlay {
         var registerButton = new TextButton(registerConfig);
         AddChild(registerButton);
         
-        var loginConfig = new TextButtonConfig { Text = "Log in", FontSize = 28, OnClicked = OnLogin, FontType = FontType.Normal, X = Width - 25, Y = Height - 25, Anchor = UiAnchor.RightBottom };
+        var loginConfig = new TextButtonConfig { Text = "Log in", FontSize = 28, OnClicked = OnLogin, FontType = FontType.Normal, X = Width - 25, Y = Height - 25, Anchor = UiAnchor.BottomRight };
         var loginButton = new TextButton(loginConfig);
         AddChild(loginButton);
         
-        var cancelConfig = new TextButtonConfig { Text = "Cancel", FontSize = 28, OnClicked = CloseOverlay, FontType = FontType.Normal, X = loginButton.X - loginButton.Width - 35, Y = Height - 25, Anchor = UiAnchor.RightBottom };
+        var cancelConfig = new TextButtonConfig { Text = "Cancel", FontSize = 28, OnClicked = CloseOverlay, FontType = FontType.Normal, X = loginButton.X - loginButton.Width - 35, Y = Height - 25, Anchor = UiAnchor.BottomRight };
         var cancelButton = new TextButton(cancelConfig);
         AddChild(cancelButton);
     }

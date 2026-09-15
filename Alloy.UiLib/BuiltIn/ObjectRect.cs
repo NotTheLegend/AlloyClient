@@ -16,7 +16,7 @@ public struct ObjectRectConfig {
     public bool OutlineEnabled = true;
     public bool GlowEnabled = true;
     
-    public UiAnchor Anchor = UiAnchor.LeftTop;
+    public UiAnchor Anchor = UiAnchor.Default;
 
     public bool MouseEnabled = false;
 

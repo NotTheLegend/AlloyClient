@@ -34,6 +34,7 @@ public sealed class Stage : DisplayContainer {
     public new bool MouseChildren => base.MouseChildren;
     public new bool MouseEnabled => base.MouseEnabled;
     public new ScissorRect Scissor => base.Scissor;
+    public new CollisionType HitboxType => base.HitboxType;
     
     #endregion
     
@@ -54,16 +55,17 @@ public sealed class Stage : DisplayContainer {
     public MouseState Mouse => _mouse;
     private MouseState _mouse;
 
-    internal Sprite CurrentHighestSprite;
-    private Sprite _lastHighestSprite;
+    internal DisplayObject CurrentHighestSprite;
+    private DisplayObject _lastHighestSprite;
 
-    private Sprite _leftClickTarget;
-    private Sprite _middleClickTarget;
-    private Sprite _rightClickTarget;
+    private DisplayObject _leftClickTarget;
+    private DisplayObject _middleClickTarget;
+    private DisplayObject _rightClickTarget;
 
     internal Stage() {
         base.MouseEnabled = true;
         base.MouseChildren = true;
+        base.HitboxType = CollisionType.Custom;
         SetStageReference(this);
     }
 
@@ -88,8 +90,10 @@ public sealed class Stage : DisplayContainer {
         
         BroadcastEvent(_cachedEnterFrame);
         HandleFinishedTasks();
-        Update(false, ObjectState.Default);
+        Update(false, ObjectState.Default, DisplayState.Default);
     }
+
+    protected override bool CustomHitbox(Vector2i pos) => true;
 
     public new void Draw() {
         SpriteRender.StartDraw();

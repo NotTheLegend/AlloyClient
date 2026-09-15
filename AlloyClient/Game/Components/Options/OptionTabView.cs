@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AlloyClient.Game.Components.Options.OptionTypes;
 using AlloyClient.Ui.Components.Scrollbars;
 using Alloy.UiLib.BuiltIn;
+using Alloy.UiLib.Utils;
 using OpenTK.Platform;
 
 namespace AlloyClient.Game.Components.Options;
@@ -19,7 +20,8 @@ public class OptionTabView : Container {
     private readonly List<Option> _options = [];
     private readonly VerticalScrollBar _scrollbar;
     
-    public OptionTabView(string name) : base(new ContainerConfig { Width = 1280, Height = 507, EnableClip = true }) {
+    public OptionTabView(string name) {
+        Scissor = new ScissorRect(0, 0, 1280, 507);
         _container = new Container();
         AddChild(_container);
 

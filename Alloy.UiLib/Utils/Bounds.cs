@@ -1,4 +1,5 @@
 ﻿using System;
+using Alloy.UiLib.Core;
 using OpenTK.Mathematics;
 
 namespace Alloy.UiLib.Utils;
@@ -14,6 +15,10 @@ internal record struct Bounds {
 
     public int Width => MaxX - MinX;
     public int Height => MaxY - MinY;
+
+    public int Area => Width * Height;
+
+    public bool HasArea => Area != 0;
 
     public Bounds(int minX, int minY, int maxX, int maxY) {
         MinX = minX;
@@ -44,6 +49,24 @@ internal record struct Bounds {
         MaxX += offset.X;
         MaxY += offset.Y;
         return this;
+    }
+
+    public Vector2i Anchor(UiAnchor anchor) {
+        var midX = (MinX + MaxX) / 2;
+        var midY = (MinY + MaxY) / 2;
+        return anchor.Value switch {
+            0 /* Default      */ => (0, 0),
+            1 /* TopLeft      */ => (MinX, MinY),
+            2 /* TopMiddle    */ => (midX, MinY),
+            3 /* TopRight     */ => (MaxX, MinY),
+            4 /* MiddleLeft   */ => (MinX, midY),
+            5 /* Middle       */ => (midX, midY),
+            6 /* MiddleRight  */ => (MaxX, midY),
+            7 /* BottomLeft   */ => (MinX, MaxY),
+            8 /* BottomMiddle */ => (midX, MaxY),
+            9 /* BottomRight  */ => (MaxX, MaxY),
+            _ /* Missing      */ => (0, 0)
+        };
     }
 
     public static Bounds Merge(Bounds boundsLeft, Bounds boundsRight) => boundsLeft.Merge(boundsRight);

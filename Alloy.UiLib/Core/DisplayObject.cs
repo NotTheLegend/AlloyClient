@@ -8,6 +8,7 @@ using OpenTK.Mathematics;
 namespace Alloy.UiLib.Core;
 
 internal struct ObjectState(Vector2i pos, Vector2 scale, float alpha, ScissorRect scissor) {
+    // !! ONLY ADD DATA THAT ENDS UP IN SHADERS !!
 
     public static readonly ObjectState Default = new(Vector2i.Zero, Vector2.One, 1f, ScissorRect.Default);
 
@@ -17,15 +18,27 @@ internal struct ObjectState(Vector2i pos, Vector2 scale, float alpha, ScissorRec
     public ScissorRect Scissor = scissor;
 
     public static ObjectState operator +(ObjectState state, in ObjectState child) {
-        state.Position += (child.Position * state.Scale).AsInt();
+        state.Position = (child.Position * state.Scale).AsInt() + state.Position;
         state.Scale *= child.Scale;
         state.Alpha *= child.Alpha;
-
 
         if (child.Scissor != ScissorRect.Default) {
             state.Scissor += child.Scissor.ToGlobal(state.Position, state.Scale);
         }
         
+        return state;
+    }
+}
+
+internal struct DisplayState(bool visible, bool mouseChildren) {
+    public static readonly DisplayState Default = new(true, true);
+
+    public bool Visible = visible;
+    public bool MouseChildren = mouseChildren;
+
+    public static DisplayState operator +(DisplayState state, in DisplayState child) {
+        state.Visible = state.Visible && child.Visible;
+        state.MouseChildren = state.MouseChildren && child.MouseChildren;
         return state;
     }
 }
@@ -45,9 +58,6 @@ public abstract class DisplayObject : EventManager {
 
         field = value;
         DirtyInstance = true;
-         
-        var (width, height) = Anchor.GetOffset(ContentSizeWidth, ContentSizeHeight);
-        _trueLocalPosition = new Vector2i((int)(X + width * ScaleX), (int)(Y + height * ScaleY));
 
         DoBoundsUpdate();
     }
@@ -81,13 +91,13 @@ public abstract class DisplayObject : EventManager {
     
     public float Rotation { get; set => IsInstanceChange(ref field, value); }
 
-    public UiAnchor Anchor { get; set => IsBoundsChange(ref field, value); } = UiAnchor.LeftTop;
+    public UiAnchor Anchor { get; set => IsBoundsChange(ref field, value); } = UiAnchor.Default;
     
     public bool Visible { get; set => IsInstanceChange(ref field, value); } = true;
     
     public ColorTransform ColorTransformation { get; set => IsInstanceChange(ref field, value); } = ColorTransform.Default;
 
-    public bool MouseEnabled = false;
+    public bool MouseEnabled = true;
     
     public DisplayContainer Parent { get; internal set; }
     
@@ -95,11 +105,15 @@ public abstract class DisplayObject : EventManager {
 
     protected CollisionType HitboxType = CollisionType.Square;
 
-    protected ScissorRect Scissor = ScissorRect.Default;
+    public ScissorRect Scissor = ScissorRect.Default;
     
     // ======================
-    
+
     private protected Bounds ContentBounds = Bounds.Zero;
+
+    private protected Vector2i AnchorOffset = Vector2i.Zero;
+
+    private protected bool CanInteract = true;
     
     private int ContentSizeWidth => ContentBounds.Width;
     
@@ -107,11 +121,10 @@ public abstract class DisplayObject : EventManager {
 
     private protected bool DirtyInstance; // Unused, keep for possible future implementation
     private protected ObjectState State;
+    private protected DisplayState DisplayState;
 
     private bool _isDragging;
-
-    private Vector2i _trueLocalPosition = Vector2i.Zero;
-    
+    private Vector2i _dragOffset;
     
     internal bool TweenActive; // TODO: remove & rework tween functionality
 
@@ -135,20 +148,31 @@ public abstract class DisplayObject : EventManager {
 
     internal Bounds GetContentBounds() => Bounds.Scale(ContentBounds, Scale).Translate(GetPositionWithAnchor());
 
+    private Vector2i GetSelfPosition() {
+        var (width, height) = AnchorOffset = ContentBounds.Anchor(Anchor);
+        return new Vector2i((int)(X - width * ScaleX), (int)(Y - height * ScaleY));
+    }
+
     // move tooltip mode out into client rather than built in feature
-    private Vector2i GetPositionWithAnchor() => _isDragging ? Stage.Mouse.GetMousePosition() : _trueLocalPosition;
+    private Vector2i GetPositionWithAnchor() => _isDragging ? Stage.Mouse.GetMousePosition() - _dragOffset : GetSelfPosition();
 
     internal virtual void SetStageReference(Stage stage) => Stage = stage;
+    
+    private protected virtual DisplayState GetDisplayState() => new(Visible, false);
 
-    internal virtual void Update(bool dirty, ObjectState state) {
+    internal virtual void Update(bool dirty, ObjectState state, DisplayState displayState) {
         DirtyInstance = dirty || DirtyInstance;
-        var currentState = new ObjectState(GetPositionWithAnchor(), Scale, Alpha, Scissor);
-        State = state + currentState;
+        State = state + new ObjectState(GetSelfPosition(), Scale, Alpha, Scissor);
+        DisplayState = displayState + GetDisplayState();
+        CanInteract = DisplayState.Visible && displayState.MouseChildren && MouseEnabled;
+
+        if (_isDragging) { // override position if dragging
+            State.Position = Stage.Mouse.GetMousePosition() - (_dragOffset * Scale).AsInt();
+        }
         
-        //if (FullBoundsCheck(Stage.Mouse.GetMousePosition()))
-        //    Logger.LogInformation($"{GetType().Name} In Bounds ({Stage.Mouse.GetMousePosition()})");
-        
-        
+        if (CanInteract && FullBoundsCheck(Stage.Mouse.GetMousePosition())) {
+            Stage.CurrentHighestSprite = this;
+        }
     }
 
     internal virtual void Draw() { }
@@ -156,12 +180,12 @@ public abstract class DisplayObject : EventManager {
 
     private Vector2i GetLocalPosition(Vector2i position) => ((position - State.Position) / State.Scale).AsInt();
 
-    internal bool FullBoundsCheck(Vector2i position) {
+    private bool FullBoundsCheck(Vector2i position) {
         if (!State.Scissor.Contains(position)) {
             return false;
         }
         
-        var hasBounds = ContentBounds.Width == 0 || ContentBounds.Height == 0; // guard for the one pixel hole in empty bounds
+        var hasBounds = ContentBounds.Area == 0; // guard for the one pixel hole in empty bounds
         var firstCheck = IsInBounds(GetLocalPosition(position), CollisionType.SimpleSquare);
 
         if (!firstCheck) { // Break early if rough bounds fails
@@ -171,7 +195,7 @@ public abstract class DisplayObject : EventManager {
         if (hasBounds && HitboxType == CollisionType.SimpleSquare) { // SimpleSquare doesn't recursive check children
             return true;
         }
-
+        
         return IsInBounds(position);
     }
 
@@ -180,13 +204,12 @@ public abstract class DisplayObject : EventManager {
             return false;
         }
 
-        if (ContentBounds.Width == 0 || ContentBounds.Height == 0) { // guard for the one pixel hole in empty bounds
+        if (ContentBounds.Area == 0) { // guard for the one pixel hole in empty bounds
             return false;
         }
 
         return IsInBounds(GetLocalPosition(position), HitboxType);
     }
-
 
     private bool IsInBounds(Vector2i position, CollisionType type) => type switch {
         CollisionType.SimpleSquare => ContentBounds.Contains(position),

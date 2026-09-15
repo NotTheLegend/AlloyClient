@@ -6,6 +6,7 @@ using AlloyClient.Game;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Extra;
+using Alloy.UiLib.Utils;
 using AlloyClient.Ui.Components.Buttons;
 using AlloyClient.Utils;
 
@@ -30,8 +31,8 @@ public sealed class CharacterRect : Container
     private int _statsMaxed;
     private int _baseFame;
 
-    public CharacterRect(CharacterListScreen characterListScreen) : base(new ContainerConfig { Width = 200, Height = 200, EnableClip = true })
-    {
+    public CharacterRect(CharacterListScreen characterListScreen) {
+        Scissor = new ScissorRect(0, 0, 200, 200);
         _characterListScreen = characterListScreen;
 
         var background = new ColorRect(new ColorRectConfig

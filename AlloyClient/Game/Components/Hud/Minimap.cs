@@ -6,6 +6,7 @@ using Alloy.UiLib.Rendering;
 using Alloy.UiLib.Signals;
 using AlloyClient.Utils;
 using Alloy.Common;
+using Alloy.UiLib.Utils;
 using AlloyClient.Ui;
 using AlloyClient.Ui.Components.Buttons;
 using OpenTK.Mathematics;
@@ -37,6 +38,7 @@ public sealed class Minimap : Sprite {
 
     public Minimap() {
         TextureId = TextureType.Minimap;
+        Scissor = new ScissorRect(0, 0, MapSize, MapSize);
 
         ResizeBackBuffer();
         FillData();
@@ -53,7 +55,7 @@ public sealed class Minimap : Sprite {
             Y = 0,
             Width = 24,
             Height = 24,
-            Anchor = UiAnchor.RightTop,
+            Anchor = UiAnchor.TopRight,
             OnClick = () => ZoomHandle(1)
         });
         AddChild(_zoomIn);
@@ -64,7 +66,7 @@ public sealed class Minimap : Sprite {
             Y = _zoomIn.Height + 4,
             Width = 24,
             Height = 24,
-            Anchor = UiAnchor.RightTop,
+            Anchor = UiAnchor.TopRight,
             OnClick = () => ZoomHandle(-1)
         });
         AddChild(_zoomOut);
@@ -144,7 +146,9 @@ public sealed class Minimap : Sprite {
         VertexData[0].UV = new Vector2(x1 / 4096, y1 / 4096);
         VertexData[1].UV = new Vector2(x2 / 4096, y1 / 4096);
         VertexData[2].UV = new Vector2(x2 / 4096, y2 / 4096);
-        VertexData[3].UV = new Vector2(x1 / 4096, y2 / 4096);
+        VertexData[3].UV = new Vector2(x1 / 4096, y1 / 4096);
+        VertexData[4].UV = new Vector2(x2 / 4096, y2 / 4096);
+        VertexData[5].UV = new Vector2(x1 / 4096, y2 / 4096);
         
         _layer.SetSize(size);
     }
