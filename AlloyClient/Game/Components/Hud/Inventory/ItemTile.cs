@@ -269,7 +269,7 @@ public sealed class ItemTile : Sprite {
     private void OnEndDrag(MouseEvent args) {
         _dragging = false;
         _sprite.RemoveEventListener(MouseEvent.LeftUp, OnEndDrag);
-        _sprite.EndDrag();
+        _sprite.StopDrag();
         _sprite.Scale = Vector2.One;
         GameScreen.GameSprite.RemoveChild(_sprite);
         AddChild(_sprite);

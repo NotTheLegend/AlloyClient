@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
 
 namespace Alloy.UiLib.Core;
@@ -190,6 +189,14 @@ public abstract class DisplayContainer : DisplayObject {
     internal override void Draw() {
         foreach (var child in _children) {
             child.Draw();
+        }
+    }
+
+    internal sealed override void HitTest(Vector2i position, ref DisplayObject dObject) {
+        base.HitTest(position, ref dObject);
+        
+        foreach (var child in _children) {
+            child.HitTest(position, ref dObject);
         }
     }
 

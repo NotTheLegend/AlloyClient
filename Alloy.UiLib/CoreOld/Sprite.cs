@@ -143,11 +143,6 @@ public partial class Sprite : DisplayContainer {
             (_anchorX, _anchorY) = (0, 0);//(tx < UiRender.Screen.X / 2 ? UiAnchor.LeftBottom : UiAnchor.RightBottom).GetOffset(ContentWidth, ContentHeight);
             tx += (int) (_anchorX * Parent._trueScale.X);
             ty += (int) (_anchorY * Parent._trueScale.Y);
-        } else if (_isDragging) {
-            var pos = Stage.Mouse.GetMousePosition();
-            (tx, ty) = pos.ToPair();
-            tx -= (int)(_dragOffset.X * Parent._trueScale.X);
-            ty -= (int)(_dragOffset.Y * Parent._trueScale.Y);
         } else {
             tx += X + (int)(_anchorX * ScaleX);
             ty += Y + (int)(_anchorY * ScaleY);
@@ -210,7 +205,7 @@ public partial class Sprite : DisplayContainer {
     private void Update() {
         InternalUpdate();
 
-        if (MouseEnabled && _canInteract && IsInBounds(Stage.Mouse.GetMousePosition())) {
+        if (MouseEnabled && _canInteract && true) {
             Stage.CurrentHighestSprite = this;
         }
 

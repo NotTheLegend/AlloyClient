@@ -2,6 +2,7 @@
 using Alloy.Common;
 using Alloy.UiLib.Rendering;
 using Alloy.UiLib.Utils;
+using Microsoft.Extensions.Logging;
 using OpenTK.Mathematics;
 
 namespace Alloy.UiLib.Core;
@@ -68,7 +69,7 @@ public abstract class Sprite : DisplayContainer {
             //render.ssbo.subdata(State)
         }*/
         
-        var vertexMatrix = new SpriteVertexMatrix(State.Scale, 0f, State.Position, -AnchorOffset);
+        var vertexMatrix = new SpriteVertexMatrix(State.Scale, State.Rotation, State.Position, -AnchorOffset);
         var instance = new SpriteInstanceData(vertexMatrix, Color, ColorSecondary, new Vector2((float) TextureId, State.Alpha), State.Scissor, Extra1, Extra2, ColorTransformation);
 
         var vCount = OverridePrimCount > 0 ? OverridePrimCount * 3 : VertexData.Length;
@@ -84,20 +85,12 @@ public abstract class Sprite : DisplayContainer {
     // do something with
     private Vector2 _info;
     
-    
-    
-    
-    public bool TooltipMode;
+    public bool TooltipMode; // remove
     public Color Color;
     public Color ColorSecondary;
     protected Vector4 Extra1;
     protected Vector4 Extra2;
-    
-    
-    public Vector2i GetRelativeMousePosition() => Vector2i.Zero;
-    public void StartDrag() { }
-    public void EndDrag() {}
-    public Sprite DropTarget;
+    // also rotation
     
     // migrate into vertex data
     public void SetColor(uint rgb, float alpha = 1f) {
@@ -117,6 +110,54 @@ public abstract class Sprite : DisplayContainer {
     }
     
     // =========================================
+
+    #region Dragging
+
+    private static Sprite _dragSprite; // move to stage?
+    
+    public DisplayObject DropTarget { get; private set; }
+
+    public void StartDrag() {
+        if (Stage is null) { // flash lets you start a drag with an object not on stage, i'm not going to copy that behavior
+            Logger.LogWarning("Aborting drag, sprite is not attached to stage!");
+            return;
+        }
+        
+        _dragSprite?.ClearDrag();
+        _dragOffset = GetRelativeMousePosition();
+        _dragSprite = this;
+        _isDragging = true;
+    }
+
+    private void ClearDrag() {
+        _isDragging = false;
+        _dragOffset = Vector2i.Zero;
+        _dragSprite = null;
+    }
+
+    public void StopDrag() {
+        if (_dragSprite is null || Stage is null) {
+            return;
+        }
+        
+        DropHitTest();
+        ClearDrag();
+    }
+
+    private void DropHitTest() {
+        DisplayObject target = null;
+
+        var (mouse, children) = (_dragSprite.MouseEnabled, _dragSprite.MouseChildren);
+        (_dragSprite.MouseEnabled, _dragSprite.MouseChildren) = (false, false); // remove self from HitTest
+        
+        Stage.HitTest(Stage.Mouse.GetMousePosition(), ref target);
+        
+        (_dragSprite.MouseEnabled, _dragSprite.MouseChildren) = (mouse, children);
+        
+        DropTarget = target;
+    }
+
+    #endregion
 
     protected void EnsureBufferCapacity(int length) {
         if (length % 3 != 0) {

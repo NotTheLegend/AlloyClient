@@ -7,21 +7,22 @@ using OpenTK.Mathematics;
 
 namespace Alloy.UiLib.Core;
 
-internal struct ObjectState(Vector2i pos, Vector2 scale, float alpha, ScissorRect scissor) {
+internal struct ObjectState(Vector2i pos, Vector2 scale, float alpha, float rotation, ScissorRect scissor) {
     // !! ONLY ADD DATA THAT ENDS UP IN SHADERS !!
 
-    public static readonly ObjectState Default = new(Vector2i.Zero, Vector2.One, 1f, ScissorRect.Default);
+    public static readonly ObjectState Default = new(Vector2i.Zero, Vector2.One, 1f, 0f, ScissorRect.Default);
 
     public Vector2i Position = pos;
     public Vector2 Scale = scale;
     public float Alpha = alpha;
+    public float Rotation = rotation;
     public ScissorRect Scissor = scissor;
 
     public static ObjectState operator +(ObjectState state, in ObjectState child) {
         state.Position = (child.Position * state.Scale).AsInt() + state.Position;
         state.Scale *= child.Scale;
         state.Alpha *= child.Alpha;
-
+        state.Rotation += child.Rotation;
         if (child.Scissor != ScissorRect.Default) {
             state.Scissor += child.Scissor.ToGlobal(state.Position, state.Scale);
         }
@@ -123,8 +124,8 @@ public abstract class DisplayObject : EventManager {
     private protected ObjectState State;
     private protected DisplayState DisplayState;
 
-    private bool _isDragging;
-    private Vector2i _dragOffset;
+    private protected bool _isDragging;
+    private protected Vector2i _dragOffset;
     
     internal bool TweenActive; // TODO: remove & rework tween functionality
 
@@ -162,7 +163,7 @@ public abstract class DisplayObject : EventManager {
 
     internal virtual void Update(bool dirty, ObjectState state, DisplayState displayState) {
         DirtyInstance = dirty || DirtyInstance;
-        State = state + new ObjectState(GetSelfPosition(), Scale, Alpha, Scissor);
+        State = state + new ObjectState(GetSelfPosition(), Scale, Alpha, Rotation, Scissor);
         DisplayState = displayState + GetDisplayState();
         CanInteract = DisplayState.Visible && displayState.MouseChildren && MouseEnabled;
 
@@ -177,15 +178,29 @@ public abstract class DisplayObject : EventManager {
 
     internal virtual void Draw() { }
 
+    public Vector2i GetRelativeMousePosition() {
+        if (Stage is null) {
+            Logger.LogWarning("DisplayObject not attached to stage, unable to return local mouse coordinates!");
+            return Vector2i.MinValue;
+        }
+        
+        return GetLocalPosition(Stage.Mouse.GetMousePosition());
+    }
 
     private Vector2i GetLocalPosition(Vector2i position) => ((position - State.Position) / State.Scale).AsInt();
+
+    internal virtual void HitTest(Vector2i position, ref DisplayObject dObject) {
+        if (FullBoundsCheck(position)) {
+            dObject = this;
+        }
+    }
 
     private bool FullBoundsCheck(Vector2i position) {
         if (!State.Scissor.Contains(position)) {
             return false;
         }
         
-        var hasBounds = ContentBounds.Area == 0; // guard for the one pixel hole in empty bounds
+        var hasBounds = ContentBounds.HasArea; // guard for the one pixel hole in empty bounds
         var firstCheck = IsInBounds(GetLocalPosition(position), CollisionType.SimpleSquare);
 
         if (!firstCheck) { // Break early if rough bounds fails
@@ -204,7 +219,7 @@ public abstract class DisplayObject : EventManager {
             return false;
         }
 
-        if (ContentBounds.Area == 0) { // guard for the one pixel hole in empty bounds
+        if (!ContentBounds.HasArea) { // guard for the one pixel hole in empty bounds
             return false;
         }
 

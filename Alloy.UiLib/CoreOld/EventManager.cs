@@ -229,7 +229,7 @@ public abstract class EventManager {
         mouseEvent.SetCurrentTarget(sprite);
         mouseEvent.Phase = phase;
         
-        var inBounds = sprite!.IsInBounds(mouseEvent.Coords);
+        var inBounds = true;
         var button = MouseEvent.IsButtonType(mouseEvent.Type);
 
         if (button && !inBounds)

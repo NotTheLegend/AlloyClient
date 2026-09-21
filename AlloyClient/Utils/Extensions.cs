@@ -17,9 +17,9 @@ public static class Extensions {
         public float PlusMinus(float range) => random.NextSingle() * range * 2 - range;
     }
     
-    extension(Sprite sprite) {
+    extension(DisplayObject sprite) {
         public DisplayObject GetTypeFromList(Type[] list) {
-            DisplayObject obj = sprite;
+            var obj = sprite;
             var len = list.Length;
 
             while (obj != null) {
