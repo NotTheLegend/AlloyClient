@@ -43,4 +43,4 @@ Use at your own risk, i can & will push breaking changes at anytime
 * akseli
 
 ## License
-Alloy is released under the **MIT License**. See [`LICENSE`](./LICENSE) for the full text.
+AlloyClient code is released under the **MIT License**. See [`LICENSE`](./LICENSE) for the full text.
