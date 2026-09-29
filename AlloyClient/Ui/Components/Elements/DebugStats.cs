@@ -1,28 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
 using Alloy.Engine;
 using AlloyClient.Rendering;
 using Alloy.UiLib;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
+using AlloyClient.Utils;
 
 namespace AlloyClient.Ui.Components.Elements;
 
 public class DebugStats : Sprite {
-    
     private const int Outline = 3;
 
-    private const int WindowTimeSeconds = 5; // was 30 but the sorting was eating up +100ms at 2000 fps, probably cuz i have black desert running in the background lmao, 30 seconds was overkill anyways
-    private const int WindowTimeMs = 1000 * WindowTimeSeconds;
-    private const int StartingFrameCount = WindowTimeSeconds * 3000;
-
-    private double _framesSeconds;
-
-    private readonly Queue<double> _frameTimes = new (StartingFrameCount);
-    private double[] _workingFrameTimes = new double[StartingFrameCount];
+    private const int FrameCount = 750;
+    private const int WindowTimeSeconds = 5;
+    
+    private readonly FrameHistogram _stats = new(WindowTimeSeconds, WindowTimeSeconds * FrameCount);
     private double _statisticsTimer;
-    private int _frameCount;
     
     private readonly SimpleText _frameTimeTimer = new (new TextConfig {Text = $"Frame time over the last {WindowTimeSeconds} seconds", X = 2, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.Default });
     private readonly SimpleText _avgFrameTime = new (new TextConfig {Text = "Avg: 0 ms", X = 8, FontSize = 16, FontType = FontType.Bold, OutlineThickness = Outline, Anchor = UiAnchor.Default });
@@ -78,53 +71,25 @@ public class DebugStats : Sprite {
         _particles.Y = _entities.Y + _entities.Height + 4;
         _ui.Y = _particles.Y + _particles.Height + 4;
     }
-
+    
     public void Update(GameTime gameTime) {
         var elapsed = gameTime.ElapsedMs;
-        _frameTimes.Enqueue(elapsed);
-        _framesSeconds += elapsed;
+        _stats.Add(elapsed);
         _statisticsTimer += elapsed;
-
-        // Drop frames that fall outside the 30s window
-        while (_framesSeconds > WindowTimeMs) {
-            _framesSeconds -= _frameTimes.Dequeue();
-        }
-
-        _frameCount++;
-
+        
         if (_statisticsTimer < 1000) {
             return;
         }
-
-        if (_workingFrameTimes.Length < _frameTimes.Count) {
-            _workingFrameTimes = new double[BitOperations.RoundUpToPowerOf2((uint)_frameTimes.Count)];
-        }
-        
-        _frameTimes.CopyTo(_workingFrameTimes, 0);
-
-        var data = _workingFrameTimes.AsSpan(0, _frameTimes.Count);
-        data.Sort();
-
-        var sum = 0d;
-        for (var i = 0; i < data.Length; i++) {
-            sum += data[i];
-        }
-        
-        var fps = _frameCount / 1.0;
-        var count = data.Length;
-        var avgFrameTime = sum / count;
-        var p90FrameTime = data[(int) (count * 0.90f)];
-        var p99FrameTime = data[(int) (count * 0.99f)];
-        var maxFrameTime = data[count - 1];
         
         _statisticsTimer = 0;
-        _frameCount = 0;
-
-        _avgFrameTime.SetText($"Avg: {Math.Round(avgFrameTime, 3)} ms"); // Over 30 seconds
-        _p90FrameTime.SetText($"P90: {Math.Round(p90FrameTime, 3)} ms");
-        _p99FrameTime.SetText($"P99: {Math.Round(p99FrameTime, 3)} ms");
-        _maxFrameTime.SetText($"Max: {Math.Round(maxFrameTime, 3)} ms");
-        _fps.SetText($"FPS: {Math.Round(fps, 1)}");
+        
+        var stats = _stats.Get();
+        
+        _fps.SetText($"FPS: {stats.Fps}");
+        _avgFrameTime.SetText($"Avg: {Math.Round(stats.AvgMs, 3)} ms");
+        _p90FrameTime.SetText($"P90: {Math.Round(stats.P90Ms, 3)} ms");
+        _p99FrameTime.SetText($"P99: {Math.Round(stats.P99Ms, 3)} ms");
+        _maxFrameTime.SetText($"Max: {Math.Round(stats.MaxMs, 3)} ms");
         _gcAlloc.SetText($"Total: {Math.Round(GC.GetTotalMemory(false) / 1000000f, 2)} MB");
         var gcBytes = GC.GetTotalAllocatedBytes();
         _gcAllocDelta.SetText($"Allocated delta: {Math.Round((gcBytes - _lastGcBytes) / 1000.0, 2)} KB");
