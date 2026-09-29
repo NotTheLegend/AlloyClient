@@ -64,7 +64,7 @@ public abstract class Sprite : DisplayContainer {
             base.Draw();
             return;
         }
-
+        
         /*if (DirtyInstance) {
             //render.ssbo.subdata(State)
         }*/

@@ -13,10 +13,12 @@ using OpenTK.Mathematics;
 
 namespace AlloyClient.Game;
 
-public class MapTile(int x, int y) {
-    
-    public readonly int X = x;
-    public readonly int Y = y;
+public class MapTile(Vector2i position) {
+
+    public const int MaxTileData = 9;
+
+    public readonly int X = position.X;
+    public readonly int Y = position.Y;
 
     public ushort Type = Const.DefaultTile;
     public GroundProperties GroundProperties = GroundLibrary.TypeToGroundProps[Const.DefaultTile];
@@ -101,7 +103,7 @@ public class MapTile(int x, int y) {
         return !GroundProperties.NoWalk && (OccupiedObject == null || !OccupiedObject.Properties.OccupySquare);
     }
     
-    [System.Runtime.CompilerServices.InlineArray(9)]
+    [System.Runtime.CompilerServices.InlineArray(MaxTileData)]
     private struct RenderData {
         private TileData _;
 
