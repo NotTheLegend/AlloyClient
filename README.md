@@ -6,7 +6,7 @@ Alloy Client is a Realm of the Mad God client for the private server community. 
 </p>
 
 ## Introduction
-Alloy Client is the required frontend for the [Alloy Server](https://github.com/Zolmex/alloy-server), 
+Alloy Client is the required game client for the [Alloy Server](https://github.com/Zolmex/alloy-server), 
 these projects are meant to run together out of the box. 
 The pillars that guide the design decisions behind every component in this project are **performance, simplicity, 
 and maintainability**.
