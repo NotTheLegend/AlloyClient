@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Alloy.Common;
+﻿using System.Collections.Generic;
 using AlloyClient.Assets;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Assets.XmlStructs;
@@ -15,7 +13,6 @@ using AlloyClient.Utils;
 using Alloy.Common.Structs;
 using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Objects;
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Assets.XmlStructs;
 using AlloyClient.Game;

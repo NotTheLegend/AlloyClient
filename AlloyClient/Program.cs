@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Runtime;
 using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;

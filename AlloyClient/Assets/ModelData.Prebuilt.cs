@@ -1,6 +1,4 @@
-﻿using OpenTK.Mathematics;
-
-namespace AlloyClient.Assets;
+﻿namespace AlloyClient.Assets;
 
 public static partial class ModelData {
     private static void LoadPrebuilt() {

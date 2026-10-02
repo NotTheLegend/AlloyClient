@@ -1,7 +1,5 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using AlloyClient.Utils;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Game;
 

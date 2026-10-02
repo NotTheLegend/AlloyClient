@@ -1,7 +1,6 @@
 ﻿#region
 
 using System.Linq;
-using OpenTK.Mathematics;
 using AlloyClient.Networking;
 
 #endregion

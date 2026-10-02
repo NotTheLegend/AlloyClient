@@ -1,7 +1,5 @@
 ﻿#region
 
-using System;
-using OpenTK.Mathematics;
 using AlloyClient.Networking;
 
 #endregion

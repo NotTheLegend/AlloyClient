@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using AlloyClient.Rendering.VertexData;
-using Alloy.Common;
 using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Assets;
 

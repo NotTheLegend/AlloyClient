@@ -1,5 +1,4 @@
-﻿using System;
-using AlloyClient.Networking.Structs.DataObjects;
+﻿using AlloyClient.Networking.Structs.DataObjects;
 
 namespace AlloyClient.Networking.Packets.Outgoing;
 

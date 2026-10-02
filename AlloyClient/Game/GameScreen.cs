@@ -9,7 +9,6 @@ using AlloyClient.Rendering;
 using AlloyClient.Ui.Character;
 using AlloyClient.Ui.Chat;
 using AlloyClient.Ui.Components.Elements;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Game;
 

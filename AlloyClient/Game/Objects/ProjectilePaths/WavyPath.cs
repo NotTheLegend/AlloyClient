@@ -1,8 +1,5 @@
 ﻿#region
 
-using System;
-using OpenTK.Mathematics;
-
 #endregion
 
 namespace AlloyClient.Game.Objects.ProjectilePaths;

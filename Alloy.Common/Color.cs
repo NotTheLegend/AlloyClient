@@ -160,7 +160,7 @@ public struct Color : IEquatable<Color> {
         return color.PackedValue;
     }
     
-    public static Color FromHexRGB(uint rgb, float alpha = 1.0f) {
+    public static Color RGB(uint rgb, float alpha = 1.0f) {
         var r = (byte)(rgb >> 16);
         var g = (byte)(rgb >> 8);
         var b = (byte)rgb;

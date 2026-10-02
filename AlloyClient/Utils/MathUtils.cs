@@ -1,6 +1,3 @@
-using System;
-using OpenTK.Mathematics;
-
 namespace AlloyClient.Utils;
 
 public static class MathUtils {

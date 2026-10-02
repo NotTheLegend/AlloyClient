@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AlloyClient.Game.Objects;
 using AlloyClient.Networking;
 using AlloyClient.Networking.Packets.Outgoing;
 using AlloyClient.Utils;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Game;
 

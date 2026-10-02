@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using AlloyClient.Assets;
 using Alloy.Engine.Graphics;
@@ -12,7 +11,6 @@ using Alloy.UiLib;
 using Alloy.UiLib.Data;
 using Alloy.UiLib.Extra;
 using Alloy.UiLib.Signals;
-using Alloy.Common;
 using Alloy.ContentReader;
 using Alloy.Engine;
 using Alloy.UiLib.Core;
@@ -20,7 +18,6 @@ using AlloyClient.Game;
 using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
 using OpenTK.Platform;
 
 namespace AlloyClient;
@@ -131,7 +128,7 @@ public sealed class Main() : GameWindow(new Version(4, 6), ILogger.Factory) {
         
         Audio.MusicChannel.FadeTo("Music/sorc.ogg", 2f);
         
-        //ScreenManager.FadeToScreen(new LoadingScreen(), Easing.SineInOut, 1000, 0x0);
+        //ScreenManager.FadeToScreen(new LoadingScreen(), Easing.SineInOut, 1000);
         //ScreenManager.SetScreen(new TestScreen());
         ScreenManager.SetScreen(new LoadingScreen());
     }

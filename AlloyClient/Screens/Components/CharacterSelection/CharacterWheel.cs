@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using AlloyClient.Assets.Libraries;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
-using Alloy.Common;
 using AlloyClient.Ui.Components.Buttons;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Screens.Components.CharacterSelection;
 

@@ -29,7 +29,7 @@ public class ClassContainer : Overlay {
         var slotConfig = new TextButtonConfig { Text = "Play", FontSize = 50, OnClicked = () => {
             ClassType = CharacterWheel.SelectedClass.Type;
             GlobalData.CharacterType = ClassType;
-            ScreenManager.FadeToScreen(new GameScreen(), Easing.SineInOut, 1000, 0x0);
+            ScreenManager.FadeToScreen(new GameScreen(), Easing.SineInOut, 1000);
         
             CloseOverlay();
         }, FontType = FontType.Normal, X = 1000, Y = 360 };

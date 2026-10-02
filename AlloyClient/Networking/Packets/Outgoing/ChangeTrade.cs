@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AlloyClient.Networking.Packets.Outgoing;
+﻿namespace AlloyClient.Networking.Packets.Outgoing;
 
 public class ChangeTrade : OutgoingPacket<ChangeTrade> {
     public bool[] Offers;

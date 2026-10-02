@@ -1,17 +1,14 @@
-﻿using System;
-using AlloyClient.Game.Components.Hud;
+﻿using AlloyClient.Game.Components.Hud;
 using AlloyClient.Game.Components.Hud.Chat;
 using AlloyClient.Game.Components.Hud.Panels;
 using AlloyClient.Game.Components.Options;
 using AlloyClient.Networking;
 using AlloyClient.Networking.Packets.Outgoing;
 using Alloy.UiLib.Core;
-using Alloy.Common;
 using Alloy.Engine;
 using AlloyClient.Display;
 using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
-using OpenTK.Mathematics;
 using OpenTK.Platform;
 
 namespace AlloyClient.Game.Components;

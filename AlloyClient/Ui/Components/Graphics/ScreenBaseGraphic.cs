@@ -1,7 +1,5 @@
-﻿using System;
-using Alloy.UiLib.Core;
+﻿using Alloy.UiLib.Core;
 using Alloy.UiLib.Rendering;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Ui.Components.Graphics;
 

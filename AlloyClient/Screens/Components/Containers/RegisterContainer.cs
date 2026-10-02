@@ -19,10 +19,11 @@ public class RegisterContainer : Overlay {
         Y = Settings.DefaultScreenHeight / 2;
         Anchor = UiAnchor.Middle;
         
-        var background = new ColorRect(new ColorRectConfig { Width = 475, Height = 350, Color = 0x363636 });
+        var background = new ColorRect(new ColorRectConfig { Width = 475, Height = 350, Color = Color.RGB(0x363636) });
+        AddChild(background);
         AddChild(background);
         
-        var titleBackground = new ColorRect(new ColorRectConfig { Width = 475, Height = 50, Color = 0x4d4d4d });
+        var titleBackground = new ColorRect(new ColorRectConfig { Width = 475, Height = 50, Color = Color.RGB(0x4d4d4d) });
         AddChild(titleBackground);
 
         var title = new SimpleText(new TextConfig { Text = "Register", FontSize = 22, FontType = FontType.Bold, X = Width / 2, Y = titleBackground.Height / 2, Color = 0xFFFFFF, Anchor = UiAnchor.Middle });
@@ -63,6 +64,6 @@ public class RegisterContainer : Overlay {
         
         
         CloseOverlay();
-        ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 500, 0x0);
+        ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 500);
     }
 }

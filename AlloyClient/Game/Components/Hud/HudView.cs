@@ -21,7 +21,7 @@ public sealed class HudView : Sprite {
     public HudView() {
         Anchor = UiAnchor.MiddleRight;
 
-        var bg = new ColorRect(new ColorRectConfig {Width = HudWidth, Height = Settings.DefaultScreenHeight, Color = 0x363636});
+        var bg = new ColorRect(new ColorRectConfig {Width = HudWidth, Height = Settings.DefaultScreenHeight, Color = Color.RGB(0x363636)});
         AddChild(bg);
 
         _minimap = new Minimap();

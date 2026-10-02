@@ -1,7 +1,6 @@
 ﻿using AlloyClient.Display;
 using AlloyClient.Screens;
 using Alloy.UiLib.Extra;
-using Alloy.UiLib;
 
 namespace AlloyClient.Networking.Packets.Incoming;
 
@@ -25,7 +24,7 @@ public class Death : IncomingPacket<Death> {
     }
 
     public override void Handle() {
-        ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 1000, 0x0);
+        ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 1000);
     }
 
     public override string ToString() {

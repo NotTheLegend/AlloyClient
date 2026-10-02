@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AlloyClient.Game.Components.Options.OptionTypes;
 using AlloyClient.Ui.Components.Scrollbars;
 using Alloy.UiLib.BuiltIn;

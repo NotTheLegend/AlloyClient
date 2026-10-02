@@ -57,7 +57,7 @@ public class CharacterListScreen : TitleScreenBase {
                 return;
             }
             GlobalData.SelectedCharacterId = _selectedCharacterId;
-            ScreenManager.FadeToScreen(new GameScreen(), Easing.SineInOut, 1000, 0x0);
+            ScreenManager.FadeToScreen(new GameScreen(), Easing.SineInOut, 1000);
         }, true);
         playButton.Anchor = UiAnchor.Middle;
         playButton.X = Settings.DefaultScreenWidth / 2;
@@ -71,7 +71,7 @@ public class CharacterListScreen : TitleScreenBase {
         AddChild(classesButton);
 
         var backButton = new MenuBarButton("back", FontSize, () => {
-            ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 1000, 0x0);
+            ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 1000);
         });
         backButton.Anchor = UiAnchor.MiddleRight;
         backButton.X = playButton.X - playButton.Width / 2 - 50;
@@ -90,7 +90,7 @@ public class CharacterListScreen : TitleScreenBase {
             Y = 100,
             Width = Settings.DefaultScreenWidth,
             Height = 5,
-            Color = 0x2B2B2B,
+            Color = Color.RGB(0x2B2B2B),
         });
         AddChild(lineDivider);
 

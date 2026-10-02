@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Extra;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Utils;
 

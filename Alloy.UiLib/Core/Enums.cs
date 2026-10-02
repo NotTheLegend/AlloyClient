@@ -28,7 +28,7 @@ public readonly record struct UiAnchor { // enums dont extend IEquatable, hence 
 
 public enum TextureType : byte {
     None = 255,
-    Color = 0,
+    SolidColor = 0,
     GameAtlas = 1,
     UiAtlas = 2,
     UiAtlasLinear = 3,

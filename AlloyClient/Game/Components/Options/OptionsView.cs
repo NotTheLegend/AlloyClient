@@ -40,7 +40,7 @@ public sealed class OptionsView : Overlay {
         });
         AddChild(titleText);
 
-        var header = new ColorRect(new ColorRectConfig { X = 0, Y = 120, Width = Settings.DefaultScreenWidth, Height = 2, Color = 0x5E5E5E });
+        var header = new ColorRect(new ColorRectConfig { X = 0, Y = 120, Width = Settings.DefaultScreenWidth, Height = 2, Color = Color.RGB(0x5E5E5E) });
         AddChild(header);
 
         var continueButton = new MenuBarButton(new TextButtonConfig {

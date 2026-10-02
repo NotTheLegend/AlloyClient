@@ -1,8 +1,6 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Alloy.Engine.Graphics.Buffers;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering.VertexData;
 

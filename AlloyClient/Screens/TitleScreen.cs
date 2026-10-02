@@ -1,5 +1,4 @@
-﻿using System;
-using AlloyClient.Data;
+﻿using AlloyClient.Data;
 using AlloyClient.Display;
 using AlloyClient.Screens.Components;
 using AlloyClient.Screens.Components.Containers;

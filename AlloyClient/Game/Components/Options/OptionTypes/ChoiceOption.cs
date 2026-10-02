@@ -1,5 +1,4 @@
-﻿using System;
-using AlloyClient.Game.Components.Options.Ui;
+﻿using AlloyClient.Game.Components.Options.Ui;
 using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
 

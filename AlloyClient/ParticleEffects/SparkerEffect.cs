@@ -1,7 +1,5 @@
 ﻿using AlloyClient.Game;
 using AlloyClient.Rendering.VertexData;
-using OpenTK.Mathematics;
-using System;
 using System.Collections.Generic;
 using System.Text;
 

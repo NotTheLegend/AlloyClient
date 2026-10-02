@@ -2,7 +2,6 @@ using System.Linq;
 using System.Xml.Linq;
 using AlloyClient.Game.Objects.ProjectilePaths;
 using AlloyClient.Networking.Packets.Incoming;
-using Alloy.Common;
 using AlloyClient.Game;
 
 namespace AlloyClient.Assets.XmlStructs;

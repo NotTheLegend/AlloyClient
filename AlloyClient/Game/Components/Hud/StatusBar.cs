@@ -1,5 +1,4 @@
-﻿using System;
-using AlloyClient.Ui;
+﻿using AlloyClient.Ui;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 

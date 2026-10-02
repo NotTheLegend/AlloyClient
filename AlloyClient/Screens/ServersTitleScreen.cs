@@ -44,7 +44,7 @@ public class ServersTitleScreen : TitleScreenBase {
             Y = 100,
             Width = Settings.DefaultScreenWidth,
             Height = 5,
-            Color = 0x404040,
+            Color = Color.RGB(0x404040),
         });
         AddChild(lineDivider);
         
@@ -91,7 +91,7 @@ public class ServersTitleScreen : TitleScreenBase {
         #region Menu Bar
         
         var backButton = new MenuBarButton("back", TitleScreen.FontSize, () => {
-            ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 1000, 0x0);
+            ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 1000);
         });
         backButton.Anchor = UiAnchor.Middle;
         backButton.X = Settings.DefaultScreenWidth / 2;

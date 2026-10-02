@@ -14,7 +14,7 @@ public abstract class Sprite : DisplayContainer {
 
     protected TextureType TextureId;
     protected VertexUi[] VertexData;
-    protected int OverridePrimCount = -1; // TODO: make private, force EnsureBufferCapacity() usage
+    protected int OverridePrimCount = -1;
     
     protected Vector2 Radii;
 
@@ -22,6 +22,27 @@ public abstract class Sprite : DisplayContainer {
 
     internal sealed override void SetStageReference(Stage stage) {
         base.SetStageReference(stage);
+    }
+    
+    protected Span<VertexUi> EnsureBufferCapacity(int length) {
+        if (length % 3 != 0) {
+            throw new Exception("length needs to be a multiple of 3");
+        }
+
+        OverridePrimCount = -1;
+        
+        if (VertexData is null) {
+            VertexData = new VertexUi[length];
+            return VertexData;
+        }
+
+        if (length < VertexData.Length) {
+            OverridePrimCount = length / 3;
+            return VertexData.AsSpan(0, length);
+        }
+        
+        Array.Resize(ref VertexData, length);
+        return VertexData;
     }
     
     protected void SetGraphicsBuffer() {
@@ -79,6 +100,12 @@ public abstract class Sprite : DisplayContainer {
         UiRender.LastRenderCount++;
         
         base.Draw();
+    }
+
+    public void SetColorChannel1(Color color) {
+        foreach (ref var data in VertexData.AsSpan()) {
+            data.Color = color;
+        }
     }
     
     
@@ -159,25 +186,7 @@ public abstract class Sprite : DisplayContainer {
 
     #endregion
 
-    protected void EnsureBufferCapacity(int length) {
-        if (length % 3 != 0) {
-            throw new Exception("length needs to be a multiple of 3");
-        }
-
-        OverridePrimCount = -1;
-        
-        if (VertexData is null) {
-            VertexData = new VertexUi[length];
-            return;
-        }
-
-        if (length < VertexData.Length) {
-            OverridePrimCount = length / 3;
-            return;
-        }
-        
-        Array.Resize(ref VertexData, length);
-    }
+    #region Hitboxes
     
     private protected sealed override bool HitboxSquare(Vector2i position) => _selfContentBounds.Contains(position);
     
@@ -209,4 +218,7 @@ public abstract class Sprite : DisplayContainer {
         
         return false;
     }
+    
+    #endregion
+
 }

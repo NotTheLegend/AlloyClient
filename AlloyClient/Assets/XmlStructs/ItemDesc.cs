@@ -1,8 +1,6 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
-using Alloy.Common;
 using AlloyClient.Game;
 
 namespace AlloyClient.Assets.XmlStructs;

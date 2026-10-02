@@ -1,9 +1,6 @@
-using System;
 using System.Xml.Linq;
 using AlloyClient.Assets.XmlStructs;
 using AlloyClient.Networking;
-using Alloy.Common;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Objects.ProjectilePaths;
 

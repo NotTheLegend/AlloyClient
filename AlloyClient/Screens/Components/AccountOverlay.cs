@@ -84,7 +84,7 @@ public class AccountOverlay : Sprite {
                 GTween.Add(Tween.New(_container, Easing.SineInOut, 150, 1f, EaseType.Alpha));
             }));
         } else {
-            ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 500, 0x0);
+            ScreenManager.FadeToScreen(new TitleScreen(), Easing.SineInOut, 500);
         }
     }
     

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Alloy.UiLib.Extra;
 using AlloyClient.Assets.Libraries;
 

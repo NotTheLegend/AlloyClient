@@ -1,5 +1,4 @@
-﻿using System;
-using AlloyClient.Game;
+﻿using AlloyClient.Game;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Extra;
@@ -11,7 +10,7 @@ namespace AlloyClient.Display;
 
 public sealed class ScreenManager : UiContainer {
     private static ScreenManager _instance;
-    public static readonly FadeScreen FadeScreen = new(0);
+    public static readonly FadeScreen FadeScreen = new(Color.Black);
 
     private static Screen _prevScreen;
     private static Screen _currScreen = FadeScreen;
@@ -49,7 +48,9 @@ public sealed class ScreenManager : UiContainer {
         SetScreen(_prevScreen);
     }
 
-    public static void FadeToScreen(Screen screen, Easing ease, int durationMs, uint color, Action onFinish = null) {
+    public static void FadeToScreen(Screen screen, Easing ease, int durationMs, Action onFinish = null) => FadeToScreen(screen, ease, durationMs, Color.Black, onFinish);
+
+    public static void FadeToScreen(Screen screen, Easing ease, int durationMs, Color color, Action onFinish = null) {
         Main.OnScreenChange.Dispatch(screen is GameScreen ? ScreenType.Game : ScreenType.Menu);
 
         FadeScreen.Visible = true;
@@ -59,9 +60,9 @@ public sealed class ScreenManager : UiContainer {
         GTween.Add(Tween.New(screen, ease, durationMs / 2, 1f, EaseType.Alpha, durationMs / 2, () => { FadeScreen.Visible = false; }));
     }
 
-    public static void FadeTo(Screen screen, Action callback = null) => FadeToScreen(screen, Easing.SineInOut, 1000, 0x0, callback);
+    public static void FadeTo(Screen screen, Action callback = null) => FadeToScreen(screen, Easing.SineInOut, 1000, Color.Black, callback);
 
-    public static void FadeToPrevious(Easing ease, int durationMs, uint color) {
+    public static void FadeToPrevious(Easing ease, int durationMs, Color color) {
         FadeToScreen(_prevScreen, ease, durationMs, color);
     }
 
@@ -87,11 +88,11 @@ public class FadeScreen : Screen {
     
     private readonly ColorRect _rect;
 
-    public FadeScreen(uint color) {
+    public FadeScreen(Color color) {
         var config = new ColorRectConfig { X = 0, Y = 0, Width = Settings.DefaultScreenWidth, Height = Settings.DefaultScreenHeight, Color = color};
         _rect = new ColorRect(config);
         AddChild(_rect);
     }
 
-    public void SetFadeColor(uint color) => _rect.SetColor(color);
+    public void SetFadeColor(Color color) => _rect.SetColor(color);
 }

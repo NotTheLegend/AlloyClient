@@ -1,5 +1,4 @@
-﻿using System;
-using AlloyClient.Assets.XmlStructs;
+﻿using AlloyClient.Assets.XmlStructs;
 using AlloyClient.Display;
 using AlloyClient.Game.Objects;
 using AlloyClient.Networking;
@@ -10,9 +9,7 @@ using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Extra;
 using AlloyClient.Utils;
-using Alloy.Common;
 using AlloyClient.Ui;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Components.Hud.Inventory;
 

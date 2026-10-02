@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AlloyClient.Networking.Packets.Incoming;
+﻿namespace AlloyClient.Networking.Packets.Incoming;
 
 public class InvResult : IncomingPacket<InvResult> {
     public int Result;

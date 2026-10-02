@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
-using OpenTK.Mathematics;
 using BucketType = int; // Backing type for storing bits for incoming statdata, could be a long if server is changed to support that
 using EffectType = int; // Backing type of 'ConditionEffect'
 

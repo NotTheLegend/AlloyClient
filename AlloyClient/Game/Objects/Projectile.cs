@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using Alloy.Common;
+﻿using System.Runtime.InteropServices;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Assets.XmlStructs;
 using AlloyClient.Game.Objects.ProjectilePaths;
@@ -14,7 +12,6 @@ using AlloyClient.Utils;
 using Alloy.Common.Structs;
 using Alloy.Engine;
 using AlloyClient.Rendering.VertexData;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Objects;
 

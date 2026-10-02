@@ -1,9 +1,7 @@
-﻿using Alloy.Common;
-using AlloyClient.Game.Objects;
+﻿using AlloyClient.Game.Objects;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Rendering;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Game.Components.Hud;
 
@@ -18,7 +16,7 @@ public sealed class MinimapLayer : Sprite {
     private static Entity _focus;
 
     public MinimapLayer() {
-        TextureId = TextureType.Color;
+        TextureId = TextureType.SolidColor;
         
         AddEventListener(Event.EnterFrame, OnFrameEnter);
 
@@ -41,7 +39,7 @@ public sealed class MinimapLayer : Sprite {
 
         const float size = 3.25f;
 
-        var color = Color.FromHexRGB(rgb);
+        var color = Color.RGB(rgb);
         VertexData[_count * 6 + 0] = new VertexUi(new Vector2(pos.X - size, pos.Y - size), color);
         VertexData[_count * 6 + 1] = new VertexUi(new Vector2(pos.X + size, pos.Y - size), color);
         VertexData[_count * 6 + 2] = new VertexUi(new Vector2(pos.X + size, pos.Y + size), color);

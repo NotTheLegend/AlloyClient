@@ -1,7 +1,4 @@
-﻿using System;
-using Alloy.Common;
-using Alloy.Engine.Graphics;
-using OpenTK.Mathematics;
+﻿using Alloy.Engine.Graphics;
 
 namespace AlloyClient.Game.Components;
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Numerics;
 
 namespace AlloyClient.Utils;
@@ -38,6 +37,7 @@ public sealed class FrameHistogram {
     private readonly double _maxBucketMs;
 
     private double _sampleSum;
+    private int _highestBucket;
 
     public FrameHistogram(int windowSeconds, int startingCapacity, HistogramPrecision precision = HistogramPrecision.Normal, double maxBucketMs = 1_000d) {
         _windowSeconds = windowSeconds;
@@ -54,7 +54,12 @@ public sealed class FrameHistogram {
     public void Add(double frameMs) {
         _samples.Enqueue(frameMs);
         _sampleSum += frameMs;
-        _buckets[BucketOf(frameMs)]++;
+        var bucket = BucketOf(frameMs);
+        _buckets[bucket]++;
+
+        if (bucket > _highestBucket) {
+            _highestBucket = bucket;
+        }
 
         while (_sampleSum > _windowMs && _samples.Count > 1) {
             var dequeue = _samples.Dequeue();
@@ -69,33 +74,32 @@ public sealed class FrameHistogram {
             return default;
         }
 
-        var top90 = Math.Min((int)Math.Ceiling(count * 0.90), count);
-        var top99 = Math.Min((int)Math.Ceiling(count * 0.99), count);
+        var top90 = count - Math.Min((int)Math.Ceiling(count * 0.90), count) + 1;
+        var top99 = count - Math.Min((int)Math.Ceiling(count * 0.99), count) + 1;
 
         double p90 = 0, p99 = 0;
-        bool have90 = false, have99 = false;
-        var maxBucket = 0;
+        var maxBucket = -1;
         var seen = 0;
 
-        for (var i = 0; i < _buckets.Length; i++) {
-            if (_buckets[i] == 0) {
+        for (var i = _highestBucket; i >= 0; i--) {
+            var bucket = _buckets[i];
+            if (bucket == 0) {
                 continue;
             }
 
-            seen += _buckets[i];
-
-            if (!have90 && seen >= top90) {
-                p90 = ValueOf(i);
-                have90 = true;
+            if (maxBucket < 0) {
+                _highestBucket = maxBucket = i;
             }
 
-            if (!have99 && seen >= top99) {
+            seen += bucket;
+
+            if (seen >= top99) {
                 p99 = ValueOf(i);
-                have99 = true;
+                top99 = int.MaxValue;
             }
 
-            if (seen == count) {
-                maxBucket = i;
+            if (seen >= top90) {
+                p90 = ValueOf(i);
                 break;
             }
         }

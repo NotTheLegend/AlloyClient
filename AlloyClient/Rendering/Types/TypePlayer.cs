@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Alloy.Common;
+﻿using System.Collections.Generic;
 using AlloyClient.Assets;
 using AlloyClient.Game;
 using AlloyClient.Game.Objects;
 using AlloyClient.Rendering.Types.SubTypes;
 using AlloyClient.Rendering.VertexData;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering.Types;
 
@@ -36,7 +33,7 @@ public sealed class TypePlayer : RenderBase {
         
         _typeName = new TypeName(this, player);
         _hpBar = new TypeHpBar(this, player);
-        _mpBar = new TypeBar(this, player, Color.FromHexRGB(0x6084E0));
+        _mpBar = new TypeBar(this, player, Color.RGB(0x6084E0));
         _effects = new TypeEffects(this, player);
     }
     

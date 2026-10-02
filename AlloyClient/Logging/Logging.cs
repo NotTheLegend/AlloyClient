@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Logging.Console;
@@ -46,7 +45,7 @@ public sealed class SingleLineConsoleFormatter(IOptions<ConsoleFormatterOptions>
 
     private const string Ansi = "\e[";
     private const string AnsiStop = "m";
-    private const string Reset = $"{Ansi}0{AnsiStop}";
+    private const string Reset = $"{Ansi}22;39;49{AnsiStop}";
     private const string Background = "40"; // Black
 
     private const string FontNorm = "0;";

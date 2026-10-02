@@ -1,5 +1,4 @@
-﻿using System;
-using AlloyClient.Data;
+﻿using AlloyClient.Data;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 
@@ -35,7 +34,7 @@ public class ServerRect : Container {
         _background = new ColorRect(new ColorRectConfig {
             Width = Width,
             Height = Height,
-            Color = BackgroundColor,
+            Color = Color.RGB(BackgroundColor),
             Alpha = 1f,
         });
         AddChild(_background);

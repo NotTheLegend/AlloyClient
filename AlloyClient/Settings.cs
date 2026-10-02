@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -8,10 +7,8 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using AlloyClient.Data;
-using Alloy.Common;
 using AlloyClient.Logging;
 using Microsoft.Extensions.Logging;
-using OpenTK.Mathematics;
 using OpenTK.Platform;
 
 namespace AlloyClient;

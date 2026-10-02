@@ -1,5 +1,4 @@
-﻿using System;
-using Alloy.UiLib.BuiltIn;
+﻿using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 using AlloyClient.Ui.Components.Buttons;
 
@@ -24,7 +23,7 @@ public class Dialog : UiElement {
         Y = Settings.DefaultScreenHeight / 2;
         Anchor = UiAnchor.Middle;
 
-        var boxConfig = new ColorRectConfig { Width = BoxWidth, Height = 75, Color = 0x1C1C1C, Alpha = 0.8f, Anchor = UiAnchor.Default};
+        var boxConfig = new ColorRectConfig { Width = BoxWidth, Height = 75, Color = Color.RGB(0x1C1C1C), Alpha = 0.8f, Anchor = UiAnchor.Default};
         var box = new ColorRect(boxConfig);
         AddChild(box);
 

@@ -1,10 +1,8 @@
-﻿using System;
-using Alloy.Engine;
+﻿using Alloy.Engine;
 using AlloyClient.Game;
 using AlloyClient.Game.Objects;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Ui.Chat;
 

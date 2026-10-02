@@ -5,7 +5,6 @@ using AlloyClient.Game.Objects.ProjectilePaths;
 using AlloyClient.Logging;
 using AlloyClient.Networking.Structs.DataObjects;
 using Microsoft.Extensions.Logging;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Networking.Packets.Incoming;
 

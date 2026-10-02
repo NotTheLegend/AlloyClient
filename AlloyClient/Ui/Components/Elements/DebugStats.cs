@@ -1,5 +1,4 @@
-﻿using System;
-using Alloy.Engine;
+﻿using Alloy.Engine;
 using AlloyClient.Rendering;
 using Alloy.UiLib;
 using Alloy.UiLib.BuiltIn;
@@ -12,7 +11,7 @@ public class DebugStats : Sprite {
     private const int Outline = 3;
 
     private const int FrameCount = 750;
-    private const int WindowTimeSeconds = 5;
+    private const int WindowTimeSeconds = 1;
     
     private readonly FrameHistogram _stats = new(WindowTimeSeconds, WindowTimeSeconds * FrameCount);
     private double _statisticsTimer;

@@ -1,7 +1,5 @@
-﻿using System;
-using Alloy.UiLib.BuiltIn;
+﻿using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
-using OpenTK.Mathematics;
 using OpenTK.Platform;
 
 namespace AlloyClient.Game.Components.Options.Ui;
@@ -39,7 +37,7 @@ public class KeyCodeBox : Sprite {
 
         Value = setting;
 
-        _background = new ColorRect(new ColorRectConfig { Width = BoxWidth, Height = BoxHeight, Color = 0x444444 });
+        _background = new ColorRect(new ColorRectConfig { Width = BoxWidth, Height = BoxHeight, Color = Color.RGB(0x444444) });
         AddChild(_background);
 
         _char = new SimpleText(new TextConfig {

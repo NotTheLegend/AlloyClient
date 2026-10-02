@@ -1,7 +1,5 @@
 ﻿using AlloyClient.Game;
 using AlloyClient.Game.Objects;
-using OpenTK.Mathematics;
-using System;
 
 namespace AlloyClient.ParticleEffects;
 

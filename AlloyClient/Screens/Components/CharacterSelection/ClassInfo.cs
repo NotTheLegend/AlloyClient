@@ -3,7 +3,6 @@ using AlloyClient.Assets.Libraries;
 using AlloyClient.Game.Components.Hud.Inventory;
 using Alloy.UiLib.BuiltIn;
 using AlloyClient.Utils;
-using Alloy.Common;
 using Alloy.Engine;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Utils;
@@ -26,7 +25,7 @@ public class ClassInfo : Container {
         _background = new ColorRect(new ColorRectConfig {
             Width = 960,
             Height = 380,
-            Color = 0x171717,
+            Color = Color.RGB(0x171717),
             Alpha = 1f
         });
         _background.X = Settings.DefaultScreenWidth / 2 - _background.Width / 2;

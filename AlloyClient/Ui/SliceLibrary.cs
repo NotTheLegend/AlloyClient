@@ -1,9 +1,6 @@
-﻿using System;
-using Alloy.UiLib.BuiltIn;
+﻿using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Data;
-using Alloy.Common;
 using AlloyClient.Utils;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Ui;
 

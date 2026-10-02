@@ -1,5 +1,4 @@
-﻿using System;
-using Alloy.UiLib.BuiltIn;
+﻿using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 
 namespace AlloyClient.Game.Components.Options.OptionTypes;

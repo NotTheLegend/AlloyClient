@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AlloyClient.Game.Objects;
 using AlloyClient.Rendering.VertexData;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Rendering.Types.SubTypes;
 

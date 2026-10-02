@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using AlloyClient.Assets;
 using AlloyClient.Game.Components.Hud;
@@ -15,7 +14,6 @@ using AlloyClient.Logging;
 using AlloyClient.Utils;
 using Microsoft.Extensions.Logging;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.Game;
 

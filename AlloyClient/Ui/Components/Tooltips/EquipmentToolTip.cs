@@ -1,4 +1,3 @@
-using System;
 using AlloyClient.Assets.XmlStructs;
 using AlloyClient.Game.Objects.Util;
 using AlloyClient.Ui.Components.Elements;

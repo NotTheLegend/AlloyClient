@@ -1,5 +1,4 @@
-﻿using System;
-using AlloyClient.Networking;
+﻿using AlloyClient.Networking;
 using AlloyClient.Networking.Packets.Outgoing;
 using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;

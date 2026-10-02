@@ -1,4 +1,3 @@
-using System;
 using AlloyClient.Assets.Libraries;
 using AlloyClient.Data;
 using AlloyClient.Display;
@@ -39,7 +38,7 @@ public sealed class CharacterRect : Container
         {
             Width = 200,
             Height = 200,
-            Color = 0x2B2B2B,
+            Color = Color.RGB(0x2B2B2B),
             Alpha = 0.7f,
         });
         AddChild(background);
@@ -80,7 +79,7 @@ public sealed class CharacterRect : Container
                     }
 
                     GlobalData.SelectedCharacterId = character.Id;
-                    ScreenManager.FadeToScreen(new GameScreen(), Easing.SineInOut, 1000, 0x0);
+                    ScreenManager.FadeToScreen(new GameScreen(), Easing.SineInOut, 1000);
                 }
                 ,
                 CharacterRectType.GraveyardCharacter => () =>

@@ -1,8 +1,6 @@
-﻿using System;
-using AlloyClient.Game;
+﻿using AlloyClient.Game;
 using AlloyClient.Game.Objects;
 using AlloyClient.Rendering.VertexData;
-using OpenTK.Mathematics;
 
 namespace AlloyClient.ParticleEffects;
 
