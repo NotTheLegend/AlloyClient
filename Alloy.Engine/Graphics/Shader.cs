@@ -1,4 +1,4 @@
-﻿using Alloy.Common.SourceGen;
+﻿using Alloy.Common;
 using Alloy.Engine.Graphics.Buffers;
 
 namespace Alloy.Engine.Graphics;

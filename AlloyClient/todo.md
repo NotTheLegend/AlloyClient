@@ -8,8 +8,10 @@
 
 # Alloy.UiLib
 * add rotation support to hit test/bounds
-* make OverridePrimCount private also make it vertex count instead of prims, force EnsureBufferCapacity usage
+* make OverridePrimCount private also make it vertex count instead of prims
+* force EnsureBufferCapacity usage by making VertexData private
 * turn config into class and make a SpriteConfig base that they extend
+* replace tooltip mode with clamp to stage bool
 
 # Alloy.Engine
 * add resizable ssbos

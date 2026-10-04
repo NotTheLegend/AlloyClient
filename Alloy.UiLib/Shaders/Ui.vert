@@ -25,12 +25,12 @@ layout(std140, binding = 0) readonly buffer InstanceBuffer {
 
 layout (location = 0) in vec2 Position;
 layout (location = 1) in vec2 UVCoords;
-layout (location = 2) in uint Color;
+layout (location = 2) in uint C1Color;
 layout (location = 3) in uint InstanceId;
 
 out VS_OUT {
     vec4 Position1;
-    flat uint Color;
+    flat uint C1Color;
     flat uint Override;
     vec2 Info;
     vec2 UVCoords;
@@ -50,7 +50,7 @@ void main() {
     
     gl_Position = vec4(pos, 0, 1) * ViewMatrix;
     vsOutput.Position1 = gl_Position;
-    vsOutput.Color = mix(Color, data.Color, Color == 0);
+    vsOutput.C1Color = mix(C1Color, data.Color, C1Color == 0);
     vsOutput.Override = data.ColorOverride;
     vsOutput.Info = data.Info;
     vsOutput.UVCoords = UVCoords;

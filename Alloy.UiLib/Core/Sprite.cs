@@ -102,9 +102,9 @@ public abstract class Sprite : DisplayContainer {
         base.Draw();
     }
 
-    public void SetColorChannel1(Color color) {
+    public void SetChannel1Color(Color color) {
         foreach (ref var data in VertexData.AsSpan()) {
-            data.Color = color;
+            data.C1Color = color;
         }
     }
     

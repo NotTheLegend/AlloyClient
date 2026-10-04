@@ -34,32 +34,31 @@
 		<CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
 		<ReferenceOutputAssembly>False</ReferenceOutputAssembly>
       </ProjectReference>
-      <ProjectReference Include="..\Alloy.ShaderSourceGen\Alloy.ShaderSourceGen.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
 	  
       <ProjectReference Include="..\Alloy.UiLib\Alloy.UiLib.csproj" />
     </ItemGroup>
     
     <ItemGroup>
       <None Remove="AdditionalFiles\Shadow.vert" />
-      <AdditionalFiles Include="AdditionalFiles\Shadow.vert" />
+      <EmbeddedResource Include="AdditionalFiles\Shadow.vert" />
       <None Remove="AdditionalFiles\Shadow.frag" />
-      <AdditionalFiles Include="AdditionalFiles\Shadow.frag" />
+      <EmbeddedResource Include="AdditionalFiles\Shadow.frag" />
       <None Remove="AdditionalFiles\Particle.vert" />
-      <AdditionalFiles Include="AdditionalFiles\Particle.vert" />
+      <EmbeddedResource Include="AdditionalFiles\Particle.vert" />
       <None Remove="AdditionalFiles\Particle.frag" />
-      <AdditionalFiles Include="AdditionalFiles\Particle.frag" />
+      <EmbeddedResource Include="AdditionalFiles\Particle.frag" />
       <None Remove="AdditionalFiles\Object.vert" />
-      <AdditionalFiles Include="AdditionalFiles\Object.vert" />
+      <EmbeddedResource Include="AdditionalFiles\Object.vert" />
       <None Remove="AdditionalFiles\Object.frag" />
-      <AdditionalFiles Include="AdditionalFiles\Object.frag" />
+      <EmbeddedResource Include="AdditionalFiles\Object.frag" />
       <None Remove="AdditionalFiles\Model.vert" />
-      <AdditionalFiles Include="AdditionalFiles\Model.vert" />
+      <EmbeddedResource Include="AdditionalFiles\Model.vert" />
       <None Remove="AdditionalFiles\Model.frag" />
-      <AdditionalFiles Include="AdditionalFiles\Model.frag" />
+      <EmbeddedResource Include="AdditionalFiles\Model.frag" />
       <None Remove="AdditionalFiles\Ground.vert" />
-      <AdditionalFiles Include="AdditionalFiles\Ground.vert" />
+      <EmbeddedResource Include="AdditionalFiles\Ground.vert" />
       <None Remove="AdditionalFiles\Ground.frag" />
-      <AdditionalFiles Include="AdditionalFiles\Ground.frag" />
+      <EmbeddedResource Include="AdditionalFiles\Ground.frag" />
     </ItemGroup>
     
     <Target Name="RestoreDotnetTools" BeforeTargets="Restore">

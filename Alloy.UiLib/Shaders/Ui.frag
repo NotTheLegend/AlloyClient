@@ -2,7 +2,7 @@
 
 in VS_OUT {
     vec4 Position1;
-    flat uint Color;
+    flat uint C1Color;
     flat uint Override;
     vec2 Info;
     vec2 UVCoords;
@@ -30,7 +30,7 @@ uniform sampler2D TitleGraphicTexture;
 const float TextTypeNormal = 0.0;
 const float TextTypeSmall = 1.0;
 
-const float IdColor = 0.0;
+const float IdSolidColor = 0.0;
 const float IdGameAtlas = 1.0;
 const float IdUiAtlas = 2.0;
 const float IdUiAtlasLinear = 3.0;
@@ -43,10 +43,10 @@ const float IdEllipse = 9.0;
 
 vec4 unpackColor(uint color) {
     return vec4(
-    float(color & 0x000000FFu) / 255.0,
-    float((color & 0x0000FF00u) >> 8u) / 255.0,
-    float((color & 0x00FF0000u) >> 16u) / 255.0,
-    float((color & 0xFF000000u) >> 24u) / 255.0
+        float(color & 0x000000FFu) / 255.0,
+        float((color & 0x0000FF00u) >> 8u) / 255.0,
+        float((color & 0x00FF0000u) >> 16u) / 255.0,
+        float((color & 0xFF000000u) >> 24u) / 255.0
     );
 }
 
@@ -121,7 +121,7 @@ vec4 RenderText() {
         glowAlpha = glowDist * glowSize;
     }
 
-    vec4 color = mix(unpackColor(inp.Override), unpackColor(inp.Color), bodyAlpha);
+    vec4 color = mix(unpackColor(inp.Override), unpackColor(inp.C1Color), bodyAlpha);
     float alpha = bodyAlpha + glowAlpha;
     return vec4(color.rgb, alpha);
 }
@@ -242,24 +242,23 @@ vec4 RenderEllipse() {
         color_val = 0;
     }
 
-    return mix(unpackColor(inp.Color), unpackColor(inp.Override), color_val);
+    return mix(unpackColor(inp.C1Color), unpackColor(inp.Override), color_val);
 }
 
 void main() {
     vec4 pixel = vec4(0);
-
-
+    
     //TODO: replace pos1 with gl_FragCoord and send screen coords in scissor instead
     if (inp.Position1.x < inp.Scissor.x || inp.Position1.x > inp.Scissor.z || inp.Position1.y < inp.Scissor.w || inp.Position1.y > inp.Scissor.y) {
         discard;
     }
 
-    vec4 color = unpackColor(inp.Color);
+    vec4 c1Color = unpackColor(inp.C1Color);
 
     float type = inp.Info.x;
 
-    if (type == IdColor) {
-        pixel = color;
+    if (type == IdSolidColor) {
+        pixel = c1Color;
     } else if (type == IdGameAtlas) {
         pixel = RenderOutline();
     } else if (type == IdUiAtlas) {
@@ -280,8 +279,8 @@ void main() {
         pixel = RenderEllipse();
     }
 
-    if (color.a > 0 && type != IdColor && type != IdText && type != IdEllipse)
-    pixel *= color;
+    if (c1Color.a > 0 && type != IdSolidColor && type != IdText && type != IdEllipse)
+    pixel *= c1Color;
 
     vec4 add = floor(inp.ColorTransform / 1000.0);
     vec4 mult = inp.ColorTransform - add * 1000.0;

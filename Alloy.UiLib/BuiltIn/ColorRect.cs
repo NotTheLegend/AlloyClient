@@ -46,5 +46,5 @@ public class ColorRect : Sprite {
 
     public void Resize(int width, int height) => Build(width, height);
 
-    public void SetColor(Color color) => SetColorChannel1(color);
+    public void SetColor(Color color) => SetChannel1Color(color);
 }

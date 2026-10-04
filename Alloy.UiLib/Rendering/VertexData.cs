@@ -54,7 +54,7 @@ internal struct SpriteVertexData(VertexUi vertex, uint instanceId) : IVertexData
     
     public Vector2 Position = vertex.Position;
     public Vector2 UV = vertex.UV;
-    public uint Color = vertex.Color;
+    public uint Color = vertex.C1Color;
     public uint InstanceId = instanceId;
     
     public static VertexStride VertexStride { get; } = new([
@@ -85,30 +85,30 @@ public struct VertexUi {
     
     public Vector2 Position;
     public Vector2 UV;
-    public Color Color;
+    public Color C1Color;
     //internal int StateIndex;
 
-    public VertexUi(Vector2 pos, Vector2 uv, Color color) {
+    public VertexUi(Vector2 pos, Vector2 uv, Color c1Color) {
         Position = pos;
         UV = uv;
-        Color = color;
+        C1Color = c1Color;
     }
     
     public VertexUi(Vector2 pos, Vector2 uv) {
         Position = pos;
         UV = uv;
-        Color = new Color(0);
+        C1Color = new Color(0);
     }
     
-    public VertexUi(Vector2 pos, Color color) {
+    public VertexUi(Vector2 pos, Color c1Color) {
         Position = pos;
         UV = new Vector2(0f);
-        Color = color;
+        C1Color = c1Color;
     }
 
     public VertexUi(Vector2 pos) {
         Position = pos;
         UV = new Vector2(0f);
-        Color = new Color(0);
+        C1Color = new Color(0);
     }
 }
