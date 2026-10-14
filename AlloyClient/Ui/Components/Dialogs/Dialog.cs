@@ -27,11 +27,11 @@ public class Dialog : UiElement {
         var box = new ColorRect(boxConfig);
         AddChild(box);
 
-        var titleConfig = new TextConfig { Text = title, FontSize = 24, FontType = FontType.Bold, Color = 0xFFFFFF, Anchor = UiAnchor.TopMiddle};
+        var titleConfig = new TextConfig { Text = title, FontSize = 24, FontType = FontType.Bold, Color = Color.RGB(0xFFFFFF), Anchor = UiAnchor.TopMiddle};
         var titleText = new SimpleText(titleConfig);
         AddChild(titleText);
 
-        var messageConfig = new TextConfig {Text = message, FontSize = 20, Color = 0xFFFFFF, Anchor = UiAnchor.TopMiddle};
+        var messageConfig = new TextConfig {Text = message, FontSize = 20, Color = Color.RGB(0xFFFFFF), Anchor = UiAnchor.TopMiddle};
         var messageText = new SimpleText(messageConfig);
         box.AddChild(messageText);
 

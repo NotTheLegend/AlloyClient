@@ -33,7 +33,7 @@ public class PortalPanel : Panel {
             Text = txt,
             FontSize = 22,
             FontType = FontType.Bold,
-            OutlineColor = 0xFFFFFF,
+            OutlineColor = Color.RGB(0xFFFFFF),
             Anchor = UiAnchor.TopMiddle
         });
         AddChild(name);
@@ -44,8 +44,8 @@ public class PortalPanel : Panel {
             Text = _locked ? "Locked" : "Full",
             FontSize = 20,
             FontType = FontType.Bold,
-            OutlineColor = 0xFF0000,
-            Color = 0xFF0000,
+            OutlineColor = Color.RGB(0xFF0000),
+            Color = Color.RGB(0xFF0000),
             Anchor = UiAnchor.TopMiddle
         });
         _fullText.Y = name.Height + 10;

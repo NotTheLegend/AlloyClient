@@ -39,7 +39,7 @@ public class TextButton : Sprite {
         _activeColor = config.ActiveColor;
         _onHoverColor = config.HoverColor;
         _inactive = config.InactiveColor;
-        _text = new SimpleText(new TextConfig {Text = config.Text, FontSize = config.FontSize, FontType = config.FontType, Color = _activeColor, OutlineColor = config.OutlineColor, OutlineThickness = config.OutlineThickness});
+        _text = new SimpleText(new TextConfig {Text = config.Text, FontSize = config.FontSize, FontType = config.FontType, Color = Color.RGB(_activeColor), OutlineColor = Color.RGB(config.OutlineColor), OutlineThickness = config.OutlineThickness});
         _onClicked = config.OnClicked;
 
         X = config.X;
@@ -59,7 +59,7 @@ public class TextButton : Sprite {
     }
 
     public void Activate() {
-        _text.SetColor(_activeColor);
+        _text.SetChannel1Color(Color.RGB(_activeColor));
         AddEventListener(MouseEvent.MouseOver, OnMouseOver);
         AddEventListener(MouseEvent.MouseOut, OnMouseOut);
         AddEventListener(MouseEvent.LeftDown, OnLeftDown);
@@ -67,7 +67,7 @@ public class TextButton : Sprite {
     }
 
     public void Deactivate() {
-        _text.SetColor(_inactive);
+        _text.SetChannel1Color(Color.RGB(_inactive));
         RemoveEventListener(MouseEvent.MouseOver, OnMouseOver);
         RemoveEventListener(MouseEvent.MouseOut, OnMouseOut);
         RemoveEventListener(MouseEvent.LeftDown, OnLeftDown);
@@ -75,11 +75,11 @@ public class TextButton : Sprite {
     }
 
     private void OnMouseOver() {
-        _text.SetColor(_onHoverColor);
+        _text.SetChannel1Color(Color.RGB(_onHoverColor));
     }
 
     private void OnMouseOut() {
-        _text.SetColor(_activeColor);
+        _text.SetChannel1Color(Color.RGB(_activeColor));
     }
     
     private void OnLeftDown() {

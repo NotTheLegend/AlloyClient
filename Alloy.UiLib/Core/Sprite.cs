@@ -13,55 +13,44 @@ public abstract class Sprite : DisplayContainer {
     private Bounds _selfContentBounds = Bounds.Zero;
 
     protected TextureType TextureId;
-    protected VertexUi[] VertexData;
-    protected int OverridePrimCount = -1;
+    private VertexUi[] _vertexData = [];
+    private int _vertexCount;
     
     protected Vector2 Radii;
 
     private protected sealed override Bounds GetSelfBounds() => _selfContentBounds;
 
-    internal sealed override void SetStageReference(Stage stage) {
-        base.SetStageReference(stage);
-    }
-    
-    protected Span<VertexUi> EnsureBufferCapacity(int length) {
-        if (length % 3 != 0) {
-            throw new Exception("length needs to be a multiple of 3");
-        }
-
-        OverridePrimCount = -1;
-        
-        if (VertexData is null) {
-            VertexData = new VertexUi[length];
-            return VertexData;
-        }
-
-        if (length < VertexData.Length) {
-            OverridePrimCount = length / 3;
-            return VertexData.AsSpan(0, length);
+    protected void EnsureBufferLength(int length) {
+        if (length % 3 != 0 || length < 0) {
+            throw new Exception($"Length needs to be a multiple of 3 and greater than 0, actual: {length}, remainder: {length % 3}");
         }
         
-        Array.Resize(ref VertexData, length);
-        return VertexData;
+        _vertexCount = length;
+        _noRenderData = length == 0;
+
+        if (_vertexData.Length < length) {
+            Array.Resize(ref _vertexData, length);
+        }
     }
     
+    protected Span<VertexUi> GetGraphicsBuffer(int length) {
+        EnsureBufferLength(length);
+        return _vertexData.AsSpan(0, _vertexCount);
+    }
+
+    protected Span<VertexUi> GetGraphicsBuffer() => _vertexData.AsSpan(0, _vertexCount);
+
+    /// <summary>
+    /// Only needs to be called if vertex positions change
+    /// </summary>
     protected void SetGraphicsBuffer() {
-        if (VertexData is not null && VertexData.Length % 3 != 0) {
-            throw new Exception("VertexData length needs to be a multiple of 3");
-        }
-        
-        _noRenderData = VertexData is null;
-
         if (!_noRenderData) {
             var x = 0f;
             var y = 0f;
             var x1 = 0f;
             var y1 = 0f;
-
-
-            var span = OverridePrimCount > 0 ? VertexData.AsSpan(0, OverridePrimCount * 3) : VertexData.AsSpan();
             
-            foreach (ref var vertex in span) {
+            foreach (ref var vertex in GetGraphicsBuffer()) {
                 x = Math.Min(x, vertex.Position.X);
                 y = Math.Min(y, vertex.Position.Y);
                 x1 = Math.Max(x1, vertex.Position.X);
@@ -92,25 +81,31 @@ public abstract class Sprite : DisplayContainer {
         
         var vertexMatrix = new SpriteVertexMatrix(State.Scale, State.Rotation, State.Position, -AnchorOffset);
         var instance = new SpriteInstanceData(vertexMatrix, Color, ColorSecondary, new Vector2((float) TextureId, State.Alpha), State.Scissor, Extra1, Extra2, ColorTransformation);
-
-        var vCount = OverridePrimCount > 0 ? OverridePrimCount * 3 : VertexData.Length;
         
-        SpriteRender.Draw(instance, VertexData.AsSpan(0, vCount));
+        SpriteRender.Draw(instance, GetGraphicsBuffer());
         
         UiRender.LastRenderCount++;
         
         base.Draw();
     }
 
+    /// <summary>
+    /// Sets color channel 1 in all vertices in current active buffer 
+    /// </summary>
     public void SetChannel1Color(Color color) {
-        foreach (ref var data in VertexData.AsSpan()) {
+        foreach (ref var data in GetGraphicsBuffer()) {
             data.C1Color = color;
         }
     }
     
-    
-    // do something with
-    private Vector2 _info;
+    /// <summary>
+    /// Sets color channel 2 in all vertices in current active buffer 
+    /// </summary>
+    public void SetChannel2Color(Color color) {
+        foreach (ref var data in GetGraphicsBuffer()) {
+            //data.C1Color = color;
+        }
+    }
     
     public bool TooltipMode; // remove
     public Color Color;
@@ -120,6 +115,7 @@ public abstract class Sprite : DisplayContainer {
     // also rotation
     
     // migrate into vertex data
+    [Obsolete]
     public void SetColor(uint rgb, float alpha = 1f) {
         var r = (byte)(rgb >> 16);
         var g = (byte)(rgb >> 8);
@@ -197,15 +193,14 @@ public abstract class Sprite : DisplayContainer {
     }
     
     private protected sealed override bool HitboxComplex(Vector2i position) {
-        if (_noRenderData || OverridePrimCount == 0) {
+        if (_noRenderData || _vertexCount == 0) {
             return false;
         }
         
-        var len = OverridePrimCount > -1 ? OverridePrimCount * 3 : VertexData.Length;
-        for (var i = 0; i < len; i += 3) {
-            var t1 = VertexData[i + 0].Position;
-            var t2 = VertexData[i + 1].Position;
-            var t3 = VertexData[i + 2].Position;
+        for (var i = 0; i < _vertexCount; i += 3) {
+            var t1 = _vertexData[i + 0].Position;
+            var t2 = _vertexData[i + 1].Position;
+            var t3 = _vertexData[i + 2].Position;
 
             var d1 = (position.X - t2.X) * (t1.Y - t2.Y) - (t1.X - t2.X) * (position.Y - t2.Y);
             var d2 = (position.X - t3.X) * (t2.Y - t3.Y) - (t2.X - t3.X) * (position.Y - t3.Y);

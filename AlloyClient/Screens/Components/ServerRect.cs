@@ -44,7 +44,7 @@ public class ServerRect : Container {
             FontSize = FontSize,
             FontType = FontType.Bold,
             OutlineThickness = 3,
-            Color = 0xFFFFFF,
+            Color = Color.RGB(0xFFFFFF),
             Anchor = UiAnchor.MiddleLeft
         });
         _serverNameText.X = 10;
@@ -56,7 +56,7 @@ public class ServerRect : Container {
             FontSize = FontSize,
             FontType = FontType.Bold,
             OutlineThickness = 3,
-            Color = AvailableServerColor,
+            Color = Color.RGB(AvailableServerColor),
             Anchor = UiAnchor.MiddleRight
         });
         _playersText.X = Width - 10;

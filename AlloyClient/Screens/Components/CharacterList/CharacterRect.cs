@@ -51,7 +51,7 @@ public sealed class CharacterRect : Container
             Text = "New Character",
             FontSize = 18,
             FontType = FontType.Bold,
-            Color = 0xFFFFFF,
+            Color = Color.RGB(0xFFFFFF),
             Anchor = UiAnchor.Middle,
         });
         charNameText.X = Width / 2;
@@ -112,7 +112,7 @@ public sealed class CharacterRect : Container
                 Text = $"{_statsMaxed}/{NumberStatsMaxed}",
                 FontSize = 16,
                 FontType = FontType.Bold,
-                Color = 0xCFCFCF,
+                Color = Color.RGB(0xCFCFCF),
                 Anchor = UiAnchor.Middle,
             });
             statsMaxedText.X = Width / 2;
@@ -151,7 +151,7 @@ public sealed class CharacterRect : Container
                 Text = _baseFame.ToString(),
                 FontSize = 16,
                 FontType = FontType.Bold,
-                Color = 0xFFFFFF,
+                Color = Color.RGB(0xFFFFFF),
                 Anchor = UiAnchor.Middle,
             });
             fameText.X = Width / 2;
@@ -208,7 +208,7 @@ public sealed class CharacterRect : Container
                 Text = $"{remainingSlots} Character Slots",
                 FontSize = 18,
                 FontType = FontType.Bold,
-                Color = 0xFFFFFF,
+                Color = Color.RGB(0xFFFFFF),
                 Anchor = UiAnchor.Middle,
             });
             remainingSlotsText.X = Width / 2;
@@ -220,7 +220,7 @@ public sealed class CharacterRect : Container
                 Text = "Remaining",
                 FontSize = 18,
                 FontType = FontType.Bold,
-                Color = 0xFFFFFF,
+                Color = Color.RGB(0xFFFFFF),
                 Anchor = UiAnchor.Middle,
             });
             remainingSlotsText2.X = Width / 2;

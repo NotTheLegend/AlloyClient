@@ -129,7 +129,7 @@ public class CharacterListScreen : TitleScreenBase {
             FontType = FontType.Normal,
             X = goldIcon.X - goldIcon.Width - 5,
             Y = 93,
-            Color = 0xFFFFFF,
+            Color = Color.RGB(0xFFFFFF),
             Anchor = UiAnchor.BottomRight,
         });
         AddChild(goldText);
@@ -150,7 +150,7 @@ public class CharacterListScreen : TitleScreenBase {
             FontType = FontType.Normal,
             X = fameIcon.X - fameIcon.Width - 5,
             Y = 93,
-            Color = 0xFFFFFF,
+            Color = Color.RGB(0xFFFFFF),
             Anchor = UiAnchor.BottomRight,
         });
         AddChild(fameText);

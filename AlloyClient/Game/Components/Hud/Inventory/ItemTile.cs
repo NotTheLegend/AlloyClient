@@ -57,7 +57,7 @@ public sealed class ItemTile : Sprite {
 
         _doubleTimer.AddEventListener(TimerEvent.TimerComplete, OnSingleClick);
 
-        _background = new CutEdgeRect(new CutEdgeConfig {Width = Size, Height = Size, CutX = 4, CutY = 4, Cuts = cut, Color = _bgColor});
+        _background = new CutEdgeRect(new CutEdgeConfig {Width = Size, Height = Size, CutX = 4, CutY = 4, Cuts = cut, Color = Color.RGB(_bgColor)});
         AddChild(_background);
 
         _slotDetail = new ObjectRect(new ObjectRectConfig {Texture = TextureHelper.FromGameAtlas(0x0096), Width = Size, Height = Size, OutlineEnabled = false, GlowEnabled = false});
@@ -71,7 +71,7 @@ public sealed class ItemTile : Sprite {
             _slotDetail.Visible = true;
         }
 
-        _slotId = new SimpleText(new TextConfig {Text = "", X = Size / 2, Y = Size / 2, FontSize = 32, FontType = FontType.Bold, Color = 0x363636, OutlineColor = 0x363636, Anchor = UiAnchor.Middle});
+        _slotId = new SimpleText(new TextConfig {Text = "", X = Size / 2, Y = Size / 2, FontSize = 32, FontType = FontType.Bold, Color = Color.RGB(0x363636), OutlineColor = Color.RGB(0x363636), Anchor = UiAnchor.Middle});
         _slotId.Visible = false;
         AddChild(_slotId);
 
@@ -109,12 +109,12 @@ public sealed class ItemTile : Sprite {
         ItemDesc = itemDesc;
         if (ItemDesc != null && ItemDesc.ObjectType > 0) {
             _sprite.ChangeTexture(TextureHelper.FromGameAtlas(ItemDesc.ObjectType));
-            _background.SetColor(IsUsableByPlayer(ItemDesc) ? _bgColor : 0x5C1D1Du);
+            _background.SetColor(Color.RGB(IsUsableByPlayer(ItemDesc) ? _bgColor : 0x5C1D1Du));
             _slotDetail.Visible = false;
             _slotId.Visible = false;
         } else {
             _sprite.ChangeTexture(TextureHelper.FromGameAtlas(0x0096));
-            _background.SetColor(_bgColor);
+            _background.SetColor(Color.RGB(_bgColor));
             if (SlotType != 0) _slotDetail.Visible = true;
             if (Owner is Player && SlotType == 0) _slotId.Visible = true;
             if (_tooltip != null) TooltipManager.RemoveTooltip(_tooltip);

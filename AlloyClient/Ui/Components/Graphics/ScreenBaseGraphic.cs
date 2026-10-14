@@ -9,10 +9,7 @@ public sealed class ScreenGraphic : UiElement {
     private const int TexHeight = 720;
 
     public ScreenGraphic(bool splash = false) {
-
         TextureId = splash ? TextureType.TitleGraphic : TextureType.TitleBackground;
-        
-        ResizeBackBuffer();
         FillData(TexWidth, TexHeight);
     }
 
@@ -30,18 +27,16 @@ public sealed class ScreenGraphic : UiElement {
         
         FillData(w, h);
     }
-    
-    private void ResizeBackBuffer() {
-        VertexData = new VertexUi[6];
-    }
 
    private void FillData(int width, int height) {
-       VertexData[0] = new VertexUi(new Vector2(0, 0), new Vector2(0f, 0f));
-       VertexData[1] = new VertexUi(new Vector2(width, 0), new Vector2(1f, 0f));
-       VertexData[2] = new VertexUi(new Vector2(width, height), new Vector2(1f, 1f));
-       VertexData[3] = new VertexUi(new Vector2(0, 0), new Vector2(0f, 0f));
-       VertexData[4] = new VertexUi(new Vector2(width, height), new Vector2(1f, 1f));
-       VertexData[5] = new VertexUi(new Vector2(0, height), new Vector2(0f, 1f));
+       var data = GetGraphicsBuffer(6);
+       
+       data[0] = new VertexUi(new Vector2(0, 0), new Vector2(0f, 0f));
+       data[1] = new VertexUi(new Vector2(width, 0), new Vector2(1f, 0f));
+       data[2] = new VertexUi(new Vector2(width, height), new Vector2(1f, 1f));
+       data[3] = new VertexUi(new Vector2(0, 0), new Vector2(0f, 0f));
+       data[4] = new VertexUi(new Vector2(width, height), new Vector2(1f, 1f));
+       data[5] = new VertexUi(new Vector2(0, height), new Vector2(0f, 1f));
        
        SetGraphicsBuffer();
     }

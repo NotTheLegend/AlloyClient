@@ -23,7 +23,7 @@ public class CharacterStatusText : Sprite {
 
         var txtConfig = new TextConfig {
             Text = text,
-            Color = color,
+            Color = Color.RGB(color),
             MaxWidth = 120,
             FontSize = 20,
             OutlineThickness = 4

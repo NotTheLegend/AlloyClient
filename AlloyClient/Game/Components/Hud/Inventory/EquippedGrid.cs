@@ -18,7 +18,7 @@ public sealed class EquippedGrid : Sprite {
     public EquippedGrid(Player owner) {
         _owner = owner;
         
-        var bg = new CutEdgeRect(new CutEdgeConfig { Width = 216, Height = 56, CutX = 6, CutY = 6, Cuts = CutEdges.All, Color = 0x676767 });
+        var bg = new CutEdgeRect(new CutEdgeConfig { Width = 216, Height = 56, CutX = 6, CutY = 6, Cuts = CutEdges.All, Color = Color.RGB(0x676767) });
         AddChild(bg);
         
         _owner.InventoryUpdate.Add(OnInventoryChange);
@@ -33,7 +33,7 @@ public sealed class EquippedGrid : Sprite {
     }
     
     public EquippedGrid(ItemDesc[] items, List<int> slotTypes) {
-        var bg = new CutEdgeRect(new CutEdgeConfig { Width = 216, Height = 56, CutX = 6, CutY = 6, Cuts = CutEdges.All, Color = 0x676767 });
+        var bg = new CutEdgeRect(new CutEdgeConfig { Width = 216, Height = 56, CutX = 6, CutY = 6, Cuts = CutEdges.All, Color = Color.RGB(0x676767) });
         AddChild(bg);
 
         for (byte i = 0; i < NumSlots; i++) {

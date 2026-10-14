@@ -23,7 +23,7 @@ public class LoadingScreen : TitleScreenBase {
             OutlineThickness = 4,
             X = Settings.DefaultScreenWidth / 2,
             Y = Settings.DefaultScreenHeight - 90,
-            Color = 0xFFFFFF,
+            Color = Color.RGB(0xFFFFFF),
             Anchor = UiAnchor.Middle
         });
         AddChild(_text);

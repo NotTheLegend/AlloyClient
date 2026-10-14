@@ -31,10 +31,10 @@ public class StatusBar : Sprite {
         AddChild(_mainBar);
 
         labelString = label;
-        _label = new SimpleText(new TextConfig { Text = label, FontSize = 16, FontType = FontType.Bolder, X = 4, Y = _height / 2, OutlineThickness = 1, Color = 0xFFFFFF, OutlineColor = 0xFFFFFF, Anchor = UiAnchor.MiddleLeft });
+        _label = new SimpleText(new TextConfig { Text = label, FontSize = 16, FontType = FontType.Bolder, X = 4, Y = _height / 2, OutlineThickness = 1, Color = Color.RGB(0xFFFFFF), OutlineColor = Color.RGB(0xFFFFFF), Anchor = UiAnchor.MiddleLeft });
         AddChild(_label);
         
-        _valueText = new SimpleText(new TextConfig { Text = "", FontSize = 16, FontType = FontType.Bold, Y = _height / 2, OutlineThickness = 1, Color = 0xFFFFFF, OutlineColor = 0xFFFFFF, Anchor = UiAnchor.MiddleLeft });
+        _valueText = new SimpleText(new TextConfig { Text = "", FontSize = 16, FontType = FontType.Bold, Y = _height / 2, OutlineThickness = 1, Color = Color.RGB(0xFFFFFF), OutlineColor = Color.RGB(0xFFFFFF), Anchor = UiAnchor.MiddleLeft });
         AddChild(_valueText);
 
         AddEventListener(MouseEvent.MouseOver, OnMouseOver);
@@ -55,7 +55,7 @@ public class StatusBar : Sprite {
         }
 
         labelString = label;
-        _label = new SimpleText(new TextConfig { Text = label, FontSize = 16, FontType = FontType.Bolder, X = 4, Y = _height / 2, OutlineThickness = 1, Color = 0xFFFFFF, OutlineColor = 0xFFFFFF, Anchor = UiAnchor.MiddleLeft });
+        _label = new SimpleText(new TextConfig { Text = label, FontSize = 16, FontType = FontType.Bolder, X = 4, Y = _height / 2, OutlineThickness = 1, Color = Color.RGB(0xFFFFFF), OutlineColor = Color.RGB(0xFFFFFF), Anchor = UiAnchor.MiddleLeft });
         AddChild(_label);
     }
 

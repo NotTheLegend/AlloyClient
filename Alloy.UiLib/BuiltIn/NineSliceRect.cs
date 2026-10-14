@@ -48,7 +48,7 @@ public sealed class NineSliceRect : Sprite {
     }
     
     private void ResizeBackBuffer() {
-        EnsureBufferCapacity(6);
+        
         var data = _slice.AtlasData;
         Extra1 = new Vector4(data.U, data.U + data.W, data.V, data.V + data.H);
     }
@@ -56,13 +56,15 @@ public sealed class NineSliceRect : Sprite {
     public void Resize(int w, int h) {
         _w = w; 
         _h = h;
+        
+        var data = GetGraphicsBuffer(6);
 
-        VertexData[0] = new VertexUi(new Vector2(0, 0), new Vector2(0, 0));
-        VertexData[1] = new VertexUi(new Vector2(_w, 0), new Vector2(1, 0));
-        VertexData[2] = new VertexUi(new Vector2(_w, _h), new Vector2(1, 1));
-        VertexData[3] = new VertexUi(new Vector2(0, 0), new Vector2(0, 0));
-        VertexData[4] = new VertexUi(new Vector2(_w, _h), new Vector2(1, 1));
-        VertexData[5] = new VertexUi(new Vector2(0, _h), new Vector2(0, 1));
+        data[0] = new VertexUi(new Vector2(0, 0), new Vector2(0, 0));
+        data[1] = new VertexUi(new Vector2(_w, 0), new Vector2(1, 0));
+        data[2] = new VertexUi(new Vector2(_w, _h), new Vector2(1, 1));
+        data[3] = new VertexUi(new Vector2(0, 0), new Vector2(0, 0));
+        data[4] = new VertexUi(new Vector2(_w, _h), new Vector2(1, 1));
+        data[5] = new VertexUi(new Vector2(0, _h), new Vector2(0, 1));
         
         SetGraphicsBuffer();
 

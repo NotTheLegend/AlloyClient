@@ -12,7 +12,7 @@ public class SliderOption : Option {
             FontSize = 22,
             FontType = FontType.Bold,
             OutlineThickness = 2,
-            Color = 0xABABAB
+            Color = Color.RGB(0xABABAB)
         });
         AddChild(_text);
     }

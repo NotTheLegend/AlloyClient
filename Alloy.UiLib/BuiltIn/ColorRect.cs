@@ -32,7 +32,7 @@ public class ColorRect : Sprite {
     }
 
     private void Build(int w, int h) {
-        var data = EnsureBufferCapacity(6);
+        var data = GetGraphicsBuffer(6);
         
         data[0].Position = new Vector2(0, 0);
         data[1].Position = new Vector2(w, 0);

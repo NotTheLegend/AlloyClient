@@ -1,4 +1,5 @@
-﻿using Alloy.UiLib.Core;
+﻿using Alloy.Common;
+using Alloy.UiLib.Core;
 using Alloy.UiLib.Rendering;
 using OpenTK.Mathematics;
 
@@ -10,8 +11,8 @@ public struct EllipseConfig {
     public int DiameterX = 0;
     public int DiameterY = 0;
     public int OutlineSize = 0;
-    public uint Color = 0x000000;
-    public uint OutlineColor = 0x000000;
+    public Color Color = Color.Black;
+    public Color OutlineColor = Color.Black;
     public float Alpha = 1.0f;
     public UiAnchor Anchor = UiAnchor.Default;
 
@@ -32,16 +33,15 @@ public sealed class Ellipse : Sprite {
         _dX = config.DiameterX;
         _dY = config.DiameterY;
         _oSize = config.OutlineSize;
-        SetColor(config.Color);
-        SetColorSecondary(config.OutlineColor);
         Alpha = config.Alpha;
         Anchor = config.Anchor;
         HitboxType = CollisionType.Ellipse;
         MouseEnabled = config.MouseEnabled;
         TextureId = TextureType.Ellipse;
         
-        EnsureBufferCapacity(24);
         FillData();
+        SetChannel1Color(config.Color);
+        SetChannel2Color(config.OutlineColor);
     }
     
     private void FillData() {
@@ -54,38 +54,39 @@ public sealed class Ellipse : Sprite {
         var u = rx + _oSize;
         var v = ry + _oSize;
         
+        var data = GetGraphicsBuffer(24);
         
-        VertexData[0] = new VertexUi(new Vector2(rx, ry), new Vector2(0f, 0f)); // Center
-        VertexData[1] = new VertexUi(new Vector2(0 - _oSize, ry), new Vector2(u, 0f)); // Middle Left
-        VertexData[2] = new VertexUi(new Vector2(0 - _oSize, 0 - _oSize), new Vector2(u, v)); // Top Left
+        data[0] = new VertexUi(new Vector2(rx, ry), new Vector2(0f, 0f)); // Center
+        data[1] = new VertexUi(new Vector2(0 - _oSize, ry), new Vector2(u, 0f)); // Middle Left
+        data[2] = new VertexUi(new Vector2(0 - _oSize, 0 - _oSize), new Vector2(u, v)); // Top Left
         
-        VertexData[3] = new VertexUi(new Vector2(0 - _oSize, 0 - _oSize), new Vector2(u, v)); // Top Left
-        VertexData[4] = new VertexUi(new Vector2(rx, 0 - _oSize), new Vector2(0f, v)); // Top Center
-        VertexData[5] = new VertexUi(new Vector2(rx, ry), new Vector2(0f, 0f)); // Center
+        data[3] = new VertexUi(new Vector2(0 - _oSize, 0 - _oSize), new Vector2(u, v)); // Top Left
+        data[4] = new VertexUi(new Vector2(rx, 0 - _oSize), new Vector2(0f, v)); // Top Center
+        data[5] = new VertexUi(new Vector2(rx, ry), new Vector2(0f, 0f)); // Center
         
-        VertexData[6] = new VertexUi(new Vector2(rx, ry), new Vector2(0f, 0f)); // Center
-        VertexData[7] = new VertexUi(new Vector2(rx, 0 - _oSize), new Vector2(0f, v)); // Top Center
-        VertexData[8] = new VertexUi(new Vector2(rx * 2 + _oSize, 0 - _oSize), new Vector2(u, v)); // Top Right
+        data[6] = new VertexUi(new Vector2(rx, ry), new Vector2(0f, 0f)); // Center
+        data[7] = new VertexUi(new Vector2(rx, 0 - _oSize), new Vector2(0f, v)); // Top Center
+        data[8] = new VertexUi(new Vector2(rx * 2 + _oSize, 0 - _oSize), new Vector2(u, v)); // Top Right
         
-        VertexData[9] = new VertexUi(new Vector2(rx * 2 + _oSize, 0 - _oSize), new Vector2(u, v)); // Top Right
-        VertexData[10] = new VertexUi(new Vector2(rx * 2 + _oSize, ry), new Vector2(u, 0f)); // Middle Right
-        VertexData[11] = new VertexUi(new Vector2(rx, ry), new Vector2(0f, 0f)); // Center
+        data[9] = new VertexUi(new Vector2(rx * 2 + _oSize, 0 - _oSize), new Vector2(u, v)); // Top Right
+        data[10] = new VertexUi(new Vector2(rx * 2 + _oSize, ry), new Vector2(u, 0f)); // Middle Right
+        data[11] = new VertexUi(new Vector2(rx, ry), new Vector2(0f, 0f)); // Center
         
-        VertexData[12] = new VertexUi(new Vector2(0 - _oSize, ry * 2 + _oSize), new Vector2(u, v)); // Bottom Left
-        VertexData[13] = new VertexUi(new Vector2(0 - _oSize, ry), new Vector2(u, 0f)); // Middle Left
-        VertexData[14] = new VertexUi(new Vector2(rx, ry), new Vector2(0f, 0f)); // Center
+        data[12] = new VertexUi(new Vector2(0 - _oSize, ry * 2 + _oSize), new Vector2(u, v)); // Bottom Left
+        data[13] = new VertexUi(new Vector2(0 - _oSize, ry), new Vector2(u, 0f)); // Middle Left
+        data[14] = new VertexUi(new Vector2(rx, ry), new Vector2(0f, 0f)); // Center
         
-        VertexData[15] = new VertexUi(new Vector2(rx, ry), new Vector2(0f, 0f)); // Center
-        VertexData[16] = new VertexUi(new Vector2(rx, ry * 2 + _oSize), new Vector2(0f, v)); // Bottom Center
-        VertexData[17] = new VertexUi(new Vector2(0 - _oSize, ry * 2 + _oSize), new Vector2(u, v)); // Bottom Left
+        data[15] = new VertexUi(new Vector2(rx, ry), new Vector2(0f, 0f)); // Center
+        data[16] = new VertexUi(new Vector2(rx, ry * 2 + _oSize), new Vector2(0f, v)); // Bottom Center
+        data[17] = new VertexUi(new Vector2(0 - _oSize, ry * 2 + _oSize), new Vector2(u, v)); // Bottom Left
         
-        VertexData[18] = new VertexUi(new Vector2(rx, ry * 2 + _oSize), new Vector2(0f, v)); // Bottom Center
-        VertexData[19] = new VertexUi(new Vector2(rx, ry), new Vector2(0f, 0f)); // Center
-        VertexData[20] = new VertexUi(new Vector2(rx * 2 + _oSize, ry * 2 + _oSize), new Vector2(u, v)); // Bottom Right
+        data[18] = new VertexUi(new Vector2(rx, ry * 2 + _oSize), new Vector2(0f, v)); // Bottom Center
+        data[19] = new VertexUi(new Vector2(rx, ry), new Vector2(0f, 0f)); // Center
+        data[20] = new VertexUi(new Vector2(rx * 2 + _oSize, ry * 2 + _oSize), new Vector2(u, v)); // Bottom Right
         
-        VertexData[21] = new VertexUi(new Vector2(rx * 2 + _oSize, ry * 2 + _oSize), new Vector2(u, v)); // Bottom Right
-        VertexData[22] = new VertexUi(new Vector2(rx, ry), new Vector2(0f, 0f)); // Center
-        VertexData[23] = new VertexUi(new Vector2(rx * 2 + _oSize, ry), new Vector2(u, 0f)); // Middle Right
+        data[21] = new VertexUi(new Vector2(rx * 2 + _oSize, ry * 2 + _oSize), new Vector2(u, v)); // Bottom Right
+        data[22] = new VertexUi(new Vector2(rx, ry), new Vector2(0f, 0f)); // Center
+        data[23] = new VertexUi(new Vector2(rx * 2 + _oSize, ry), new Vector2(u, 0f)); // Middle Right
         
         SetGraphicsBuffer();
     }

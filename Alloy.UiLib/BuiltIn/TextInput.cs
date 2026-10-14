@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Alloy.Common;
 using Alloy.UiLib.Core;
 using Alloy.UiLib.Data;
 using Alloy.UiLib.Input;
@@ -14,8 +15,8 @@ public struct InputConfig {
     public int Y = 0;
     public float FontSize = 10;
     public FontType FontType = FontType.Normal;
-    public uint Color = 0xFFFFFF;
-    public uint OutlineColor = 0x0;
+    public Color Color = Color.White;
+    public Color OutlineColor = Color.Black;
     public uint OutlineThickness = 4;
     public int Width = 100;
     public string DefaultText = "";
@@ -103,13 +104,7 @@ public sealed class TextInput : Sprite {
         
         AddEventListener(MouseEvent.LeftClick, OnMouseClick);
         
-        ResizeBackBuffer();
         FillData();
-    }
-    
-    private void ResizeBackBuffer() {
-        var size = _maxCharacters + 1;
-        EnsureBufferCapacity(size * 6);
     }
     
     private void OnFrameEnter() {
@@ -122,13 +117,14 @@ public sealed class TextInput : Sprite {
     }
 
     private void FillData() {
+        var data = GetGraphicsBuffer((_maxCharacters + 1) * 6);
         var startX = CutX * 3;
         var startY = _font.Ascender * _fontScale + CutY * 3;
         var zero = new Vector2(startX, startY);
 
         var (start, end) = _font.GetStartIndex(_inputText, _caretIndex, _width - startX * 2 - _caret.Width, _outlineThickness, _fontScale);
         _startIndex = start;
-        OverridePrimCount = 2;
+        var charCount = 1;
         
         var idx = 1;
         var len = _inputText.Length;
@@ -160,12 +156,12 @@ public sealed class TextInput : Sprite {
                     var uv = glyph.UV;
                     var pos = glyph.Position;
                     
-                    VertexData[idx * 6 + 0] = new VertexUi(new Vector2(zero.X + pos.X0 * _fontScale, zero.Y - pos.Y0 * _fontScale), new Vector2(uv.X0, uv.Y0)); //tl
-                    VertexData[idx * 6 + 1] = new VertexUi(new Vector2(zero.X + pos.X1 * _fontScale, zero.Y - pos.Y0 * _fontScale), new Vector2(uv.X1, uv.Y0)); //tr
-                    VertexData[idx * 6 + 2] = new VertexUi(new Vector2(zero.X + pos.X1 * _fontScale, zero.Y - pos.Y1 * _fontScale), new Vector2(uv.X1, uv.Y1)); //br
-                    VertexData[idx * 6 + 3] = new VertexUi(new Vector2(zero.X + pos.X0 * _fontScale, zero.Y - pos.Y0 * _fontScale), new Vector2(uv.X0, uv.Y0)); //tl
-                    VertexData[idx * 6 + 4] = new VertexUi(new Vector2(zero.X + pos.X1 * _fontScale, zero.Y - pos.Y1 * _fontScale), new Vector2(uv.X1, uv.Y1)); //br
-                    VertexData[idx * 6 + 5] = new VertexUi(new Vector2(zero.X + pos.X0 * _fontScale, zero.Y - pos.Y1 * _fontScale), new Vector2(uv.X0, uv.Y1)); //bl
+                    data[idx * 6 + 0] = new VertexUi(new Vector2(zero.X + pos.X0 * _fontScale, zero.Y - pos.Y0 * _fontScale), new Vector2(uv.X0, uv.Y0)); //tl
+                    data[idx * 6 + 1] = new VertexUi(new Vector2(zero.X + pos.X1 * _fontScale, zero.Y - pos.Y0 * _fontScale), new Vector2(uv.X1, uv.Y0)); //tr
+                    data[idx * 6 + 2] = new VertexUi(new Vector2(zero.X + pos.X1 * _fontScale, zero.Y - pos.Y1 * _fontScale), new Vector2(uv.X1, uv.Y1)); //br
+                    data[idx * 6 + 3] = new VertexUi(new Vector2(zero.X + pos.X0 * _fontScale, zero.Y - pos.Y0 * _fontScale), new Vector2(uv.X0, uv.Y0)); //tl
+                    data[idx * 6 + 4] = new VertexUi(new Vector2(zero.X + pos.X1 * _fontScale, zero.Y - pos.Y1 * _fontScale), new Vector2(uv.X1, uv.Y1)); //br
+                    data[idx * 6 + 5] = new VertexUi(new Vector2(zero.X + pos.X0 * _fontScale, zero.Y - pos.Y1 * _fontScale), new Vector2(uv.X0, uv.Y1)); //bl
 
                     if (i < len - 1) {
                         var k = password ? '*' : _inputText[i + 1];
@@ -175,7 +171,7 @@ public sealed class TextInput : Sprite {
 
                     zero.X += glyph.Advance * _fontScale;
                     idx += 1;
-                    OverridePrimCount += 2;
+                    charCount++;
                     continue;
             }
         }
@@ -185,6 +181,7 @@ public sealed class TextInput : Sprite {
             _caret.Y = CutY * 3;
         }
         
+        EnsureBufferLength(charCount * 6);
         SetGraphicsBuffer();
     }
 
@@ -213,10 +210,11 @@ public sealed class TextInput : Sprite {
     }
 
     private void SetCaretIndex() {
+        var data = GetGraphicsBuffer();
         var i = 1;// Offset by 1 for rect
         for (var j = _startIndex; j < _inputText.Length; j++) {
-            var p1 = VertexData[i * 4 + 1].Position.X;
-            var p2 = VertexData[i * 4 + 3].Position.X;
+            var p1 = data[i * 4 + 1].Position.X;
+            var p2 = data[i * 4 + 3].Position.X;
             var half = (p2 - p1) / 2f;
 
             if (j == _startIndex && _mousePosition.X <= p1) {

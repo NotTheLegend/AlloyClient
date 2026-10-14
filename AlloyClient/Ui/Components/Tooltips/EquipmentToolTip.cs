@@ -146,8 +146,8 @@ public sealed class EquipmentToolTip : Tooltip
             FontSize = size,
             FontType = type,
             Text = text,
-            Color = color, 
-            OutlineColor = outline,
+            Color = Color.RGB(color), 
+            OutlineColor = Color.RGB(outline),
             OutlineThickness = thickness,
             MaxWidth = maxWidth,
         };

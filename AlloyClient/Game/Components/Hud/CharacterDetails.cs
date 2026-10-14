@@ -21,9 +21,9 @@ public sealed class CharacterDetails : Sprite {
             FontType = FontType.Bolder,
             X = 40,
             Y = 20,
-            Color = 0xdadada,
+            Color = Color.RGB(0xdadada),
             OutlineThickness = 0,
-            OutlineColor = 0,
+            OutlineColor = Color.RGB(0),
             Anchor = UiAnchor.MiddleLeft
         });
         AddChild(_name);

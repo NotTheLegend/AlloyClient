@@ -46,17 +46,18 @@ public class ObjectRect : Sprite {
         _outline = config.OutlineEnabled;
         _glow = config.GlowEnabled;
         
-        EnsureBufferCapacity(6);
+        
         FillData();
     }
 
     private void FillData() {
-        VertexData[0] = new VertexUi(new Vector2(0, 0), new Vector2(_texture.U, _texture.V));
-        VertexData[1] = new VertexUi(new Vector2(_width, 0), new Vector2(_texture.U + _texture.W, _texture.V));
-        VertexData[2] = new VertexUi(new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H));
-        VertexData[3] = new VertexUi(new Vector2(0, 0), new Vector2(_texture.U, _texture.V));
-        VertexData[4] = new VertexUi(new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H));
-        VertexData[5] = new VertexUi(new Vector2(0, _height), new Vector2(_texture.U, _texture.V + _texture.H));
+        var data = GetGraphicsBuffer(6);
+        data[0] = new VertexUi(new Vector2(0, 0), new Vector2(_texture.U, _texture.V));
+        data[1] = new VertexUi(new Vector2(_width, 0), new Vector2(_texture.U + _texture.W, _texture.V));
+        data[2] = new VertexUi(new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H));
+        data[3] = new VertexUi(new Vector2(0, 0), new Vector2(_texture.U, _texture.V));
+        data[4] = new VertexUi(new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H));
+        data[5] = new VertexUi(new Vector2(0, _height), new Vector2(_texture.U, _texture.V + _texture.H));
         
         SetGraphicsBuffer();
         

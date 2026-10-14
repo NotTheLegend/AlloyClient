@@ -19,48 +19,31 @@ public sealed class MinimapLayer : Sprite {
         TextureId = TextureType.SolidColor;
         
         AddEventListener(Event.EnterFrame, OnFrameEnter);
-
-        ResizeBackBuffer();
+        
+        GetGraphicsBuffer(VertexSize);
     }
 
-    private void ResizeBackBuffer() {
-        VertexData = new VertexUi[VertexSize];
-        OverridePrimCount = 0;
-    }
-
-    public static void SetFocus(Entity entity) {
-        _focus = entity;
-    }
+    public static void SetFocus(Entity entity) => _focus = entity;
 
     public void SetSize(float size) => _size = size;
 
-    private void AddObject(Vector2 pos, uint rgb) {
-        if (_count >= MaxEntities) return;
-
-        const float size = 3.25f;
-
-        var color = Color.RGB(rgb);
-        VertexData[_count * 6 + 0] = new VertexUi(new Vector2(pos.X - size, pos.Y - size), color);
-        VertexData[_count * 6 + 1] = new VertexUi(new Vector2(pos.X + size, pos.Y - size), color);
-        VertexData[_count * 6 + 2] = new VertexUi(new Vector2(pos.X + size, pos.Y + size), color);
-        VertexData[_count * 6 + 3] = new VertexUi(new Vector2(pos.X - size, pos.Y - size), color);
-        VertexData[_count * 6 + 4] = new VertexUi(new Vector2(pos.X + size, pos.Y + size), color);
-        VertexData[_count * 6 + 5] = new VertexUi(new Vector2(pos.X - size, pos.Y + size), color);
-
-        _count++;
-        OverridePrimCount += 2;
-    }
-
     private void OnFrameEnter() {
-        if (Map.LocalPlayer == null) return;
+        if (Map.LocalPlayer == null) {
+            return;
+        }
         
+        var data = GetGraphicsBuffer(VertexSize);
         _count = 0;
-        OverridePrimCount = 0;
 
         foreach (var kvp in Map.Entities) {
-            var entity = kvp.Value;
+            if (_count >= MaxEntities) {
+                break;
+            }
             
-            if (entity.Properties.Static || entity.Properties.NoMiniMap || entity.ObjectId == _focus.ObjectId) continue;
+            var entity = kvp.Value;
+            if (entity.Properties.Static || entity.Properties.NoMiniMap || entity.ObjectId == _focus.ObjectId) {
+                continue;
+            }
 
             var fillColor = 0u;
             
@@ -83,10 +66,21 @@ public sealed class MinimapLayer : Sprite {
             }
 
             var ratio = (entity.Position - Map.LocalPlayer.Position) / _size;
-
             var pos = new Vector2(Minimap.MapSize / 2f) + new Vector2(Minimap.MapSize / 2f) * ratio;
-            AddObject(pos, fillColor);
+            var color = Color.RGB(fillColor);
+            const float size = 3.25f;
+            
+            data[_count * 6 + 0] = new VertexUi(new Vector2(pos.X - size, pos.Y - size), color);
+            data[_count * 6 + 1] = new VertexUi(new Vector2(pos.X + size, pos.Y - size), color);
+            data[_count * 6 + 2] = new VertexUi(new Vector2(pos.X + size, pos.Y + size), color);
+            data[_count * 6 + 3] = new VertexUi(new Vector2(pos.X - size, pos.Y - size), color);
+            data[_count * 6 + 4] = new VertexUi(new Vector2(pos.X + size, pos.Y + size), color);
+            data[_count * 6 + 5] = new VertexUi(new Vector2(pos.X - size, pos.Y + size), color);
+
+            _count++;
         }
-        
+
+        EnsureBufferLength(_count * 6);
+
     }
 }

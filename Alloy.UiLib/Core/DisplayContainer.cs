@@ -139,7 +139,7 @@ public abstract class DisplayContainer : DisplayObject {
         }
     }
 
-    internal override void SetStageReference(Stage stage) {
+    internal sealed override void SetStageReference(Stage stage) {
         base.SetStageReference(stage);
         foreach (var child in _children) {
             child.SetStageReference(stage);

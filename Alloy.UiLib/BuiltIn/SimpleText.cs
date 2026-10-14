@@ -1,4 +1,5 @@
-﻿using Alloy.UiLib.Core;
+﻿using Alloy.Common;
+using Alloy.UiLib.Core;
 using Alloy.UiLib.Data;
 using Alloy.UiLib.Rendering;
 using OpenTK.Mathematics;
@@ -13,8 +14,8 @@ public struct TextConfig {
     public int Y = 0;
     public int MaxWidth = -1;
     public float OutlineThickness = 0;
-    public uint Color = 0xFFFFFF;
-    public uint OutlineColor = 0x0;
+    public Color Color = Color.White;
+    public Color OutlineColor = Color.Black;
     public float Alpha = 1.0f;
     public UiAnchor Anchor = UiAnchor.Default;
 
@@ -35,6 +36,8 @@ public sealed class SimpleText : Sprite {
     private float _lineWrapStart;
     private readonly int _maxWidth;
     private readonly BitmapFont _font;
+    private readonly Color _color;
+    private readonly Color _outlineColor;
 
     public SimpleText(TextConfig config) {
         Text = config.Text;
@@ -45,23 +48,18 @@ public sealed class SimpleText : Sprite {
         Y = config.Y;
         Alpha = config.Alpha;
         _outlineThickness = _font.ValidateOutlineSize(config.OutlineThickness);
-        SetColor(config.Color);
+        _color = config.Color;
+        _outlineColor = config.OutlineColor;
         SetColorSecondary(config.OutlineColor);
         Anchor = config.Anchor;
 
         TextureId = TextureType.Text;
         
-        ResizeBackBuffer();
         FillData();
-    }
-    
-    private void ResizeBackBuffer() {
-        var size = _font.GetCharCount(Text);
-        EnsureBufferCapacity(size * 6);
     }
 
     private void FillData() {
-        ResizeBackBuffer();
+        var data = GetGraphicsBuffer(_font.GetCharCount(Text) * 6);
         var scale = _fontScale;
         var zero = new Vector2(0f, _font.Ascender * scale);
         var lastSpaceIndex = 0;
@@ -92,12 +90,12 @@ public sealed class SimpleText : Sprite {
 
                     var uv = glyph.UV;
                     var pos = glyph.Position;
-                    VertexData[idx * 6 + 0] = new VertexUi(new Vector2(zero.X + pos.X0 * scale, zero.Y - pos.Y0 * scale), new Vector2(uv.X0, uv.Y0)); //tl
-                    VertexData[idx * 6 + 1] = new VertexUi(new Vector2(zero.X + pos.X1 * scale, zero.Y - pos.Y0 * scale), new Vector2(uv.X1, uv.Y0)); //tr
-                    VertexData[idx * 6 + 2] = new VertexUi(new Vector2(zero.X + pos.X1 * scale, zero.Y - pos.Y1 * scale), new Vector2(uv.X1, uv.Y1)); //br
-                    VertexData[idx * 6 + 3] = new VertexUi(new Vector2(zero.X + pos.X0 * scale, zero.Y - pos.Y0 * scale), new Vector2(uv.X0, uv.Y0)); //tl
-                    VertexData[idx * 6 + 4] = new VertexUi(new Vector2(zero.X + pos.X1 * scale, zero.Y - pos.Y1 * scale), new Vector2(uv.X1, uv.Y1)); //br
-                    VertexData[idx * 6 + 5] = new VertexUi(new Vector2(zero.X + pos.X0 * scale, zero.Y - pos.Y1 * scale), new Vector2(uv.X0, uv.Y1)); //bl
+                    data[idx * 6 + 0] = new VertexUi(new Vector2(zero.X + pos.X0 * scale, zero.Y - pos.Y0 * scale), new Vector2(uv.X0, uv.Y0), _color); //tl
+                    data[idx * 6 + 1] = new VertexUi(new Vector2(zero.X + pos.X1 * scale, zero.Y - pos.Y0 * scale), new Vector2(uv.X1, uv.Y0), _color); //tr
+                    data[idx * 6 + 2] = new VertexUi(new Vector2(zero.X + pos.X1 * scale, zero.Y - pos.Y1 * scale), new Vector2(uv.X1, uv.Y1), _color); //br
+                    data[idx * 6 + 3] = new VertexUi(new Vector2(zero.X + pos.X0 * scale, zero.Y - pos.Y0 * scale), new Vector2(uv.X0, uv.Y0), _color); //tl
+                    data[idx * 6 + 4] = new VertexUi(new Vector2(zero.X + pos.X1 * scale, zero.Y - pos.Y1 * scale), new Vector2(uv.X1, uv.Y1), _color); //br
+                    data[idx * 6 + 5] = new VertexUi(new Vector2(zero.X + pos.X0 * scale, zero.Y - pos.Y1 * scale), new Vector2(uv.X0, uv.Y1), _color); //bl
                     idx++;
 
                     if (i < len - 1) {
@@ -141,14 +139,6 @@ public sealed class SimpleText : Sprite {
     }
 
     private void Rebuild() {
-        var size = _font.GetCharCount(Text);
-        if (size * 4 <= VertexData.Length) {
-            OverridePrimCount = size * 2;
-        }
-        else {
-            ResizeBackBuffer();
-        }
-        
         FillData();
     }
 

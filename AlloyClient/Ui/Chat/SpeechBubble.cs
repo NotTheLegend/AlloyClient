@@ -51,9 +51,9 @@ public sealed class SpeechBubble : Sprite {
         const int cut = 10;
         const int outline = 2;
         
-        var txt = new SimpleText(new TextConfig { Text = data.Text, FontSize = 15, X = cut, Y = cut, Color = colors.Item3, MaxWidth = 120 });
-        var rect = new CutEdgeRect(new CutEdgeConfig { Width = cut * 2 + txt.Width, Height = cut * 2 + txt.Height, CutX = cut, CutY = cut, Color = colors.Item1 });
-        var outlineRect = new CutEdgeRect(new CutEdgeConfig { Width = (cut + outline) * 2 + txt.Width, Height = (cut + outline) * 2 + txt.Height, CutX = cut + outline / 2, CutY = cut + outline / 2, Color = colors.Item2 }) {
+        var txt = new SimpleText(new TextConfig { Text = data.Text, FontSize = 15, X = cut, Y = cut, Color = Color.RGB(colors.Item3), MaxWidth = 120 });
+        var rect = new CutEdgeRect(new CutEdgeConfig { Width = cut * 2 + txt.Width, Height = cut * 2 + txt.Height, CutX = cut, CutY = cut, Color = Color.RGB(colors.Item1) });
+        var outlineRect = new CutEdgeRect(new CutEdgeConfig { Width = (cut + outline) * 2 + txt.Width, Height = (cut + outline) * 2 + txt.Height, CutX = cut + outline / 2, CutY = cut + outline / 2, Color = Color.RGB(colors.Item2) }) {
             X = -outline,
             Y = -outline
         };

@@ -26,14 +26,14 @@ public class LoginContainer : Overlay {
         var titleBackground = new ColorRect(new ColorRectConfig { Width = 475, Height = 50, Color = Color.RGB(0x4d4d4d) });
         AddChild(titleBackground);
 
-        var title = new SimpleText(new TextConfig { Text = "Log in", FontSize = 22, FontType = FontType.Bold, X = Width / 2, Y = titleBackground.Height / 2, Color = 0xFFFFFF, Anchor = UiAnchor.Middle });
+        var title = new SimpleText(new TextConfig { Text = "Log in", FontSize = 22, FontType = FontType.Bold, X = Width / 2, Y = titleBackground.Height / 2, Color = Color.RGB(0xFFFFFF), Anchor = UiAnchor.Middle });
         AddChild(title);
 
-        var emailConfig = new InputConfig { X = Width / 2, Y = 100, FontSize = 24, FontType = FontType.Bold, Color = 0xFFFFFF, Width = 350, DefaultText = "Username", Anchor = UiAnchor.Middle };
+        var emailConfig = new InputConfig { X = Width / 2, Y = 100, FontSize = 24, FontType = FontType.Bold, Color = Color.RGB(0xFFFFFF), Width = 350, DefaultText = "Username", Anchor = UiAnchor.Middle };
         _emailInput = new TextInput(emailConfig);
         AddChild(_emailInput);
 
-        var passwordConfig = new InputConfig { X = Width / 2, Y = 160, FontSize = 24, FontType = FontType.Bold, Color = 0xFFFFFF, Width = 350, DefaultText = "Password", Password = true, Anchor = UiAnchor.Middle };
+        var passwordConfig = new InputConfig { X = Width / 2, Y = 160, FontSize = 24, FontType = FontType.Bold, Color = Color.RGB(0xFFFFFF), Width = 350, DefaultText = "Password", Password = true, Anchor = UiAnchor.Middle };
         _passwordInput = new TextInput(passwordConfig);
         AddChild(_passwordInput);
 

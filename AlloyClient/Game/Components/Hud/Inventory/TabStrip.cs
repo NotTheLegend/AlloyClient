@@ -88,7 +88,7 @@ namespace AlloyClient.Game.Components.Hud.Inventory
                         break;
                 }
 
-                invTab = new CutEdgeRect(new CutEdgeConfig { Width = 34, Height = 24, CutX = 5, CutY = 5, Cuts = CutEdges.Top, Color = currentTabIndex == tab.Key ? TabColor : BackgroundColor });
+                invTab = new CutEdgeRect(new CutEdgeConfig { Width = 34, Height = 24, CutX = 5, CutY = 5, Cuts = CutEdges.Top, Color = Color.RGB(currentTabIndex == tab.Key ? TabColor : BackgroundColor) });
                 invTab.X = X;
                 invTab.Y = Y;
 
@@ -153,7 +153,7 @@ namespace AlloyClient.Game.Components.Hud.Inventory
             var p = Map.LocalPlayer;
             int y = 150/2 - 16 - 10; //Height - Size - Spacing 
             int offset = 40;
-            var bg = new CutEdgeRect(new CutEdgeConfig { Width = 224, Height = 150, CutX = 6, CutY = 6, Cuts = CutEdges.All, Color = 0x242222 });
+            var bg = new CutEdgeRect(new CutEdgeConfig { Width = 224, Height = 150, CutX = 6, CutY = 6, Cuts = CutEdges.All, Color = Color.RGB(0x242222) });
             AddChild(bg);
 
             string[] IndexName = { "ATK" , "DEF", "SPD", "DEX" , "VIT" , "WIS"};
@@ -173,8 +173,8 @@ namespace AlloyClient.Game.Components.Hud.Inventory
                     X = even ? offset : Width - 16 - offset*2, 
                     Y = y, 
                     OutlineThickness = 0, 
-                    Color = 0xFFFFFF, 
-                    OutlineColor = 0xFFFFFF, 
+                    Color = Color.RGB(0xFFFFFF), 
+                    OutlineColor = Color.RGB(0xFFFFFF), 
                     Anchor = UiAnchor.
                     MiddleLeft 
                 });
@@ -189,8 +189,8 @@ namespace AlloyClient.Game.Components.Hud.Inventory
                     X = (even ? offset : Width - 16 - offset*2) + StatName.Width + 5, //kinda gross but its needed
                     Y = y, 
                     OutlineThickness = 0, 
-                    Color = 0xFFC800, 
-                    OutlineColor = 0xFFFFFF, 
+                    Color = Color.RGB(0xFFC800), 
+                    OutlineColor = Color.RGB(0xFFFFFF), 
                     Anchor = UiAnchor.MiddleLeft 
                 });
 

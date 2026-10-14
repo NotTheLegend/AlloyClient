@@ -36,7 +36,7 @@ public class AccountOverlay : Sprite {
     private void CreateLogin() {
         _container.RemoveChildren();
 
-        var newConfig = new TextConfig { Text = "new account - ", FontSize = 24, FontType = FontType.Normal, Color = 0xB3B3B3 };
+        var newConfig = new TextConfig { Text = "new account - ", FontSize = 24, FontType = FontType.Normal, Color = Color.RGB(0xB3B3B3) };
         var newText = new SimpleText(newConfig);
         _container.AddChild(newText);
 
@@ -44,7 +44,7 @@ public class AccountOverlay : Sprite {
         var registerButton = new TextButton(registerConfig);
         _container.AddChild(registerButton);
 
-        var dashConfig = new TextConfig { Text = " - ", FontSize = 24, X = registerButton.X + registerButton.Width, Color = 0xB3B3B3 };
+        var dashConfig = new TextConfig { Text = " - ", FontSize = 24, X = registerButton.X + registerButton.Width, Color = Color.RGB(0xB3B3B3) };
         var dashText = new SimpleText(dashConfig);
         _container.AddChild(dashText);
 
