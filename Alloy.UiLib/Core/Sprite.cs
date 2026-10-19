@@ -107,7 +107,6 @@ public abstract class Sprite : DisplayContainer {
         }
     }
     
-    public bool TooltipMode; // remove
     protected Vector4 Extra1;
     protected Vector4 Extra2;
     // also rotation

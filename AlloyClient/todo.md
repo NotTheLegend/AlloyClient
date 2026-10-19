@@ -8,9 +8,8 @@
 
 # Alloy.UiLib
 * add rotation support to hit test/bounds
-* replace tooltip mode with clamp to stage bool
-* finish color channel stuff
-* something with gtween (i forgot)
+* something with gtween (remove TweenActive and replace with tween events, make users deal with enable/disable interactions)
+* add rich text (RichText.cs, separate from SimpleText)
 
 # Alloy.Engine
 * add resizable ssbos

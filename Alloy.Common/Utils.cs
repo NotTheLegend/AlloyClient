@@ -16,6 +16,15 @@ public static class Utils {
         public (int, int) ToPair() => (vector.X, vector.Y);
 
         public Vector2i Scale(Vector2 scale) => new ((int) (vector.X * scale.X), (int) (vector.Y * scale.Y));
+
+        /// <summary>
+        /// Clamps value to max then min
+        /// </summary>
+        public static Vector2i ClampMaxMin(Vector2i value, Vector2i max, Vector2i min) => Vector2i.Max(Vector2i.Min(value, max), min);
+
+        public static Vector2i Min(Vector2i value, Vector2i min) => new(Math.Min(value.X, min.X), Math.Min(value.Y, min.Y));
+        
+        public static Vector2i Max(Vector2i value, Vector2i max) => new(Math.Max(value.X, max.X), Math.Max(value.Y, max.Y));
     }
     
     public static AtlasData ReadAtlasData(this BinaryReader reader) {

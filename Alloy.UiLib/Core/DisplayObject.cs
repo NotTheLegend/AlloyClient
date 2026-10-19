@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Alloy.Common;
 using Alloy.UiLib.Extra;
 using Alloy.UiLib.Utils;
 using Microsoft.Extensions.Logging;
@@ -99,6 +100,8 @@ public abstract class DisplayObject : EventManager {
     public ColorTransform ColorTransformation { get; set => IsInstanceChange(ref field, value); } = ColorTransform.Default;
 
     public bool MouseEnabled = true;
+
+    public bool ClampToStage = false;
     
     public DisplayContainer Parent { get; internal set; }
     
@@ -166,6 +169,10 @@ public abstract class DisplayObject : EventManager {
         State = state + new ObjectState(GetSelfPosition(), Scale, Alpha, Rotation, Scissor);
         DisplayState = displayState + GetDisplayState();
         CanInteract = DisplayState.Visible && displayState.MouseChildren && MouseEnabled;
+
+        if (ClampToStage) {
+            State.Position = Vector2i.ClampMaxMin(State.Position, new Vector2i((int)(Stage.StageWidth - State.Scale.X * ContentSizeWidth), (int)(Stage.StageHeight - State.Scale.Y * ContentSizeHeight)), Vector2i.Zero);
+        }
 
         if (_isDragging) { // override position if dragging
             State.Position = Stage.Mouse.GetMousePosition() - (_dragOffset * Scale).AsInt();

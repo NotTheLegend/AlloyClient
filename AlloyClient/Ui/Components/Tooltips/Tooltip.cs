@@ -1,10 +1,9 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using Alloy.UiLib.BuiltIn;
+﻿using Alloy.UiLib.BuiltIn;
 using Alloy.UiLib.Core;
 
 namespace AlloyClient.Ui.Components.Tooltips;
 
-public abstract class Tooltip : Sprite {
+public abstract class Tooltip : UiElement {
 
     private NineSliceRect TooltipSprite;
     private NineSliceConfig TooltipConfig;
@@ -14,14 +13,14 @@ public abstract class Tooltip : Sprite {
 
     public int ToolWidth;
     public int ToolHeight;
+    
     protected Tooltip(int width, int height) {
-        TooltipMode = true;
+        ClampToStage = true;
+        MouseEnabled = false;
+        MouseChildren = false;
 
         ToolWidth = width;
         ToolHeight = height;
-
-        Width = width;
-        Height = height;
 
         Contain = new Container();
         AddChild(Contain);
@@ -35,11 +34,29 @@ public abstract class Tooltip : Sprite {
             CutX = 5,
             CutY = 5,
             Width = ToolWidth,
-            Height = ToolHeight
+            Height = ToolHeight * 1000
         };
         TooltipSprite = new NineSliceRect(TooltipConfig);
         Contain.AddChild(TooltipSprite);
-        Height = ToolHeight;
     }
-    
+
+    protected override void OnAddedToStage() {
+        AddEventListener(Event.EnterFrame, OnEnterFrame);
+    }
+
+    protected override void OnRemovedFromStage() {
+        RemoveEventListener(Event.EnterFrame, OnEnterFrame);
+    }
+
+    private void OnEnterFrame() {
+        (X, Y) = Stage.Mouse.GetMousePosition();
+        Anchor = AnchorFromQuadrants(X < Stage.StageWidth / 2, Y < Stage.StageHeight / 2);
+    }
+
+    private static UiAnchor AnchorFromQuadrants(bool x, bool y) => (x, y) switch {
+        (true, true) => UiAnchor.TopLeft,
+        (false, true) => UiAnchor.TopRight,
+        (true, false) => UiAnchor.BottomLeft,
+        (false, false) => UiAnchor.BottomRight,
+    };
 }
