@@ -23,10 +23,10 @@ public class TierText : Sprite
             FontSize = 16,
             FontType = FontType.Bold,
             Text = text,
+            Color = c,
             OutlineColor = Color.RGB(0),
             OutlineThickness = 2
         });
-        Tag.Color = c;
         AddChild(Tag);
     }
 }

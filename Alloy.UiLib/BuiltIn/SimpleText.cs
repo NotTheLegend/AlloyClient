@@ -36,8 +36,8 @@ public sealed class SimpleText : Sprite {
     private float _lineWrapStart;
     private readonly int _maxWidth;
     private readonly BitmapFont _font;
-    private readonly Color _color;
-    private readonly Color _outlineColor;
+    private Color _color;
+    private Color _outlineColor;
 
     public SimpleText(TextConfig config) {
         Text = config.Text;
@@ -50,12 +50,11 @@ public sealed class SimpleText : Sprite {
         _outlineThickness = _font.ValidateOutlineSize(config.OutlineThickness);
         _color = config.Color;
         _outlineColor = config.OutlineColor;
-        SetColorSecondary(config.OutlineColor);
         Anchor = config.Anchor;
 
         TextureId = TextureType.Text;
         
-        FillData();
+        Rebuild();
     }
 
     private void FillData() {
@@ -140,6 +139,8 @@ public sealed class SimpleText : Sprite {
 
     private void Rebuild() {
         FillData();
+        SetColorChannel1(_color);
+        SetColorChannel2(_outlineColor);
     }
 
     public void SetText(string text) {
@@ -150,7 +151,9 @@ public sealed class SimpleText : Sprite {
         Text = text;
         Rebuild();
     }
-    
+
+    public void SetColor(Color color) => SetColorChannel1(_color = color);
+
     public void SetFontSize(float size) {
         if (size == _fontScale) {
             return;

@@ -45,8 +45,8 @@ public class KeyCodeBox : Sprite {
         });
         AddChild(_char);
 
-        AddEventListener(MouseEvent.MouseOver, () => _background.SetColor(11776947));
-        AddEventListener(MouseEvent.MouseOut, () => _background.SetColor(4473924));
+        AddEventListener(MouseEvent.MouseOver, () => _background.SetColor(Color.RGB(11776947)));
+        AddEventListener(MouseEvent.MouseOut, () => _background.SetColor(Color.RGB(4473924)));
         AddEventListener(MouseEvent.LeftClick, OnLeftClick);
         AddEventListener(Event.EnterFrame, OnFrameEnter);
     }

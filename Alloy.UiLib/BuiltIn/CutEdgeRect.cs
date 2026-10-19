@@ -116,5 +116,5 @@ public sealed class CutEdgeRect : Sprite {
 
     public void Resize(int width, int height) => Build(width, height);
 
-    public void SetColor(Color color) => SetChannel1Color(color);
+    public void SetColor(Color color) => SetColorChannel1(color);
 }

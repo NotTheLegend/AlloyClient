@@ -1,6 +1,6 @@
-﻿using Alloy.UiLib.Core;
+﻿using Alloy.Common;
+using Alloy.UiLib.Core;
 using Alloy.UiLib.Data;
-using Alloy.UiLib.Rendering;
 using OpenTK.Mathematics;
 
 namespace Alloy.UiLib.BuiltIn;
@@ -59,12 +59,12 @@ public sealed class NineSliceRect : Sprite {
         
         var data = GetGraphicsBuffer(6);
 
-        data[0] = new VertexUi(new Vector2(0, 0), new Vector2(0, 0));
-        data[1] = new VertexUi(new Vector2(_w, 0), new Vector2(1, 0));
-        data[2] = new VertexUi(new Vector2(_w, _h), new Vector2(1, 1));
-        data[3] = new VertexUi(new Vector2(0, 0), new Vector2(0, 0));
-        data[4] = new VertexUi(new Vector2(_w, _h), new Vector2(1, 1));
-        data[5] = new VertexUi(new Vector2(0, _h), new Vector2(0, 1));
+        data[0].PositionUv = (new Vector2(0, 0), new Vector2(0, 0));
+        data[1].PositionUv = (new Vector2(_w, 0), new Vector2(1, 0));
+        data[2].PositionUv = (new Vector2(_w, _h), new Vector2(1, 1));
+        data[3].PositionUv = (new Vector2(0, 0), new Vector2(0, 0));
+        data[4].PositionUv = (new Vector2(_w, _h), new Vector2(1, 1));
+        data[5].PositionUv = (new Vector2(0, _h), new Vector2(0, 1));
         
         SetGraphicsBuffer();
 
@@ -78,4 +78,6 @@ public sealed class NineSliceRect : Sprite {
 
         Extra2 = new Vector4(_slice.Cuts.X * scaleX, _slice.Cuts.Y * scaleY, _cutX / _w * scaleX, _cutY / _h * scaleY);
     }
+
+    public void SetColor(Color color) => SetColorChannel1(color);
 }

@@ -139,12 +139,12 @@ public sealed class Minimap : Sprite {
         var y2 = pos.Y + size;
         var data = GetGraphicsBuffer(6);
         
-        data[0].UV = new Vector2(x1 / 4096, y1 / 4096);
-        data[1].UV = new Vector2(x2 / 4096, y1 / 4096);
-        data[2].UV = new Vector2(x2 / 4096, y2 / 4096);
-        data[3].UV = new Vector2(x1 / 4096, y1 / 4096);
-        data[4].UV = new Vector2(x2 / 4096, y2 / 4096);
-        data[5].UV = new Vector2(x1 / 4096, y2 / 4096);
+        data[0].Uv = new Vector2(x1 / 4096, y1 / 4096);
+        data[1].Uv = new Vector2(x2 / 4096, y1 / 4096);
+        data[2].Uv = new Vector2(x2 / 4096, y2 / 4096);
+        data[3].Uv = new Vector2(x1 / 4096, y1 / 4096);
+        data[4].Uv = new Vector2(x2 / 4096, y2 / 4096);
+        data[5].Uv = new Vector2(x1 / 4096, y2 / 4096);
         
         _layer.SetSize(size);
     }

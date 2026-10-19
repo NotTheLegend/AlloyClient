@@ -122,10 +122,10 @@ public sealed class CharacterRect : Container
             switch (_statsMaxed)
             {
                 case NumberStatsMaxed:
-                    statsMaxedText.SetColor(0xFCDF00);
+                    statsMaxedText.SetColor(Color.RGB(0xFCDF00));
                     break;
                 case > 0:
-                    statsMaxedText.SetColor(0xFFFFFF);
+                    statsMaxedText.SetColor(Color.RGB(0xFFFFFF));
                     break;
             }
 

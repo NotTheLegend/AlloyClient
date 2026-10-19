@@ -33,6 +33,6 @@ public sealed class CharacterDetails : Sprite {
 
     private void OnPlayerUpdate(Player player) {
         _name.SetText(player.Name);
-        _skin.ChangeTexture(TextureHelper.Create(player.TextureData.AnimatedTextures.FaceRight[0], TextureType.GameAtlas));
+        _skin.SetTexture(TextureHelper.Create(player.TextureData.AnimatedTextures.FaceRight[0], TextureType.GameAtlas));
     }
 }

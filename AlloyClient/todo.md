@@ -8,8 +8,9 @@
 
 # Alloy.UiLib
 * add rotation support to hit test/bounds
-* (maybe) turn config into class and make a SpriteConfig base that they extend
 * replace tooltip mode with clamp to stage bool
+* finish color channel stuff
+* something with gtween (i forgot)
 
 # Alloy.Engine
 * add resizable ssbos

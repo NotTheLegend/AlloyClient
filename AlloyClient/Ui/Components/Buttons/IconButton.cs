@@ -56,12 +56,12 @@ public sealed class IconButton : Sprite {
     private void FillData() {
         var data = GetGraphicsBuffer(6);
         
-        data[0] = new VertexUi(new Vector2(0, 0), new Vector2(_texture.U, _texture.V)); // Top Left
-        data[1] = new VertexUi(new Vector2(_width, 0), new Vector2(_texture.U + _texture.W, _texture.V)); // Top Right
-        data[2] = new VertexUi(new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H)); // Bottom Right
-        data[3] = new VertexUi(new Vector2(0, 0), new Vector2(_texture.U, _texture.V)); // Top Left
-        data[4] = new VertexUi(new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H)); // Bottom Right
-        data[5] = new VertexUi(new Vector2(0, _height), new Vector2(_texture.U, _texture.V + _texture.H)); // Bottom Left
+        data[0].PositionUv = (new Vector2(0, 0), new Vector2(_texture.U, _texture.V)); // Top Left
+        data[1].PositionUv = (new Vector2(_width, 0), new Vector2(_texture.U + _texture.W, _texture.V)); // Top Right
+        data[2].PositionUv = (new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H)); // Bottom Right
+        data[3].PositionUv = (new Vector2(0, 0), new Vector2(_texture.U, _texture.V)); // Top Left
+        data[4].PositionUv = (new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H)); // Bottom Right
+        data[5].PositionUv = (new Vector2(0, _height), new Vector2(_texture.U, _texture.V + _texture.H)); // Bottom Left
 
         if (_gameObjectShade) {
             Extra1 = new Vector4(_texture.V + _texture.H * 0.4f, _texture.V + _texture.H, -1f, -1f);
@@ -88,4 +88,6 @@ public sealed class IconButton : Sprite {
         TextureId = info.TextureType;
         FillData();
     }
+
+    public void SetColor(Color color) => SetColorChannel1(color);
 }

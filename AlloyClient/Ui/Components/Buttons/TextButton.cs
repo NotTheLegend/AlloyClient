@@ -59,7 +59,7 @@ public class TextButton : Sprite {
     }
 
     public void Activate() {
-        _text.SetChannel1Color(Color.RGB(_activeColor));
+        _text.SetColorChannel1(Color.RGB(_activeColor));
         AddEventListener(MouseEvent.MouseOver, OnMouseOver);
         AddEventListener(MouseEvent.MouseOut, OnMouseOut);
         AddEventListener(MouseEvent.LeftDown, OnLeftDown);
@@ -67,7 +67,7 @@ public class TextButton : Sprite {
     }
 
     public void Deactivate() {
-        _text.SetChannel1Color(Color.RGB(_inactive));
+        _text.SetColorChannel1(Color.RGB(_inactive));
         RemoveEventListener(MouseEvent.MouseOver, OnMouseOver);
         RemoveEventListener(MouseEvent.MouseOut, OnMouseOut);
         RemoveEventListener(MouseEvent.LeftDown, OnLeftDown);
@@ -75,11 +75,11 @@ public class TextButton : Sprite {
     }
 
     private void OnMouseOver() {
-        _text.SetChannel1Color(Color.RGB(_onHoverColor));
+        _text.SetColorChannel1(Color.RGB(_onHoverColor));
     }
 
     private void OnMouseOut() {
-        _text.SetChannel1Color(Color.RGB(_activeColor));
+        _text.SetColorChannel1(Color.RGB(_activeColor));
     }
     
     private void OnLeftDown() {

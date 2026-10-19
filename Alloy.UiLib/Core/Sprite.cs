@@ -80,7 +80,7 @@ public abstract class Sprite : DisplayContainer {
         }*/
         
         var vertexMatrix = new SpriteVertexMatrix(State.Scale, State.Rotation, State.Position, -AnchorOffset);
-        var instance = new SpriteInstanceData(vertexMatrix, Color, ColorSecondary, new Vector2((float) TextureId, State.Alpha), State.Scissor, Extra1, Extra2, ColorTransformation);
+        var instance = new SpriteInstanceData(vertexMatrix, new Vector2((float) TextureId, State.Alpha), State.Scissor, Extra1, Extra2, ColorTransformation);
         
         SpriteRender.Draw(instance, GetGraphicsBuffer());
         
@@ -92,45 +92,25 @@ public abstract class Sprite : DisplayContainer {
     /// <summary>
     /// Sets color channel 1 in all vertices in current active buffer 
     /// </summary>
-    public void SetChannel1Color(Color color) {
+    public void SetColorChannel1(Color color) {
         foreach (ref var data in GetGraphicsBuffer()) {
-            data.C1Color = color;
+            data.ColorChannel1 = color;
         }
     }
     
     /// <summary>
     /// Sets color channel 2 in all vertices in current active buffer 
     /// </summary>
-    public void SetChannel2Color(Color color) {
+    public void SetColorChannel2(Color color) {
         foreach (ref var data in GetGraphicsBuffer()) {
-            //data.C1Color = color;
+            data.ColorChannel2 = color;
         }
     }
     
     public bool TooltipMode; // remove
-    public Color Color;
-    public Color ColorSecondary;
     protected Vector4 Extra1;
     protected Vector4 Extra2;
     // also rotation
-    
-    // migrate into vertex data
-    [Obsolete]
-    public void SetColor(uint rgb, float alpha = 1f) {
-        var r = (byte)(rgb >> 16);
-        var g = (byte)(rgb >> 8);
-        var b = (byte)rgb;
-        var a = (byte)(Math.Max(Math.Min(alpha, 1f), 0f) * byte.MaxValue);
-        Color.PackedValue = (uint)(a << 24 | b << 16 | g << 8 | r);
-    }
-    
-    public void SetColorSecondary(uint rgb, float alpha = 1f) {
-        var r = (byte)(rgb >> 16);
-        var g = (byte)(rgb >> 8);
-        var b = (byte)rgb;
-        var a = (byte)(Math.Max(Math.Min(alpha, 1f), 0f) * byte.MaxValue);
-        ColorSecondary.PackedValue = (uint)(a << 24 | b << 16 | g << 8 | r);
-    }
     
     // =========================================
 

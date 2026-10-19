@@ -80,6 +80,7 @@ public static class ConditionEffects {
         new("Paralyzed", ConditionEffect.Paralyzed, [53, 54]),
         new("Speedy", ConditionEffect.Speedy, [0]),
         new("Bleeding", ConditionEffect.Bleeding, [46]),
+        new("ArmorBrokenImmune", ConditionEffect.ArmorBrokenImmune, null),
         new("Healing", ConditionEffect.Healing, [47]),
         new("Damaging", ConditionEffect.Damaging, [49]),
         new("Berserk", ConditionEffect.Berserk, [50]),
@@ -91,7 +92,15 @@ public static class ConditionEffects {
         new("Armored", ConditionEffect.Armored, [16]),
         new("Armor Broken", ConditionEffect.ArmorBroken, [55]),
         new("Hexed", ConditionEffect.Hexed, [42]),
-        new("Ninja Speedy", ConditionEffect.NinjaSpeedy, [0])
+        new("Ninja Speedy", ConditionEffect.NinjaSpeedy, [0]),
+        
+        //TODO: effect icons, i got tired of seeing it bitch about them missing
+        new("Unstable", ConditionEffect.Unstable, null),
+        new("Silenced", ConditionEffect.Silenced, null),
+        new("Petrify", ConditionEffect.Petrify, null),
+        new("Curse", ConditionEffect.Curse, null),
+        new("Darkness", ConditionEffect.Darkness, null),
+        new("Exposed", ConditionEffect.Exposed, null),
     ];
 
     public static Span<BucketType> IconlessEffects => new BucketType[MaxEffectBuckets];

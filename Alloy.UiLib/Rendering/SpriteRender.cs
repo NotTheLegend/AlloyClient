@@ -15,8 +15,8 @@ public static class SpriteRender {
     private static StorageBuffer<SpriteInstanceData> _instanceBuffer;
     
     private static int _vertexCount;
-    private static SpriteVertexData[] _vertices;
-    private static VertexBuffer<SpriteVertexData> _vertexBuffer;
+    private static VertexUi[] _vertices;
+    private static VertexBuffer<VertexUi> _vertexBuffer;
     
     private static VertexArrayObject _vao;
 
@@ -24,8 +24,8 @@ public static class SpriteRender {
         _instanceData = new SpriteInstanceData[InstanceBufferSize];
         _instanceBuffer = new StorageBuffer<SpriteInstanceData>(InstanceBufferSize);
 
-        _vertices = new SpriteVertexData[VertexBufferSize];
-        _vertexBuffer = new VertexBuffer<SpriteVertexData>(SpriteVertexData.VertexStride, VertexBufferSize);
+        _vertices = new VertexUi[VertexBufferSize];
+        _vertexBuffer = new VertexBuffer<VertexUi>(VertexUi.VertexStride, VertexBufferSize);
 
         _vao = new VertexArrayObject();
         
@@ -47,17 +47,20 @@ public static class SpriteRender {
         _vertexCount = 0;
     }
 
-    internal static void Draw(SpriteInstanceData data, ReadOnlySpan<VertexUi> vertices) {
+    internal static void Draw(SpriteInstanceData data, Span<VertexUi> vertices) {
         if (_instanceCount + 1 > InstanceBufferSize ||  _vertexCount + vertices.Length > VertexBufferSize) {
             Flush();
         }
         
         _instanceData[_instanceCount] = data;
         var instanceId = _instanceCount++;
-        
+
         for (var i = 0; i < vertices.Length; i++) {
-            _vertices[_vertexCount + i] = new SpriteVertexData(vertices[i], instanceId);
+            vertices[i].InstanceId = instanceId;
         }
+        
+        vertices.CopyTo(_vertices.AsSpan(_vertexCount));
+        
         _vertexCount += vertices.Length;
         
         UiRender.LastRenderCount++;

@@ -40,8 +40,8 @@ public sealed class Ellipse : Sprite {
         TextureId = TextureType.Ellipse;
         
         FillData();
-        SetChannel1Color(config.Color);
-        SetChannel2Color(config.OutlineColor);
+        SetColorChannel1(config.Color);
+        SetColorChannel2(config.OutlineColor);
     }
     
     private void FillData() {

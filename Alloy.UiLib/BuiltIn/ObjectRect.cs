@@ -1,6 +1,6 @@
-﻿using Alloy.UiLib.Core;
+﻿using Alloy.Common;
+using Alloy.UiLib.Core;
 using Alloy.UiLib.Data;
-using Alloy.UiLib.Rendering;
 using OpenTK.Mathematics;
 
 namespace Alloy.UiLib.BuiltIn;
@@ -12,7 +12,7 @@ public struct ObjectRectConfig {
     public int Width = 0;
     public int Height = 0;
     public float Alpha = 1.0f;
-    public uint OutlineColor = 0x0;
+    public Color OutlineColor = Color.Transparent;
     public bool OutlineEnabled = true;
     public bool GlowEnabled = true;
     
@@ -24,56 +24,53 @@ public struct ObjectRectConfig {
 }
 
 public class ObjectRect : Sprite {
-    private AtlasPosition _texture;
     
-    private int _width;
-    private int _height;
     private bool _outline;
     private bool _glow;
 
     public ObjectRect(ObjectRectConfig config) {
         X = config.X;
         Y = config.Y;
-        _width = config.Width;
-        _height = config.Height;
         Alpha = config.Alpha;
-        SetColorSecondary(config.OutlineColor);
         Anchor = config.Anchor;
         MouseEnabled = config.MouseEnabled;
-
-        _texture = config.Texture.AtlasPosition;
-        TextureId = config.Texture.TextureType;
         _outline = config.OutlineEnabled;
         _glow = config.GlowEnabled;
         
-        
-        FillData();
+        BuildQuad(config.Width, config.Height);
+        SetTexture(config.Texture);
+        SetOutline(config.OutlineColor);
     }
 
-    private void FillData() {
+    private void BuildQuad(int width, int height) {
         var data = GetGraphicsBuffer(6);
-        data[0] = new VertexUi(new Vector2(0, 0), new Vector2(_texture.U, _texture.V));
-        data[1] = new VertexUi(new Vector2(_width, 0), new Vector2(_texture.U + _texture.W, _texture.V));
-        data[2] = new VertexUi(new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H));
-        data[3] = new VertexUi(new Vector2(0, 0), new Vector2(_texture.U, _texture.V));
-        data[4] = new VertexUi(new Vector2(_width, _height), new Vector2(_texture.U + _texture.W, _texture.V + _texture.H));
-        data[5] = new VertexUi(new Vector2(0, _height), new Vector2(_texture.U, _texture.V + _texture.H));
+        data[0].Position = new Vector2(0, 0);
+        data[1].Position = new Vector2(width, 0);
+        data[2].Position = new Vector2(width, height);
+        data[3].Position = new Vector2(0, 0);
+        data[4].Position = new Vector2(width, height);
+        data[5].Position = new Vector2(0, height);
         
         SetGraphicsBuffer();
         
-        Extra1 = new Vector4(_texture.V + _texture.H * 0.4f, _texture.V, _texture.H, _outline ? 1f : -1f);
-        Extra2 = new Vector4(_width, _height, _glow ? 1f : -1f, 0);
+        Extra2 = new Vector4(width, height, _glow ? 1f : -1f, 0);
     }
-    
-    public void ChangeTexture(TextureInfo info) {
-        _texture = info.AtlasPosition;
+
+    public void SetTexture(TextureInfo info) {
         TextureId = info.TextureType;
-        FillData();
+        
+        var data = GetGraphicsBuffer(6);
+        data[0].Uv = new Vector2(info.AtlasPosition.U, info.AtlasPosition.V);
+        data[1].Uv = new Vector2(info.AtlasPosition.U + info.AtlasPosition.W, info.AtlasPosition.V);
+        data[2].Uv = new Vector2(info.AtlasPosition.U + info.AtlasPosition.W, info.AtlasPosition.V + info.AtlasPosition.H);
+        data[3].Uv = new Vector2(info.AtlasPosition.U, info.AtlasPosition.V);
+        data[4].Uv = new Vector2(info.AtlasPosition.U + info.AtlasPosition.W, info.AtlasPosition.V + info.AtlasPosition.H);
+        data[5].Uv = new Vector2(info.AtlasPosition.U, info.AtlasPosition.V + info.AtlasPosition.H);
+        
+        Extra1 = new Vector4(info.AtlasPosition.V + info.AtlasPosition.H * 0.4f, info.AtlasPosition.V, info.AtlasPosition.H, _outline ? 1f : -1f);
     }
-    
-    public void Resize(int width, int height) {
-        _width = width;
-        _height = height;
-        FillData();
-    }
+
+    public void SetOutline(Color color) => SetColorChannel2(color);
+
+    public void Resize(int width, int height) => BuildQuad(width, height);
 }

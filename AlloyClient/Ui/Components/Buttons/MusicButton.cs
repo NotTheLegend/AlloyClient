@@ -55,8 +55,8 @@ public class MusicButton : UiElement {
         Scale = Stage.ScreenScale;
     }
 
-    private void OnMouseOver() => _button.SetColor(0xFFDC85);
+    private void OnMouseOver() => _button.SetColor(Color.RGB(0xFFDC85));
     
-    private void OnMouseOut() => _button.SetColor(0xFFFFFF);
+    private void OnMouseOut() => _button.SetColor(Color.RGB(0xFFFFFF));
     
 }

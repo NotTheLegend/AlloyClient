@@ -42,8 +42,8 @@ public class ChoiceBox<T> : Sprite {
             { Text = labels[_selected], FontSize = 25, FontType = FontType.Bold, X = BoxWidth / 2, Y = BoxHeight / 2, OutlineThickness = 2, Anchor = UiAnchor.Middle });
         AddChild(_char);
 
-        AddEventListener(MouseEvent.MouseOver, () => _background.SetColor(11776947));
-        AddEventListener(MouseEvent.MouseOut, () => _background.SetColor(4473924));
+        AddEventListener(MouseEvent.MouseOver, () => _background.SetColor(Color.RGB(11776947)));
+        AddEventListener(MouseEvent.MouseOut, () => _background.SetColor(Color.RGB(4473924)));
         AddEventListener(MouseEvent.LeftClick, OnClick);
     }
 

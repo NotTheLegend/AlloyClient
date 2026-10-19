@@ -3,7 +3,7 @@
 in VS_OUT {
     vec4 Position1;
     flat uint C1Color;
-    flat uint Override;
+    flat uint C2Color;
     vec2 Info;
     vec2 UVCoords;
     vec4 Scissor;
@@ -121,9 +121,9 @@ vec4 RenderText() {
         glowAlpha = glowDist * glowSize;
     }
 
-    vec4 color = mix(unpackColor(inp.Override), unpackColor(inp.C1Color), bodyAlpha);
+    vec4 color = mix(unpackColor(inp.C2Color), unpackColor(inp.C1Color), bodyAlpha);
     float alpha = bodyAlpha + glowAlpha;
-    return vec4(color.rgb, alpha);
+    return vec4(color.rgb, color.a * alpha);
 }
 
 float samp(vec2 uv, vec2 dx, vec2 dy) {
@@ -148,7 +148,7 @@ vec4 RenderOutline() {
         discard;
     }
 
-    vec4 outlineColor = unpackColor(inp.Override);
+    vec4 outlineColor = unpackColor(inp.C2Color);
     float scale = min(4, inp.Extra2.y / 60.0); // Extra2.y is the texture height 
     
     vec2 texSize = vec2(textureSize(GameAtlasTexture, 0));
@@ -242,7 +242,7 @@ vec4 RenderEllipse() {
         color_val = 0;
     }
 
-    return mix(unpackColor(inp.C1Color), unpackColor(inp.Override), color_val);
+    return mix(unpackColor(inp.C1Color), unpackColor(inp.C2Color), color_val);
 }
 
 void main() {

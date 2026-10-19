@@ -51,7 +51,7 @@ public class ClassInfo : Container {
         var totalMs = (int)gameTime.TotalMs;
         var frameIndex = 1 + totalMs / duration % 2;
 
-        _characterRect?.ChangeTexture(TextureHelper.Create(frames.FaceDown[frameIndex], TextureType.GameAtlas));
+        _characterRect?.SetTexture(TextureHelper.Create(frames.FaceDown[frameIndex], TextureType.GameAtlas));
     }
 
     private void UpdateInfo(ClassRect classRect) {

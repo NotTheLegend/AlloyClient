@@ -66,13 +66,14 @@ public sealed class TextInput : Sprite {
 
     private Vector2i _mousePosition;
 
+    private readonly int _maxVertexCount;
+    private int _vertexCount;
+
     public TextInput(InputConfig config) {
         X = config.X;
         Y = config.Y;
         _fontScale = config.FontSize;
         _font = UiRender.GetFont(config.FontType);
-        SetColor(config.Color);
-        SetColorSecondary(config.OutlineColor);
         _outlineThickness = _font.ValidateOutlineSize(config.OutlineThickness);
         _width = config.Width;
         _defaultText = config.DefaultText;
@@ -103,8 +104,26 @@ public sealed class TextInput : Sprite {
         HitboxType = CollisionType.Custom;
         
         AddEventListener(MouseEvent.LeftClick, OnMouseClick);
+
+        _maxVertexCount = (_maxCharacters + 1) * 6;
+        
+        EnsureBufferLength(_maxVertexCount);
+        SetColorChannel1(config.Color);
+        SetColorChannel2(config.OutlineColor);
         
         FillData();
+    }
+
+    public void SetColor(Color color) {
+        EnsureBufferLength(_maxVertexCount);
+        SetColorChannel1(color);
+        EnsureBufferLength(_vertexCount);
+    }
+    
+    public void SetOutlineColor(Color color) {
+        EnsureBufferLength(_maxVertexCount);
+        SetColorChannel2(color);
+        EnsureBufferLength(_vertexCount);
     }
     
     private void OnFrameEnter() {
@@ -117,7 +136,7 @@ public sealed class TextInput : Sprite {
     }
 
     private void FillData() {
-        var data = GetGraphicsBuffer((_maxCharacters + 1) * 6);
+        var data = GetGraphicsBuffer(_maxVertexCount);
         var startX = CutX * 3;
         var startY = _font.Ascender * _fontScale + CutY * 3;
         var zero = new Vector2(startX, startY);
@@ -181,7 +200,7 @@ public sealed class TextInput : Sprite {
             _caret.Y = CutY * 3;
         }
         
-        EnsureBufferLength(charCount * 6);
+        EnsureBufferLength(_vertexCount = charCount * 6);
         SetGraphicsBuffer();
     }
 

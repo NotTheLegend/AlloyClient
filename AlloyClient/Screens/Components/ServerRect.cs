@@ -73,11 +73,11 @@ public class ServerRect : Container {
     }
     
     private void OnMouseOver() {
-        _background.SetColor(BackgroundHoverColor);
+        _background.SetColor(Color.RGB(BackgroundHoverColor));
     }
     
     private void OnMouseOut() {
-        _background.SetColor(BackgroundColor);
+        _background.SetColor(Color.RGB(BackgroundColor));
     }
 
     /// <summary>
@@ -97,11 +97,11 @@ public class ServerRect : Container {
         return ServerState.Available;
     }
 
-    private uint ServerStateToColor(ServerState state) {
+    private Color ServerStateToColor(ServerState state) {
         return state switch {
-            ServerState.Crowded => CrowdedServerColor,
-            ServerState.Full => FullServerColor,
-            _ => AvailableServerColor
+            ServerState.Crowded => Color.RGB(CrowdedServerColor),
+            ServerState.Full => Color.RGB(FullServerColor),
+            _ => Color.RGB(AvailableServerColor)
         };
     }
 

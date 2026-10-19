@@ -63,11 +63,11 @@ public sealed class ItemTile : Sprite {
         _slotDetail = new ObjectRect(new ObjectRectConfig {Texture = TextureHelper.FromGameAtlas(0x0096), Width = Size, Height = Size, OutlineEnabled = false, GlowEnabled = false});
         _slotDetail.Visible = false;
         _slotDetail.ColorTransformation = new ColorTransform(0, 0, 0, 1, 54, 54, 54, 0);
-        _slotDetail.SetColorSecondary(0, 0);
+        _slotDetail.SetOutline(Color.Transparent);
         AddChild(_slotDetail);
 
         if (SlotType != 0) {
-            _slotDetail.ChangeTexture(ItemConstants.GetSlot(SlotType));
+            _slotDetail.SetTexture(ItemConstants.GetSlot(SlotType));
             _slotDetail.Visible = true;
         }
 
@@ -108,12 +108,12 @@ public sealed class ItemTile : Sprite {
     public void SetItem(ItemDesc itemDesc) {
         ItemDesc = itemDesc;
         if (ItemDesc != null && ItemDesc.ObjectType > 0) {
-            _sprite.ChangeTexture(TextureHelper.FromGameAtlas(ItemDesc.ObjectType));
+            _sprite.SetTexture(TextureHelper.FromGameAtlas(ItemDesc.ObjectType));
             _background.SetColor(Color.RGB(IsUsableByPlayer(ItemDesc) ? _bgColor : 0x5C1D1Du));
             _slotDetail.Visible = false;
             _slotId.Visible = false;
         } else {
-            _sprite.ChangeTexture(TextureHelper.FromGameAtlas(0x0096));
+            _sprite.SetTexture(TextureHelper.FromGameAtlas(0x0096));
             _background.SetColor(Color.RGB(_bgColor));
             if (SlotType != 0) _slotDetail.Visible = true;
             if (Owner is Player && SlotType == 0) _slotId.Visible = true;
@@ -153,7 +153,7 @@ public sealed class ItemTile : Sprite {
 
 
         _tierText.SetText(tag);
-        _tierText.SetColor(color);
+        _tierText.SetColor(Color.RGB(color));
         _tierText.Visible = true;
     }
 
