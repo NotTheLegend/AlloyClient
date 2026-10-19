@@ -13,6 +13,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alloy.Audio", "Alloy.Audio\Alloy.Audio.csproj", "{8792F9F1-6BB2-4AF1-9A22-883EC257972D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{ECD9BCE3-5F6A-40A1-84B2-9D322EF90386}"
+	ProjectSection(SolutionItems) = preProject
+		README_MODULES.md = README_MODULES.md
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alloy.ContentReader", "Alloy.ContentReader\Alloy.ContentReader.csproj", "{4C01F53E-2ADB-4CC5-B7A6-01D761368FC5}"
 EndProject

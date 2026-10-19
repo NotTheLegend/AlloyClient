@@ -7,13 +7,15 @@ Alloy Client is a Realm of the Mad God client for the private server community. 
 
 ## Introduction
 Alloy Client is the required game client for the [Alloy Server](https://github.com/Zolmex/alloy-server), 
-these projects are meant to run together out of the box. 
-The pillars that guide the design decisions behind every component in this project are **performance, simplicity, 
-and maintainability**.
+these projects are meant to run together out of the box.\
+It is built from scratch on top of OpenTK, with its own audio engine, content pipeline, and UI library, rather than on an existing game framework..
 
-# Progress
-Very unfinished\
-Use at your own risk, i can & will push breaking changes at anytime
+## Progress
+> [!WARNING]
+> **Very unfinished**\
+**Use at your own risk, I can & will push breaking changes at anytime**
+
+### [Modules](./README_MODULES.md) (`Alloy.*`)
 
 ### Build Requirements
 - All platforms
