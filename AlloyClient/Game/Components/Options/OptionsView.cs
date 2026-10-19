@@ -90,7 +90,7 @@ public sealed class OptionsView : Overlay {
                 InactiveColor = 0xFFC800,
                 X = xOffset,
                 Y = 84,
-                Anchor = UiAnchor.Default
+                Anchor = UiAnchor.None
             });
             tab.AddEventListener(MouseEvent.LeftClick, OnSelectTab);
             AddChild(tab);

@@ -25,7 +25,7 @@ public struct InputConfig {
     public bool ClickToActivate = true;
     public Action OnFocus = null;
     public Action OnUnfocus = null;
-    public UiAnchor Anchor = UiAnchor.Default;
+    public UiAnchor Anchor = UiAnchor.None;
     
     public Action OnChange = null;
     

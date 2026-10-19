@@ -92,7 +92,7 @@ public abstract class DisplayObject : EventManager {
     
     public float Rotation { get; set => IsInstanceChange(ref field, value); }
 
-    public UiAnchor Anchor { get; set => IsBoundsChange(ref field, value); } = UiAnchor.Default;
+    public UiAnchor Anchor { get; set => IsBoundsChange(ref field, value); } = UiAnchor.None;
     
     public bool Visible { get; set => IsInstanceChange(ref field, value); } = true;
     

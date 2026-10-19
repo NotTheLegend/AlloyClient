@@ -11,7 +11,7 @@ public struct MusicButtonConfig {
     public int Width = 0;
     public int Height = 0;
     public float Alpha = 1.0f;
-    public UiAnchor Anchor = UiAnchor.Default;
+    public UiAnchor Anchor = UiAnchor.None;
     
     public MusicButtonConfig() { }
 }

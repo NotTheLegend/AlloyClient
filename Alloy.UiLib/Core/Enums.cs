@@ -14,7 +14,7 @@ public readonly record struct UiAnchor { // enums dont extend IEquatable, hence 
 
     public static implicit operator byte(UiAnchor anchor) => anchor.Value;
 
-    public static readonly UiAnchor Default = 0; // TODO: rename to none
+    public static readonly UiAnchor None = 0;
     public static readonly UiAnchor TopLeft = 1;
     public static readonly UiAnchor TopMiddle = 2;
     public static readonly UiAnchor TopRight = 3;

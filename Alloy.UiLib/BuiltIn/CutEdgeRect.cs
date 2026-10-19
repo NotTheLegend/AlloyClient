@@ -14,7 +14,7 @@ public struct CutEdgeConfig {
     public CutEdges Cuts = CutEdges.All;
     public Color Color = Color.Black;
     public float Alpha = 1.0f;
-    public UiAnchor Anchor = UiAnchor.Default;
+    public UiAnchor Anchor = UiAnchor.None;
 
     public bool MouseEnabled = false;
 

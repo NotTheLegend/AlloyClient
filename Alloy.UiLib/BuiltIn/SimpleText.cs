@@ -17,7 +17,7 @@ public struct TextConfig {
     public Color Color = Color.White;
     public Color OutlineColor = Color.Black;
     public float Alpha = 1.0f;
-    public UiAnchor Anchor = UiAnchor.Default;
+    public UiAnchor Anchor = UiAnchor.None;
 
     public TextConfig() { }
 }
